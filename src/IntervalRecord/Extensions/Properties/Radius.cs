@@ -4,12 +4,12 @@ namespace IntervalRecord
 {
     public static partial class Interval
     {
-        public static double? Radius(this Interval<int> value, int step) => Radius(Closure(value, step), (a, b) => (a - b) / 2);
-        public static double? Radius(this Interval<double> value, double step) => Radius(Closure(value, step), (a, b) => (a - b) / 2);
-        public static double? Radius(this Interval<DateOnly> value, int step) => Radius(Closure(value, step), (a, b) => (a.DayNumber - b.DayNumber) / 2);
-        public static TimeSpan? Radius(this Interval<TimeOnly> value, TimeSpan step) => Radius(Closure(value, step), (a, b) => (a.ToTimeSpan() - b.ToTimeSpan()) / 2);
-        public static TimeSpan? Radius(this Interval<DateTime> value, TimeSpan step) => Radius(Closure(value, step), (a, b) => a.Subtract(b) / 2);
-        public static TimeSpan? Radius(this Interval<DateTimeOffset> value, TimeSpan step) => Radius(Closure(value, step), (a, b) => a.Subtract(b) / 2);
+        public static double? Radius(this Interval<int> value, int step) => Radius(Closure(value, step));
+        public static double? Radius(this Interval<double> value, double step) => Radius(Closure(value, step));
+        public static double? Radius(this Interval<DateOnly> value, int step) => Radius(Closure(value, step));
+        public static TimeSpan? Radius(this Interval<TimeOnly> value, TimeSpan step) => Radius(Closure(value, step));
+        public static TimeSpan? Radius(this Interval<DateTime> value, TimeSpan step) => Radius(Closure(value, step));
+        public static TimeSpan? Radius(this Interval<DateTimeOffset> value, TimeSpan step) => Radius(Closure(value, step));
 
         public static double? Radius(this Interval<int> value) => Radius(value, (a, b) => (a - b)/2);
         public static double? Radius(this Interval<double> value) => Radius(value, (a, b) => (a - b)/2);
