@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace IntervalRecord.Enums
 {
-    public enum OverlapState
+    public enum OverlappingState
     {
         Before = 0,
         Meets = 1,

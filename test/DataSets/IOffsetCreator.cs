@@ -6,11 +6,11 @@ using System.Threading.Tasks;
 
 namespace IntervalRecord.Tests.DataSets
 {
-    public interface IOffsetCreator<T, TOffset>
+    public interface IOffsetCreator<T>
         where T : struct, IEquatable<T>, IComparable<T>
     {
         Interval<T> Before { get; init; }
-        Interval<T> Contains { get; init; }
+        Interval<T> ContainedBy { get; init; }
         Interval<T> After { get; init; }
     }
 }

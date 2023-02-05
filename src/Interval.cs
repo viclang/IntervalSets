@@ -25,11 +25,13 @@ namespace IntervalRecord
             End = end;
         }
 
-        public Interval(T? start, T? end, bool startInclusive)
+        public Interval(T? start, T? end, BoundaryType boundaryType)
         {
+            var (startInclusive, endInclusive) = BoundaryTypeMapper.ToTuple(boundaryType);
             Start = start;
             End = end;
             StartInclusive = startInclusive;
+            EndInclusive = endInclusive;
         }
 
         public Interval(T? start, T? end, bool startInclusive, bool endInclusive)
@@ -55,7 +57,7 @@ namespace IntervalRecord
 
         public BoundaryType GetIntervalType()
         {
-            return IntervalTypeMapper.ToType(StartInclusive, EndInclusive);
+            return BoundaryTypeMapper.ToType(StartInclusive, EndInclusive);
         }
 
         public bool IsEmpty()
@@ -107,34 +109,10 @@ namespace IntervalRecord
 
         public bool OverlapsWith(Interval<T> other)
         {
-            return !IsBefore(other) && !IsAfter(other);
+            return !this.IsBefore(other) && !this.IsAfter(other);
         }
 
-        public bool IsBefore(Interval<T> other)
-        {
-            if (End is null || other.Start is null)
-            {
-                return false;
-            }
-            if (!EndInclusive || !other.StartInclusive)
-            {
-                return End!.Value.CompareTo(other.Start!.Value) <= 0;
-            }
-            return End!.Value.CompareTo(other.Start!.Value) == -1;
-        }
-
-        public bool IsAfter(Interval<T> other)
-        {
-            if (Start is null || other.End is null)
-            {
-                return false;
-            }
-            if (!StartInclusive || !other.EndInclusive)
-            {
-                return Start!.Value.CompareTo(other.End!.Value) >= 0;
-            }
-            return Start!.Value.CompareTo(other.End!.Value) == 1;
-        }
+        
 
         public static bool operator >(Interval<T> a, Interval<T> b)
         {

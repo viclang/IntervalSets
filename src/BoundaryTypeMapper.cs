@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace IntervalRecord
 {
-    public static class IntervalTypeMapper
+    public static class BoundaryTypeMapper
     {
         public static BoundaryType ToType(bool startInclusive, bool endInclusive) => (startInclusive, endInclusive) switch
         {

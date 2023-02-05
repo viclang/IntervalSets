@@ -56,6 +56,7 @@ namespace IntervalRecord
         //                   : value.End.Value);
         //}
 
+        
         public static Interval<T> Hull<T>(
             this IEnumerable<Interval<T>> values)
             where T : struct, IEquatable<T>, IComparable<T>

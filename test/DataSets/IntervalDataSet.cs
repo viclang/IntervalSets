@@ -1,119 +1,177 @@
 ﻿using IntervalRecord.Enums;
 using System;
+using System.Collections.Generic;
 using Xunit;
 
 namespace IntervalRecord.Tests.DataSets
 {
-    public readonly struct IntervalDataSet<T, TOffset>
+    public readonly record struct IntervalDataSet<T>
         where T : struct, IEquatable<T>, IComparable<T>
     {
         public Interval<T> Reference { get; init; }
         public Interval<T> Before { get; init; }
-        public Interval<T> Contains { get; init; }
         public Interval<T> After { get; init; }
-        public Interval<T> Meets { get; init; }
-        public Interval<T> Overlaps { get; init; }
-        public Interval<T> Starts { get; init; }
         public Interval<T> ContainedBy { get; init; }
+        public Interval<T> Meets { get; init; }
+        public Interval<T> OverlappedBy { get; init; }
+        public Interval<T> StartedBy { get; init; }
+        public Interval<T> Contains { get; init; }
         public Interval<T> Finishes { get; init; }
         public Interval<T> Equal { get; init; }
         public Interval<T> FinishedBy { get; init; }
-        public Interval<T> StartedBy { get; init; }
-        public Interval<T> OverlappedBy { get; init; }
+        public Interval<T> Starts { get; init; }
+        public Interval<T> Overlaps { get; init; }
         public Interval<T> MetBy { get; init; }
 
-        public IntervalDataSet(Interval<T> reference, TOffset offset)
+        /// <summary>
+        /// Creates a DataSet with 13 different states <see cref="OverlappingState"/> relative to the reference interval.
+        /// </summary>
+        /// <param name="start"></param>
+        /// <param name="end"></param>
+        /// <param name="boundaryType"></param>
+        /// <param name="offset"></param>
+        public IntervalDataSet(T start, T end, BoundaryType boundaryType, int offset)
         {
-            Reference = reference;
+            Reference = new Interval<T>(start, end, boundaryType);
             var dataSetCreator = OffsetCreator.Create(Reference, offset);
-            Before = dataSetCreator.Before;
-            Contains = dataSetCreator.Contains;
             After = dataSetCreator.After;
+            ContainedBy = dataSetCreator.ContainedBy;
+            Before = dataSetCreator.Before;
             Meets = Reference with { Start = Before.Start, End = Reference.Start };
-            Overlaps = Reference with { Start = Contains.End, End = After.End };
-            Starts = Reference with { End = After.Start };
-            ContainedBy = Reference with { Start = Before.Start, End = After.End };
-            Finishes = Reference with { Start = Contains.Start };
+            OverlappedBy = Reference with { Start = ContainedBy.End, End = After.End };
+            StartedBy = Reference with { End = After.Start };
+            Contains = Reference with { Start = Before.Start, End = After.End };
+            Finishes = Reference with { Start = ContainedBy.Start };
             Equal = Reference with { };
             FinishedBy = Reference with { Start = Before.Start };
-            StartedBy = Reference with { End = Contains.End };
-            OverlappedBy = Reference with { Start = Before.Start, End = Contains.Start };
+            Starts = Reference with { End = ContainedBy.End };
+            Overlaps = Reference with { Start = Before.Start, End = ContainedBy.Start };
             MetBy = Reference with { Start = Reference.End, End = After.End };
         }
 
+        public IntervalDataSet(T start, T end, BoundaryType boundaryType, TimeSpan offset)
+        {
+            Reference = new Interval<T>(start, end, boundaryType);
+            var dataSetCreator = OffsetCreator.Create(Reference, offset);
+            After = dataSetCreator.After;
+            ContainedBy = dataSetCreator.ContainedBy;
+            Before = dataSetCreator.Before;
+            Meets = Reference with { Start = Before.Start, End = Reference.Start };
+            Overlaps = Reference with { Start = After.Start, End = ContainedBy.Start };
+            OverlappedBy = Reference with { Start = ContainedBy.End, End = Before.End };
+            StartedBy = Reference with { End = Before.Start };
+            Contains = Reference with { Start = After.Start, End = Before.End };
+            Finishes = Reference with { Start = ContainedBy.Start };
+            Equal = Reference with { };
+            FinishedBy = Reference with { Start = After.Start };
+            Starts = Reference with { End = ContainedBy.End };
+            MetBy = Reference with { Start = Reference.End, End = Before.End };
+        }
+
+        public IEnumerable<Interval<T>> ToList()
+        {
+            return new List<Interval<T>>
+            {
+                Before,
+                Meets,
+                Overlaps,
+                Starts,
+                ContainedBy,
+                Finishes,
+                Equal,
+                FinishedBy,
+                Contains,
+                StartedBy,
+                OverlappedBy,
+                MetBy,
+                After
+            };
+        }
+
+        public IntervalDataSet<T> CopyWith(BoundaryType boundaryType)
+        {
+            var (startInclusive, endInclusive) = BoundaryTypeMapper.ToTuple(boundaryType);
+            return this with
+            {
+                Before = Before with { StartInclusive = startInclusive, EndInclusive = endInclusive },
+                Meets = Meets with { StartInclusive = startInclusive, EndInclusive = endInclusive },
+                OverlappedBy = OverlappedBy with { StartInclusive = startInclusive, EndInclusive = endInclusive },
+                StartedBy = StartedBy with { StartInclusive = startInclusive, EndInclusive = endInclusive },
+                Contains = Contains with { StartInclusive = startInclusive, EndInclusive = endInclusive },
+                Finishes = Finishes with { StartInclusive = startInclusive, EndInclusive = endInclusive },
+                Equal = Equal with { StartInclusive = startInclusive, EndInclusive = endInclusive },
+                FinishedBy = FinishedBy with { StartInclusive = startInclusive, EndInclusive = endInclusive },
+                ContainedBy = ContainedBy with { StartInclusive = startInclusive, EndInclusive = endInclusive },
+                Starts = Starts with { StartInclusive = startInclusive, EndInclusive = endInclusive },
+                Overlaps = Overlaps with { StartInclusive = startInclusive, EndInclusive = endInclusive },
+                MetBy = MetBy with { StartInclusive = startInclusive, EndInclusive = endInclusive },
+                After = After with { StartInclusive = startInclusive, EndInclusive = endInclusive },
+            };
+        }
+
+        public TheoryData<Interval<T>, Interval<T>, OverlappingState> GetOverlappingState => new TheoryData<Interval<T>, Interval<T>, OverlappingState>
+        {
+            { Before, Reference, OverlappingState.Before },
+            { Meets, Reference, Reference.GetIntervalType() == BoundaryType.Closed ? OverlappingState.Meets : OverlappingState.Before },
+            { Overlaps, Reference, OverlappingState.Overlaps },
+            { Starts, Reference, OverlappingState.Starts },
+            { ContainedBy, Reference, OverlappingState.ContainedBy },
+            { Finishes, Reference, OverlappingState.Finishes },
+            { Equal, Reference, OverlappingState.Equal },
+            { FinishedBy, Reference, OverlappingState.FinishedBy },
+            { Contains, Reference, OverlappingState.Contains },
+            { StartedBy, Reference, OverlappingState.StartedBy },
+            { OverlappedBy, Reference, OverlappingState.OverlappedBy },
+            { MetBy, Reference, Reference.GetIntervalType() == BoundaryType.Closed ? OverlappingState.MetBy : OverlappingState.After },
+            { After, Reference, OverlappingState.After }
+        };
+
         public TheoryData<Interval<T>, Interval<T>, bool> OverlapsWith => new TheoryData<Interval<T>, Interval<T>, bool>
         {
-            { Reference, Before, false },
-            { Reference, Meets, Reference.GetIntervalType() == BoundaryType.Closed },
-            { Reference, Overlaps, true },
-            { Reference, Starts, true },
-            { Reference, ContainedBy, true },
-            { Reference, Finishes, true },
-            { Reference, Equal, true },
-            { Reference, FinishedBy, true },
-            { Reference, Contains, true },
-            { Reference, StartedBy, true },
-            { Reference, OverlappedBy, true },
-            { Reference, MetBy, Reference.GetIntervalType() == BoundaryType.Closed },
-            { Reference, After, false },
-            { Reference, Before with { End = null }, true },
-            { Reference, Before with { Start = null }, false },
-            { Reference, Contains with { Start = null }, true },
-            { Reference, Contains with { End = null }, true },
-            { Reference, After with { Start = null }, true },
-            { Reference, After with { End = null }, false },
-            { Reference, Equal with { Start = null, End = null }, true },
+            { Before, Reference, false },
+            { Meets, Reference, Reference.GetIntervalType() == BoundaryType.Closed },
+            { Overlaps, Reference, true },
+            { Starts, Reference, true },
+            { ContainedBy, Reference, true },
+            { Finishes, Reference, true },
+            { Equal, Reference, true },
+            { FinishedBy, Reference, true },
+            { Contains, Reference, true },
+            { StartedBy, Reference, true },
+            { OverlappedBy, Reference, true },
+            { MetBy, Reference, Reference.GetIntervalType() == BoundaryType.Closed },
+            { After, Reference, false },
+            { After with { End = null }, Reference, true },
+            { After with { Start = null }, Reference, false },
+            { ContainedBy with { Start = null }, Reference, true },
+            { ContainedBy with { End = null }, Reference, true },
+            { Before with { Start = null }, Reference, true },
+            { Before with { End = null }, Reference, false },
+            { Equal with { Start = null, End = null }, Reference, true },
         };
 
         public TheoryData<Interval<T>, Interval<T>, bool> IsConnected => new TheoryData<Interval<T>, Interval<T>, bool>
         {
-            { Reference, Before, false },
+            { Reference, After, false },
             { Reference, Meets, Reference.GetIntervalType() == BoundaryType.Closed },
-            { Reference, Overlaps, true },
-            { Reference, Starts, true },
-            { Reference, ContainedBy, true },
+            { Reference, OverlappedBy, true },
+            { Reference, StartedBy, true },
+            { Reference, Contains, true },
             { Reference, Finishes, true },
             { Reference, Equal, true },
             { Reference, FinishedBy, true },
-            { Reference, Contains, true },
-            { Reference, StartedBy, true },
-            { Reference, OverlappedBy, true },
+            { Reference, ContainedBy, true },
+            { Reference, Starts, true },
+            { Reference, Overlaps, true },
             { Reference, MetBy, Reference.GetIntervalType() == BoundaryType.Closed },
-            { Reference, After, false },
-            { Reference, Before with { End = null }, false },
-            { Reference, Before with { Start = null }, false },
-            { Reference, Contains with { Start = null }, false },
-            { Reference, Contains with { End = null }, false },
-            { Reference, After with { Start = null }, false },
+            { Reference, Before, false },
             { Reference, After with { End = null }, false },
+            { Reference, After with { Start = null }, false },
+            { Reference, ContainedBy with { Start = null }, false },
+            { Reference, ContainedBy with { End = null }, false },
+            { Reference, Before with { Start = null }, false },
+            { Reference, Before with { End = null }, false },
             { Reference, Equal with { Start = null, End = null }, false },
         };
-    }
-
-    public static class IntervalDataSet
-    {
-        public static IntervalDataSet<T, TOffset> Open<T, TOffset>(T start, T end, TOffset offset)
-            where T : struct, IEquatable<T>, IComparable<T>
-        {
-            return new IntervalDataSet<T, TOffset>(Interval.Open(start, end), offset);
-        }
-
-        public static IntervalDataSet<T, TOffset> Closed<T, TOffset>(T start, T end, TOffset offset)
-            where T : struct, IEquatable<T>, IComparable<T>
-        {
-            return new IntervalDataSet<T, TOffset>(Interval.Closed(start, end), offset);
-        }
-
-        public static IntervalDataSet<T, TOffset> OpenClosed<T, TOffset>(T start, T end, TOffset offset)
-            where T : struct, IEquatable<T>, IComparable<T>
-        {
-            return new IntervalDataSet<T, TOffset>(Interval.OpenClosed(start, end), offset);
-        }
-
-        public static IntervalDataSet<T, TOffset> ClosedOpen<T, TOffset>(T start, T end, TOffset offset)
-            where T : struct, IEquatable<T>, IComparable<T>
-        {
-            return new IntervalDataSet<T, TOffset>(Interval.ClosedOpen(start, end), offset);
-        }
     }
 }
