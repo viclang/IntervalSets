@@ -1,4 +1,5 @@
-﻿using IntervalRecord.Extensions;
+﻿using IntervalRecord.BoundaryComparers;
+using IntervalRecord.Extensions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,11 +8,16 @@ using System.Threading.Tasks;
 
 namespace IntervalRecord
 {
-    public readonly record struct Interval<T>
+    public readonly record struct Interval<T> : IComparable<Interval<T>>, IComparable
         where T : struct, IEquatable<T>, IComparable<T>, IComparable
     {
-        public T? Start { get; init; }
-        public T? End { get; init; }
+        private static readonly IComparer<Interval<T>> _startComparer = new StartComparer<T>();
+        private static readonly IComparer<Interval<T>> _endComparer = new EndComparer<T>();
+        private static readonly IComparer<Interval<T>> _startEndComparer = new StartComparer<T>();
+        private static readonly IComparer<Interval<T>> _endStartComparer = new EndComparer<T>();
+
+        public T? Start { get; init; } = default(T);
+        public T? End { get; init; } = default(T);
         public bool StartInclusive { get; init; }
         public bool EndInclusive { get; init; }
 
@@ -78,7 +84,6 @@ namespace IntervalRecord
             {
                 return true;
             }
-
             return (IsBounded()
                     && other.IsBounded()
                     && End!.Value.CompareTo(other.Start!.Value) == 1
@@ -100,12 +105,10 @@ namespace IntervalRecord
             {
                 return false;
             }
-
             if (!EndInclusive || !other.StartInclusive)
             {
                 return End!.Value.CompareTo(other.Start!.Value) <= 0;
             }
-
             return End!.Value.CompareTo(other.Start!.Value) == -1;
         }
 
@@ -115,55 +118,23 @@ namespace IntervalRecord
             {
                 return false;
             }
-
             if (!StartInclusive || !other.EndInclusive)
             {
                 return Start!.Value.CompareTo(other.End!.Value) >= 0;
             }
-
             return Start!.Value.CompareTo(other.End!.Value) == 1;
         }
 
         public static bool operator >(Interval<T> a, Interval<T> b)
         {
-            if ((a == b)
-                || (a.IsBounded() && !b.IsBounded())
-                || (a.IsHalfBounded() && !b.IsBounded())
-                || (a.IsBounded() && b.IsHalfBounded()))
-            {
-                return false;
-            }
-
-            if ((!a.IsBounded() && b.IsBounded())
-                || (!a.IsBounded() && b.IsHalfBounded())
-                || (a.IsHalfBounded() && b.IsBounded()))
-            {
-                return true;
-            }
-
-            return a.Start!.Value.CompareTo(b.Start!.Value) == 1 && a.End!.Value.CompareTo(b.End!.Value) == 1;
+            return _startComparer.Compare(a, b) == 1
+                && _endComparer.Compare(a, b) == 1;
         }
 
         public static bool operator <(Interval<T> a, Interval<T> b)
         {
-            if (a == b)
-            {
-                return false;
-            }
-
-            if (!a.IsBounded() && b.IsHalfBounded()
-                || a.IsHalfBounded() && b.IsBounded())
-            {
-                return false;
-            }
-
-            if (a.IsHalfBounded() && !b.IsBounded()
-                || a.IsBounded() && b.IsHalfBounded())
-            {
-                return true;
-            }
-
-            return a.Start!.Value.CompareTo(b.Start!.Value) == -1 && a.End!.Value.CompareTo(b.End!.Value) == -1;
+            return _startComparer.Compare(a, b) == -1
+                && _endComparer.Compare(a, b) == -1;
         }
 
         public static bool operator >=(Interval<T> a, Interval<T> b)
@@ -192,6 +163,29 @@ namespace IntervalRecord
 
             return string.Join(", ", start, end);
         }
+        public int CompareTo(object? obj)
+        {
+            throw new NotImplementedException();
+        }
+        public int CompareTo(Interval<T> other)
+        {
+            if (this > other)
+            {
+                return 1;
+            }
+
+            if (this < other)
+            {
+                return -1;
+            }
+
+            if (this < other)
+            {
+                return -1;
+            }
+
+            return 0;
+        }
     }
 
     public static class Interval
@@ -199,7 +193,7 @@ namespace IntervalRecord
         public static Interval<T> Empty<T>()
             where T : struct, IEquatable<T>, IComparable<T>, IComparable
         {
-            return new Interval<T>(default(T), default(T), false, false);
+            return new Interval<T>();
         }
 
         public static Interval<T> Open<T>(T start, T end)
