@@ -6,25 +6,26 @@ using System.Threading.Tasks;
 
 namespace IntervalExtensions
 {
-    public record struct Interval<T>
+    public readonly record struct Interval<T>
         where T : struct, IComparable<T>, IComparable
     {
         public T? Start { get; init; }
         public T? End { get; init; }
         public (bool Start, bool End) Inclusive { get; init; }
 
-        public Interval(T? start, T? end, bool startInclusive, bool endInclusive)
+        public Interval(T? start, T? end)
+            : this(start, end, (true, true))
         {
-            Start = start;
-            End = end;
-            Inclusive = (startInclusive, endInclusive);
+        }
 
-            Validate();
+        public Interval(T? start, T? end, bool inclusiveEnd)
+            : this(start, end, (true, inclusiveEnd))
+        {
+        }
 
-            if (Start is not null && End is not null && !Inclusive.Start && !Inclusive.End)
-            {
-                throw new NotSupportedException("Open interval is not supported!");
-            }
+        public Interval(T? start, T? end, bool inclusiveStart, bool inclusiveEnd)
+            : this(start, end, (inclusiveStart, inclusiveEnd))
+        {
         }
 
         public Interval(T? start, T? end, (bool start, bool end) inclusive)
@@ -47,14 +48,14 @@ namespace IntervalExtensions
                     && Inclusive.Start && Inclusive.End
                     && End.Value.CompareTo(Start.Value) == -1)
             {
-                throw new ArgumentOutOfRangeException(nameof(End), "The end parameter must be greater or equal to the start parameter");
+                throw new ArgumentOutOfRangeException("The end parameter must be greater or equal to the start parameter");
             }
 
             if (Start is not null && End is not null
                     && (!Inclusive.Start || !Inclusive.End)
                     && End.Value.CompareTo(Start.Value) <= 0)
             {
-                throw new ArgumentOutOfRangeException(nameof(End), "The end parameter must be greater than the start parameter");
+                throw new ArgumentOutOfRangeException("The end parameter must be greater than the start parameter");
             }
         }
 
@@ -96,14 +97,16 @@ namespace IntervalExtensions
         public override string? ToString()
         {
             var start = Start is null
-                ? "(-∞"
-                : Inclusive.Start ? "[" : "("
-                    + Start.Value;
+                ? "[-∞"
+                : Inclusive.Start
+                    ? "[" + Start.Value
+                    : "(" + Start.Value;
 
             var end = End is null
-                ? "+∞)"
-                : Inclusive.End ? "]" : ")"
-                    + End.Value;
+                ? "+∞]"
+                : Inclusive.End
+                    ? End.Value + "]"
+                    : End.Value + ")";
 
             return string.Join(", ", start, end);
         }

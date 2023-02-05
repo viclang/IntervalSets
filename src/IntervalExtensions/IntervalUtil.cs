@@ -6,8 +6,38 @@ using System.Threading.Tasks;
 
 namespace IntervalExtensions
 {
-    public static class IntervalExtensions
+    public static class IntervalUtil
     {
+        public static Interval<T> ToInclusive<T>(this T start, T end)
+            where T : struct, IComparable<T>, IComparable
+        {
+            return new Interval<T>(start, end, true, true);
+        }
+
+        public static Interval<T> ToExclusive<T>(this T start, T end)
+            where T : struct, IComparable<T>, IComparable
+        {
+            return new Interval<T>(start, end, true, false);
+        }
+
+        public static Interval<T> ToInfinity<T>(this T start)
+            where T : struct, IComparable<T>, IComparable
+        {
+            return new Interval<T>(start, null, true, true);
+        }
+
+        public static Interval<T> FromInfinityToInclusive<T>(T end)
+            where T : struct, IComparable<T>, IComparable
+        {
+            return new Interval<T>(null, end, true, true);
+        }
+
+        public static Interval<T> FromInfinityToExclusive<T>(T end)
+            where T : struct, IComparable<T>, IComparable
+        {
+            return new Interval<T>(null, end, true, false);
+        }
+
         public static int CompareStart<T>(this Interval<T> value,
             Interval<T> other)
             where T : struct, IComparable<T>, IComparable
@@ -100,7 +130,7 @@ namespace IntervalExtensions
                            : value.End.Value);
         }
 
-        private static Interval<T> GetCollectionInterval<T>(
+        public static Interval<T> GetCollectionInterval<T>(
             this IEnumerable<Interval<T>> values)
             where T : struct, IComparable<T>, IComparable
         {
