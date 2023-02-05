@@ -50,11 +50,11 @@ namespace IntervalRecord
             where T : struct, IComparable<T>, IComparable
         {
             var parts = value.Split(',');
-            var startString = parts[0].Trim().Substring(1);
-            var endString = parts[1].Trim().Substring(0, parts[1].Length - 1);
+            var startString = parts[0].Trim();
+            var endString = parts[1].Trim();
 
-            var start = ParseBoundary(startString, boundaryParser);
-            var end = ParseBoundary(endString, boundaryParser);
+            var start = ParseBoundary(startString[1..], boundaryParser);
+            var end = ParseBoundary(endString[..(endString.Length - 1)], boundaryParser);
 
             return new Interval<T>(
                 start,
