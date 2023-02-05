@@ -1,10 +1,9 @@
-﻿using Newtonsoft.Json.Linq;
-using System;
-using System.Linq;
+﻿using System.Linq;
+using IntervalRecord.Tests.Extensions;
 
-namespace IntervalRecord.Tests.Extensions
+namespace IntervalRecord.Tests.Combiners
 {
-    public class ExceptTests : OverlappingStateTestsBase
+    public class UnionTests : OverlappingStateTestsBase
     {
         private const int startingPoint = 0;
         private const int length = 4;
@@ -15,15 +14,16 @@ namespace IntervalRecord.Tests.Extensions
         [MemberData(nameof(IntervalPairsWithOverlappingState), new object[] { startingPoint, length, offset, BoundaryType.ClosedOpen, true })]
         [MemberData(nameof(IntervalPairsWithOverlappingState), new object[] { startingPoint, length, offset, BoundaryType.OpenClosed, true })]
         [MemberData(nameof(IntervalPairsWithOverlappingState), new object[] { startingPoint, length, offset, BoundaryType.Open, true })]
-        public void Except_ShouldBeExpectedOrNull(Interval<int> a, Interval<int> b, OverlappingState overlappingState)
+        public void Union_ShouldBeExpectedOrNull(Interval<int> a, Interval<int> b, OverlappingState overlappingState)
         {
             // Act
-            var actual = a.Except(b);
+            var actual = a.Union(b);
 
             // Assert
             var array = new Interval<int>[] { a, b };
             var minByStart = array.MinBy(x => x.Start);
-            var maxByStart = array.MaxBy(x => x.Start);
+            var maxByEnd = array.MaxBy(x => x.End);
+
 
             var expectedStartInclusive = a.Start == b.Start
                 ? a.StartInclusive || b.StartInclusive
@@ -31,12 +31,12 @@ namespace IntervalRecord.Tests.Extensions
 
             var expectedEndInclusive = a.End == b.End
                 ? a.EndInclusive || b.EndInclusive
-                : maxByStart.EndInclusive;
+                : maxByEnd.EndInclusive;
 
             if (overlappingState != OverlappingState.Before && overlappingState != OverlappingState.After)
             {
                 actual!.Value.Start.Should().Be(minByStart.Start);
-                actual!.Value.End.Should().Be(+maxByStart.Start);
+                actual!.Value.End.Should().Be(maxByEnd.End);
                 actual!.Value.StartInclusive.Should().Be(actual!.Value.Start.IsInfinite ? false : expectedStartInclusive);
                 actual!.Value.EndInclusive.Should().Be(actual!.Value.End.IsInfinite ? false : expectedEndInclusive);
             }
@@ -51,15 +51,16 @@ namespace IntervalRecord.Tests.Extensions
         [MemberData(nameof(IntervalPairsWithOverlappingState), new object[] { startingPoint, length, offset, BoundaryType.ClosedOpen, true })]
         [MemberData(nameof(IntervalPairsWithOverlappingState), new object[] { startingPoint, length, offset, BoundaryType.OpenClosed, true })]
         [MemberData(nameof(IntervalPairsWithOverlappingState), new object[] { startingPoint, length, offset, BoundaryType.Open, true })]
-        public void Except_ShouldBeExpectedOrDefault(Interval<int> a, Interval<int> b, OverlappingState overlappingState)
+        public void Union_ShouldBeExpectedOrDefault(Interval<int> a, Interval<int> b, OverlappingState overlappingState)
         {
             // Act
-            var actual = a.ExceptOrDefault(b, a);
+            var actual = a.UnionOrDefault(b, a);
 
             // Assert
             var array = new Interval<int>[] { a, b };
             var minByStart = array.MinBy(x => x.Start);
-            var maxByStart = array.MaxBy(x => x.Start);
+            var maxByEnd = array.MaxBy(x => x.End);
+
 
             var expectedStartInclusive = a.Start == b.Start
                 ? a.StartInclusive || b.StartInclusive
@@ -67,14 +68,14 @@ namespace IntervalRecord.Tests.Extensions
 
             var expectedEndInclusive = a.End == b.End
                 ? a.EndInclusive || b.EndInclusive
-                : maxByStart.EndInclusive;
+                : maxByEnd.EndInclusive;
 
             if (overlappingState != OverlappingState.Before && overlappingState != OverlappingState.After)
             {
-                actual.Start.Should().Be(minByStart.Start);
-                actual.End.Should().Be(+maxByStart.Start);
-                actual.StartInclusive.Should().Be(actual.Start.IsInfinite ? false : expectedStartInclusive);
-                actual.EndInclusive.Should().Be(actual.End.IsInfinite ? false : expectedEndInclusive);
+                actual!.Start.Should().Be(minByStart.Start);
+                actual!.End.Should().Be(maxByEnd.End);
+                actual!.StartInclusive.Should().Be(actual!.Start.IsInfinite ? false : expectedStartInclusive);
+                actual!.EndInclusive.Should().Be(actual!.End.IsInfinite ? false : expectedEndInclusive);
             }
             else
             {

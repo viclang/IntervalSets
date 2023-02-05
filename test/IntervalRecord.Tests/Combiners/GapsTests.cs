@@ -1,6 +1,7 @@
 ﻿using System.Data;
+using IntervalRecord.Tests.TestData;
 
-namespace IntervalRecord.Tests.Extensions
+namespace IntervalRecord.Tests.Combiners
 {
     public class GapsTests : OverlappingStateTestsBase
     {

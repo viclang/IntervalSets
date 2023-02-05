@@ -6,7 +6,7 @@ using System.Diagnostics.Metrics;
 using System.Linq;
 using Xunit;
 
-namespace IntervalRecord.Tests.ExtensionsTests
+namespace IntervalRecord.Tests.Combiners
 {
     public sealed class EnumerableTests : EnumerableTestsBase
     {
@@ -144,7 +144,7 @@ namespace IntervalRecord.Tests.ExtensionsTests
             var list = OverlapList(startingPoint, length, offset, boundaryType);
 
             // Act
-            var actual = list.Pairwise((a,b) => a.Gap(b)).ToList();
+            var actual = list.Pairwise((a, b) => a.Gap(b)).ToList();
 
             // Assert
             actual.Should().HaveCount(expectedCount);

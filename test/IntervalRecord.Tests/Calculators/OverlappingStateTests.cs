@@ -1,4 +1,6 @@
-﻿namespace IntervalRecord.Tests.Extensions
+﻿using IntervalRecord.Tests.Extensions;
+
+namespace IntervalRecord.Tests.Calculators
 {
     public class ComparableTests : OverlappingStateTestsBase
     {

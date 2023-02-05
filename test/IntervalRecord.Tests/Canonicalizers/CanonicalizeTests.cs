@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace IntervalRecord.Tests.Extensions
+namespace IntervalRecord.Tests.Canonicalizers
 {
     public class CanonicalizeTests
     {

@@ -1,6 +1,7 @@
 ﻿using System.Linq;
+using IntervalRecord.Tests.TestData;
 
-namespace IntervalRecord.Tests.Extensions
+namespace IntervalRecord.Tests.Combiners
 {
     public sealed class HullTests : OverlappingStateTestsBase
     {

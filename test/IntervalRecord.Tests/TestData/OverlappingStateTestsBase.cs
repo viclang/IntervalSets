@@ -1,9 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using IntervalRecord.Tests.TestData;
 
-namespace IntervalRecord.Tests.Extensions
+namespace IntervalRecord.Tests.TestData
 {
     public abstract class OverlappingStateTestsBase
     {

@@ -4,9 +4,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace IntervalRecord.Tests.Extensions
+namespace IntervalRecord.Tests.Calculators
 {
-    public class CentreTests
+    public class RadiusTests
     {
         private static readonly DateTimeOffset _referenceDateTimeOffset = new DateTimeOffset(2022, 1, 1, 0, 0, 0, TimeSpan.Zero);
         private static readonly DateOnly _referenceDateOnly = new DateOnly(_referenceDateTimeOffset.Year, _referenceDateTimeOffset.Month, _referenceDateTimeOffset.Day);
@@ -18,41 +18,41 @@ namespace IntervalRecord.Tests.Extensions
         [InlineData(1, 4)]
         [InlineData(1, 5)]
         [InlineData(1, 6)]
-        public void Centre(int start, int end)
+        public void Radius(int start, int end)
         {
             // Arrange
-            var integer = new Interval<int>(start, end, true, true);
-            var doubles = new Interval<double>(start, end, true, true);
-            var dateOnly = new Interval<DateOnly>(_referenceDateOnly.AddDays(start), _referenceDateOnly.AddDays(end), true, true);
-            var timeOnly = new Interval<TimeOnly>(_referenceTimeOnly.AddHours(start), _referenceTimeOnly.AddHours(end), true, true);
-            var dateTime = new Interval<DateTime>(_referenceDateTimeOffset.DateTime.AddHours(start), _referenceDateTimeOffset.DateTime.AddHours(end), true, true);
-            var dateTimeOffset = new Interval<DateTimeOffset>(_referenceDateTimeOffset.AddHours(start), _referenceDateTimeOffset.AddHours(end), true, true);
+            var integer = new Interval<int>(start, end, false, false);
+            var doubles = new Interval<double>(start, end, false, false);
+            var dateOnly = new Interval<DateOnly>(_referenceDateOnly.AddDays(start), _referenceDateOnly.AddDays(end), false, false);
+            var timeOnly = new Interval<TimeOnly>(_referenceTimeOnly.AddHours(start), _referenceTimeOnly.AddHours(end), false, false);
+            var dateTime = new Interval<DateTime>(_referenceDateTimeOffset.DateTime.AddHours(start), _referenceDateTimeOffset.DateTime.AddHours(end), false, false);
+            var dateTimeOffset = new Interval<DateTimeOffset>(_referenceDateTimeOffset.AddHours(start), _referenceDateTimeOffset.AddHours(end), false, false);
 
             // Act
-            var actualInteger = integer.Centre();
-            var actualDouble = doubles.Centre();
-            var actualDateOnly = dateOnly.Centre();
-            var actualTimeOnly = timeOnly.Centre();
-            var actualDateTime = dateTime.Centre();
-            var actualDateTimeOffset = dateTimeOffset.Centre();
+            var actualInteger = integer.Radius();
+            var actualDouble = doubles.Radius();
+            var actualDateOnly = dateOnly.Radius();
+            var actualTimeOnly = timeOnly.Radius();
+            var actualDateTime = dateTime.Radius();
+            var actualDateTimeOffset = dateTimeOffset.Radius();
 
             // Assert
-            actualInteger.Should().Be((integer.End.Finite!.Value + (double)integer.Start.Finite!.Value) / 2);
-            actualDouble.Should().Be((doubles.End + doubles.Start) / 2);
-            actualDateOnly.Should().Be(dateOnly.Start.Finite!.Value.AddDays(dateOnly.Length().Finite!.Value / 2));
-            actualTimeOnly.Should().Be(timeOnly.Start.Finite!.Value.Add(timeOnly.Length().Finite!.Value / 2));
-            actualDateTime.Should().Be(dateTime.Start.Finite!.Value.Add(dateTime.Length().Finite!.Value / 2));
-            actualDateTimeOffset.Should().Be(dateTimeOffset.Start.Finite!.Value.Add(dateTimeOffset.Length().Finite!.Value / 2));
+            actualInteger.Should().Be(integer.Length() / 2);
+            actualDouble.Should().Be(doubles.Length() / 2);
+            actualDateOnly.Should().Be(dateOnly.Length() / 2);
+            actualTimeOnly.Should().Be(timeOnly.Length().Finite!.Value / 2);
+            actualDateTime.Should().Be(dateTime.Length().Finite!.Value / 2);
+            actualDateTimeOffset.Should().Be(dateTimeOffset.Length().Finite!.Value / 2);
         }
 
         [Theory]
         [InlineData(null, null)]
         [InlineData(1, null)]
         [InlineData(null, 1)]
-        public void CentreInfinity_ShouldBeNull(int? start, int? end)
+        public void RadiusInfinity_ShouldBeNull(int? start, int? end)
         {
             // Arrange
-            var integer = new Interval<int>(start, end, true, true);
+            var integer = new Interval<int>(start, end, false, false);
             var doubles = new Interval<double>(start, end, false, false);
 
             var dateOnly = new Interval<DateOnly>(
@@ -80,12 +80,12 @@ namespace IntervalRecord.Tests.Extensions
                 false);
 
             // Act
-            var actualInteger = integer.Centre();
-            var actualDouble = doubles.Centre();
-            var actualDateOnly = dateOnly.Centre();
-            var actualTimeOnly = timeOnly.Centre();
-            var actualDateTime = dateTime.Centre();
-            var actualDateTimeOffset = dateTimeOffset.Centre();
+            var actualInteger = integer.Radius();
+            var actualDouble = doubles.Radius();
+            var actualDateOnly = dateOnly.Radius();
+            var actualTimeOnly = timeOnly.Radius();
+            var actualDateTime = dateTime.Radius();
+            var actualDateTimeOffset = dateTimeOffset.Radius();
 
             // Assert
             actualInteger.Should().BeNull();
@@ -97,7 +97,7 @@ namespace IntervalRecord.Tests.Extensions
         }
 
         [Fact]
-        public void CentreEmpty_ShouldBeNull()
+        public void RadiusEmpty_ShouldBeNull()
         {
             // Arrange
             var integer = new Interval<int>(default, default, false, false);
@@ -108,12 +108,12 @@ namespace IntervalRecord.Tests.Extensions
             var dateTimeOffset = new Interval<DateTimeOffset>(default, default, false, false);
 
             // Act
-            var actualInteger = integer.Centre();
-            var actualDouble = doubles.Centre();
-            var actualDateOnly = dateOnly.Centre();
-            var actualTimeOnly = timeOnly.Centre();
-            var actualDateTime = dateTime.Centre();
-            var actualDateTimeOffset = dateTimeOffset.Centre();
+            var actualInteger = integer.Radius();
+            var actualDouble = doubles.Radius();
+            var actualDateOnly = dateOnly.Radius();
+            var actualTimeOnly = timeOnly.Radius();
+            var actualDateTime = dateTime.Radius();
+            var actualDateTimeOffset = dateTimeOffset.Radius();
 
             // Assert
             actualInteger.Should().BeNull();

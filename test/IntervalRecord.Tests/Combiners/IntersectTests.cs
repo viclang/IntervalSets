@@ -1,8 +1,9 @@
-﻿using Newtonsoft.Json.Linq;
+﻿using IntervalRecord.Tests.Extensions;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Linq;
 
-namespace IntervalRecord.Tests.Extensions
+namespace IntervalRecord.Tests.Combiners
 {
     public class IntersectTests : OverlappingStateTestsBase
     {

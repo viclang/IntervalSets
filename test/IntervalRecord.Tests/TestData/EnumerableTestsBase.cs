@@ -1,11 +1,10 @@
-﻿using IntervalRecord.Tests.TestData;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace IntervalRecord.Tests.IntervalExtensionsTests
+namespace IntervalRecord.Tests.TestData
 {
     public abstract class EnumerableTestsBase
     {
