@@ -6,18 +6,18 @@ namespace IntervalRecord.Tests.TestData
     public abstract class BaseIntervalPairSetTests
     {
         public static IEnumerable<object[]> IntervalPairsWithOverlappingState(
-            int start,
-            int end,
-            BoundaryType boundaryType,
+            int startingPoint,
+            int length,
             int offset,
+            BoundaryType boundaryType,
             bool halfOpenIncluded)
-            => new IntOverlappingDataSet(start, end, boundaryType, offset).GetIntervalPairsWithOverlappingState(halfOpenIncluded);
+            => new IntOverlappingDataSet(startingPoint, length, offset, boundaryType).GetIntervalPairsWithOverlappingState(halfOpenIncluded);
 
         public static IEnumerable<object[]> IntervalPairs(
-            int start,
-            int end,
-            BoundaryType boundaryType,
-            int offset)
-            => new IntOverlappingDataSet(start, end, boundaryType, offset).GetIntervalPairs();
+            int startingPoint,
+            int length,
+            int offset,
+            BoundaryType boundaryType)
+            => new IntOverlappingDataSet(startingPoint, length, offset, boundaryType).GetIntervalPairs();
     }
 }

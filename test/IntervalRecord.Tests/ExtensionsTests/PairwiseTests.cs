@@ -6,21 +6,28 @@ namespace IntervalRecord.Tests.ExtensionsTests
 {
     public class PairwiseTests : BaseIntervalSetTests
     {
-        private const int start = 6;
-        private const int end = 10;
-        private const int offset = 3;
+        private const int startingPoint = 0;
+        private const int length = 4;
+        private const int offset = 1;
 
         [Fact]
         public void Pairwise()
         {
             // Arrange
-            var list = OverlapList(start, end, BoundaryType.Closed, offset);
+            var dataset = new IntOverlappingDataSet(startingPoint, length, offset, BoundaryType.Closed);
+            var list = new List<Interval<int>>
+            {
+                dataset.Before,
+                dataset.Starts,
+                dataset.Finishes,
+                dataset.After
+            };
 
             // Act
             var actual = list.Union().ToList();
 
             // Assert
-            actual.Should().HaveCount(1);
+            actual.Should().HaveCount(3);
         }
     }
 }

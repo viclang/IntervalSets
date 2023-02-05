@@ -27,16 +27,17 @@ namespace IntervalRecord.Tests.TestData
         }
 
         public static List<Interval<int>> OverlapList(
-            int start,
-            int end,
-            BoundaryType boundaryType,
-            int offset)
+            int startingPoint,
+            int length,
+            int offset,
+            BoundaryType boundaryType)
         {
-            var dataset = new IntOverlappingDataSet(start, end, boundaryType, offset);
+            var dataset = new IntOverlappingDataSet(startingPoint, length, offset, boundaryType);
             return new List<Interval<int>>
             {
                 dataset.Before,
                 dataset.Starts,
+                dataset.Reference,
                 dataset.ContainedBy,
                 dataset.Finishes,
                 dataset.After

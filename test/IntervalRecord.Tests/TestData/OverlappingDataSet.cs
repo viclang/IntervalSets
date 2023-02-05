@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -6,18 +7,24 @@ namespace IntervalRecord.Tests.TestData
 {
     public sealed record class IntOverlappingDataSet : BaseOverlappingDataSet<int>
     {
+        private readonly int length;
         private readonly int offset;
 
-        public IntOverlappingDataSet(int start, int end, BoundaryType boundaryType, int offset)
-            : base(start, end, boundaryType)
+        public IntOverlappingDataSet(int startingPoint, int length, int offset, BoundaryType boundaryType)
+            : base(
+                  startingPoint + length + offset,
+                  startingPoint + length + offset + length,
+                  boundaryType)
         {
+            if((offset * 2) > length) throw new ArgumentException("Length must be greater or equal to (offset * 2)");
+
+            this.length = length;
             this.offset = offset;
             Init();
         }
 
         protected override void Init()
         {
-            var length = Reference.Length().Finite!.Value;
             var beforeEnd = Reference.Start.Finite!.Value - offset;
             var beforeStart = beforeEnd - length;
             var containedByStart = Reference.Start.Finite!.Value + offset;
