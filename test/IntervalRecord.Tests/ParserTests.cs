@@ -3,7 +3,7 @@ using System;
 
 namespace IntervalRecord.Tests
 {
-    public class IntervalParserTests
+    public class ParserTests
     {
         private const string validString = "3537asd([1,2])))), ])[(4,5],asdasdlkjl[[6,7)][,][][.](6,)[,7](8,][9,)";
         private const string InvalidString = "3537asd([1.2])))), ])[(4.5],asdasdlkjl[[6.7)][.][][.](6.)[.7](8.][9.)";

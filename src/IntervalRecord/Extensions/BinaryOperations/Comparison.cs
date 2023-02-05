@@ -141,8 +141,8 @@
             where T : struct, IEquatable<T>, IComparable<T>, IComparable
         {
             return includeHalfOpen
-                ? (!value.StartInclusive && !other.EndInclusive)
-                : (!value.StartInclusive || !other.EndInclusive);
+                ? ((!value.StartInclusive && !other.EndInclusive) || (!value.EndInclusive && !other.StartInclusive))
+                : ((!value.StartInclusive || !other.EndInclusive) || (!value.EndInclusive || !other.StartInclusive));
         }
     }
 }

@@ -3,7 +3,7 @@ using System;
 
 namespace IntervalRecord.Tests
 {
-    public class IntervalOverlapsTests
+    public class OverlapsTests
     {
         private const int start = 6;
         private const int end = 10;

@@ -5,7 +5,7 @@ using Xunit;
 
 namespace IntervalRecord.Tests
 {
-    public class IntervalCreatorTests
+    public class CreatorTests
     {
         private const int _start = 1;
         private const int _end = 2;

@@ -3,7 +3,7 @@ using Xunit;
 
 namespace IntervalRecord.Tests
 {
-    public class IntervalIsEmptyTests
+    public class IsEmptyTests
     {
         [Theory]
         [InlineData(0)]

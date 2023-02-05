@@ -6,7 +6,7 @@ using Xunit;
 
 namespace IntervalRecord.Tests
 {
-    public class IntervalComparisonTests
+    public class ComparisonTests
     {
         private const int start = 6;
         private const int end = 10;

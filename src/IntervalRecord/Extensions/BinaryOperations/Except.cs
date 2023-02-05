@@ -1,4 +1,5 @@
 ﻿using InfinityComparable;
+using System;
 
 namespace IntervalRecord
 {
@@ -11,10 +12,10 @@ namespace IntervalRecord
             {
                 throw new ArgumentOutOfRangeException(
                     nameof(other),
-                    "Intersection is only supported for connected intervals.");
+                    "Except is only supported for connected intervals.");
             }
             var minByStart = MinBy(value, other, x => x.Start);
-            var minByEnd = MinBy(value, other, x => x.End);
+            var maxByStart = MaxBy(value, other, x => x.Start);
 
             var startInclusive = value.Start == other.Start
                 ? value.StartInclusive || other.StartInclusive
@@ -22,9 +23,9 @@ namespace IntervalRecord
 
             var endInclusive = value.End == other.End
                 ? value.EndInclusive || other.EndInclusive
-                : minByEnd.EndInclusive;
+                : maxByStart.EndInclusive;
 
-            return value with { Start = minByStart.Start, End = minByEnd.End, StartInclusive = startInclusive, EndInclusive = endInclusive };
+            return value with { Start = minByStart.Start, End = maxByStart.Start, StartInclusive = startInclusive, EndInclusive = endInclusive };
         }
     }
 }

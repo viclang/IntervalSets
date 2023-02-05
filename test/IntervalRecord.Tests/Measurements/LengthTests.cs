@@ -22,7 +22,7 @@ namespace IntervalRecord.Tests.Measurements
             // Arrange
             var stepInHours = TimeSpan.FromHours(step);
             var integer = new Interval<int>(start, end, false, false);
-            var @double = new Interval<double>(start, end, false, false);
+            var doubles = new Interval<double>(start, end, false, false);
             var dateOnly = new Interval<DateOnly>(_referenceDateOnly.AddDays(start), _referenceDateOnly.AddDays(end), false, false);
             var timeOnly = new Interval<TimeOnly>(_referenceTimeOnly.AddHours(start), _referenceTimeOnly.AddHours(end), false, false);
             var dateTime = new Interval<DateTime>(_referenceDateTimeOffset.DateTime.AddHours(start), _referenceDateTimeOffset.DateTime.AddHours(end), false, false);
@@ -30,7 +30,7 @@ namespace IntervalRecord.Tests.Measurements
 
             // Act
             var actualInteger = integer.Length(step);
-            var actualDouble = @double.Length(step);
+            var actualDouble = doubles.Length(step);
             var actualDateOnly = dateOnly.Length(step);
             var actualTimeOnly = timeOnly.Length(stepInHours);
             var actualDateTime = dateTime.Length(stepInHours);
@@ -38,7 +38,7 @@ namespace IntervalRecord.Tests.Measurements
 
             // Assert
             actualInteger.Should().Be(integer.Closure(step).Length());
-            actualDouble.Should().Be(@double.Closure(step).Length());
+            actualDouble.Should().Be(doubles.Closure(step).Length());
             actualDateOnly.Should().Be(dateOnly.Closure(step).Length());
             actualTimeOnly.Should().Be(timeOnly.Closure(stepInHours).Length());
             actualDateTime.Should().Be(dateTime.Closure(stepInHours).Length());
@@ -57,7 +57,7 @@ namespace IntervalRecord.Tests.Measurements
         {
             // Arrange
             var integer = new Interval<int>(start, end, false, false);
-            var @double = new Interval<double>(start, end, false, false);
+            var doubles = new Interval<double>(start, end, false, false);
             var dateOnly = new Interval<DateOnly>(_referenceDateOnly.AddDays(start), _referenceDateOnly.AddDays(end), false, false);
             var timeOnly = new Interval<TimeOnly>(_referenceTimeOnly.AddHours(start), _referenceTimeOnly.AddHours(end), false, false);
             var dateTime = new Interval<DateTime>(_referenceDateTimeOffset.DateTime.AddHours(start), _referenceDateTimeOffset.DateTime.AddHours(end), false, false);
@@ -65,7 +65,7 @@ namespace IntervalRecord.Tests.Measurements
 
             // Act
             var actualInteger = integer.Length();
-            var actualDouble = @double.Length();
+            var actualDouble = doubles.Length();
             var actualDateOnly = dateOnly.Length();
             var actualTimeOnly = timeOnly.Length();
             var actualDateTime = dateTime.Length();
@@ -73,7 +73,7 @@ namespace IntervalRecord.Tests.Measurements
 
             // Assert
             actualInteger.Should().Be(integer.End - integer.Start);
-            actualDouble.Should().Be(@double.End - @double.Start);
+            actualDouble.Should().Be(doubles.End - doubles.Start);
             actualDateOnly.Should().Be(dateOnly.End.Value.DayNumber - dateOnly.Start.Value.DayNumber);
             actualTimeOnly.Should().Be(timeOnly.End.Value - timeOnly.Start.Value);
             actualDateTime.Should().Be(dateTime.End.Value - dateTime.Start.Value);
@@ -88,7 +88,7 @@ namespace IntervalRecord.Tests.Measurements
         {
             // Arrange
             var integer = new Interval<int>(start, end, false, false);
-            var @double = new Interval<double>(start, end, false, false);
+            var doubles = new Interval<double>(start, end, false, false);
             
             var dateOnly = new Interval<DateOnly>(
                 start.HasValue ? _referenceDateOnly.AddDays(start.Value) : null,
@@ -116,7 +116,7 @@ namespace IntervalRecord.Tests.Measurements
 
             // Act
             var actualInteger = integer.Length();
-            var actualDouble = @double.Length();
+            var actualDouble = doubles.Length();
             var actualDateOnly = dateOnly.Length();
             var actualTimeOnly = timeOnly.Length();
             var actualDateTime = dateTime.Length();
@@ -140,7 +140,7 @@ namespace IntervalRecord.Tests.Measurements
             // Arrange
             var step = 1;
             var integer = new Interval<int>(start, end, false, false);
-            var @double = new Interval<double>(start, end, false, false);
+            var doubles = new Interval<double>(start, end, false, false);
 
             var dateOnly = new Interval<DateOnly>(
                 start.HasValue ? _referenceDateOnly.AddDays(start.Value) : null,
@@ -168,7 +168,7 @@ namespace IntervalRecord.Tests.Measurements
 
             // Act
             var actualInteger = integer.Length(step);
-            var actualDouble = @double.Length(step);
+            var actualDouble = doubles.Length(step);
             var actualDateOnly = dateOnly.Length(step);
             var actualTimeOnly = timeOnly.Length(TimeSpan.FromHours(step));
             var actualDateTime = dateTime.Length(TimeSpan.FromHours(step));
@@ -188,7 +188,7 @@ namespace IntervalRecord.Tests.Measurements
         {
             // Arrange
             var integer = new Interval<int>(default, default, false, false);
-            var @double = new Interval<double>(default, default, false, false);
+            var doubles = new Interval<double>(default, default, false, false);
             var dateOnly = new Interval<DateOnly>(default, default, false, false);
             var timeOnly = new Interval<TimeOnly>(default, default, false, false);
             var dateTime = new Interval<DateTime>(default, default, false, false);
@@ -196,7 +196,7 @@ namespace IntervalRecord.Tests.Measurements
 
             // Act
             var actualInteger = integer.Length();
-            var actualDouble = @double.Length();
+            var actualDouble = doubles.Length();
             var actualDateOnly = dateOnly.Length();
             var actualTimeOnly = timeOnly.Length();
             var actualDateTime = dateTime.Length();
