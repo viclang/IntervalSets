@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 
 namespace IntervalRecord.Tests
 {
@@ -14,7 +15,7 @@ namespace IntervalRecord.Tests
             // Arrange
             var (startInclusive, endInclusive) = boundaryType.ToTuple();
             var interval = new Interval<int>(1, 10, startInclusive, endInclusive);
-
+            var list = new List<Interval<int>>();
             // Act
             var actual = interval.Iterate(x => x + 1).ToList();
 

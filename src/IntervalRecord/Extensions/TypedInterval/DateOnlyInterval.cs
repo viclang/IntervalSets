@@ -1,21 +1,10 @@
 ﻿using InfinityComparable;
+using IntervalRecord.Internal;
 
 namespace IntervalRecord
 {
     public static partial class Interval
     {
-        public static bool IsEmpty(this Interval<DateOnly> value, int closureStep)
-            => Closure(value, closureStep).IsEmpty();
-
-        public static Infinity<int> Length(this Interval<DateOnly> value, int closureStep)
-            => Closure(value, closureStep).Length();
-
-        public static double? Radius(this Interval<DateOnly> value, int closureStep)
-            => Closure(value, closureStep).Radius();
-
-        public static DateOnly? Centre(this Interval<DateOnly> value, int closureStep)
-            => Closure(value, closureStep).Centre();
-
         public static Infinity<int> Length(this Interval<DateOnly> value)
             => IntervalHelper.ValueOrInfinity(value, (end, start) => end.DayNumber - start.DayNumber);
 

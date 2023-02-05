@@ -1,6 +1,6 @@
 ﻿using InfinityComparable;
 
-namespace IntervalRecord
+namespace IntervalRecord.Internal
 {
     internal static class IntervalHelper
     {

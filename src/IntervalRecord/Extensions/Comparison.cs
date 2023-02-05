@@ -1,10 +1,5 @@
 ﻿namespace IntervalRecord
 {
-    /*
-        http://grouper.ieee.org/groups/1788/PositionPapers/ARITHYY.pdf
-        http://grouper.ieee.org/groups/1788/PositionPapers/overlapping.pdf
-        https://en.wikipedia.org/wiki/Interval_(mathematics)/
-     */
     public static partial class Interval
     {
         private readonly static Dictionary<ValueTuple<int, int, int, int>, OverlappingState> OverlapStateLookup = new()

@@ -1,26 +1,15 @@
 ﻿using InfinityComparable;
+using IntervalRecord.Internal;
 
 namespace IntervalRecord
 {
     public static partial class Interval
     {
-        public static bool IsEmpty(this Interval<int> value, int closureStep)
-            => Closure(value, closureStep).IsEmpty();
-
-        public static Infinity<int> Length(this Interval<int> value, int closureStep)
-            => Closure(value, closureStep).Length();
-
-        public static double? Radius(this Interval<int> value, int closureStep)
-            => Closure(value, closureStep).Radius();
-
-        public static double? Centre(this Interval<int> value, int closureStep)
-            => Closure(value, closureStep).Centre();
+        public static Infinity<int> Length(this Interval<int> value)
+            => IntervalHelper.ValueOrInfinity(value, (end, start) => end - start);
 
         public static double? Radius(this Interval<int> value)
             => IntervalHelper.ValueOrNull(value, (end, start) => (end - start) / 2);
-
-        public static Infinity<int> Length(this Interval<int> value)
-            => IntervalHelper.ValueOrInfinity(value, (end, start) => end - start);
 
         public static double? Centre(this Interval<int> value)
             => IntervalHelper.ValueOrNull(value, (end, start) => (end + (double)start) / 2);

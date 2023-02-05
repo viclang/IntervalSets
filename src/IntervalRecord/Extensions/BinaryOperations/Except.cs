@@ -2,15 +2,29 @@
 {
     public static partial class Interval
     {
-        public static Interval<T> Except<T>(this Interval<T> value, Interval<T> other)
+        public static Interval<T>? Except<T>(this Interval<T> value, Interval<T> other)
             where T : struct, IEquatable<T>, IComparable<T>, IComparable
         {
             if (!value.Overlaps(other, true))
             {
-                throw new ArgumentOutOfRangeException(
-                    nameof(other),
-                    "Except is only supported for connected intervals.");
+                return null;
             }
+            return GetExceptValue(value, other);
+        }
+
+        public static Interval<T> ExceptOrDefault<T>(this Interval<T> value, Interval<T> other, Interval<T> defaultValue)
+            where T : struct, IEquatable<T>, IComparable<T>, IComparable
+        {
+            if (!value.Overlaps(other, true))
+            {
+                return defaultValue;
+            }
+            return GetExceptValue(value, other);
+        }
+
+        private static Interval<T> GetExceptValue<T>(Interval<T> value, Interval<T> other)
+            where T : struct, IEquatable<T>, IComparable<T>, IComparable
+        {
             var minByStart = MinBy(value, other, x => x.Start);
             var maxByStart = MaxBy(value, other, x => x.Start);
 
@@ -24,5 +38,9 @@
 
             return value with { Start = minByStart.Start, End = maxByStart.Start, StartInclusive = startInclusive, EndInclusive = endInclusive };
         }
+
+        public static IEnumerable<Interval<T>> Except<T>(this IEnumerable<Interval<T>> values)
+            where T : struct, IEquatable<T>, IComparable<T>, IComparable
+            => values.PairwiseNotNullOrEmpty((a, b) => a.Except(b));
     }
 }

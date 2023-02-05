@@ -50,13 +50,10 @@ namespace IntervalRecord
 
         public bool IsHalfOpen() => StartInclusive && !EndInclusive || !StartInclusive && EndInclusive;
 
-        public bool IsEmpty() => !Start.IsInfinite && !End.IsInfinite
-            && (Start.CompareTo(End) == 1
-                || Start.Equals(End) && GetBoundaryType() != BoundaryType.Closed);
+        public bool IsEmpty() => (GetBoundaryType() != BoundaryType.Closed && Start == End)
+            || (!Start.IsInfinite && !End.IsInfinite && Start.CompareTo(End) == 1);
 
-        public bool IsSingleton() => !Start.IsInfinite && !End.IsInfinite
-            && GetBoundaryType() == BoundaryType.Closed
-            && Start.Equals(End);
+        public bool IsSingleton() => GetBoundaryType() == BoundaryType.Closed && Start == End;
 
         public bool Overlaps(Interval<T> other, bool includeHalfOpen = false) => !this.IsBefore(other, includeHalfOpen) && !this.IsAfter(other, includeHalfOpen);
         

@@ -1,6 +1,7 @@
 ﻿using IntervalRecord.Tests.DataSets;
 using IntervalRecord.Tests.TestData;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace IntervalRecord.Tests.BinaryOperations
 {
@@ -76,11 +77,11 @@ namespace IntervalRecord.Tests.BinaryOperations
             if (overlappingState != OverlappingState.Before
                 && overlappingState != OverlappingState.After)
             {
-                actual.Should().BeNull();
+                actual.IsEmpty().Should().BeTrue();
             }
             else
             {
-                actual.Should().NotBeNull();
+                actual.IsEmpty().Should().BeFalse();
             }
         }
     }

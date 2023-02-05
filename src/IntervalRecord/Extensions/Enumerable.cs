@@ -2,9 +2,9 @@
 {
     public static partial class Interval
     {
-        public static IEnumerable<Interval<T>> Complement<T>(
-            this IEnumerable<Interval<T>> values)
-            where T : struct, IEquatable<T>, IComparable<T>, IComparable
+        public static IEnumerable<Interval<T>> Pairwise<T>(
+            this IEnumerable<Interval<T>> values, Func<Interval<T>, Interval<T>, Interval<T>> resultSelector)
+        where T : struct, IEquatable<T>, IComparable<T>, IComparable
         {
             using var e = values.GetEnumerator();
 
@@ -14,22 +14,49 @@
             var previous = e.Current;
             while (e.MoveNext())
             {
-                if (previous.IsBefore(e.Current))
-                {
-                    var gap = new Interval<T>(previous.End, e.Current.Start, !previous.EndInclusive, !e.Current.StartInclusive);
-                    if (!gap.IsEmpty())
-                    {
-                        yield return gap;
-                    }
-                }
-                else if (previous.IsAfter(e.Current))
-                {
-                    var gap = new Interval<T>(e.Current.End, previous.Start, !e.Current.EndInclusive, !previous.StartInclusive);
-                    if (!gap.IsEmpty())
-                    {
-                        yield return gap;
-                    }
-                }
+                yield return resultSelector(previous, e.Current);
+                previous = e.Current;
+            }
+        }
+
+        public static IEnumerable<Interval<T>> PairwiseNotEmpty<T>(
+            this IEnumerable<Interval<T>> values, Func<Interval<T>, Interval<T>, Interval<T>> resultSelector)
+        where T : struct, IEquatable<T>, IComparable<T>, IComparable
+        {
+            using var e = values.GetEnumerator();
+
+            if (!e.MoveNext())
+                yield break;
+
+            var previous = e.Current;
+            while (e.MoveNext())
+            {
+                var result = resultSelector(previous, e.Current);
+
+                if (!result.IsEmpty())
+                    yield return result;
+                
+                previous = e.Current;
+            }
+        }
+
+        public static IEnumerable<Interval<T>> PairwiseNotNullOrEmpty<T>(
+            this IEnumerable<Interval<T>> values, Func<Interval<T>, Interval<T>, Interval<T>?> resultSelector)
+        where T : struct, IEquatable<T>, IComparable<T>, IComparable
+        {
+            using var e = values.GetEnumerator();
+
+            if (!e.MoveNext())
+                yield break;
+
+            var previous = e.Current;
+            while (e.MoveNext())
+            {
+                var result = resultSelector(previous, e.Current);
+
+                if (result != null && !result.Value.IsEmpty())
+                    yield return result.Value;
+
                 previous = e.Current;
             }
         }

@@ -1,21 +1,10 @@
 ﻿using InfinityComparable;
+using IntervalRecord.Internal;
 
 namespace IntervalRecord
 {
     public static partial class Interval
     {
-        public static bool IsEmpty(this Interval<DateTimeOffset> value, TimeSpan closureStep)
-            => Closure(value, closureStep).IsEmpty();
-
-        public static Infinity<TimeSpan> Length(this Interval<DateTimeOffset> value, TimeSpan closureStep)
-            => Closure(value, closureStep).Length();
-
-        public static TimeSpan? Radius(this Interval<DateTimeOffset> value, TimeSpan closureStep)
-            => Closure(value, closureStep).Radius();
-
-        public static DateTimeOffset? Centre(this Interval<DateTimeOffset> value, TimeSpan closureStep)
-            => Closure(value, closureStep).Centre();
-
         public static Infinity<TimeSpan> Length(this Interval<DateTimeOffset> value)
             => IntervalHelper.ValueOrInfinity(value, (end, start) => end - start);
 

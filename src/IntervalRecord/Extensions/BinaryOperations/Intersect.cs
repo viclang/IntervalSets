@@ -2,13 +2,21 @@
 {
     public static partial class Interval
     {
-        public static Interval<T> Intersect<T>(this Interval<T> value, Interval<T> other)
+        public static Interval<T>? Intersect<T>(this Interval<T> value, Interval<T> other)
+            where T : struct, IEquatable<T>, IComparable<T>, IComparable
+            => !value.Overlaps(other, true)
+                ? null
+                : GetIntersectValue(value, other);
+
+        public static Interval<T> IntersectOrDefault<T>(this Interval<T> value, Interval<T> other, Interval<T> defaultValue)
+            where T : struct, IEquatable<T>, IComparable<T>, IComparable
+            => !value.Overlaps(other, true)
+                ? defaultValue
+                : GetIntersectValue(value, other);
+
+        private static Interval<T> GetIntersectValue<T>(Interval<T> value, Interval<T> other)
             where T : struct, IEquatable<T>, IComparable<T>, IComparable
         {
-            if (!value.Overlaps(other, true))
-            {
-                throw new ArgumentOutOfRangeException("other", "Intersection is only supported for connected intervals.");
-            }
             var maxByStart = MaxBy(value, other, x => x.Start);
             var minByEnd = MinBy(value, other, x => x.End);
 
@@ -22,5 +30,9 @@
 
             return value with { Start = maxByStart.Start, End = minByEnd.End, StartInclusive = startInclusive, EndInclusive = endInclusive };
         }
+
+        public static IEnumerable<Interval<T>> Intersect<T>(this IEnumerable<Interval<T>> values)
+            where T : struct, IEquatable<T>, IComparable<T>, IComparable
+            => values.PairwiseNotEmpty((a, b) => a.IntersectOrDefault(b, Empty<T>()));
     }
 }
