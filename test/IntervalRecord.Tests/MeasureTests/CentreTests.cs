@@ -1,91 +1,54 @@
-﻿using InfinityComparable;
+﻿using IntervalRecord.Tests.TestHelper;
 using System;
 
-namespace IntervalRecord.Tests.Calculators
+namespace IntervalRecord.Tests.Measure.Centre
 {
-    public class CentreTests
+    public class CentreInt32Tests : CentreTests<int, double> { }
+    public class CentreDoubleTests : CentreTests<double, double> { }
+    public class CentreDateTimeTests : CentreTests<DateTime, DateTime> { }
+    public class CentreDateTimeOffsetTests : CentreTests<DateTimeOffset, DateTimeOffset> { }
+    public class CentreDateOnlyTests : CentreTests<DateOnly, DateOnly> { }
+    public class CentreTimeOnlyTests : CentreTests<TimeOnly, TimeOnly> { }
+
+    public abstract class CentreTests<T, TResult>
+        where T : struct, IEquatable<T>, IComparable<T>, IComparable
+        where TResult : struct, IEquatable<TResult>, IComparable<TResult>, IComparable
     {
-        private static readonly Interval<int> _intervalInt32 = Interval.Singleton(1);
-        private static readonly Interval<double> _intervalDouble = Interval.Singleton(1d);
-        private static readonly Interval<DateTimeOffset> _intervalDateTimeOffset = Interval.Singleton(new DateTimeOffset(2022, 1, 1, 0, 0, 0, TimeSpan.Zero));
-        private static readonly Interval<DateTime> _intervalDateTime = Interval.Singleton(new DateTime(2022, 1, 1));
-        private static readonly Interval<DateOnly> _intervalDateOnly = Interval.Singleton(new DateOnly(2022, 1, 1));
-        private static readonly Interval<TimeOnly> _intervalTimeOnly = Interval.Singleton(new TimeOnly(1, 0));
-
-        public static TheoryData<object, object> BoundedIntervalsWithExpectedLenght = new()
-        {
-            { _intervalInt32, 1d },
-            { _intervalInt32 with { End = 2 }, 1.5 },
-            { _intervalInt32 with { End = 3 }, 2d },
-            { _intervalDouble, 1d },
-            { _intervalDouble with { End = 2 }, 1.5 },
-            { _intervalDouble with { End = 3 }, 2d },
-            { _intervalDateTime, new DateTime(2022, 1, 1) },
-            { _intervalDateTime with { End = _intervalDateTime.End.AddDays(1) }, new DateTime(2022, 1, 1, 12, 0, 0) },
-            { _intervalDateTime with { End = _intervalDateTime.End.AddDays(2) }, new DateTime(2022, 1, 2) },
-            { _intervalDateTimeOffset, new DateTimeOffset(2022, 1, 1, 0, 0, 0, TimeSpan.Zero) },
-            { _intervalDateTimeOffset with { End = _intervalDateTimeOffset.End.AddDays(1) }, new DateTimeOffset(2022, 1, 1, 12, 0, 0, TimeSpan.Zero) },
-            { _intervalDateTimeOffset with { End = _intervalDateTimeOffset.End.AddDays(2) }, new DateTimeOffset(2022, 1, 2, 0, 0, 0, TimeSpan.Zero) },
-            { _intervalDateOnly with { End = _intervalDateOnly.End.AddDays(1) }, new DateOnly(2022, 1, 1) },
-            { _intervalDateOnly with { End = _intervalDateOnly.End.AddDays(2) }, new DateOnly(2022, 1, 2) },
-            { _intervalTimeOnly with { End = _intervalTimeOnly.End.AddHours(1)}, new TimeOnly(1, 30) },
-            { _intervalTimeOnly with { End = _intervalTimeOnly.End.AddHours(2)}, new TimeOnly(2, 0) },
-        };
+        private static readonly DateTimeOffset _referenceDate = new DateTimeOffset(2022, 1, 1, 0, 0, 0, TimeSpan.Zero);
 
         [Theory]
-        [MemberData(nameof(BoundedIntervalsWithExpectedLenght))]
-        public void GivenBoundedInterval_WhenMeasureCentre_ReturnsExpected<T, TResult>(Interval<T> interval, TResult? expected)
-            where T : struct, IEquatable<T>, IComparable<T>, IComparable
+        [Trait("Measure", "Centre")]
+        [InlineData(1, 2, IntervalType.Closed, 1.5)]
+        [InlineData(1, 3, IntervalType.Closed, 2d)]
+        [InlineData(1, 2, IntervalType.ClosedOpen, 1.5)]
+        [InlineData(1, 3, IntervalType.ClosedOpen, 2d)]
+        [InlineData(1, 2, IntervalType.OpenClosed, 1.5)]
+        [InlineData(1, 3, IntervalType.OpenClosed, 2d)]
+        [InlineData(1, 2, IntervalType.Open, 1.5)]
+        [InlineData(1, 3, IntervalType.Open, 2d)]
+        // Unbounded and Halfbound
+        [InlineData(null, null, IntervalType.Open, null)]
+        [InlineData(null, 2, IntervalType.Open, null)]
+        [InlineData(2, null, IntervalType.Open, null)]
+        // Singleton
+        [InlineData(1, 1, IntervalType.Closed, 1d)]
+        // Empty
+        [InlineData(2, 2, IntervalType.ClosedOpen, null)]
+        [InlineData(2, 2, IntervalType.OpenClosed, null)]
+        [InlineData(2, 2, IntervalType.Open, null)]
+        public void GivenBoundedInterval_WhenMeasureCentre_ReturnsExpected(int? start, int? end, IntervalType intervalType, double? expected)
         {
+            // Arrange
+            var interval = Interval.WithIntervalType<T>(start.ToBoundary<T>(), end.ToBoundary<T>(), intervalType);
+
             // Act
-            var actual = Centre<T, TResult?>(interval);
+            var actual = Centre(interval);
 
             // Assert
-            actual.Should().Be(expected);
+            actual.Should().Be(CentreResult(expected));
         }
 
-        public static TheoryData<object> EmptyOrUnboundedInterval = new()
-        {
-            Interval.Empty<int>(),
-            Interval.Empty<double>(),
-            Interval.Empty<DateTime>(),
-            Interval.Empty<DateTimeOffset>(),
-            Interval.Empty<DateOnly>(),
-            Interval.Empty<TimeOnly>(),
-            Interval.All<int>(),
-            Interval.All<double>(),
-            Interval.All<DateTime>(),
-            Interval.All<DateTimeOffset>(),
-            Interval.All<DateOnly>(),
-            Interval.All<TimeOnly>(),
-            Interval.GreaterThan(1),
-            Interval.GreaterThan(1d),
-            Interval.GreaterThan(new DateTime(2022, 1, 1)),
-            Interval.GreaterThan(new DateTimeOffset(2022, 1, 1, 0, 0, 0, TimeSpan.Zero)),
-            Interval.GreaterThan(new DateOnly(2022, 1, 1)),
-            Interval.GreaterThan(new TimeOnly(1, 0)),
-            Interval.LessThan(1),
-            Interval.LessThan(1d),
-            Interval.LessThan(new DateTime(2022, 1, 1)),
-            Interval.LessThan(new DateTimeOffset(2022, 1, 1, 0, 0, 0, TimeSpan.Zero)),
-            Interval.LessThan(new DateOnly(2022, 1, 1)),
-            Interval.LessThan(new TimeOnly(1, 0))
-        };
-
-        [Theory]
-        [MemberData(nameof(EmptyOrUnboundedInterval))]
-        public void GivenEmptyOrUnboundedInterval_WhenMeasureCentre_ReturnsNull<T, TResult>(Interval<T> interval)
-            where T : struct, IEquatable<T>, IComparable<T>, IComparable
-        {
-            // Act
-            var actual = Centre<T, TResult?>(interval);
-
-            // Assert
-            actual.Should().BeNull();
-        }
-
-        public TResult? Centre<T, TResult>(Interval<T> interval)
-            where T : struct, IEquatable<T>, IComparable<T>, IComparable
+        public TResult? Centre(Interval<T> interval)
         {
             var type = typeof(T);
             return Type.GetTypeCode(type) switch
@@ -98,6 +61,35 @@ namespace IntervalRecord.Tests.Calculators
                 _ when type == typeof(TimeOnly) => (TResult?)(object?)Interval.Centre((Interval<TimeOnly>)(object)interval),
                 _ => throw new NotSupportedException(type.FullName)
             };
+        }
+
+        public static TResult? CentreResult(double? result)
+        {
+            var type = typeof(T);
+            if (type == typeof(int) || type == typeof(double))
+            {
+                return (TResult?)(object?)result;
+            }
+            if (type == typeof(DateOnly))
+            {
+                return (TResult?)(object?)(result is null ? null : new DateOnly(2022, 1, (int)result.Value));
+            }
+            else if (type == typeof(DateTime))
+            {
+                return (TResult?)(object?)(result is null ? null : _referenceDate.DateTime.AddDays(result.Value-1));
+            }
+            else if (type == typeof(DateTimeOffset))
+            {
+                return (TResult?)(object?)(result is null ? null : _referenceDate.AddDays(result.Value-1));
+            }
+            else if (type == typeof(TimeOnly))
+            {
+                return (TResult?)(object?)(result is null ? null : TimeOnly.FromTimeSpan(TimeSpan.FromHours(result.Value)));
+            }
+            else
+            {
+                throw new NotSupportedException(type.FullName);
+            }
         }
     }
 }

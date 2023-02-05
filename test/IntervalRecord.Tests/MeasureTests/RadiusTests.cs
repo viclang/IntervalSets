@@ -1,95 +1,53 @@
 ﻿using InfinityComparable;
+using IntervalRecord.Tests.TestHelper;
 using System;
 
-namespace IntervalRecord.Tests.Calculators
+namespace IntervalRecord.Tests.Measure.Radius
 {
-    public class RadiusTests
+    public class RadiusInt32Tests : RadiusTests<int, double> { }
+    public class RadiusDoubleTests : RadiusTests<double, double> { }
+    public class RadiusDateTimeTests : RadiusTests<DateTime, TimeSpan> { }
+    public class RadiusDateTimeOffsetTests : RadiusTests<DateTimeOffset, TimeSpan> { }
+    public class RadiusDateOnlyTests : RadiusTests<DateOnly, int> { }
+    public class RadiusTimeOnlyTests : RadiusTests<TimeOnly, TimeSpan> { }
+
+    public abstract class RadiusTests<T, TResult>
+        where T : struct, IEquatable<T>, IComparable<T>, IComparable
+        where TResult : struct, IEquatable<TResult>, IComparable<TResult>, IComparable
     {
-        private static readonly Interval<int> _intervalInt32 = Interval.Singleton(1);
-        private static readonly Interval<double> _intervalDouble = Interval.Singleton(1d);
-        private static readonly Interval<DateTimeOffset> _intervalDateTimeOffset = Interval.Singleton(new DateTimeOffset(2022, 1, 1, 0, 0, 0, TimeSpan.Zero));
-        private static readonly Interval<DateTime> _intervalDateTime = Interval.Singleton(new DateTime(2022, 1, 1));
-        private static readonly Interval<DateOnly> _intervalDateOnly = Interval.Singleton(new DateOnly(2022, 1, 1));
-        private static readonly Interval<TimeOnly> _intervalTimeOnly = Interval.Singleton(new TimeOnly(1, 0));
-
-        public static TheoryData<object, object> BoundedIntervalsWithExpectedLenght = new()
-        {
-            { _intervalInt32, 0d },
-            { _intervalInt32 with { End = 2 }, 0.5 },
-            { _intervalInt32 with { End = 3 }, 1d },
-            { _intervalDouble, 0d },
-            { _intervalDouble with { End = 2 }, 0.5 },
-            { _intervalDouble with { End = 3 }, 1d },
-            { _intervalDateTime, TimeSpan.Zero },
-            { _intervalDateTime with { End = _intervalDateTime.End.AddDays(1) }, TimeSpan.FromDays(0.5) },
-            { _intervalDateTime with { End = _intervalDateTime.End.AddDays(2) }, TimeSpan.FromDays(1) },
-            { _intervalDateTimeOffset, TimeSpan.Zero },
-            { _intervalDateTimeOffset with { End = _intervalDateTimeOffset.End.AddDays(1) }, TimeSpan.FromDays(0.5) },
-            { _intervalDateTimeOffset with { End = _intervalDateTimeOffset.End.AddDays(2) }, TimeSpan.FromDays(1) },
-            { _intervalDateOnly, 0 },
-            { _intervalDateOnly with { End = _intervalDateOnly.End.AddDays(1) }, 0 },
-            { _intervalDateOnly with { End = _intervalDateOnly.End.AddDays(2) }, 1 },
-            { _intervalTimeOnly, TimeSpan.Zero },
-            { _intervalTimeOnly with { End = _intervalTimeOnly.End.AddHours(1)}, TimeSpan.FromHours(0.5) },
-            { _intervalTimeOnly with { End = _intervalTimeOnly.End.AddHours(2)}, TimeSpan.FromHours(1) },
-        };
-
         [Theory]
-        [MemberData(nameof(BoundedIntervalsWithExpectedLenght))]
-        public void GivenBoundedInterval_WhenMeasureRadius_ReturnsExpected<T, TResult>(Interval<T> interval, TResult? expected)
-            where T : struct, IEquatable<T>, IComparable<T>, IComparable
-            where TResult : struct, IEquatable<TResult>, IComparable<TResult>, IComparable
+        [Trait("Measure", "Radius")]
+        [InlineData(1, 2, IntervalType.Closed, 0.5)]
+        [InlineData(1, 3, IntervalType.Closed, 1d)]
+        [InlineData(1, 2, IntervalType.ClosedOpen, 0.5)]
+        [InlineData(1, 3, IntervalType.ClosedOpen, 1d)]
+        [InlineData(1, 2, IntervalType.OpenClosed, 0.5)]
+        [InlineData(1, 3, IntervalType.OpenClosed, 1d)]
+        [InlineData(1, 2, IntervalType.Open, 0.5)]
+        [InlineData(1, 3, IntervalType.Open, 1d)]
+        // Unbounded and Halfbound
+        [InlineData(null, null, IntervalType.Open, null)]
+        [InlineData(null, 2, IntervalType.Open, null)]
+        [InlineData(2, null, IntervalType.Open, null)]
+        // Singleton
+        [InlineData(1, 1, IntervalType.Closed, 0d)]
+        // Empty
+        [InlineData(2, 2, IntervalType.ClosedOpen, null)]
+        [InlineData(2, 2, IntervalType.OpenClosed, null)]
+        [InlineData(2, 2, IntervalType.Open, null)]
+        public void GivenBoundedInterval_WhenMeasureRadius_ReturnsExpected(int? start, int? end, IntervalType intervalType, double? expected)
         {
+            // Arrange
+            var interval = Interval.WithIntervalType<T>(start.ToBoundary<T>(), end.ToBoundary<T>(), intervalType);
+
             // Act
-            var actual = Radius<T, TResult?>(interval);
+            var actual = Radius(interval);
 
             // Assert
-            actual.Should().Be(expected);
+            actual.Should().Be(RadiusResult(expected));
         }
 
-
-        public static TheoryData<object> EmptyOrUnboundedInterval = new()
-        {
-            Interval.Empty<int>(),
-            Interval.Empty<double>(),
-            Interval.Empty<DateTime>(),
-            Interval.Empty<DateTimeOffset>(),
-            Interval.Empty<DateOnly>(),
-            Interval.Empty<TimeOnly>(),
-            Interval.All<int>(),
-            Interval.All<double>(),
-            Interval.All<DateTime>(),
-            Interval.All<DateTimeOffset>(),
-            Interval.All<DateOnly>(),
-            Interval.All<TimeOnly>(),
-            Interval.GreaterThan(1),
-            Interval.GreaterThan(1d),
-            Interval.GreaterThan(new DateTime(2022, 1, 1)),
-            Interval.GreaterThan(new DateTimeOffset(2022, 1, 1, 0, 0, 0, TimeSpan.Zero)),
-            Interval.GreaterThan(new DateOnly(2022, 1, 1)),
-            Interval.GreaterThan(new TimeOnly(1, 0)),
-            Interval.LessThan(1),
-            Interval.LessThan(1d),
-            Interval.LessThan(new DateTime(2022, 1, 1)),
-            Interval.LessThan(new DateTimeOffset(2022, 1, 1, 0, 0, 0, TimeSpan.Zero)),
-            Interval.LessThan(new DateOnly(2022, 1, 1)),
-            Interval.LessThan(new TimeOnly(1, 0))
-        };
-
-        [Theory]
-        [MemberData(nameof(EmptyOrUnboundedInterval))]
-        public void GivenEmptyOrUnboundedInterval_WhenMeasureCentre_ReturnsNull<T, TResult>(Interval<T> interval)
-            where T : struct, IEquatable<T>, IComparable<T>, IComparable
-        {
-            // Act
-            var actual = Radius<T, TResult?>(interval);
-
-            // Assert
-            actual.Should().BeNull();
-        }
-
-        public TResult? Radius<T, TResult>(Interval<T> interval)
-            where T : struct, IEquatable<T>, IComparable<T>, IComparable
+        public TResult? Radius(Interval<T> interval)
         {
             var type = typeof(T);
             return Type.GetTypeCode(type) switch
@@ -102,6 +60,35 @@ namespace IntervalRecord.Tests.Calculators
                 _ when type == typeof(TimeOnly) => (TResult?)(object?)Interval.Radius((Interval<TimeOnly>)(object)interval),
                 _ => throw new NotSupportedException(type.FullName)
             };
+        }
+
+        public static TResult? RadiusResult(double? result)
+        {
+            var type = typeof(T);
+            if (type == typeof(int) || type == typeof(double))
+            {
+                return (TResult?)(object?)result;
+            }
+            if (type == typeof(DateOnly))
+            {
+                return (TResult?)(object?)(result is null ? null : (int)result.Value);
+            }
+            else if (type == typeof(DateTime))
+            {
+                return (TResult?)(object?)(result is null ? null : TimeSpan.FromDays(result.Value));
+            }
+            else if (type == typeof(DateTimeOffset))
+            {
+                return (TResult?)(object?)(result is null ? null : TimeSpan.FromDays(result.Value));
+            }
+            else if (type == typeof(TimeOnly))
+            {
+                return (TResult?)(object?)(result is null ? null : TimeSpan.FromHours(result.Value));
+            }
+            else
+            {
+                throw new NotSupportedException(type.FullName);
+            }
         }
     }
 }

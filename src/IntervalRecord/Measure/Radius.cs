@@ -26,12 +26,12 @@ namespace IntervalRecord
             => Radius(source, (end, start) => (end - start) / 2);
 
         [Pure]
-        public static TimeSpan? Radius(this Interval<TimeOnly> source)
-            => Radius(source, (end, start) => (end - start) / 2);
-
-        [Pure]
         public static int? Radius(this Interval<DateOnly> source)
             => Radius(source, (end, start) => (end.DayNumber - start.DayNumber) / 2);
+
+        [Pure]
+        public static TimeSpan? Radius(this Interval<TimeOnly> source)
+            => Radius(source, (end, start) => (end - start) / 2);
 
         private static TResult? Radius<T, TResult>(Interval<T> source, Func<T, T, TResult> radius)
             where T : struct, IEquatable<T>, IComparable<T>, IComparable

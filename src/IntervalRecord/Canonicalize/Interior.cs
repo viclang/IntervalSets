@@ -32,7 +32,7 @@ namespace IntervalRecord
         private static Interval<T> ToOpen<T>(Interval<T> source, Func<Infinity<T>, Infinity<T>> add, Func<Infinity<T>, Infinity<T>> substract)
             where T : struct, IEquatable<T>, IComparable<T>, IComparable
         {
-            if (!source.StartInclusive && !source.EndInclusive)
+            if (source.IsEmpty() || !source.StartInclusive && !source.EndInclusive)
             {
                 return source;
             }

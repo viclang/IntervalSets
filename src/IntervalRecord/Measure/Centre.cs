@@ -21,12 +21,13 @@ namespace IntervalRecord
             => Centre(source, (end, start) => start.Add((end - start) / 2));
 
         [Pure]
+        public static DateOnly? Centre(this Interval<DateOnly> source)
+            => Centre(source, (end, start) => start.AddDays((end.DayNumber - start.DayNumber) / 2));
+
+        [Pure]
         public static TimeOnly? Centre(this Interval<TimeOnly> source)
             => Centre(source, (end, start) => start.Add((end - start) / 2));
 
-        [Pure]
-        public static DateOnly? Centre(this Interval<DateOnly> source)
-            => Centre(source, (end, start) => start.AddDays((end.DayNumber - start.DayNumber) / 2));
 
         private static TResult? Centre<T, TResult>(Interval<T> source, Func<T, T, TResult> centre)
             where T : struct, IEquatable<T>, IComparable<T>, IComparable
