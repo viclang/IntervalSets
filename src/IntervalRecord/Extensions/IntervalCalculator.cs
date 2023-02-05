@@ -4,6 +4,25 @@ namespace IntervalRecord
 {
     public static partial class Interval
     {
+        public static IEnumerable<T> Iterate<T>(this Interval<T> value, Func<T, T> step)
+            where T : struct, IEquatable<T>, IComparable<T>, IComparable
+        {
+            var start = value.StartInclusive ? value.Start.Value : step(value.Start.Value);
+            return value.Iterate(start, step);
+        }
+
+        public static IEnumerable<T> Iterate<T>(this Interval<T> value, T start, Func<T, T> step)
+            where T : struct, IEquatable<T>, IComparable<T>, IComparable
+        {
+            if (value.Contains(start) && !value.Start.IsInfinite && !value.End.IsInfinite)
+            {
+                for (var i = start; value.EndInclusive ? i <= value.End : i < value.End; i = step(i))
+                {
+                    yield return i;
+                }
+            }
+        }
+
         public static Interval<T> Intersect<T>(this Interval<T> value, Interval<T> other)
             where T : struct, IEquatable<T>, IComparable<T>, IComparable
         {
@@ -96,46 +115,6 @@ namespace IntervalRecord
             }
             return b;
         }
-
-        //public static IEnumerable<DateOnly> EachDayOfInterval(this Interval<DateOnly> value, int step = 1)
-        //{
-        //    var closed = value.ClosureByDays(1);
-        //    var length = closed.Length();
-        //    if (!length.IsInfinite)
-        //    {
-        //        for(var days = 0; days <= length; days+=step)
-        //        {
-        //            yield return closed.Start.Value.AddDays(days);
-        //        }
-        //    }
-        //}
-
-        //public static IEnumerable<DateOnly> EachMonthOfInterval(this Interval<DateOnly> value, int step = 1)
-        //{
-        //    var closed = value.ClosureByDays(1);
-        //    var length = closed.Length();
-        //    if (!length.IsInfinite)
-        //    {
-        //        for (var months = 0; months <= length/12; months += step)
-        //        {
-        //            yield return closed.Start.Value.AddMonths(months);
-        //        }
-        //    }
-        //}
-
-        //public static IEnumerable<DateOnly> EachYearOfInterval(this Interval<DateOnly> value, int step = 1)
-        //{
-        //    var closed = value.ClosureByYears(1);
-        //    var length = closed.Length();
-
-        //    if (!length.IsInfinite)
-        //    {
-        //        for (var years = 0; years <= length/365; years += step)
-        //        {
-        //            yield return closed.Start.Value.AddYears(years);
-        //        }
-        //    }
-        //}
 
         public static Infinity<int> Length(this Interval<int> value) => Length(Closure(value, 1), (a, b) => a - b);
         public static Infinity<int> Length(this Interval<DateOnly> value) => Length(ClosureDays(value, 1), (a, b) => a.DayNumber - b.DayNumber);

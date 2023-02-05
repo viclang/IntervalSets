@@ -96,6 +96,17 @@
             return value.Start.CompareTo(other.Start) == -1 && value.End.CompareTo(other.End) == 1;
         }
 
+        public static bool Contains<T>(this Interval<T> value, T other)
+            where T : struct, IEquatable<T>, IComparable<T>, IComparable
+        {
+            return value.StartInclusive
+                ? value.Start.CompareTo(other) <= 0
+                : value.Start.CompareTo(other) == -1
+                && value.EndInclusive
+                ? value.End.CompareTo(other) >= 0
+                : value.End.CompareTo(other) == 1;
+        }
+
         public static bool Finishes<T>(this Interval<T> value, Interval<T> other)
             where T : struct, IEquatable<T>, IComparable<T>, IComparable
         {
