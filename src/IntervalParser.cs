@@ -41,7 +41,7 @@ namespace IntervalRecord
             where T : struct, IEquatable<T>, IComparable<T>, IComparable
         {
             var matches = _intervalRegex.Matches(value);
-            if (matches.Any())
+            if (!matches.Any())
             {
                 throw new ArgumentException(intervalNotFound);
             }

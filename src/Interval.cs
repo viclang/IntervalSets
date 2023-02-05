@@ -1,25 +1,10 @@
 ﻿using InfinityComparable;
 using IntervalRecord.Enums;
 using IntervalRecord.Extensions;
-using System.Data;
-using System.Linq.Expressions;
 using System.Text;
 
 namespace IntervalRecord
 {
-    public readonly record struct DiscreteInterval<T, TStep>
-        where T : struct, IEquatable<T>, IComparable<T>, IComparable
-        where TStep : struct
-    {
-        public Interval<T> Interval { get; init; }
-        public TStep Step { get; init; }
-
-        public static implicit operator Interval<T>(DiscreteInterval<T, TStep> discreteInterval) => discreteInterval.Interval;
-
-        public static implicit operator DiscreteInterval<T, TStep>((Interval<T> discreteInterval, TStep step)) => new DiscreteInterval<T, TStep>()
-
-    }
-
     public readonly record struct Interval<T> : IComparable<Interval<T>>
         where T : struct, IEquatable<T>, IComparable<T>, IComparable
     {
@@ -28,18 +13,13 @@ namespace IntervalRecord
         private readonly bool _startInclusive;
         private readonly bool _endInclusive;
 
-        public Infinity<T> Start { get => _start; init => _start = new Infinity<T>((T?)value, false); }
-        public Infinity<T> End { get => _end; init => _end = new Infinity<T>((T?)value, true); }
-        public bool StartInclusive { get => _start.Finite is not null && _startInclusive; init => _startInclusive = value; }
-        public bool EndInclusive { get => _end.Finite is not null && _endInclusive; init => _endInclusive = value; }
+        public Infinity<T> Start { get => _start; init => _start = new Infinity<T>(value, false); }
+        public Infinity<T> End { get => _end; init => _end = new Infinity<T>(value, true); }
+        public bool StartInclusive { get => !_start.IsInfinite && _startInclusive; init => _startInclusive = value; }
+        public bool EndInclusive { get => !_end.IsInfinite && _endInclusive; init => _endInclusive = value; }
 
         public Interval()
             : this(null, null, false, false)
-        {
-        }
-
-        public Interval(T? start, T? end)
-            : this(start, end, false, false)
         {
         }
 
@@ -58,10 +38,10 @@ namespace IntervalRecord
             return BoundaryTypeMapper.ToType(StartInclusive, EndInclusive);
         }
 
-        public bool IsEmpty() => Start.Finite is not null && End.Finite is not null
-                && Start.Finite!.Value.Equals(End.Finite!.Value) && !IsClosed();
+        public bool IsEmpty() => !Start.IsInfinite && !End.IsInfinite
+                && Start.Value.Equals(End.Value) && !IsClosed();
 
-        public bool IsSingleton() => !IsUnBounded() && Start.Finite!.Value.Equals(End.Finite!.Value) && IsClosed();
+        public bool IsSingleton() => !IsUnBounded() && Start.Value.Equals(End.Value) && IsClosed();
 
         public bool IsUnBounded() => Start.IsInfinite && End.IsInfinite;
 
@@ -128,9 +108,6 @@ namespace IntervalRecord
 
     public static class Interval
     {
-        public static int Step = 1;
-        public static TimeSpan StepTimeSpan = TimeSpan.FromDays(1);
-
         public static Interval<T> Empty<T>()
             where T : struct, IEquatable<T>, IComparable<T>, IComparable
         {
@@ -233,7 +210,7 @@ namespace IntervalRecord
                 ? value.EndInclusive && other.EndInclusive
                 : minByEnd.EndInclusive;
 
-            return new Interval<T>(maxByStart.Start, minByEnd.End, startInclusive, endInclusive);
+            return value with { Start = maxByStart.Start, End = minByEnd.End, StartInclusive = startInclusive, EndInclusive = endInclusive };
         }
 
         public static Interval<T> Union<T>(this Interval<T> value, Interval<T> other)
@@ -260,7 +237,7 @@ namespace IntervalRecord
                 ? value.EndInclusive || other.EndInclusive
                 : maxByEnd.EndInclusive;
 
-            return new Interval<T>(minByStart.Start, maxByEnd.End, startInclusive, endInclusive);
+            return new Interval<T>((T?)minByStart.Start, (T?)maxByEnd.End, startInclusive, endInclusive);
         }
 
         public static Interval<T> MinBy<T, TProperty>(Interval<T> a, Interval<T> b, Func<Interval<T>, TProperty> selector)
@@ -293,7 +270,7 @@ namespace IntervalRecord
         //    {
         //        for(var days = 0; days <= length; days+=step)
         //        {
-        //            yield return closed.Start.Finite!.Value.AddDays(days);
+        //            yield return closed.Start.Value.AddDays(days);
         //        }
         //    }
         //}
@@ -306,7 +283,7 @@ namespace IntervalRecord
         //    {
         //        for (var months = 0; months <= length/12; months += step)
         //        {
-        //            yield return closed.Start.Finite!.Value.AddMonths(months);
+        //            yield return closed.Start.Value.AddMonths(months);
         //        }
         //    }
         //}
@@ -320,28 +297,16 @@ namespace IntervalRecord
         //    {
         //        for (var years = 0; years <= length/365; years += step)
         //        {
-        //            yield return closed.Start.Finite!.Value.AddYears(years);
+        //            yield return closed.Start.Value.AddYears(years);
         //        }
         //    }
         //}
 
-        public static Infinity<int> Length(this Interval<int> value) => new Infinity<int>((int?)Length(value.Closure(1), (a, b) => a - b).Finite, true);
-        public static Infinity<int> Length(this Interval<DateOnly> value) => new Infinity<int>((int?)Length(value.ClosureByDays(1), (a, b) => a.DayNumber - b.DayNumber).Finite, true);
-        
-        /// <summary>
-        /// Length of interval
-        /// </summary>
-        /// <param name="value">The interval value will be transformed to a closed interval <see cref="Closure(Interval{DateTime}, TimeSpan)"/> with maximum precision of 1 tick</param>
-        /// <returns></returns>
-        public static Infinity<TimeSpan> Length(this Interval<DateTime> value) => Length(value.Closure(TimeSpan.FromMilliseconds(1)), (a, b) => a.Subtract(b));
 
-
-        /// <summary>
-        /// Length of interval
-        /// </summary>
-        /// <param name="value">The interval value will be transformed to a closed interval <see cref="Closure(Interval{DateTimeOffset}, TimeSpan)"/> with maximum precision of 1 tick</param>
-        /// <returns></returns>
-        public static Infinity<TimeSpan> Length(this Interval<DateTimeOffset> value) => Length(value.Closure(TimeSpan.FromMilliseconds(1)), (a, b) => a.Subtract(b));
+        public static Infinity<double> Length(this Interval<int> value) => Length(value.Closure(1), (a, b) => a - b);
+        public static Infinity<double> Length(this Interval<DateOnly> value) => Length(value.ClosureByDays(1), (a, b) => a.DayNumber - b.DayNumber);
+        public static Infinity<TimeSpan> Length(this Interval<DateTime> value) => Length(value.Closure(TimeSpan.FromDays(1)), (a, b) => a.Subtract(b));
+        public static Infinity<TimeSpan> Length(this Interval<DateTimeOffset> value) => Length(value.Closure(TimeSpan.FromDays(1)), (a, b) => a.Subtract(b));
 
         public static double? Radius(this Interval<int> value) => Calculate(value.Closure(1), (a, b) => (a - b) / 2);
         public static double? Radius(this Interval<DateOnly> value) => Calculate(value.ClosureByDays(1), (a, b) => (a.DayNumber - b.DayNumber) / 2);
@@ -375,7 +340,7 @@ namespace IntervalRecord
         public static int DistanceTo(this Interval<int> value, Interval<int> other)
             => value.IsConnected(other)
                 ? 0
-                : other.Start.Finite!.Value - value.End.Finite!.Value;
+                : other.Start.Value - value.End.Value;
 
         public static Interval<int> Interior(this Interval<int> value, int step)
             => Interior(value, x => x + step, x => x - step);
@@ -386,19 +351,12 @@ namespace IntervalRecord
         public static Interval<DateTimeOffset> Interior(this Interval<DateTimeOffset> value, TimeSpan step)
             => Interior(value, x => x.Add(step), x => x.Subtract(step));
 
-
-        public static Interval<int> Closure(this Interval<int> value)
-            => Closure(value, Step);
         public static Interval<int> Closure(this Interval<int> value, int step)
             => Closure(value, x => x + step, x => x - step);
 
-        public static Interval<DateOnly> ClosureByDays(this Interval<DateOnly> value)
-            => ClosureByDays(value, Step);
         public static Interval<DateOnly> ClosureByDays(this Interval<DateOnly> value, int step)
             => Closure(value, x => x.AddDays(step), x => x.AddDays(-step));
 
-        public static Interval<DateOnly> ClosureByMonths(this Interval<DateOnly> value)
-            => Closure(value, x => x.AddDays(Step), x => x.AddDays(-Step));
         public static Interval<DateOnly> ClosureByMonths(this Interval<DateOnly> value, int step)
             => Closure(value, x => x.AddDays(step), x => x.AddDays(-step));
 
@@ -422,7 +380,7 @@ namespace IntervalRecord
             {
                 return 0;
             }
-            return substract(value.End.Finite!.Value, value.Start.Finite!.Value);
+            return substract(value.End.Value, value.Start.Value);
         }
 
         private static Infinity<TimeSpan> Length<T>(
@@ -438,7 +396,7 @@ namespace IntervalRecord
             {
                 return new Infinity<TimeSpan>(TimeSpan.Zero, true);
             }
-            return substract(value.End.Finite!.Value, value.Start.Finite!.Value);
+            return substract(value.End.Value, value.Start.Value);
         }
         
         private static TResult? Calculate<T, TResult>(Interval<T> value, Func<T, T, TResult> calculate)
@@ -447,8 +405,10 @@ namespace IntervalRecord
         {
             return value.Start.IsInfinite || value.End.IsInfinite || value.IsEmpty()
                 ? null
-                : calculate(value.Start.Finite!.Value, value.End.Finite!.Value);
+                : calculate(value.Start.Value, value.End.Value);
         }
+
+
 
         private static Interval<T> Closure<T>(
             Interval<T> value,
@@ -462,8 +422,8 @@ namespace IntervalRecord
             }
             var result = value with
             {
-                Start = value.StartInclusive || value.Start.IsInfinite ? value.Start : add(value.Start.Finite!.Value),
-                End = value.EndInclusive || value.End.IsInfinite ? value.End : substract(value.End.Finite!.Value),
+                Start = value.StartInclusive || value.Start.IsInfinite ? value.Start : add(value.Start.Value),
+                End = value.EndInclusive || value.End.IsInfinite ? value.End : substract(value.End.Value),
                 StartInclusive = true,
                 EndInclusive = true
             };
@@ -482,8 +442,8 @@ namespace IntervalRecord
             }
             var result = value with
             {
-                Start = value.StartInclusive ? substract(value.Start.Finite!.Value) : value.Start,
-                End = value.EndInclusive ? add(value.End.Finite!.Value) : value.End,
+                Start = value.StartInclusive ? substract(value.Start.Value) : value.Start,
+                End = value.EndInclusive ? add(value.End.Value) : value.End,
                 StartInclusive = false,
                 EndInclusive = false
             };

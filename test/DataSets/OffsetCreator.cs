@@ -36,7 +36,7 @@ namespace IntervalRecord.Tests.DataSets
 
         public IntegerCreator(Interval<int> reference, int offset)
         {
-            var length = reference.Length().Finite!.Value;
+            var length = (int)reference.Length().Value;
             var beforeEnd = reference.Start - offset;
             var beforeStart = beforeEnd - length;
             var containsStart = reference.Start + offset;
@@ -58,12 +58,12 @@ namespace IntervalRecord.Tests.DataSets
 
         public DateOnlyCreator(Interval<DateOnly> reference, int offset)
         {
-            var length = reference.Length().Finite!.Value;
-            var beforeEnd = reference.Start.Finite!.Value.AddDays(-offset);
+            var length = (int)reference.Length().Value;
+            var beforeEnd = reference.Start.Value.AddDays(-offset);
             var beforeStart = beforeEnd.AddDays(-length);
-            var containsStart = reference.Start.Finite.Value.AddDays(offset);
-            var containsEnd = reference.End.Finite!.Value.AddDays(-offset);
-            var afterStart = reference.End.Finite!.Value.AddDays(offset);
+            var containsStart = reference.Start.Value.AddDays(offset);
+            var containsEnd = reference.End.Value.AddDays(-offset);
+            var afterStart = reference.End.Value.AddDays(offset);
             var afterEnd = afterStart.AddDays(length);
 
             Before = reference with { Start = beforeStart, End = beforeEnd };
@@ -81,7 +81,7 @@ namespace IntervalRecord.Tests.DataSets
         public DateTimeCreator(Interval<DateTime> reference, TimeSpan offset)
         {
 
-            var length = reference.Length().Finite!.Value;
+            var length = reference.Length().Value;
             DateTime referenceStart = (DateTime)reference.Start!;
             DateTime referenceEnd = (DateTime)reference.End!;
 
@@ -106,7 +106,7 @@ namespace IntervalRecord.Tests.DataSets
 
         public DateTimeOffsetCreator(Interval<DateTimeOffset> reference, TimeSpan offset)
         {
-            var length = reference.Length().Finite!.Value;
+            var length = reference.Length().Value;
             DateTimeOffset referenceStart = (DateTimeOffset)reference.Start!;
             DateTimeOffset referenceEnd = (DateTimeOffset)reference.End!;
 
