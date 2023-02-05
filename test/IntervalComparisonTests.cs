@@ -1,5 +1,6 @@
 ﻿using FluentAssertions;
 using IntervalRecord.Enums;
+using IntervalRecord.Extensions;
 using IntervalRecord.Tests.DataSets;
 using System;
 using System.Collections.Generic;

@@ -1,11 +1,7 @@
 ﻿using InfinityComparable;
 using IntervalRecord.Enums;
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
+using IntervalRecord.Extensions;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace IntervalRecord
 {
@@ -19,8 +15,8 @@ namespace IntervalRecord
 
         public Infinity<T> Start { get => _start; init => _start = new Infinity<T>((T?)value, false); }
         public Infinity<T> End { get => _end; init => _end = new Infinity<T>((T?)value, true); }
-        public bool StartInclusive { get => _start.Finite.HasValue && _startInclusive; init => _startInclusive = value; }
-        public bool EndInclusive { get => _end.Finite.HasValue && _endInclusive; init => _endInclusive = value; }
+        public bool StartInclusive { get => _start.Finite is not null && _startInclusive; init => _startInclusive = value; }
+        public bool EndInclusive { get => _end.Finite is not null && _endInclusive; init => _endInclusive = value; }
 
         public Interval()
             : this(null, null, false, false)
@@ -40,38 +36,7 @@ namespace IntervalRecord
             _endInclusive = endInclusive;
         }
 
-        public bool IsValid()
-        {
-            return Validate(out var _);
-        }
-
-        public Interval<T> ValidateAndThrow()
-        {
-            if (!Validate(out var message))
-            {
-                throw new ArgumentOutOfRangeException("End", message);
-            }
-            return this;
-        }
-
-        public bool Validate(out string? message)
-        {
-            if (IsClosed() && End.CompareTo(Start) == -1)
-            {
-                message = "The End parameter must be greater or equal to the Start parameter";
-                return false;
-            }
-
-            if (!IsClosed() && End.CompareTo(Start) <= 0)
-            {
-                message = "The End parameter must be greater than the Start parameter";
-                return false;
-            }
-            message = null;
-            return true;
-        }
-
-        private bool IsClosed()
+        public bool IsClosed()
         {
             return StartInclusive && EndInclusive;
         }
@@ -116,6 +81,11 @@ namespace IntervalRecord
             return !this.IsBefore(other) && !this.IsAfter(other);
         }
 
+
+        public static explicit operator string(Interval<T> interval) => interval.ToString();
+        public static explicit operator Interval<T>(string str) => IntervalParser.Parse<T>(str);
+        public static implicit operator Interval<T>?(string str) => IntervalParser.TryParse<T>(str, out var result) ? result : null;
+
         public static bool operator >(Interval<T> a, Interval<T> b)
         {
             return a.End.CompareTo(b.End) == 1
@@ -138,13 +108,15 @@ namespace IntervalRecord
             return a == b || a < b;
         }
 
-        public override string? ToString()
+        public override string ToString()
         {
-            return (StartInclusive ? "[" : "(")
-                + Start
-                + ", "
-                + End
-                + (EndInclusive ? "]" : ")");
+            return new StringBuilder()
+                .Append(StartInclusive ? "[" : "(")
+                .Append(Start)
+                .Append(", ")
+                .Append(End)
+                .Append(EndInclusive ? "]" : ")")
+                .ToString();
         }
 
         public int CompareTo(Interval<T> other)
@@ -231,7 +203,7 @@ namespace IntervalRecord
             return new Interval<T>(null, end, false, true);
         }
 
-        public static bool TryParse<T>(string s, out Interval<T> result)
+        public static bool TryParse<T>(string s, out Interval<T>? result)
             where T : struct, IEquatable<T>, IComparable<T>, IComparable
         {
             return IntervalParser.TryParse<T>(s, out result);
@@ -240,7 +212,7 @@ namespace IntervalRecord
         public static Interval<T> Parse<T>(string s)
             where T : struct, IEquatable<T>, IComparable<T>, IComparable
         {
-            return IntervalParser.ParseSingle<T>(s);
+            return IntervalParser.Parse<T>(s);
         }
 
         public static IEnumerable<Interval<T>> ParseAll<T>(string s)

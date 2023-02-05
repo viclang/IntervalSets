@@ -1,9 +1,4 @@
 ﻿using FluentAssertions;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Xunit;
 
 namespace IntervalRecord.Tests
@@ -31,7 +26,7 @@ namespace IntervalRecord.Tests
 
             // Act
             var result = Interval.ParseAll<int>(stringToParse);
-
+            Interval<int>? r = stringToParse;
             // Assert
             result.Should().HaveCount(8);
         }

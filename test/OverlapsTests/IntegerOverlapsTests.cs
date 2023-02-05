@@ -1,12 +1,6 @@
 ﻿using FluentAssertions;
-using InfinityComparable;
 using IntervalRecord.Enums;
 using IntervalRecord.Tests.DataSets;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Xunit;
 
 namespace IntervalRecord.Tests.OverlapsTests

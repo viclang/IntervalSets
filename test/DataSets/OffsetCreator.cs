@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using IntervalRecord.Extensions;
+using System;
 
 namespace IntervalRecord.Tests.DataSets
 {

@@ -1,12 +1,6 @@
 ﻿using IntervalRecord.Enums;
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace IntervalRecord
+namespace IntervalRecord.Extensions
 {
     /*
         http://grouper.ieee.org/groups/1788/PositionPapers/ARITHYY.pdf
@@ -15,7 +9,7 @@ namespace IntervalRecord
      */
     public static class IntervalComparison
     {
-        private static Dictionary<ValueTuple<int, int, int ,int>, OverlappingState> OverlapStateLookup => new()
+        private static Dictionary<ValueTuple<int, int, int, int>, OverlappingState> OverlapStateLookup => new()
         {
             { (-1, -1, -1, -1), OverlappingState.Before },
             { (-1, -1, 0, -1), OverlappingState.Before }, // intfinity case
@@ -50,83 +44,78 @@ namespace IntervalRecord
             var compareEnd = a.End.CompareTo(b.End);
             var compareStartToEnd = a.Start.CompareTo(b.End);
             var compareEndToStart = a.End.CompareTo(b.Start);
-
             return OverlapStateLookup[(compareStart, compareEnd, compareStartToEnd, compareEndToStart)];
         }
 
-        public static bool HasInside<T>(this Interval<T> a, Interval<T> b)
+        public static bool HasInside<T>(this Interval<T> value, Interval<T> other)
             where T : struct, IEquatable<T>, IComparable<T>, IComparable
         {
-            return a.Start.CompareTo(b.Start) > 1 || a.End.CompareTo(b.End) < 1;
+            return value.Start.CompareTo(other.Start) > 1 || value.End.CompareTo(other.End) < 1;
         }
 
 
-        public static bool IsBefore<T>(this Interval<T> a, Interval<T> b)
+        public static bool IsBefore<T>(this Interval<T> value, Interval<T> other)
             where T : struct, IEquatable<T>, IComparable<T>, IComparable
         {
-            if (!a.EndInclusive || !b.StartInclusive)
-            {
-                return a.End.CompareTo(b.Start) <= 0;
-            }
-            return a.End.CompareTo(b.Start) == -1;
+            return !value.EndInclusive || !other.StartInclusive
+                ? value.End.CompareTo(other.Start) <= 0
+                : value.End.CompareTo(other.Start) == -1;
         }
 
-        public static bool IsAfter<T>(this Interval<T> a, Interval<T> b)
+        public static bool IsAfter<T>(this Interval<T> value, Interval<T> other)
             where T : struct, IEquatable<T>, IComparable<T>, IComparable
         {
-            if (!a.StartInclusive || !b.EndInclusive)
-            {
-                return a.Start.CompareTo(b.End) >= 0;
-            }
-            return a.Start.CompareTo(b.End) == 1;
+            return !value.StartInclusive || !other.EndInclusive
+                ? value.Start.CompareTo(other.End) >= 0
+                : value.Start.CompareTo(other.End) == 1;
         }
 
-        public static bool Meets<T>(this Interval<T> a, Interval<T> b)
+        public static bool Meets<T>(this Interval<T> value, Interval<T> other)
             where T : struct, IEquatable<T>, IComparable<T>, IComparable
         {
-            return a.Start.Equals(b.End);
+            return value.Start.Equals(other.End);
         }
 
-        public static bool MetBy<T>(this Interval<T> a, Interval<T> b)
+        public static bool MetBy<T>(this Interval<T> value, Interval<T> other)
             where T : struct, IEquatable<T>, IComparable<T>, IComparable
         {
-            return a.End.Equals(b.Start);
+            return value.End.Equals(other.Start);
         }
 
-        public static bool Starts<T>(this Interval<T> a, Interval<T> b)
+        public static bool Starts<T>(this Interval<T> value, Interval<T> other)
             where T : struct, IEquatable<T>, IComparable<T>, IComparable
         {
-            return a.Start.Equals(b.Start) && a.End.CompareTo(b.End) == -1;
+            return value.Start.Equals(other.Start) && value.End.CompareTo(other.End) == -1;
         }
 
-        public static bool StartedBy<T>(this Interval<T> a, Interval<T> b)
+        public static bool StartedBy<T>(this Interval<T> value, Interval<T> other)
             where T : struct, IEquatable<T>, IComparable<T>, IComparable
         {
-            return a.Start.Equals(b.Start) && a.End.CompareTo(b.End) == 1;
+            return value.Start.Equals(other.Start) && value.End.CompareTo(other.End) == 1;
         }
 
-        public static bool ContainedBy<T>(this Interval<T> a, Interval<T> b)
+        public static bool ContainedBy<T>(this Interval<T> value, Interval<T> other)
             where T : struct, IEquatable<T>, IComparable<T>, IComparable
         {
-            return a.Start.CompareTo(b.Start) == -1 && a.End.CompareTo(b.End) == 1;
+            return value.Start.CompareTo(other.Start) == -1 && value.End.CompareTo(other.End) == 1;
         }
 
-        public static bool Contains<T>(this Interval<T> a, Interval<T> b)
+        public static bool Contains<T>(this Interval<T> value, Interval<T> other)
             where T : struct, IEquatable<T>, IComparable<T>, IComparable
         {
-            return a.Start.CompareTo(b.Start) == 1 && a.End.CompareTo(b.End) == -1;
+            return value.Start.CompareTo(other.Start) == 1 && value.End.CompareTo(other.End) == -1;
         }
 
-        public static bool Finishes<T>(this Interval<T> a, Interval<T> b)
+        public static bool Finishes<T>(this Interval<T> value, Interval<T> other)
             where T : struct, IEquatable<T>, IComparable<T>, IComparable
         {
-            return a.End.Equals(b.End) && a.Start.CompareTo(b.Start) == 1;
+            return value.End.Equals(other.End) && value.Start.CompareTo(other.Start) == 1;
         }
 
-        public static bool FinishedBy<T>(this Interval<T> a, Interval<T> b)
+        public static bool FinishedBy<T>(this Interval<T> value, Interval<T> other)
             where T : struct, IEquatable<T>, IComparable<T>, IComparable
         {
-            return a.End.Equals(b.End) && a.Start.CompareTo(b.Start) == -1;
+            return value.End.Equals(other.End) && value.Start.CompareTo(other.Start) == -1;
         }
     }
 }
