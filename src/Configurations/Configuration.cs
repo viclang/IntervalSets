@@ -9,8 +9,10 @@ namespace RangeExtensions.Configurations
     public class Configuration
     {
         public bool ExpandToNextWhenNull { get; set; }
+        public bool Insert { get; set; }
         public bool AllowOverlap { get; set; }
         public bool AllowGaps { get; set; } = true;
         public bool UpdateOnExactMatch { get; set; }
+        public bool ShrinkPreviousTo { get; set; }
     }
 }

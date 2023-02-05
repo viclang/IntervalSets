@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace RangeExtensions.Tests.Models
 {
-    public class RangeStub : IRange<int>
+    public class RangeStub : IRangeInclusive<int>
     {
         public int From { get; set; }
         public int? To { get; set; }

@@ -17,7 +17,7 @@ namespace RangeExtensions.Tests
             var ranges = Create();
 
             //act
-            ranges.AddInclusive(rangeToAdd);
+            ranges.Add(rangeToAdd);
 
             //assert
 
@@ -31,7 +31,7 @@ namespace RangeExtensions.Tests
             var ranges = Create();
 
             //act
-            var act = () => ranges.AddInclusive(rangeToAdd);
+            var act = () => ranges.Add(rangeToAdd);
 
             //assert
             act.Should().Throw<NotSupportedException>();
