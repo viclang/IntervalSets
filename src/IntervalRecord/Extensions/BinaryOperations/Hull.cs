@@ -3,7 +3,7 @@
     public static partial class Interval
     {
         public static Interval<T> Hull<T>(this Interval<T> value, Interval<T> other)
-            where T : struct, IEquatable<T>, IComparable<T>, IComparable
+            where T : struct, IComparable<T>, IComparable
         {
             var minByStart = MinBy(value, other, x => x.Start);
             var maxByEnd = MaxBy(value, other, x => x.End);

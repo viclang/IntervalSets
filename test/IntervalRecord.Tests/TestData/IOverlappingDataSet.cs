@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 namespace IntervalRecord.Tests.TestData
 {
     public interface IOverlappingDataSet<T>
-        where T : struct, IEquatable<T>, IComparable<T>, IComparable
+        where T : struct, IComparable<T>, IComparable
     {
         Interval<T> Reference { get; init; }
         Interval<T> Before { get; }

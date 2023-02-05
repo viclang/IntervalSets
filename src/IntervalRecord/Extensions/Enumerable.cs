@@ -4,7 +4,7 @@
     {
         public static IEnumerable<Interval<T>> Complement<T>(
             this IEnumerable<Interval<T>> values)
-            where T : struct, IEquatable<T>, IComparable<T>, IComparable
+            where T : struct, IComparable<T>, IComparable
         {
             using var e = values.GetEnumerator();
 
@@ -36,7 +36,7 @@
 
         public static Interval<T> Hull<T>(
             this IEnumerable<Interval<T>> values)
-            where T : struct, IEquatable<T>, IComparable<T>, IComparable
+            where T : struct, IComparable<T>, IComparable
         {
             if (!values.Any())
             {

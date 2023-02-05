@@ -14,7 +14,7 @@
             BoundaryType boundaryType,
             Func<T, T> add,
             Func<T, T> substract)
-                where T : struct, IEquatable<T>, IComparable<T>, IComparable
+                where T : struct, IComparable<T>, IComparable
             => boundaryType switch
             {
                 BoundaryType.Closed => ToClosed(value, add, substract),
@@ -28,7 +28,7 @@
             Interval<T> value,
             Func<T, T> add,
             Func<T, T> substract)
-            where T : struct, IEquatable<T>, IComparable<T>, IComparable
+            where T : struct, IComparable<T>, IComparable
         {
             if (value.IsEmpty() || value.StartInclusive && value.EndInclusive)
             {
@@ -46,7 +46,7 @@
         private static Interval<T> ToClosedOpen<T>(
             Interval<T> value,
             Func<T, T> add)
-            where T : struct, IEquatable<T>, IComparable<T>, IComparable
+            where T : struct, IComparable<T>, IComparable
         {
             if (value.IsEmpty() || value.StartInclusive && !value.EndInclusive)
             {
@@ -64,7 +64,7 @@
         private static Interval<T> ToOpenClosed<T>(
             Interval<T> value,
             Func<T, T> substract)
-            where T : struct, IEquatable<T>, IComparable<T>, IComparable
+            where T : struct, IComparable<T>, IComparable
         {
             if (value.IsEmpty() || !value.StartInclusive && value.EndInclusive)
             {
@@ -83,7 +83,7 @@
             Interval<T> value,
             Func<T, T> add,
             Func<T, T> substract)
-            where T : struct, IEquatable<T>, IComparable<T>, IComparable
+            where T : struct, IComparable<T>, IComparable
         {
             if (!value.StartInclusive && !value.EndInclusive)
             {

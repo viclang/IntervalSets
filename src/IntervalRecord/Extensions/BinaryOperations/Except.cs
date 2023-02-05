@@ -6,7 +6,7 @@ namespace IntervalRecord
     public static partial class Interval
     {
         public static Interval<T> Except<T>(this Interval<T> value, Interval<T> other)
-            where T : struct, IEquatable<T>, IComparable<T>, IComparable
+            where T : struct, IComparable<T>, IComparable
         {
             if (!value.Overlaps(other, true))
             {

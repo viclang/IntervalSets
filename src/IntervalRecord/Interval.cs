@@ -5,7 +5,7 @@ using System.Text;
 namespace IntervalRecord
 {
     public readonly record struct Interval<T> : IComparable<Interval<T>>
-        where T : struct, IEquatable<T>, IComparable<T>, IComparable
+        where T : struct, IComparable<T>, IComparable
     {
         private readonly Infinity<T> _start;
         private readonly Infinity<T> _end;
@@ -47,6 +47,7 @@ namespace IntervalRecord
             (false, true) => BoundaryType.OpenClosed,
             (false, false) => BoundaryType.Open,
         };
+
         public bool IsHalfOpen() => StartInclusive && !EndInclusive || !StartInclusive && EndInclusive;
 
         public bool IsEmpty() => !Start.IsInfinite && !End.IsInfinite
@@ -57,7 +58,7 @@ namespace IntervalRecord
 
         public bool Overlaps(Interval<T> other, bool includeHalfOpen = false) => !this.IsBefore(other, includeHalfOpen) && !this.IsAfter(other, includeHalfOpen);
         
-        public static explicit operator string(Interval<T> interval) => interval.ToString();
+        public static implicit operator string(Interval<T> interval) => interval.ToString();
         
         public static bool operator >(Interval<T> a, Interval<T> b)
             => a.End.CompareTo(b.End) == 1

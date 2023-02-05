@@ -25,7 +25,7 @@
         };
 
         public static OverlappingState GetOverlappingState<T>(this Interval<T> value, Interval<T> other, bool includeHalfOpen = false)
-            where T : struct, IEquatable<T>, IComparable<T>, IComparable
+            where T : struct, IComparable<T>, IComparable
         {
             return OverlapStateLookup
                 [(
@@ -37,39 +37,39 @@
         }
 
         public static bool IsBefore<T>(this Interval<T> value, Interval<T> other, bool includeHalfOpen = false)
-            where T : struct, IEquatable<T>, IComparable<T>, IComparable
+            where T : struct, IComparable<T>, IComparable
         {
             return CompareEndToStart(value, other, includeHalfOpen) == -1;
         }
 
         public static bool IsAfter<T>(this Interval<T> value, Interval<T> other, bool includeHalfOpen = false)
-            where T : struct, IEquatable<T>, IComparable<T>, IComparable
+            where T : struct, IComparable<T>, IComparable
         {
             return CompareStartToEnd(value, other, includeHalfOpen) == 1;
         }
 
         public static bool Meets<T>(this Interval<T> value, Interval<T> other, bool includeHalfOpen = false)
-            where T : struct, IEquatable<T>, IComparable<T>, IComparable
+            where T : struct, IComparable<T>, IComparable
             => CompareEndToStart(value, other, includeHalfOpen) == 0;
 
         public static bool MetBy<T>(this Interval<T> value, Interval<T> other, bool includeHalfOpen = false)
-            where T : struct, IEquatable<T>, IComparable<T>, IComparable
+            where T : struct, IComparable<T>, IComparable
             => CompareStartToEnd(value, other, includeHalfOpen) == 0;
 
         public static bool Starts<T>(this Interval<T> value, Interval<T> other)
-            where T : struct, IEquatable<T>, IComparable<T>, IComparable
+            where T : struct, IComparable<T>, IComparable
         {
             return value.Start.Equals(other.Start) && value.End.CompareTo(other.End) == -1;
         }
 
         public static bool StartedBy<T>(this Interval<T> value, Interval<T> other)
-            where T : struct, IEquatable<T>, IComparable<T>, IComparable
+            where T : struct, IComparable<T>, IComparable
         {
             return value.Start.Equals(other.Start) && value.End.CompareTo(other.End) == 1;
         }
 
         public static bool StartInsideOnly<T>(this Interval<T> value, Interval<T> other)
-            where T : struct, IEquatable<T>, IComparable<T>, IComparable
+            where T : struct, IComparable<T>, IComparable
         {
             return value.Start.CompareTo(other.Start) == 1
                 && value.End.CompareTo(other.End) == 1
@@ -77,7 +77,7 @@
         }
 
         public static bool EndInsideOnly<T>(this Interval<T> value, Interval<T> other)
-            where T : struct, IEquatable<T>, IComparable<T>, IComparable
+            where T : struct, IComparable<T>, IComparable
         {
             return value.Start.CompareTo(other.Start) == -1
                 && value.End.CompareTo(other.End) == -1
@@ -85,19 +85,19 @@
         }
 
         public static bool ContainedBy<T>(this Interval<T> value, Interval<T> other)
-            where T : struct, IEquatable<T>, IComparable<T>, IComparable
+            where T : struct, IComparable<T>, IComparable
         {
             return value.Start.CompareTo(other.Start) == 1 && value.End.CompareTo(other.End) == -1;
         }
 
         public static bool Contains<T>(this Interval<T> value, Interval<T> other)
-            where T : struct, IEquatable<T>, IComparable<T>, IComparable
+            where T : struct, IComparable<T>, IComparable
         {
             return value.Start.CompareTo(other.Start) == -1 && value.End.CompareTo(other.End) == 1;
         }
 
         public static bool Contains<T>(this Interval<T> value, T other)
-            where T : struct, IEquatable<T>, IComparable<T>, IComparable
+            where T : struct, IComparable<T>, IComparable
         {
             return value.StartInclusive
                 ? value.Start.CompareTo(other) <= 0
@@ -108,19 +108,19 @@
         }
 
         public static bool Finishes<T>(this Interval<T> value, Interval<T> other)
-            where T : struct, IEquatable<T>, IComparable<T>, IComparable
+            where T : struct, IComparable<T>, IComparable
         {
             return value.End.Equals(other.End) && value.Start.CompareTo(other.Start) == 1;
         }
 
         public static bool FinishedBy<T>(this Interval<T> value, Interval<T> other)
-            where T : struct, IEquatable<T>, IComparable<T>, IComparable
+            where T : struct, IComparable<T>, IComparable
         {
             return value.End.Equals(other.End) && value.Start.CompareTo(other.Start) == -1;
         }
 
         private static int CompareStartToEnd<T>(Interval<T> value, Interval<T> other, bool includeHalfOpen)
-            where T : struct, IEquatable<T>, IComparable<T>, IComparable
+            where T : struct, IComparable<T>, IComparable
         {
             var result = value.Start.CompareTo(other.End);
             return result == 0 && NotTouching(value, other, includeHalfOpen)
@@ -129,7 +129,7 @@
         }
 
         private static int CompareEndToStart<T>(Interval<T> value, Interval<T> other, bool includeHalfOpen)
-            where T : struct, IEquatable<T>, IComparable<T>, IComparable
+            where T : struct, IComparable<T>, IComparable
         {
             var result = value.End.CompareTo(other.Start);
             return result == 0 && NotTouching(value, other, includeHalfOpen)
@@ -138,7 +138,7 @@
         }
 
         private static bool NotTouching<T>(Interval<T> value, Interval<T> other, bool includeHalfOpen = false)
-            where T : struct, IEquatable<T>, IComparable<T>, IComparable
+            where T : struct, IComparable<T>, IComparable
         {
             return includeHalfOpen
                 ? ((!value.StartInclusive && !other.EndInclusive) || (!value.EndInclusive && !other.StartInclusive))
