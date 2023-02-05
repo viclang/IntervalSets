@@ -1,7 +1,4 @@
-﻿using InfinityComparable;
-using System;
-
-namespace IntervalRecord
+﻿namespace IntervalRecord
 {
     public static partial class Interval
     {
