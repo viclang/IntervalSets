@@ -15,18 +15,20 @@ namespace IntervalRecord
         {
             Validate(interval);
 
-            var parts = interval
-                .Replace(" ", string.Empty)
+            var parts = Regex.Replace(interval, @"\s", string.Empty)
                 .Split(',');
 
             var startString = parts[0].Substring(1);
             var endString = parts[1].Substring(0, parts[1].Length-1);
 
+            var start = TryParse<T>(startString);
+            var end = TryParse<T>(endString);
+
             return new Interval<T>(
-                TryParse<T>(startString),
-                TryParse<T>(endString),
-                interval.StartsWith('['),
-                interval.EndsWith(']'));
+                start,
+                end,
+                start is null ? false : interval.StartsWith('['),
+                end is null ? false : interval.EndsWith(']'));
         }
 
         private static void Validate(string interval)
