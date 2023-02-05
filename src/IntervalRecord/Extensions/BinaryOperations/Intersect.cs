@@ -7,7 +7,7 @@ namespace IntervalRecord
         public static Interval<T> Intersect<T>(this Interval<T> value, Interval<T> other)
             where T : struct, IEquatable<T>, IComparable<T>, IComparable
         {
-            if (!value.IsConnected(other, true))
+            if (!value.Overlaps(other, true))
             {
                 throw new ArgumentOutOfRangeException("other", "Intersection is only supported for connected intervals.");
             }

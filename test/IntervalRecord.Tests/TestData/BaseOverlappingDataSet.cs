@@ -1,26 +1,28 @@
-﻿using System;
+﻿using IntervalRecord.Tests.TestData;
+using System;
+using System.Collections;
 using System.Collections.Generic;
 using Xunit;
 
 namespace IntervalRecord.Tests.DataSets
 {
-    public record struct IntervalDataSet<T>
+    public abstract record BaseOverlappingDataSet<T> : IOverlappingDataSet<T>
         where T : struct, IEquatable<T>, IComparable<T>, IComparable
     {
-        public Interval<T> Reference { get; private set; } = default;
-        public Interval<T> Before { get; private set; } = default;
-        public Interval<T> After { get; private set; } = default;
-        public Interval<T> ContainedBy { get; private set; } = default;
-        public Interval<T> Meets { get; private set; } = default;
-        public Interval<T> OverlappedBy { get; private set; } = default;
-        public Interval<T> StartedBy { get; private set; } = default;
-        public Interval<T> Contains { get; private set; } = default;
-        public Interval<T> Finishes { get; private set; } = default;
-        public Interval<T> Equal { get; private set; } = default;
-        public Interval<T> FinishedBy { get; private set; } = default;
-        public Interval<T> Starts { get; private set; } = default;
-        public Interval<T> Overlaps { get; private set; } = default;
-        public Interval<T> MetBy { get; private set; } = default;
+        public Interval<T> Reference { get; init; }
+        public Interval<T> Before { get; protected set; }
+        public Interval<T> After { get; protected set; }
+        public Interval<T> ContainedBy { get; protected set; }
+        public Interval<T> Meets { get; private set; }
+        public Interval<T> OverlappedBy { get; private set; }
+        public Interval<T> StartedBy { get; private set; }
+        public Interval<T> Contains { get; private set; }
+        public Interval<T> Finishes { get; private set; }
+        public Interval<T> Equal { get; private set; }
+        public Interval<T> FinishedBy { get; private set; }
+        public Interval<T> Starts { get; private set; }
+        public Interval<T> Overlaps { get; private set; }
+        public Interval<T> MetBy { get; private set; }
 
         /// <summary>
         /// Creates a DataSet with 13 different states <see cref="OverlappingState"/> relative to the reference interval.
@@ -29,27 +31,14 @@ namespace IntervalRecord.Tests.DataSets
         /// <param name="end"></param>
         /// <param name="boundaryType"></param>
         /// <param name="offset"></param>
-        public IntervalDataSet(T start, T end, BoundaryType boundaryType, int offset)
+        public BaseOverlappingDataSet(T start, T end, BoundaryType boundaryType)
         {
             var (startInclusinve, endInclusive) = boundaryType.ToTuple();
             Reference = new Interval<T>(start, end, startInclusinve, endInclusive);
-            var offsetCreator = OffsetCreator.Create(Reference, offset);
-            Init(offsetCreator);
         }
 
-        public IntervalDataSet(T start, T end, BoundaryType boundaryType, TimeSpan offset)
+        protected virtual void Init()
         {
-            var (startInclusinve, endInclusive) = boundaryType.ToTuple();
-            Reference = new Interval<T>(start, end, startInclusinve, endInclusive);
-            var offsetCreator = OffsetCreator.Create(Reference, offset);
-            Init(offsetCreator);
-        }
-
-        private void Init(IOffsetCreator<T> offsetCreator)
-        {
-            After = offsetCreator.After;
-            ContainedBy = offsetCreator.ContainedBy;
-            Before = offsetCreator.Before;
             Meets = Reference with { Start = Before.Start, End = Reference.Start };
             OverlappedBy = Reference with { Start = ContainedBy.End, End = After.End };
             StartedBy = Reference with { End = After.Start };
@@ -82,7 +71,7 @@ namespace IntervalRecord.Tests.DataSets
             };
         }
 
-        public IntervalDataSet<T> CopyWith(BoundaryType boundaryType)
+        public IOverlappingDataSet<T> CopyWith(BoundaryType boundaryType)
         {
             if(Reference.GetBoundaryType() == boundaryType)
             {
@@ -150,51 +139,6 @@ namespace IntervalRecord.Tests.DataSets
                 { Before with { End = null }, Reference with { Start = null }, OverlappingState.OverlappedBy },
                 { MetBy with { End = null }, Reference with { Start = null }, expectedMetBy },
                 { After with { End = null }, Reference with { Start = null }, OverlappingState.After },
-            };
-        }
-
-        public TheoryData<Interval<T>, Interval<T>, bool> GetIsConnectedData(bool includeHalfOpen)
-        {
-            var expectedMeets = includeHalfOpen
-                ? Reference.GetBoundaryType() is BoundaryType.Closed or BoundaryType.OpenClosed or BoundaryType.ClosedOpen
-                    ? true : false
-                : Reference.GetBoundaryType() == BoundaryType.Closed ? true : false;
-
-            var expectedMetBy = includeHalfOpen
-                ? Reference.GetBoundaryType() is BoundaryType.Closed or BoundaryType.OpenClosed or BoundaryType.ClosedOpen
-                    ? true : false
-                : Reference.GetBoundaryType() == BoundaryType.Closed ? true : false;
-
-            return new TheoryData<Interval<T>, Interval<T>, bool>
-            {
-                { Before, Reference, false },
-                { Meets, Reference, expectedMeets },
-                { Overlaps, Reference, true },
-                { Starts, Reference, true },
-                { ContainedBy, Reference, true },
-                { Finishes, Reference, true },
-                { Equal, Reference, true },
-                { FinishedBy, Reference, true },
-                { Contains, Reference, true },
-                { StartedBy, Reference, true },
-                { OverlappedBy, Reference, true },
-                { MetBy, Reference, expectedMetBy },
-                { After, Reference, false },
-                { Before with { Start = null }, Reference with { End = null }, false },
-                { Meets with { Start = null }, Reference with { End = null }, expectedMeets },
-                { After with { Start = null }, Reference with { End = null }, true },
-                { Before with { Start = null }, Reference with { Start = null }, true },
-                { Equal with { Start = null }, Reference with { Start = null, End = null }, true },
-                { Equal, Reference with { Start = null, End = null }, true },
-                { After with { End = null }, Reference with { End = null }, true },
-                { Equal with { End = null }, Reference with { Start = null, End = null }, true },
-                { Equal with { Start = null, End = null }, Reference  with { Start = null, End = null }, true },
-                { Before with { End = null }, Reference with { End = null }, true },
-                { Equal with { Start = null, End = null }, Reference, true },
-                { After with { Start = null }, Reference with { Start = null }, true },
-                { Before with { End = null }, Reference with { Start = null }, true },
-                { MetBy with { End = null }, Reference with { Start = null }, expectedMetBy },
-                { After with { End = null }, Reference with { Start = null }, false },
             };
         }
     }

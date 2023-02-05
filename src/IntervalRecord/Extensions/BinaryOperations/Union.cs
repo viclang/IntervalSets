@@ -7,7 +7,7 @@ namespace IntervalRecord
         public static Interval<T> Union<T>(this Interval<T> value, Interval<T> other)
             where T : struct, IEquatable<T>, IComparable<T>, IComparable
         {
-            if (!value.IsConnected(other, true))
+            if (!value.Overlaps(other, true))
             {
                 throw new ArgumentOutOfRangeException(nameof(other), "Union is not continuous.");
             }

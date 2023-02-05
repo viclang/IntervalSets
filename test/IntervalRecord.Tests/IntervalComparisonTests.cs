@@ -1,5 +1,6 @@
 ﻿using FluentAssertions;
 using IntervalRecord.Tests.DataSets;
+using IntervalRecord.Tests.TestData;
 using System.Collections.Generic;
 using Xunit;
 
@@ -10,7 +11,7 @@ namespace IntervalRecord.Tests
         private const int start = 6;
         private const int end = 10;
         private const int offset = 1;
-        private static readonly IntervalDataSet<int> _dataSet = new IntervalDataSet<int>(start, end, BoundaryType.Closed, offset);
+        private static readonly IOverlappingDataSet<int> _dataSet = new IntegerOverlappingDataSet(start, end, BoundaryType.Closed, offset);
 
         public static TheoryData<Interval<int>, Interval<int>, OverlappingState> GetOverlappingState(BoundaryType boundaryType)
             => _dataSet.CopyWith(boundaryType).GetOverlappingState(false);
@@ -52,7 +53,7 @@ namespace IntervalRecord.Tests
                 .Should().Be(state == OverlappingState.Meets);
             a.Starts(b)
                 .Should().Be(state == OverlappingState.Starts);
-            a.Overlaps(b)
+            a.EndInsideOnly(b)
                 .Should().Be(state == OverlappingState.Overlaps);
             a.ContainedBy(b)
                 .Should().Be(state == OverlappingState.ContainedBy);
@@ -64,7 +65,7 @@ namespace IntervalRecord.Tests
                 .Should().Be(state == OverlappingState.FinishedBy);
             a.Contains(b)
                 .Should().Be(state == OverlappingState.Contains);
-            a.OverlappedBy(b)
+            a.StartInsideOnly(b)
                 .Should().Be(state == OverlappingState.OverlappedBy);
             a.StartedBy(b)
                 .Should().Be(state == OverlappingState.StartedBy);

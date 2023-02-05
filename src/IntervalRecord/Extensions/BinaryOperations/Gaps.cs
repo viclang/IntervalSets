@@ -24,7 +24,7 @@ namespace IntervalRecord
 
         public static int DistanceTo<T>(this Interval<T> value, Interval<T> other, Func<T, T, int> substract)
             where T : struct, IEquatable<T>, IComparable<T>, IComparable
-            => value.IsConnected(other)
+            => value.Overlaps(other)
                 ? 0
                 : substract(other.Start.Value, value.End.Value);
     }
