@@ -22,7 +22,7 @@ gantt
     Contains :crit, j, 2022-01-05, 2022-01-11
     StartedBy :crit, k, 2022-01-06, 2022-01-11
     OverlappedBy :crit, l, 2022-01-09, 2022-01-11
-   
+
     section Overlaps when Closed or HalfOpen
     MetBy :crit, m, 2022-01-10, 2022-01-12
 
