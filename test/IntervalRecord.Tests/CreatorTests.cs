@@ -35,18 +35,18 @@ namespace IntervalRecord.Tests
             { Interval.AtLeast(_start), AtLeast },
             { Interval.LessThan(_end), LessThan },
             { Interval.AtMost(_end), AtMost },
-            { Interval.Parse<int>($"(,)"), All },
-            { Interval.Parse<int>($"[,]"), All },
-            { Interval.Parse<int>($"(,]"), All },
-            { Interval.Parse<int>($"[,)"), All },
-            { Interval.Parse<int>($"(-∞,+∞)"), All },
-            { Interval.Parse<int>($"(∞,∞)"), All },
-            { Interval.Parse<int>($"(null,null)"), All },
-            { Interval.Parse<int>($"({_start},{_end})"), Open },
-            { Interval.Parse<int>($"(       {_start}       ,      {_end}          )"), Open },
-            { Interval.Parse<int>($"[{_start},{_end}]"), Closed },
-            { Interval.Parse<int>($"({_start},{_end}]"), OpenClosed },
-            { Interval.Parse<int>($"[{_start},{_end})"), ClosedOpen },
+            { Interval.Parse($"(,)", x => int.Parse(x)), All },
+            { Interval.Parse($"[,]", x => int.Parse(x)), All },
+            { Interval.Parse($"(,]", x => int.Parse(x)), All },
+            { Interval.Parse($"[,)", x => int.Parse(x)), All },
+            { Interval.Parse($"(-∞,+∞)", x => int.Parse(x)), All },
+            { Interval.Parse($"(∞,∞)", x => int.Parse(x)), All },
+            { Interval.Parse($"(null,null)", x => int.Parse(x)), All },
+            { Interval.Parse($"({_start},{_end})", x => int.Parse(x)), Open },
+            { Interval.Parse($"(       {_start}       ,      {_end}          )", x => int.Parse(x)), Open },
+            { Interval.Parse($"[{_start},{_end}]", x => int.Parse(x)), Closed },
+            { Interval.Parse($"({_start},{_end}]", x => int.Parse(x)), OpenClosed },
+            { Interval.Parse($"[{_start},{_end})", x => int.Parse(x)), ClosedOpen },
         };
 
         [Theory]
@@ -60,7 +60,7 @@ namespace IntervalRecord.Tests
         public void FromStringEmpty_ShouldThrowArgumentNullException()
         {
             // Arrange
-            var act = () => Interval.Parse<int>(string.Empty);
+            var act = () => Interval.Parse(string.Empty, x => int.Parse(x));
 
             // Assert
             act.Should().Throw<ArgumentException>()
@@ -86,7 +86,7 @@ namespace IntervalRecord.Tests
         public void FromStringIncorrectFormat_ShouldThrowArgumentException(string interval)
         {
             // Arrange
-            var act = () => Interval.Parse<int>(interval);
+            var act = () => Interval.Parse(interval, x => int.Parse(x));
 
             // Assert
             act.Should()

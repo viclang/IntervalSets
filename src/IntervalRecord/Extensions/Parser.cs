@@ -1,4 +1,5 @@
-﻿using System.Text.RegularExpressions;
+﻿using System.Globalization;
+using System.Text.RegularExpressions;
 
 namespace IntervalRecord
 {
@@ -9,7 +10,7 @@ namespace IntervalRecord
         private static readonly string[] infinity = { "-inf", "+inf", "inf", "-∞", "+∞", "∞", "null" };
         private const string intervalNotFound = "Interval not found in string. Please provide an interval string in correct format";
 
-        public static Interval<T> Parse<T>(string value)
+        public static Interval<T> Parse<T>(string value, Func<string, T> boundaryParser)
             where T : struct, IEquatable<T>, IComparable<T>, IComparable
         {
             var match = _intervalRegex.Match(value);
@@ -17,15 +18,15 @@ namespace IntervalRecord
             {
                 throw new ArgumentException(intervalNotFound);
             }
-            return ParseInterval<T>(match.Value);
+            return ParseInterval(match.Value, boundaryParser);
         }
 
-        public static bool TryParse<T>(string value, out Interval<T>? result)
+        public static bool TryParse<T>(string value, Func<string, T> boundaryParser, out Interval<T>? result)
             where T : struct, IEquatable<T>, IComparable<T>, IComparable
         {
             try
             {
-                result = Parse<T>(value);
+                result = Parse(value, boundaryParser);
                 return true;
             }
             catch
@@ -35,17 +36,17 @@ namespace IntervalRecord
             }
         }
 
-        public static IEnumerable<Interval<T>> ParseAll<T>(string value)
+        public static IEnumerable<Interval<T>> ParseAll<T>(string value, Func<string, T> boundaryParser)
             where T : struct, IEquatable<T>, IComparable<T>, IComparable
         {
             var matches = _intervalRegex.Matches(value);
             foreach(Match match in matches)
             {
-                yield return ParseInterval<T>(match.Value);
+                yield return ParseInterval(match.Value, boundaryParser);
             }
         }
 
-        private static Interval<T> ParseInterval<T>(string value)
+        private static Interval<T> ParseInterval<T>(string value, Func<string, T> boundaryParser)
             where T : struct, IEquatable<T>, IComparable<T>, IComparable
         {
             var parts = Regex
@@ -55,8 +56,8 @@ namespace IntervalRecord
             var startString = parts[0].Substring(1);
             var endString = parts[1].Substring(0, parts[1].Length - 1);
 
-            var start = ParseBoundary<T>(startString);
-            var end = ParseBoundary<T>(endString);
+            var start = ParseBoundary(startString, boundaryParser);
+            var end = ParseBoundary(endString, boundaryParser);
 
             return new Interval<T>(
                 start,
@@ -65,14 +66,14 @@ namespace IntervalRecord
                 end is null ? false : value.EndsWith(']'));
         }
 
-        private static T? ParseBoundary<T>(string value)
+        private static T? ParseBoundary<T>(string value, Func<string, T> boundaryParser)
             where T : struct, IEquatable<T>, IComparable<T>
         {
             if (string.IsNullOrEmpty(value) || infinity.Contains(value))
             {
                 return null;
             }
-            return (T?)Convert.ChangeType(value, typeof(T)); ;
+            return boundaryParser(value);
         }
     }
 }

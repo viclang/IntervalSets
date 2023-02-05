@@ -28,7 +28,7 @@ namespace IntervalRecord.Tests.Measurements
             // Arrange
             var stepInHours = TimeSpan.FromHours(step);
             var integer = new Interval<int>(start, end, false, false);
-            var @double = new Interval<double>(start, end, false, false);
+            var doubles = new Interval<double>(start, end, false, false);
             var dateOnly = new Interval<DateOnly>(_referenceDateOnly.AddDays(start), _referenceDateOnly.AddDays(end), false, false);
             var timeOnly = new Interval<TimeOnly>(_referenceTimeOnly.AddHours(start), _referenceTimeOnly.AddHours(end), false, false);
             var dateTime = new Interval<DateTime>(_referenceDateTimeOffset.DateTime.AddHours(start), _referenceDateTimeOffset.DateTime.AddHours(end), false, false);
@@ -36,7 +36,7 @@ namespace IntervalRecord.Tests.Measurements
 
             // Act
             var actualInteger = integer.Centre(step);
-            var actualDouble = @double.Centre(step);
+            var actualDouble = doubles.Centre(step);
             var actualDateOnly = dateOnly.Centre(step);
             var actualTimeOnly = timeOnly.Centre(stepInHours);
             var actualDateTime = dateTime.Centre(stepInHours);
@@ -44,7 +44,7 @@ namespace IntervalRecord.Tests.Measurements
 
             // Assert
             actualInteger.Should().Be(integer.Closure(step).Centre());
-            actualDouble.Should().Be(@double.Closure(step).Centre());
+            actualDouble.Should().Be(doubles.Closure(step).Centre());
             actualDateOnly.Should().Be(dateOnly.Closure(step).Centre());
             actualTimeOnly.Should().Be(timeOnly.Closure(stepInHours).Centre());
             actualDateTime.Should().Be(dateTime.Closure(stepInHours).Centre());
@@ -61,7 +61,7 @@ namespace IntervalRecord.Tests.Measurements
         {
             // Arrange
             var integer = new Interval<int>(start, end, false, false);
-            var @double = new Interval<double>(start, end, false, false);
+            var doubles = new Interval<double>(start, end, false, false);
             var dateOnly = new Interval<DateOnly>(_referenceDateOnly.AddDays(start), _referenceDateOnly.AddDays(end), false, false);
             var timeOnly = new Interval<TimeOnly>(_referenceTimeOnly.AddHours(start), _referenceTimeOnly.AddHours(end), false, false);
             var dateTime = new Interval<DateTime>(_referenceDateTimeOffset.DateTime.AddHours(start), _referenceDateTimeOffset.DateTime.AddHours(end), false, false);
@@ -69,7 +69,7 @@ namespace IntervalRecord.Tests.Measurements
 
             // Act
             var actualInteger = integer.Centre();
-            var actualDouble = @double.Centre();
+            var actualDouble = doubles.Centre();
             var actualDateOnly = dateOnly.Centre();
             var actualTimeOnly = timeOnly.Centre();
             var actualDateTime = dateTime.Centre();
@@ -77,7 +77,7 @@ namespace IntervalRecord.Tests.Measurements
 
             // Assert
             actualInteger.Should().Be((integer.End.Value + (double)integer.Start.Value) / 2);
-            actualDouble.Should().Be((@double.End + @double.Start) / 2);
+            actualDouble.Should().Be((doubles.End + doubles.Start) / 2);
             actualDateOnly.Should().Be(dateOnly.Start.Value.AddDays(dateOnly.Length().Value / 2));
             actualTimeOnly.Should().Be(timeOnly.Start.Value.Add(timeOnly.Length().Value / 2));
             actualDateTime.Should().Be(dateTime.Start.Value.Add(dateTime.Length().Value / 2));
@@ -92,7 +92,7 @@ namespace IntervalRecord.Tests.Measurements
         {
             // Arrange
             var integer = new Interval<int>(start, end, false, false);
-            var @double = new Interval<double>(start, end, false, false);
+            var doubles = new Interval<double>(start, end, false, false);
 
             var dateOnly = new Interval<DateOnly>(
                 start.HasValue ? _referenceDateOnly.AddDays(start.Value) : null,
@@ -120,7 +120,7 @@ namespace IntervalRecord.Tests.Measurements
 
             // Act
             var actualInteger = integer.Centre();
-            var actualDouble = @double.Centre();
+            var actualDouble = doubles.Centre();
             var actualDateOnly = dateOnly.Centre();
             var actualTimeOnly = timeOnly.Centre();
             var actualDateTime = dateTime.Centre();
@@ -144,7 +144,7 @@ namespace IntervalRecord.Tests.Measurements
             // Arrange
             var step = 1;
             var integer = new Interval<int>(start, end, false, false);
-            var @double = new Interval<double>(start, end, false, false);
+            var doubles = new Interval<double>(start, end, false, false);
 
             var dateOnly = new Interval<DateOnly>(
                 start.HasValue ? _referenceDateOnly.AddDays(start.Value) : null,
@@ -172,7 +172,7 @@ namespace IntervalRecord.Tests.Measurements
 
             // Act
             var actualInteger = integer.Centre(step);
-            var actualDouble = @double.Centre(step);
+            var actualDouble = doubles.Centre(step);
             var actualDateOnly = dateOnly.Centre(step);
             var actualTimeOnly = timeOnly.Centre(TimeSpan.FromHours(step));
             var actualDateTime = dateTime.Centre(TimeSpan.FromHours(step));
@@ -192,7 +192,7 @@ namespace IntervalRecord.Tests.Measurements
         {
             // Arrange
             var integer = new Interval<int>(default, default, false, false);
-            var @double = new Interval<double>(default, default, false, false);
+            var doubles = new Interval<double>(default, default, false, false);
             var dateOnly = new Interval<DateOnly>(default, default, false, false);
             var timeOnly = new Interval<TimeOnly>(default, default, false, false);
             var dateTime = new Interval<DateTime>(default, default, false, false);
@@ -200,7 +200,7 @@ namespace IntervalRecord.Tests.Measurements
 
             // Act
             var actualInteger = integer.Centre();
-            var actualDouble = @double.Centre();
+            var actualDouble = doubles.Centre();
             var actualDateOnly = dateOnly.Centre();
             var actualTimeOnly = timeOnly.Centre();
             var actualDateTime = dateTime.Centre();
