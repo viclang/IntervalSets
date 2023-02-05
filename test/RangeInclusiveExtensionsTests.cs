@@ -17,18 +17,27 @@ namespace RangeExtensions.Tests
         public void OverlapsWith_Should_BeTrue(RangeStub rangeA, RangeStub rangeB)
         {
             //act
-            var actual = rangeA.OverlapsWith(rangeB);
+            var actual = rangeA.OverlapsWithB(rangeB);
 
             //assert
             actual.Should().BeTrue();
         }
 
-        [MemberData(nameof(NotOverlappingRanges))]
+        [InlineData(1, 2, 4, 5)]//Before
+        [InlineData(7, 8, 4, 5)]//After
+        [InlineData(1, 3, 4, 5)]//From Touching        
+        [InlineData(6, 8, 2, 5)]//To Touching
+        [InlineData(6, null, 2, 5)]//To null
+        [InlineData(2, 5, 6, null)]//To null
         [Theory]
-        public void OverlapsWith_Should_BeFalse(RangeStub rangeA, RangeStub rangeB)
+        public void OverlapsWith_Should_BeFalse(int fromA, int? toA, int fromB, int? toB)
         {
+            //arrange
+            var rangeA = new RangeStub(fromA, toA);
+            var rangeB = new RangeStub(fromB, toB);
+
             //act
-            var actual = rangeA.OverlapsWith(rangeB);
+            var actual = rangeA.OverlapsWithB(rangeB);
 
             //assert
             actual.Should().BeFalse();
@@ -104,39 +113,6 @@ namespace RangeExtensions.Tests
                 //Both To null
                 new RangeStub(2, null),
                 new RangeStub(3, null)
-            }
-        };
-
-        public static TheoryData<RangeStub, RangeStub> NotOverlappingRanges = new()
-        {
-            {   //Before
-                new RangeStub(1, 2),
-                new RangeStub(4, 5)
-            },
-            {
-                //From Touching
-                new RangeStub(1, 3),
-                new RangeStub(4, 5)
-            },
-            {
-                //After
-                new RangeStub(7, 8),
-                new RangeStub(2, 5)
-            },
-            {
-                //To Touching
-                new RangeStub(6, 8),
-                new RangeStub(2, 5)
-            },
-            {
-                //To null
-                new RangeStub(6, null),
-                new RangeStub(2, 5)
-            },
-            {
-                //To null
-                new RangeStub(2, 5),
-                new RangeStub(6, null)                
             }
         };
     }

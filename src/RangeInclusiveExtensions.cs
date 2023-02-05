@@ -29,10 +29,10 @@ namespace RangeExtensions.Interfaces
                 var last = ranges.GetLastRange();
                 var replaceTo = value.From-1;
 
-                if (OverlapsWith(from, last!.To ?? replaceTo, value.From, value.To))
-                {
-                    throw new NotSupportedException("Collection range has overlap with value to add!");
-                }
+                //if (OverlapsWith(from, last!.To ?? replaceTo, value.From, value.To))
+                //{
+                //    throw new NotSupportedException("Collection range has overlap with value to add!");
+                //}
 
                 if (last.To is null)
                 {
@@ -139,13 +139,32 @@ namespace RangeExtensions.Interfaces
                 : ranges.Max(x => x.To!.Value));
         }
 
-        public static bool OverlapsWith<TSource>(this TSource source, TSource value)
+        public static bool OverlapsWithA<TSource>(this TSource source, TSource value)
         where TSource : IRangeInclusive<int>
         {
-            return OverlapsWith(source.From, source.To, value.From, value.To);
+            return OverlapsWithA(source.From, source.To, value.From, value.To);
         }
 
-        private static bool OverlapsWith<TProperty>(
+        public static bool OverlapsWithB<TSource>(this TSource source, TSource value)
+        where TSource : IRangeInclusive<int>
+        {
+            return OverlapsWithB(source.From, source.To, value.From, value.To);
+        }
+
+        private static bool IsConnected(
+            int sourceFrom,
+            int? sourceTo,
+            int valueFrom,
+            int? valueTo)
+        {
+            return sourceTo.IsConnected(valueFrom) || valueTo.IsConnected(sourceFrom);
+        }
+        private static bool IsConnected(this int? to, int from)
+        {
+            return to.Equals(from - 1);
+        }
+
+        private static bool OverlapsWithA<TProperty>(
             TProperty sourceFrom,
             TProperty? sourceTo,
             TProperty valueFrom,
@@ -175,6 +194,36 @@ namespace RangeExtensions.Interfaces
 
             return sourceFrom.CompareTo(valueTo) <= 0
                 && valueFrom.CompareTo(sourceTo) <= 0;
+        }
+
+        private static bool OverlapsWithB(
+            int sourceFrom,
+            int? sourceTo,
+            int valueFrom,
+            int? valueTo)
+        {
+
+            if (sourceTo is null
+                && valueTo is null)
+            {
+                return true;
+            }
+
+            var before = sourceFrom > valueTo;
+            if (sourceTo is null
+                && valueTo is not null)
+            {
+                return !before;
+            }
+
+            var after = sourceTo < valueFrom;
+            if (sourceTo is not null
+                && valueTo is null)
+            {
+                return !after;
+            }
+
+            return !before && !after;
         }
     }
 }
