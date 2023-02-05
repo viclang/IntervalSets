@@ -1,9 +1,9 @@
 ﻿using FluentAssertions.Execution;
 using System.Linq;
 
-namespace IntervalRecord.Tests.Calculators
+namespace IntervalRecord.Tests
 {
-    public class MinTests
+    public class MaxTests
     {
         [Theory]
         [InlineData(1, 2, 2, 3)]
@@ -11,21 +11,21 @@ namespace IntervalRecord.Tests.Calculators
         [InlineData(1, 2, 1, 2)]
         [InlineData(1, 2, 1, 3)]
         [InlineData(1, 3, 2, 3)]
-        public void MinBy_ShouldBeEnumerableMinBy(int startA, int endA, int startB, int endB)
+        public void MaxBy_ShouldBeEnumerableMaxBy(int startA, int endA, int startB, int endB)
         {
             // Arrange
             var a = new Interval<int>(startA, endA, true, true);
             var b = new Interval<int>(startB, endB, true, true);
 
             // Act
-            var actualMinByStart = Interval.MinBy(a, b, i => i.Start);
-            var actualMinByEnd = Interval.MinBy(a, b, i => i.End);
+            var actualMaxByStart = Interval.MaxBy(a, b, i => i.Start);
+            var actualMaxByEnd = Interval.MaxBy(a, b, i => i.End);
 
             // Assert
             using (new AssertionScope())
             {
-                actualMinByStart.Should().Be(new[] { a, b }.MinBy(i => i.Start));
-                actualMinByEnd.Should().Be(new[] { a, b }.MinBy(i => i.End));
+                actualMaxByStart.Should().Be(new[] { a, b }.MaxBy(i => i.Start));
+                actualMaxByEnd.Should().Be(new[] { a, b }.MaxBy(i => i.End));
             }
         }
 
@@ -35,19 +35,17 @@ namespace IntervalRecord.Tests.Calculators
         [InlineData(1, 2, 1, 2)]
         [InlineData(1, 2, 1, 3)]
         [InlineData(1, 3, 2, 3)]
-        public void Min_ShouldBeEnumerableMin(int startA, int endA, int startB, int endB)
+        public void Max_ShouldBeEnumerableMax(int startA, int endA, int startB, int endB)
         {
             // Arrange
             var a = new Interval<int>(startA, endA, true, true);
             var b = new Interval<int>(startB, endB, true, true);
 
             // Act
-            var actualMinByStart = Interval.Min(a, b);
-            var actualMinByEnd = Interval.Min(a, b);
+            var actualMaxByStart = Interval.Max(a, b);
 
             // Assert
-            actualMinByStart.Should().Be(new[] { a, b }.Min());
-            actualMinByEnd.Should().Be(new[] { a, b }.Min());
+            actualMaxByStart.Should().Be(new[] { a, b }.Max());
         }
     }
 }

@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace IntervalRecord.Tests
+﻿namespace IntervalRecord.Tests
 {
     public class IntervalTypeTests
     {

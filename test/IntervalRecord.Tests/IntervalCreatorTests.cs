@@ -51,7 +51,7 @@ namespace IntervalRecord.Tests
             bool startInclusive,
             bool endInclusive)
         {
-            var actual = Interval.WithType<int>(start, end, intervalType);
+            var actual = Interval.WithIntervalType<int>(start, end, intervalType);
 
             actual.Should().Be(new(start, end, startInclusive, endInclusive));
         }

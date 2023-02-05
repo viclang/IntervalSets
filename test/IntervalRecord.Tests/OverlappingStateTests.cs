@@ -1,6 +1,6 @@
 ﻿using IntervalRecord.Tests.TestData;
 
-namespace IntervalRecord.Tests.Calculators
+namespace IntervalRecord.Tests
 {
     public class OverlappingStateTests : DataSetTestsBase
     {

@@ -18,7 +18,7 @@ namespace IntervalRecord
             => new(value, value, true, true);
 
         [Pure]
-        public static Interval<T> WithType<T>(Infinity<T> start, Infinity<T> end, IntervalType intervalType) where T : struct, IEquatable<T>, IComparable<T>, IComparable
+        public static Interval<T> WithIntervalType<T>(Infinity<T> start, Infinity<T> end, IntervalType intervalType) where T : struct, IEquatable<T>, IComparable<T>, IComparable
         {
             var (startInclusive, endInclusive) = intervalType.ToTuple();
             return new(start, end, startInclusive, endInclusive);
