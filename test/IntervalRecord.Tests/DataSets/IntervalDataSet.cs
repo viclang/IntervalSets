@@ -29,7 +29,7 @@ namespace IntervalRecord.Tests.DataSets
         /// <param name="end"></param>
         /// <param name="boundaryType"></param>
         /// <param name="offset"></param>
-        public IntervalDataSet(T start, T end, IntervalType boundaryType, int offset)
+        public IntervalDataSet(T start, T end, BoundaryType boundaryType, int offset)
         {
             var (startInclusinve, endInclusive) = boundaryType.ToTuple();
             Reference = new Interval<T>(start, end, startInclusinve, endInclusive);
@@ -37,7 +37,7 @@ namespace IntervalRecord.Tests.DataSets
             Init(offsetCreator);
         }
 
-        public IntervalDataSet(T start, T end, IntervalType boundaryType, TimeSpan offset)
+        public IntervalDataSet(T start, T end, BoundaryType boundaryType, TimeSpan offset)
         {
             var (startInclusinve, endInclusive) = boundaryType.ToTuple();
             Reference = new Interval<T>(start, end, startInclusinve, endInclusive);
@@ -82,7 +82,7 @@ namespace IntervalRecord.Tests.DataSets
             };
         }
 
-        public IntervalDataSet<T> CopyWith(IntervalType boundaryType)
+        public IntervalDataSet<T> CopyWith(BoundaryType boundaryType)
         {
             var (startInclusive, endInclusive) = Interval.ToTuple(boundaryType);
             return this with
@@ -107,7 +107,7 @@ namespace IntervalRecord.Tests.DataSets
         public TheoryData<Interval<T>, Interval<T>, OverlappingState> GetOverlappingState => new TheoryData<Interval<T>, Interval<T>, OverlappingState>
         {
             { Before, Reference, OverlappingState.Before },
-            { Meets, Reference, Reference.GetIntervalType() == IntervalType.Closed ? OverlappingState.Meets : OverlappingState.Before },
+            { Meets, Reference, Reference.GetBoundaryType() == BoundaryType.Closed ? OverlappingState.Meets : OverlappingState.Before },
             { Overlaps, Reference, OverlappingState.Overlaps },
             { Starts, Reference, OverlappingState.Starts },
             { ContainedBy, Reference, OverlappingState.ContainedBy },
@@ -117,10 +117,10 @@ namespace IntervalRecord.Tests.DataSets
             { Contains, Reference, OverlappingState.Contains },
             { StartedBy, Reference, OverlappingState.StartedBy },
             { OverlappedBy, Reference, OverlappingState.OverlappedBy },
-            { MetBy, Reference, Reference.GetIntervalType() == IntervalType.Closed ? OverlappingState.MetBy : OverlappingState.After },
+            { MetBy, Reference, Reference.GetBoundaryType() == BoundaryType.Closed ? OverlappingState.MetBy : OverlappingState.After },
             { After, Reference, OverlappingState.After },
             { Before with { Start = null }, Reference with { End = null }, OverlappingState.Before },
-            { Meets with { Start = null }, Reference with { End = null }, Reference.GetIntervalType() == IntervalType.Closed ? OverlappingState.Meets : OverlappingState.Before },
+            { Meets with { Start = null }, Reference with { End = null }, Reference.GetBoundaryType() == BoundaryType.Closed ? OverlappingState.Meets : OverlappingState.Before },
             { After with { Start = null }, Reference with { End = null }, OverlappingState.Overlaps },
             { Before with { Start = null }, Reference with { Start = null }, OverlappingState.Starts },
             { Equal with { Start = null }, Reference with { Start = null, End = null }, OverlappingState.Starts },
@@ -132,14 +132,14 @@ namespace IntervalRecord.Tests.DataSets
             { Equal with { Start = null, End = null }, Reference, OverlappingState.Contains },
             { After with { Start = null }, Reference with { Start = null }, OverlappingState.StartedBy },
             { Before with { End = null }, Reference with { Start = null }, OverlappingState.OverlappedBy },
-            { MetBy with { End = null }, Reference with { Start = null }, Reference.GetIntervalType() == IntervalType.Closed ? OverlappingState.MetBy : OverlappingState.After },
+            { MetBy with { End = null }, Reference with { Start = null }, Reference.GetBoundaryType() == BoundaryType.Closed ? OverlappingState.MetBy : OverlappingState.After },
             { After with { End = null }, Reference with { Start = null }, OverlappingState.After },
         };
 
         public TheoryData<Interval<T>, Interval<T>, bool> OverlapsWith => new TheoryData<Interval<T>, Interval<T>, bool>
         {
             { Before, Reference, false },
-            { Meets, Reference, Reference.GetIntervalType() == IntervalType.Closed },
+            { Meets, Reference, Reference.GetBoundaryType() == BoundaryType.Closed },
             { Overlaps, Reference, true },
             { Starts, Reference, true },
             { ContainedBy, Reference, true },
@@ -149,10 +149,10 @@ namespace IntervalRecord.Tests.DataSets
             { Contains, Reference, true },
             { StartedBy, Reference, true },
             { OverlappedBy, Reference, true },
-            { MetBy, Reference, Reference.GetIntervalType() == IntervalType.Closed },
+            { MetBy, Reference, Reference.GetBoundaryType() == BoundaryType.Closed },
             { After, Reference, false },
             { Before with { Start = null }, Reference with { End = null }, false },
-            { Meets with { Start = null }, Reference with { End = null }, Reference.GetIntervalType() == IntervalType.Closed },
+            { Meets with { Start = null }, Reference with { End = null }, Reference.GetBoundaryType() == BoundaryType.Closed },
             { After with { Start = null }, Reference with { End = null }, true },
             { Before with { Start = null }, Reference with { Start = null }, true },
             { Equal with { Start = null }, Reference with { Start = null, End = null }, true },
@@ -164,7 +164,7 @@ namespace IntervalRecord.Tests.DataSets
             { Equal with { Start = null, End = null }, Reference, true },
             { After with { Start = null }, Reference with { Start = null }, true },
             { Before with { End = null }, Reference with { Start = null }, true },
-            { MetBy with { End = null }, Reference with { Start = null }, Reference.GetIntervalType() == IntervalType.Closed },
+            { MetBy with { End = null }, Reference with { Start = null }, Reference.GetBoundaryType() == BoundaryType.Closed },
             { After with { End = null }, Reference with { Start = null }, false },
         };
     }

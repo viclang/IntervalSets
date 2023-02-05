@@ -2,17 +2,17 @@
 {
     public static partial class Interval
     {
-        public static Interval<int> Canonicalize(this Interval<int> value, IntervalType intervalType, int step)
+        public static Interval<int> Canonicalize(this Interval<int> value, BoundaryType intervalType, int step)
             => ConvertTo(value, intervalType, x => x + step, x => x - step);
-        public static Interval<DateOnly> CanonicalizeDays(this Interval<DateOnly> value, IntervalType intervalType, int step)
+        public static Interval<DateOnly> CanonicalizeDays(this Interval<DateOnly> value, BoundaryType intervalType, int step)
             => ConvertTo(value, intervalType, x => x.AddDays(step), x => x.AddDays(-step));
-        public static Interval<DateOnly> CanonicalizeMonths(this Interval<DateOnly> value, IntervalType intervalType, int step)
+        public static Interval<DateOnly> CanonicalizeMonths(this Interval<DateOnly> value, BoundaryType intervalType, int step)
             => ConvertTo(value, intervalType, x => x.AddMonths(step), x => x.AddMonths(-step));
-        public static Interval<DateOnly> CanonicalizeYears(this Interval<DateOnly> value, IntervalType intervalType, int step)
+        public static Interval<DateOnly> CanonicalizeYears(this Interval<DateOnly> value, BoundaryType intervalType, int step)
             => ConvertTo(value, intervalType, x => x.AddYears(step), x => x.AddYears(-step));
-        public static Interval<DateTime> Canonicalize(this Interval<DateTime> value, IntervalType intervalType, TimeSpan step)
+        public static Interval<DateTime> Canonicalize(this Interval<DateTime> value, BoundaryType intervalType, TimeSpan step)
             => ConvertTo(value, intervalType, x => x.Add(step), x => x.Subtract(step));
-        public static Interval<DateTimeOffset> Canonicalize(this Interval<DateTimeOffset> value, IntervalType intervalType, TimeSpan step)
+        public static Interval<DateTimeOffset> Canonicalize(this Interval<DateTimeOffset> value, BoundaryType intervalType, TimeSpan step)
             => ConvertTo(value, intervalType, x => x.Add(step), x => x.Subtract(step));
 
         public static Interval<int> Closure(this Interval<int> value, int step)
@@ -43,16 +43,16 @@
 
         private static Interval<T> ConvertTo<T>(
             this Interval<T> value,
-            IntervalType intervalType,
+            BoundaryType intervalType,
             Func<T, T> add,
             Func<T, T> substract)
                 where T : struct, IEquatable<T>, IComparable<T>, IComparable
             => intervalType switch
             {
-                IntervalType.Closed => ToClosed(value, add, substract),
-                IntervalType.ClosedOpen => ToClosedOpen(value, add),
-                IntervalType.OpenClosed => ToOpenClosed(value, add),
-                IntervalType.Open => ToOpen(value, add, substract),
+                BoundaryType.Closed => ToClosed(value, add, substract),
+                BoundaryType.ClosedOpen => ToClosedOpen(value, add),
+                BoundaryType.OpenClosed => ToOpenClosed(value, substract),
+                BoundaryType.Open => ToOpen(value, add, substract),
                 _ => throw new NotImplementedException()
             };
 

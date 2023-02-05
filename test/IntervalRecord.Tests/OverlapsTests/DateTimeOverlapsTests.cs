@@ -11,10 +11,10 @@ namespace IntervalRecord.Tests.OverlapsTests
         private static readonly DateTime _start = new DateTime(2022, 7, 30);
         private static readonly DateTime _end = _start.AddDays(4);
         private static readonly TimeSpan offset = TimeSpan.FromDays(1);
-        private static IntervalDataSet<DateTime> _openDataSet = new IntervalDataSet<DateTime>(_start, _end, IntervalType.Open, offset);
-        private static IntervalDataSet<DateTime> _closedDataSet = _openDataSet.CopyWith(IntervalType.Closed);
-        private static IntervalDataSet<DateTime> _openClosedDataSet = _openDataSet.CopyWith(IntervalType.OpenClosed);
-        private static IntervalDataSet<DateTime> _closedOpenDataSet = _openDataSet.CopyWith(IntervalType.ClosedOpen);
+        private static IntervalDataSet<DateTime> _openDataSet = new IntervalDataSet<DateTime>(_start, _end, BoundaryType.Open, offset);
+        private static IntervalDataSet<DateTime> _closedDataSet = _openDataSet.CopyWith(BoundaryType.Closed);
+        private static IntervalDataSet<DateTime> _openClosedDataSet = _openDataSet.CopyWith(BoundaryType.OpenClosed);
+        private static IntervalDataSet<DateTime> _closedOpenDataSet = _openDataSet.CopyWith(BoundaryType.ClosedOpen);
 
 
         public static TheoryData<Interval<DateTime>, Interval<DateTime>, bool> OpenIntervalOverlapsWith => _openDataSet.OverlapsWith;

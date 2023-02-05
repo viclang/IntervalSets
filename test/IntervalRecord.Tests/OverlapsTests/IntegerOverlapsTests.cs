@@ -10,10 +10,10 @@ namespace IntervalRecord.Tests.OverlapsTests
         private const int start = 6;
         private const int end = 10;
         private const int offset = 1;
-        private static IntervalDataSet<int> _openDataSet = new IntervalDataSet<int>(start, end, IntervalType.Open, offset);
-        private static IntervalDataSet<int> _closedDataSet = _openDataSet.CopyWith(IntervalType.Closed);
-        private static IntervalDataSet<int> _openClosedDataSet = _openDataSet.CopyWith(IntervalType.OpenClosed);
-        private static IntervalDataSet<int> _closedOpenDataSet = _openDataSet.CopyWith(IntervalType.ClosedOpen);
+        private static IntervalDataSet<int> _openDataSet = new IntervalDataSet<int>(start, end, BoundaryType.Open, offset);
+        private static IntervalDataSet<int> _closedDataSet = _openDataSet.CopyWith(BoundaryType.Closed);
+        private static IntervalDataSet<int> _openClosedDataSet = _openDataSet.CopyWith(BoundaryType.OpenClosed);
+        private static IntervalDataSet<int> _closedOpenDataSet = _openDataSet.CopyWith(BoundaryType.ClosedOpen);
 
 
         public static TheoryData<Interval<int>, Interval<int>, bool> OpenOverlapsWith => _openDataSet.OverlapsWith;

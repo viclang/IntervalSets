@@ -1,10 +1,16 @@
-﻿namespace IntervalRecord
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace IntervalRecord.Enums
 {
     public enum IntervalType
     {
-        Closed = 0,
-        ClosedOpen = 1,
-        OpenClosed = 2,
-        Open = 3,
+        Bounded = 0,
+        Unbounded = 1,
+        LeftBounded = 2,
+        RightBounded = 3,
     }
 }

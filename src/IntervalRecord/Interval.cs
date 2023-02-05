@@ -13,8 +13,8 @@ namespace IntervalRecord
 
         public Infinity<T> Start { get => _start; init => _start = new Infinity<T>(value, false); }
         public Infinity<T> End { get => _end; init => _end = new Infinity<T>(value, true); }
-        public bool StartInclusive { get => !_start.IsInfinite && _startInclusive; init => _startInclusive = value; }
-        public bool EndInclusive { get => !_end.IsInfinite && _endInclusive; init => _endInclusive = value; }
+        public bool StartInclusive { get => _startInclusive; init { _startInclusive = !Start.IsInfinite && value; } }
+        public bool EndInclusive { get => _endInclusive; init { _endInclusive = !End.IsInfinite && value; } }
 
         public Interval()
             : this(null, null, false, false)
@@ -25,24 +25,9 @@ namespace IntervalRecord
         {
             _start = new Infinity<T>(start, false);
             _end = new Infinity<T>(end, true);
-            _startInclusive = startInclusive;
-            _endInclusive = endInclusive;
+            _startInclusive = !_start.IsInfinite && startInclusive;
+            _endInclusive = !_end.IsInfinite && endInclusive;
         }
-
-        public bool IsClosed() => StartInclusive && EndInclusive;
-
-        public bool IsEmpty() => !Start.IsInfinite && !End.IsInfinite
-                && Start.Value.Equals(End.Value) && !IsClosed();
-
-        public bool IsSingleton() => !IsUnBounded() && Start.Value.Equals(End.Value) && IsClosed();
-
-        public bool IsUnBounded() => Start.IsInfinite && End.IsInfinite;
-
-        public bool IsHalfBounded() => IsLeftBounded() || IsRightBounded();
-
-        public bool IsLeftBounded() => !Start.IsInfinite && End.IsInfinite;
-
-        public bool IsRightBounded() => Start.IsInfinite && !End.IsInfinite;
 
         public bool IsConnected(Interval<T> other) => !this.IsBefore(other) && !this.IsAfter(other);
         public bool OverlapsWith(Interval<T> other) => !this.IsBefore(other) && !this.IsAfter(other);

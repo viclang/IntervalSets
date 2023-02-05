@@ -93,6 +93,5 @@ namespace IntervalRecord.Tests
                 .Throw<ArgumentException>()
                 .WithMessage($"Interval not found in string. Please provide an interval string in correct format");
         }
-
     }
 }

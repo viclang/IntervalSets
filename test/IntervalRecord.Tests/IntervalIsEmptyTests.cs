@@ -24,12 +24,12 @@ namespace IntervalRecord.Tests
             // Act
             var resultTrue = new bool[]
             {
-                open.IsEmpty(),
-                openClosed.IsEmpty(),
-                closedOpen.IsEmpty(),
+                open.IsEmpty(1),
+                openClosed.IsEmpty(1),
+                closedOpen.IsEmpty(1),
             };
 
-            var resultFalse = closed.IsEmpty();
+            var resultFalse = closed.IsEmpty(1);
 
             // Assert
             resultTrue.Should().AllBeEquivalentTo(true);
@@ -52,10 +52,10 @@ namespace IntervalRecord.Tests
             // Act
             var result = new bool[]
             {
-                open.IsEmpty(),
-                openClosed.IsEmpty(),
-                closedOpen.IsEmpty(),
-                closed.IsEmpty()
+                open.IsEmpty(1),
+                openClosed.IsEmpty(1),
+                closedOpen.IsEmpty(1),
+                closed.IsEmpty(1)
             };
 
             // Assert

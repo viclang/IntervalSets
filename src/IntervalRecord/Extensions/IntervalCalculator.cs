@@ -25,6 +25,29 @@ namespace IntervalRecord
             return value with { Start = maxByStart.Start, End = minByEnd.End, StartInclusive = startInclusive, EndInclusive = endInclusive };
         }
 
+        public static Interval<T> Except<T>(this Interval<T> value, Interval<T> other)
+            where T : struct, IEquatable<T>, IComparable<T>, IComparable
+        {
+            if (!value.IsConnected(other))
+            {
+                throw new ArgumentOutOfRangeException(
+                    nameof(other),
+                    "Intersection is only supported for Overlapping intervals.");
+            }
+            var minByStart = MinBy(value, other, x => x.Start);
+            var minByEnd = MinBy(value, other, x => x.End);
+
+            var startInclusive = value.Start == other.Start
+                ? value.StartInclusive || other.StartInclusive
+                : minByStart.StartInclusive;
+
+            var endInclusive = value.End == other.End
+                ? value.EndInclusive || other.EndInclusive
+                : minByEnd.EndInclusive;
+
+            return value with { Start = minByStart.Start, End = minByEnd.End, StartInclusive = startInclusive, EndInclusive = endInclusive };
+        }
+
         public static Interval<T> Union<T>(this Interval<T> value, Interval<T> other)
             where T : struct, IEquatable<T>, IComparable<T>, IComparable
         {
@@ -114,31 +137,31 @@ namespace IntervalRecord
         //    }
         //}
 
-        public static Infinity<int> Length(this Interval<int> value) => Calculate(Closure(value, 1), (a, b) => a - b);
-        public static Infinity<int> Length(this Interval<DateOnly> value) => Calculate(ClosureDays(value, 1), (a, b) => a.DayNumber - b.DayNumber);
-        public static Infinity<TimeSpan> Length(this Interval<DateTime> value, TimeSpan closureStep) => CalculateEndStart(value.Closure(closureStep), (a, b) => a.Subtract(b));
-        public static Infinity<TimeSpan> Length(this Interval<DateTimeOffset> value, TimeSpan closureStep) => CalculateEndStart(value.Closure(closureStep), (a, b) => a.Subtract(b));
+        public static Infinity<int> Length(this Interval<int> value) => Length(Closure(value, 1), (a, b) => a - b);
+        public static Infinity<int> Length(this Interval<DateOnly> value) => Length(ClosureDays(value, 1), (a, b) => a.DayNumber - b.DayNumber);
+        public static Infinity<TimeSpan> Length(this Interval<DateTime> value, TimeSpan closureStep) => Length(value.Closure(closureStep), (a, b) => a.Subtract(b));
+        public static Infinity<TimeSpan> Length(this Interval<DateTimeOffset> value, TimeSpan closureStep) => Length(value.Closure(closureStep), (a, b) => a.Subtract(b));
 
-        public static Infinity<int> Radius(this Interval<int> value) => Calculate(value.Closure(1), (a, b) => (a - b) / 2);
-        public static Infinity<int> Radius(this Interval<DateOnly> value) => Calculate(value.ClosureDays(1), (a, b) => (a.DayNumber - b.DayNumber) / 2);
+        public static Infinity<int> Radius(this Interval<int> value) => CentreOrRadius(value.Closure(1), (a, b) => (a - b) / 2);
+        public static Infinity<int> Radius(this Interval<DateOnly> value) => CentreOrRadius(value.ClosureDays(1), (a, b) => (a.DayNumber - b.DayNumber) / 2);
 
         /// <summary>
         /// Radius
         /// </summary>
         /// <param name="value">The interval value will be transformed to a closed interval <see cref="Closure(Interval{DateTime}, TimeSpan)"/></param>
         /// <returns></returns>
-        public static Infinity<TimeSpan> Radius(this Interval<DateTime> value, TimeSpan closureStep) => CalculateEndStart(value.Closure(closureStep), (a, b) => a.Subtract(b) / 2);
+        public static Infinity<TimeSpan> Radius(this Interval<DateTime> value, TimeSpan closureStep) => CentreOrRadius(value.Closure(closureStep), (a, b) => a.Subtract(b) / 2);
         /// <summary>
         /// Radius
         /// </summary>
         /// <param name="value">The interval value will be transformed to a closed interval before measurement <see cref="Closure(Interval{DateTimeOffset}, TimeSpan)"/></param>
         /// <returns></returns>
-        public static Infinity<TimeSpan> Radius(this Interval<DateTimeOffset> value, TimeSpan closureStep) => CalculateEndStart(value.Closure(closureStep), (a, b) => a.Subtract(b) / 2);
+        public static Infinity<TimeSpan> Radius(this Interval<DateTimeOffset> value, TimeSpan closureStep) => CentreOrRadius(value.Closure(closureStep), (a, b) => a.Subtract(b) / 2);
 
-        public static int? Centre(this Interval<int> value) => Centre(value.Closure(1), (a, b) => (a + b) / 2);
-        public static DateOnly? Centre(this Interval<DateOnly> value) => Centre(value.ClosureDays(1), (a, b) => a.AddDays((int)Math.Round((double)(a.DayNumber + b.DayNumber) / 2)));
-        public static DateTime? Centre(this Interval<DateTime> value, TimeSpan closureStep) => Centre(value.Closure(closureStep), (a, b) => a.Add(a.Subtract(b) / 2));
-        public static DateTimeOffset? Centre(this Interval<DateTimeOffset> value, TimeSpan closureStep) => Centre(value.Closure(closureStep), (a, b) => a.Add(a.Subtract(b) / 2));
+        public static int? Centre(this Interval<int> value) => CentreOrRadius(value.Closure(1), (a, b) => (a + b) / 2);
+        public static DateOnly? Centre(this Interval<DateOnly> value) => CentreOrRadius(value.ClosureDays(1), (a, b) => a.AddDays((int)Math.Round((double)(a.DayNumber + b.DayNumber) / 2)));
+        public static DateTime? Centre(this Interval<DateTime> value, TimeSpan closureStep) => CentreOrRadius(value.Closure(closureStep), (a, b) => a.Add(a.Subtract(b) / 2));
+        public static DateTimeOffset? Centre(this Interval<DateTimeOffset> value, TimeSpan closureStep) => CentreOrRadius(value.Closure(closureStep), (a, b) => a.Add(a.Subtract(b) / 2));
 
         public static bool HasGap(this Interval<int> value, Interval<int> other, int step) => DistanceTo(value.Closure(step), other) == step;
 
@@ -155,7 +178,7 @@ namespace IntervalRecord
                 : other.Start.Value - value.End.Value;
         }
 
-        private static Infinity<int> Calculate<T>(
+        private static Infinity<int> Length<T>(
             Interval<T> value,
             Func<T, T, int> substract)
             where T : struct, IEquatable<T>, IComparable<T>, IComparable
@@ -163,24 +186,24 @@ namespace IntervalRecord
                 ? new Infinity<int>()
                 : value.IsEmpty() ? 0 : substract(value.End.Value, value.Start.Value);
 
-        private static Infinity<double> CalculateEndStart<T>(
+        private static Infinity<double> Length<T>(
             Interval<T> value,
-            Func<T, T, double> substract)
+            Func<T, T, double> length)
             where T : struct, IEquatable<T>, IComparable<T>, IComparable
             => value.Start.IsInfinite || value.End.IsInfinite
                 ? new Infinity<double>()
-                : value.IsEmpty() ? 0 : substract(value.End.Value, value.Start.Value);
+                : value.IsEmpty() ? 0 : length(value.End.Value, value.Start.Value);
 
 
-        private static Infinity<TimeSpan> CalculateEndStart<T>(
+        private static Infinity<TimeSpan> Length<T>(
             Interval<T> value,
-            Func<T, T, TimeSpan> substract)
+            Func<T, T, TimeSpan> length)
             where T : struct, IEquatable<T>, IComparable<T>, IComparable
             => value.Start.IsInfinite || value.End.IsInfinite
                 ? new Infinity<TimeSpan>()
-                : value.IsEmpty() ? TimeSpan.Zero : substract(value.End.Value, value.Start.Value);
+                : value.IsEmpty() ? TimeSpan.Zero : length(value.End.Value, value.Start.Value);
 
-        private static TResult? Centre<T, TResult>(Interval<T> value, Func<T, T, TResult> calculate)
+        private static TResult? CentreOrRadius<T, TResult>(Interval<T> value, Func<T, T, TResult> calculate)
             where T : struct, IEquatable<T>, IComparable<T>, IComparable
             where TResult : struct
         {

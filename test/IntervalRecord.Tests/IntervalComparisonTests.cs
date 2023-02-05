@@ -10,12 +10,12 @@ namespace IntervalRecord.Tests
         private const int start = 6;
         private const int end = 10;
         private const int offset = 1;
-        private static readonly IntervalDataSet<int> _openDataSet = new IntervalDataSet<int>(start, end, IntervalType.Open, offset);
+        private static readonly IntervalDataSet<int> _openDataSet = new IntervalDataSet<int>(start, end, BoundaryType.Open, offset);
 
         public static TheoryData<Interval<int>, Interval<int>, OverlappingState> OpenGetOverlappingState => _openDataSet.GetOverlappingState;
-        public static TheoryData<Interval<int>, Interval<int>, OverlappingState> ClosedGetOverlappingState => _openDataSet.CopyWith(IntervalType.Closed).GetOverlappingState;
-        public static TheoryData<Interval<int>, Interval<int>, OverlappingState> OpenClosedGetOverlappingState => _openDataSet.CopyWith(IntervalType.OpenClosed).GetOverlappingState;
-        public static TheoryData<Interval<int>, Interval<int>, OverlappingState> ClosedOpenGetOverlappingState => _openDataSet.CopyWith(IntervalType.ClosedOpen).GetOverlappingState;
+        public static TheoryData<Interval<int>, Interval<int>, OverlappingState> ClosedGetOverlappingState => _openDataSet.CopyWith(BoundaryType.Closed).GetOverlappingState;
+        public static TheoryData<Interval<int>, Interval<int>, OverlappingState> OpenClosedGetOverlappingState => _openDataSet.CopyWith(BoundaryType.OpenClosed).GetOverlappingState;
+        public static TheoryData<Interval<int>, Interval<int>, OverlappingState> ClosedOpenGetOverlappingState => _openDataSet.CopyWith(BoundaryType.ClosedOpen).GetOverlappingState;
 
         [Theory]
         [MemberData(nameof(OpenGetOverlappingState))]
