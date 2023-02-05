@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -17,7 +16,7 @@ namespace IntervalRecord.Tests.TestData
         /// <exception cref="ArgumentException"></exception>
         public IntOverlappingDataSet(int startingPoint, int length, int offset, IntervalType intervalType)
         {
-            if((offset * 2) >= length) throw new ArgumentException("Length must be greater than (offset * 2)");
+            if ((offset * 2) >= length) throw new ArgumentException("Length must be greater than (offset * 2)");
 
             var (startInclusinve, endInclusive) = intervalType.ToTuple();
             Reference = new Interval<int>(
@@ -105,7 +104,7 @@ namespace IntervalRecord.Tests.TestData
 
         public IEnumerable<object[]> GetIntervalPairs()
         {
-            return GetIntervalPairsWithOverlappingState(false).Select(x => x[..(x.Length-1)]);
+            return GetIntervalPairsWithOverlappingState(false).Select(x => x[..(x.Length - 1)]);
         }
     }
 }

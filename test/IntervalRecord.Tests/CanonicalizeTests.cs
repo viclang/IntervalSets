@@ -1,7 +1,7 @@
 ﻿using IntervalRecord.Tests.TestHelper;
 using System;
 
-namespace IntervalRecord.Tests.Canonicalize
+namespace IntervalRecord.Tests.CanonicalizeTests
 {
     public class CanonicalizeInt32Tests : CanonicalizeTestsBase<int, int> { }
 

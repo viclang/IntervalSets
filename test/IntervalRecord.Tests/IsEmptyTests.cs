@@ -1,7 +1,4 @@
-﻿using FluentAssertions;
-using Xunit;
-
-namespace IntervalRecord.Tests
+﻿namespace IntervalRecord.Tests
 {
     public class IsEmptyTests
     {

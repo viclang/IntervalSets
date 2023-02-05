@@ -1,8 +1,7 @@
-﻿using System.Data;
+﻿using IntervalRecord.Tests.TestData;
 using System.Linq;
-using IntervalRecord.Tests.TestData;
 
-namespace IntervalRecord.Tests.Combiners
+namespace IntervalRecord.Tests.CombineTests
 {
     public class GapsTests : DataSetTestsBase
     {

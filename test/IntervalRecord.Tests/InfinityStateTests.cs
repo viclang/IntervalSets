@@ -1,8 +1,4 @@
-﻿using FluentAssertions;
-using InfinityComparable;
-using Xunit;
-
-namespace IntervalRecord.Tests
+﻿namespace IntervalRecord.Tests
 {
     public class BoundedStateTests
     {

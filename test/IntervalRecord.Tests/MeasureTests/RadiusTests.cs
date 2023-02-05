@@ -1,5 +1,4 @@
-﻿using InfinityComparable;
-using IntervalRecord.Tests.TestHelper;
+﻿using IntervalRecord.Tests.TestHelper;
 using System;
 
 namespace IntervalRecord.Tests.Measure.Radius

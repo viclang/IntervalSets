@@ -1,8 +1,8 @@
-﻿using System.Linq;
-using FluentAssertions.Execution;
+﻿using FluentAssertions.Execution;
 using IntervalRecord.Tests.TestData;
+using System.Linq;
 
-namespace IntervalRecord.Tests.Combiners
+namespace IntervalRecord.Tests.CombineTests
 {
     public sealed class HullTests : DataSetTestsBase
     {

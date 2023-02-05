@@ -76,11 +76,11 @@ namespace IntervalRecord.Tests.Measure.Centre
             }
             else if (type == typeof(DateTime))
             {
-                return (TResult?)(object?)(result is null ? null : _referenceDate.DateTime.AddDays(result.Value-1));
+                return (TResult?)(object?)(result is null ? null : _referenceDate.DateTime.AddDays(result.Value - 1));
             }
             else if (type == typeof(DateTimeOffset))
             {
-                return (TResult?)(object?)(result is null ? null : _referenceDate.AddDays(result.Value-1));
+                return (TResult?)(object?)(result is null ? null : _referenceDate.AddDays(result.Value - 1));
             }
             else if (type == typeof(TimeOnly))
             {

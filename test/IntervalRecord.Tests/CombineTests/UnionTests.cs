@@ -1,9 +1,9 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using FluentAssertions.Execution;
+﻿using FluentAssertions.Execution;
 using IntervalRecord.Tests.TestData;
+using System.Collections.Generic;
+using System.Linq;
 
-namespace IntervalRecord.Tests.Combiners
+namespace IntervalRecord.Tests.CombineTests
 {
     public class UnionTests : DataSetTestsBase
     {

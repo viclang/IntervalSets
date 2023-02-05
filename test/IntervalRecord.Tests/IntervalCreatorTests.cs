@@ -1,11 +1,4 @@
-﻿using FluentAssertions;
-using InfinityComparable;
-using System;
-using System.Linq;
-using Xunit;
-using Xunit.Sdk;
-
-namespace IntervalRecord.Tests
+﻿namespace IntervalRecord.Tests
 {
     public class IntervalCreatorTests
     {

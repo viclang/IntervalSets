@@ -1,10 +1,8 @@
 ﻿using FluentAssertions.Execution;
 using IntervalRecord.Tests.TestData;
-using Newtonsoft.Json.Linq;
-using System;
 using System.Linq;
 
-namespace IntervalRecord.Tests.Combiners
+namespace IntervalRecord.Tests.CombineTests
 {
     public class ExceptTests : DataSetTestsBase
     {
