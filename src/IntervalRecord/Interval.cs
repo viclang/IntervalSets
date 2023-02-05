@@ -18,7 +18,7 @@ namespace IntervalRecord
         public bool EndInclusive { get => _endInclusive; init { _endInclusive = !End.IsInfinite && value; } }
 
         public Interval()
-            : this(null, null, false, false)
+            : this(Infinity<T>.NegativeInfinity, Infinity<T>.PositiveInfinity, false, false)
         {
         }
 
