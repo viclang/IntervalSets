@@ -2,23 +2,21 @@
 
 namespace IntervalRecord
 {
-    internal static class IntervalParser
+    public static partial class Interval
     {
         private static readonly Regex _intervalRegex =
             new Regex(@"(?:\[|\()(?:[^[\](),]*,[^,()[\]]*)(?:\)|\])");
         private static readonly string[] infinity = { "-inf", "+inf", "inf", "-∞", "+∞", "∞", "null" };
         private const string intervalNotFound = "Interval not found in string. Please provide an interval string in correct format";
 
-        internal static Interval<T> Parse<T>(string value)
+        public static Interval<T> Parse<T>(string value)
             where T : struct, IEquatable<T>, IComparable<T>, IComparable
         {
             var match = _intervalRegex.Match(value);
-
             if (!match.Success)
             {
                 throw new ArgumentException(intervalNotFound);
             }
-
             return ParseInterval<T>(match.Value);
         }
 
@@ -37,11 +35,10 @@ namespace IntervalRecord
             }
         }
 
-        internal static IEnumerable<Interval<T>> ParseAll<T>(string value)
+        public static IEnumerable<Interval<T>> ParseAll<T>(string value)
             where T : struct, IEquatable<T>, IComparable<T>, IComparable
         {
             var matches = _intervalRegex.Matches(value);
-            
             foreach(Match match in matches)
             {
                 yield return ParseInterval<T>(match.Value);

@@ -1,5 +1,4 @@
-﻿using IntervalRecord.Extensions;
-using System;
+﻿using System;
 
 namespace IntervalRecord.Tests.DataSets
 {
@@ -81,7 +80,7 @@ namespace IntervalRecord.Tests.DataSets
         public DateTimeCreator(Interval<DateTime> reference, TimeSpan offset)
         {
 
-            var length = reference.Length().Value;
+            var length = reference.Length(TimeSpan.FromDays(1)).Value;
             DateTime referenceStart = (DateTime)reference.Start!;
             DateTime referenceEnd = (DateTime)reference.End!;
 
@@ -106,7 +105,7 @@ namespace IntervalRecord.Tests.DataSets
 
         public DateTimeOffsetCreator(Interval<DateTimeOffset> reference, TimeSpan offset)
         {
-            var length = reference.Length().Value;
+            var length = reference.Length(TimeSpan.FromDays(1)).Value;
             DateTimeOffset referenceStart = (DateTimeOffset)reference.Start!;
             DateTimeOffset referenceEnd = (DateTimeOffset)reference.End!;
 

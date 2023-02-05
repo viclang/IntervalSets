@@ -1,5 +1,4 @@
-﻿
-namespace IntervalRecord.Enums
+﻿namespace IntervalRecord
 {
     public enum OverlappingState
     {

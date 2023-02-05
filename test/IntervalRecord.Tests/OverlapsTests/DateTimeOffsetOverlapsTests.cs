@@ -1,5 +1,4 @@
 ﻿using FluentAssertions;
-using IntervalRecord.Enums;
 using IntervalRecord.Tests.DataSets;
 using System;
 using Xunit;
@@ -12,10 +11,10 @@ namespace IntervalRecord.Tests.OverlapsTests
         private static readonly DateTimeOffset _start = new DateTimeOffset(new DateTime(2022, 7, 30), TimeSpan.Zero);
         private static readonly DateTimeOffset _end = _start.AddDays(4);
         private static readonly TimeSpan offset = TimeSpan.FromDays(1);
-        private static IntervalDataSet<DateTimeOffset> _openDataSet = new IntervalDataSet<DateTimeOffset>(_start, _end, BoundaryType.Open, offset);
-        private static IntervalDataSet<DateTimeOffset> _closedDataSet = _openDataSet.CopyWith(BoundaryType.Closed);
-        private static IntervalDataSet<DateTimeOffset> _openClosedDataSet = _openDataSet.CopyWith(BoundaryType.OpenClosed);
-        private static IntervalDataSet<DateTimeOffset> _closedOpenDataSet = _openDataSet.CopyWith(BoundaryType.ClosedOpen);
+        private static IntervalDataSet<DateTimeOffset> _openDataSet = new IntervalDataSet<DateTimeOffset>(_start, _end, IntervalType.Open, offset);
+        private static IntervalDataSet<DateTimeOffset> _closedDataSet = _openDataSet.CopyWith(IntervalType.Closed);
+        private static IntervalDataSet<DateTimeOffset> _openClosedDataSet = _openDataSet.CopyWith(IntervalType.OpenClosed);
+        private static IntervalDataSet<DateTimeOffset> _closedOpenDataSet = _openDataSet.CopyWith(IntervalType.ClosedOpen);
 
 
         public static TheoryData<Interval<DateTimeOffset>, Interval<DateTimeOffset>, bool> OpenIntervalOverlapsWith => _openDataSet.OverlapsWith;

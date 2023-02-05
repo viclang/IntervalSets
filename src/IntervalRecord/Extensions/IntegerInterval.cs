@@ -1,5 +1,4 @@
-﻿using IntervalRecord;
-namespace IntervalRecord.Extensions
+﻿namespace IntervalRecord
 {
     public static class IntegerInterval
     {

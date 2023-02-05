@@ -1,7 +1,6 @@
-﻿
-namespace IntervalRecord.Extensions
+﻿namespace IntervalRecord
 {
-    public static class EnumerableInterval
+    public static partial class Interval
     {
         //public static bool IsConnected(
         //    this Interval<DateOnly> value,

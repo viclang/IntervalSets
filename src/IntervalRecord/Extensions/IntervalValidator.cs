@@ -1,14 +1,13 @@
-﻿
-namespace IntervalRecord.Extensions
+﻿namespace IntervalRecord
 {
-    public static class IntervalValidator
+    public static partial class Interval
     {
         private const string mustBeGreaterOrEqualMessage = "The End parameter must be greater or equal to the Start parameter";
         private const string mustBeGreaterThanMessage = "The End parameter must be greater or equal to the Start parameter";
         public static Interval<T> ValidateAndThrow<T>(this Interval<T> value)
             where T : struct, IEquatable<T>, IComparable<T>, IComparable
         {
-            if (!value.IsValid(out var message))
+            if (!IsValid(value, out var message))
             {
                 throw new ArgumentOutOfRangeException("End", message);
             }
