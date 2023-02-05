@@ -1,4 +1,5 @@
 ﻿using FluentAssertions;
+using IntervalRecord.Extensions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,10 +9,12 @@ using Xunit;
 
 namespace IntervalRecord.Tests
 {
-    public class IntervalBuilderTests
+    public class IntervalCreatorTests
     {
         private const int _start = 1;
         private const int _end = 2;
+
+
 
         public static TheoryData<Interval<int>, Interval<int>> AllBuildersWithExpectedResults = new TheoryData<Interval<int>, Interval<int>>
         {

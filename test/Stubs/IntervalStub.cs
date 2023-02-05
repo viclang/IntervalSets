@@ -13,6 +13,6 @@ namespace IntervalRecord.Tests.Models
 
         public int End { get; set; }
 
-        public Interval<int> Interval => IntervalRecord.Interval.Closed(Start, End);
+        public Interval<int> Interval => IntervalRecord.Extensions.Interval.Closed(Start, End);
     }
 }

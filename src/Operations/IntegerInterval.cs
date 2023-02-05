@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace IntervalRecord.Extensions
 {
-    public static partial class IntervalExtensions
+    public static partial class Interval
     {
         public static int? Length(this Interval<int> value)
         {

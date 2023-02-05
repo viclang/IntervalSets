@@ -1,4 +1,5 @@
-﻿using System;
+﻿using IntervalRecord.Extensions;
+using System;
 using Xunit;
 
 namespace IntervalRecord.Tests.DataSets
