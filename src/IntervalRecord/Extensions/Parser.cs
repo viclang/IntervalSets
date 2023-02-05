@@ -49,12 +49,9 @@ namespace IntervalRecord
         private static Interval<T> ParseInterval<T>(string value, Func<string, T> boundaryParser)
             where T : struct, IEquatable<T>, IComparable<T>, IComparable
         {
-            var parts = Regex
-                .Replace(value, @"\s", string.Empty)
-                .Split(',');
-
-            var startString = parts[0].Substring(1);
-            var endString = parts[1].Substring(0, parts[1].Length - 1);
+            var parts = value.Split(',');
+            var startString = parts[0].Trim().Substring(1);
+            var endString = parts[1].Trim().Substring(0, parts[1].Length - 1);
 
             var start = ParseBoundary(startString, boundaryParser);
             var end = ParseBoundary(endString, boundaryParser);
