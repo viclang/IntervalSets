@@ -1,5 +1,4 @@
-﻿using IntervalRecord.Extensions;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -10,7 +9,7 @@ namespace IntervalRecord.Tests.DataSets
     public static class OffsetCreator
     {
         public static IOffsetCreator<T, TOffset> Create<T, TOffset>(Interval<T> reference, TOffset offset)
-            where T : struct, IEquatable<T>, IComparable<T>, IComparable
+            where T : struct, IEquatable<T>, IComparable<T>
             => (reference, offset) switch
         {
             (Interval<int> typedReference, int typedOffset) =>

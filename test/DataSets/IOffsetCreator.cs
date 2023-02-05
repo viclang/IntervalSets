@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 namespace IntervalRecord.Tests.DataSets
 {
     public interface IOffsetCreator<T, TOffset>
-        where T : struct, IEquatable<T>, IComparable<T>, IComparable
+        where T : struct, IEquatable<T>, IComparable<T>
     {
         Interval<T> Before { get; init; }
         Interval<T> Contains { get; init; }

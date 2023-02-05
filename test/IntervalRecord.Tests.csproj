@@ -25,8 +25,4 @@
     <ProjectReference Include="..\src\IntervalRecord.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Factories\" />
-  </ItemGroup>
-
 </Project>

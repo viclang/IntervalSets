@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace IntervalRecord.Extensions
+namespace IntervalRecord
 {
-    public static partial class DateInterval
+    public static class DateInterval
     {
         public static int? Length(this Interval<DateOnly> value)
         {
@@ -24,6 +24,20 @@ namespace IntervalRecord.Extensions
             return end.DayNumber - start.DayNumber;
         }
 
+        public static TimeSpan Length(this Interval<DateTime> interval)
+        {
+            var start = interval.Start ?? DateTime.MinValue;
+            var end = interval.End ?? DateTime.MaxValue;
+            return end.Subtract(start);
+        }
+
+        public static TimeSpan Length(this Interval<DateTimeOffset> interval)
+        {
+            var start = interval.Start ?? DateTimeOffset.MinValue;
+            var end = interval.End ?? DateTimeOffset.MaxValue;
+            return end.Subtract(start);
+        }
+
         public static double? Radius(this Interval<DateOnly> value)
         {
             if (!value.IsBounded())
@@ -37,6 +51,11 @@ namespace IntervalRecord.Extensions
             }
 
             return value.Length() / 2;
+        }
+
+        public static TimeSpan Radius(this Interval<DateTimeOffset> interval)
+        {
+            return interval.Length() / 2;
         }
 
         public static double? Centre(this Interval<DateOnly> value)

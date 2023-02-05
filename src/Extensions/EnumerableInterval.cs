@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace IntervalRecord.Extensions
+namespace IntervalRecord
 {
-    public static partial class Interval
+    public static class EnumerableInterval
     {
         //public static bool IsConnected(
         //    this Interval<DateOnly> value,
@@ -58,7 +58,7 @@ namespace IntervalRecord.Extensions
 
         public static Interval<T> Hull<T>(
             this IEnumerable<Interval<T>> values)
-            where T : struct, IEquatable<T>, IComparable<T>, IComparable
+            where T : struct, IEquatable<T>, IComparable<T>
         {
             if (!values.Any())
             {

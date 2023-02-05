@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace IntervalRecord.Extensions
+namespace IntervalRecord
 {
-    public static partial class Interval
+    public static class IntegerInterval
     {
         public static int? Length(this Interval<int> value)
         {

@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace IntervalRecord
+namespace IntervalRecord.Enums
 {
     public enum BoundaryType
     {

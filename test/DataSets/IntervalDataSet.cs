@@ -1,11 +1,11 @@
-﻿using IntervalRecord.Extensions;
+﻿using IntervalRecord.Enums;
 using System;
 using Xunit;
 
 namespace IntervalRecord.Tests.DataSets
 {
     public readonly struct IntervalDataSet<T, TOffset>
-        where T : struct, IEquatable<T>, IComparable<T>, IComparable
+        where T : struct, IEquatable<T>, IComparable<T>
     {
         public Interval<T> Reference { get; init; }
         public Interval<T> Before { get; init; }
@@ -56,13 +56,13 @@ namespace IntervalRecord.Tests.DataSets
             { Reference, OverlappedBy, true },
             { Reference, MetBy, Reference.GetIntervalType() == BoundaryType.Closed },
             { Reference, After, false },
-            { Reference, Before with { End = null, EndInclusive = false }, true },
-            { Reference, Before with { Start = null, StartInclusive = false }, false },
-            { Reference, Contains with { Start = null, StartInclusive = false }, true },
-            { Reference, Contains with { End = null, EndInclusive = false }, true },
-            { Reference, After with { Start = null, StartInclusive = false }, true },
-            { Reference, After with { End = null, EndInclusive = false }, false },
-            { Reference, Equal with { Start = null, End = null, StartInclusive = false, EndInclusive = false }, true },
+            { Reference, Before with { End = null }, true },
+            { Reference, Before with { Start = null }, false },
+            { Reference, Contains with { Start = null }, true },
+            { Reference, Contains with { End = null }, true },
+            { Reference, After with { Start = null }, true },
+            { Reference, After with { End = null }, false },
+            { Reference, Equal with { Start = null, End = null }, true },
         };
 
         public TheoryData<Interval<T>, Interval<T>, bool> IsConnected => new TheoryData<Interval<T>, Interval<T>, bool>
@@ -80,38 +80,38 @@ namespace IntervalRecord.Tests.DataSets
             { Reference, OverlappedBy, true },
             { Reference, MetBy, Reference.GetIntervalType() == BoundaryType.Closed },
             { Reference, After, false },
-            { Reference, Before with { End = null, EndInclusive = false }, false },
-            { Reference, Before with { Start = null, StartInclusive = false }, false },
-            { Reference, Contains with { Start = null, StartInclusive = false }, false },
-            { Reference, Contains with { End = null, EndInclusive = false }, false },
-            { Reference, After with { Start = null, StartInclusive = false }, false },
-            { Reference, After with { End = null, EndInclusive = false }, false },
-            { Reference, Equal with { Start = null, End = null, StartInclusive = false, EndInclusive = false }, false },
+            { Reference, Before with { End = null }, false },
+            { Reference, Before with { Start = null }, false },
+            { Reference, Contains with { Start = null }, false },
+            { Reference, Contains with { End = null }, false },
+            { Reference, After with { Start = null }, false },
+            { Reference, After with { End = null }, false },
+            { Reference, Equal with { Start = null, End = null }, false },
         };
     }
 
     public static class IntervalDataSet
     {
         public static IntervalDataSet<T, TOffset> Open<T, TOffset>(T start, T end, TOffset offset)
-            where T : struct, IEquatable<T>, IComparable<T>, IComparable
+            where T : struct, IEquatable<T>, IComparable<T>
         {
             return new IntervalDataSet<T, TOffset>(Interval.Open(start, end), offset);
         }
 
         public static IntervalDataSet<T, TOffset> Closed<T, TOffset>(T start, T end, TOffset offset)
-            where T : struct, IEquatable<T>, IComparable<T>, IComparable
+            where T : struct, IEquatable<T>, IComparable<T>
         {
             return new IntervalDataSet<T, TOffset>(Interval.Closed(start, end), offset);
         }
 
         public static IntervalDataSet<T, TOffset> OpenClosed<T, TOffset>(T start, T end, TOffset offset)
-            where T : struct, IEquatable<T>, IComparable<T>, IComparable
+            where T : struct, IEquatable<T>, IComparable<T>
         {
             return new IntervalDataSet<T, TOffset>(Interval.OpenClosed(start, end), offset);
         }
 
         public static IntervalDataSet<T, TOffset> ClosedOpen<T, TOffset>(T start, T end, TOffset offset)
-            where T : struct, IEquatable<T>, IComparable<T>, IComparable
+            where T : struct, IEquatable<T>, IComparable<T>
         {
             return new IntervalDataSet<T, TOffset>(Interval.ClosedOpen(start, end), offset);
         }

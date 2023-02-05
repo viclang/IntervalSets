@@ -4,10 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace IntervalRecord.Tests.Extensions
+namespace IntervalRecord.Tests
 {
-    public static partial class IntervalExtensions
+    public class IntervalComparisonTests
     {
-        
     }
 }

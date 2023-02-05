@@ -33,6 +33,7 @@ namespace IntervalRecord.Tests
                 openClosed.IsEmpty(),
                 closedOpen.IsEmpty(),
             };
+
             var resultFalse = closed.IsEmpty();
 
             // Assert
