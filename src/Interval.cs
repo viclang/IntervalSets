@@ -1,11 +1,25 @@
 ﻿using InfinityComparable;
 using IntervalRecord.Enums;
 using IntervalRecord.Extensions;
+using System.Data;
 using System.Linq.Expressions;
 using System.Text;
 
 namespace IntervalRecord
 {
+    public readonly record struct DiscreteInterval<T, TStep>
+        where T : struct, IEquatable<T>, IComparable<T>, IComparable
+        where TStep : struct
+    {
+        public Interval<T> Interval { get; init; }
+        public TStep Step { get; init; }
+
+        public static implicit operator Interval<T>(DiscreteInterval<T, TStep> discreteInterval) => discreteInterval.Interval;
+
+        public static implicit operator DiscreteInterval<T, TStep>((Interval<T> discreteInterval, TStep step)) => new DiscreteInterval<T, TStep>()
+
+    }
+
     public readonly record struct Interval<T> : IComparable<Interval<T>>
         where T : struct, IEquatable<T>, IComparable<T>, IComparable
     {
@@ -57,9 +71,8 @@ namespace IntervalRecord
 
         public bool IsRightBounded() => Start.IsInfinite && !End.IsInfinite;
 
-        public bool OverlapsWith(Interval<T> other) => !this.IsBefore(other) && !this.IsAfter(other);
-
-
+        public bool IsConnected(Interval<T> other) => !this.IsBefore(other) || !this.IsAfter(other);
+        public bool OverlapsWith(Interval<T> other) => !this.IsExclusiveBefore(other) && !this.IsExclusiveAfter(other);
 
         public static explicit operator string(Interval<T> interval) => interval.ToString();
         public static explicit operator Interval<T>(string str) => IntervalParser.Parse<T>(str);
@@ -70,26 +83,15 @@ namespace IntervalRecord
         }
 
         public static bool operator >(Interval<T> a, Interval<T> b)
-        {
-            return a.End.CompareTo(b.End) == 1
+            => a.End.CompareTo(b.End) == 1
                 || a.End.CompareTo(b.End) == 0 && a.Start.CompareTo(b.Start) == 1;
-        }
-
         public static bool operator <(Interval<T> a, Interval<T> b)
-        {
-            return a.End.CompareTo(b.End) == -1
+            => a.End.CompareTo(b.End) == -1
                 || a.End.CompareTo(b.End) == 0 && a.Start.CompareTo(b.Start) == -1;
-        }
-
-        public static bool operator >=(Interval<T> a, Interval<T> b)
-        {
-            return a == b || a > b;
-        }
-
-        public static bool operator <=(Interval<T> a, Interval<T> b)
-        {
-            return a == b || a < b;
-        }
+        public static bool operator >=(Interval<T> a, Interval<T> b) => a == b || a > b;
+        public static bool operator <=(Interval<T> a, Interval<T> b) => a == b || a < b;
+        public static Interval<T> operator &(Interval<T> a, Interval<T> b) => a.Intersect(b);
+        public static Interval<T> operator |(Interval<T> a, Interval<T> b) => a.Union(b);
 
         public int CompareTo(Interval<T> other)
         {
@@ -115,7 +117,7 @@ namespace IntervalRecord
                 .ToString();
         }
 
-        public void Deconstruct(out T? start, out T? end, out bool startInclusive, out bool endInclusive)
+        public void Deconstruct(out Infinity<T> start, out Infinity<T> end, out bool startInclusive, out bool endInclusive)
         {
             start = Start;
             end = End;
@@ -126,6 +128,9 @@ namespace IntervalRecord
 
     public static class Interval
     {
+        public static int Step = 1;
+        public static TimeSpan StepTimeSpan = TimeSpan.FromDays(1);
+
         public static Interval<T> Empty<T>()
             where T : struct, IEquatable<T>, IComparable<T>, IComparable
         {
@@ -210,8 +215,118 @@ namespace IntervalRecord
             return IntervalParser.ParseAll<T>(s);
         }
 
-        public static Infinity<int> Length(this Interval<int> value) => (Infinity<int>)Convert.ChangeType(Length(value.Closure(1), (a, b) => a - b), typeof(Infinity<int>));
-        public static Infinity<int> Length(this Interval<DateOnly> value) => (Infinity<int>)Convert.ChangeType(Length(value.ClosureByDays(1), (a, b) => a.DayNumber - b.DayNumber), typeof(Infinity<int>));
+        public static Interval<T> Intersect<T>(this Interval<T> value, Interval<T> other)
+            where T : struct, IEquatable<T>, IComparable<T>, IComparable
+        {
+            if (!value.IsConnected(other))
+            {
+                throw new ArgumentOutOfRangeException("other", "Intersection is only supported for Overlapping intervals.");
+            }
+            var maxByStart = MaxBy(value, other, x => x.Start);
+            var minByEnd = MinBy(value, other, x => x.End);
+
+            var startInclusive = value.Start == other.Start
+                ? value.StartInclusive && other.StartInclusive
+                : maxByStart.StartInclusive;
+
+            var endInclusive = value.End == other.End
+                ? value.EndInclusive && other.EndInclusive
+                : minByEnd.EndInclusive;
+
+            return new Interval<T>(maxByStart.Start, minByEnd.End, startInclusive, endInclusive);
+        }
+
+        public static Interval<T> Union<T>(this Interval<T> value, Interval<T> other)
+            where T : struct, IEquatable<T>, IComparable<T>, IComparable
+        {
+            if (!value.IsConnected(other))
+            {
+                throw new ArgumentOutOfRangeException("other", "Union is not continuous.");
+            }
+            return Hull(value, other);
+        }
+
+        public static Interval<T> Hull<T>(this Interval<T> value, Interval<T> other)
+            where T : struct, IEquatable<T>, IComparable<T>, IComparable
+        {
+            var minByStart = MinBy(value, other, x => x.Start);
+            var maxByEnd = MaxBy(value, other, x => x.End);
+
+            var startInclusive = value.Start == other.Start
+                ? value.StartInclusive || other.StartInclusive
+                : minByStart.StartInclusive;
+
+            var endInclusive = value.End == other.End
+                ? value.EndInclusive || other.EndInclusive
+                : maxByEnd.EndInclusive;
+
+            return new Interval<T>(minByStart.Start, maxByEnd.End, startInclusive, endInclusive);
+        }
+
+        public static Interval<T> MinBy<T, TProperty>(Interval<T> a, Interval<T> b, Func<Interval<T>, TProperty> selector)
+            where T : struct, IEquatable<T>, IComparable<T>, IComparable
+            where TProperty : IComparable<TProperty>
+        {
+            if(selector(a).CompareTo(selector(b)) == -1)
+            {
+                return a;
+            }
+            return b;
+        }
+
+        public static Interval<T> MaxBy<T, TProperty>(Interval<T> a, Interval<T> b, Func<Interval<T>, TProperty> selector)
+            where T : struct, IEquatable<T>, IComparable<T>, IComparable
+            where TProperty : IComparable<TProperty>
+        {
+            if (selector(a).CompareTo(selector(b)) == 1)
+            {
+                return a;
+            }
+            return b;
+        }
+
+        //public static IEnumerable<DateOnly> EachDayOfInterval(this Interval<DateOnly> value, int step = 1)
+        //{
+        //    var closed = value.ClosureByDays(1);
+        //    var length = closed.Length();
+        //    if (!length.IsInfinite)
+        //    {
+        //        for(var days = 0; days <= length; days+=step)
+        //        {
+        //            yield return closed.Start.Finite!.Value.AddDays(days);
+        //        }
+        //    }
+        //}
+
+        //public static IEnumerable<DateOnly> EachMonthOfInterval(this Interval<DateOnly> value, int step = 1)
+        //{
+        //    var closed = value.ClosureByDays(1);
+        //    var length = closed.Length();
+        //    if (!length.IsInfinite)
+        //    {
+        //        for (var months = 0; months <= length/12; months += step)
+        //        {
+        //            yield return closed.Start.Finite!.Value.AddMonths(months);
+        //        }
+        //    }
+        //}
+
+        //public static IEnumerable<DateOnly> EachYearOfInterval(this Interval<DateOnly> value, int step = 1)
+        //{
+        //    var closed = value.ClosureByYears(1);
+        //    var length = closed.Length();
+
+        //    if (!length.IsInfinite)
+        //    {
+        //        for (var years = 0; years <= length/365; years += step)
+        //        {
+        //            yield return closed.Start.Finite!.Value.AddYears(years);
+        //        }
+        //    }
+        //}
+
+        public static Infinity<int> Length(this Interval<int> value) => new Infinity<int>((int?)Length(value.Closure(1), (a, b) => a - b).Finite, true);
+        public static Infinity<int> Length(this Interval<DateOnly> value) => new Infinity<int>((int?)Length(value.ClosureByDays(1), (a, b) => a.DayNumber - b.DayNumber).Finite, true);
         
         /// <summary>
         /// Length of interval
@@ -249,28 +364,50 @@ namespace IntervalRecord
         public static DateTime? Centre(this Interval<DateTime> value) => Calculate(value.Closure(TimeSpan.FromMilliseconds(1)), (a, b) => a.AddTicks(a.AddTicks(b.Ticks).Ticks / 2));
         public static DateTimeOffset? Centre(this Interval<DateTimeOffset> value) => Calculate(value.Closure(TimeSpan.FromMilliseconds(1)), (a, b) => a.AddTicks(a.AddTicks(b.Ticks).Ticks / 2));
 
-        public static Interval<int> Interior(this Interval<int> value, int stepSize)
-            => Interior(value, x => x + stepSize, x => x - stepSize);
-        public static Interval<DateOnly> Interior(this Interval<DateOnly> value, int days)
-            => Interior(value, x => x.AddDays(days), x => x.AddDays(-days));
-        public static Interval<DateTime> Interior(this Interval<DateTime> value, TimeSpan stepSize)
-            => Interior(value, x => x.Add(stepSize), x => x.Subtract(stepSize));
-        public static Interval<DateTimeOffset> Interior(this Interval<DateTimeOffset> value, TimeSpan stepSize)
-            => Interior(value, x => x.Add(stepSize), x => x.Subtract(stepSize));
+        public static bool HasGap(this Interval<int> value, Interval<int> other, int step) => DistanceTo(value, other) == step;
+
+        /// <summary>
+        /// Order does matter
+        /// </summary>
+        /// <param name="value"></param>
+        /// <param name="other"></param>
+        /// <returns></returns>
+        public static int DistanceTo(this Interval<int> value, Interval<int> other)
+            => value.IsConnected(other)
+                ? 0
+                : other.Start.Finite!.Value - value.End.Finite!.Value;
+
+        public static Interval<int> Interior(this Interval<int> value, int step)
+            => Interior(value, x => x + step, x => x - step);
+        public static Interval<DateOnly> Interior(this Interval<DateOnly> value, int step)
+            => Interior(value, x => x.AddDays(step), x => x.AddDays(-step));
+        public static Interval<DateTime> Interior(this Interval<DateTime> value, TimeSpan step)
+            => Interior(value, x => x.Add(step), x => x.Subtract(step));
+        public static Interval<DateTimeOffset> Interior(this Interval<DateTimeOffset> value, TimeSpan step)
+            => Interior(value, x => x.Add(step), x => x.Subtract(step));
 
 
-        public static Interval<int> Closure(this Interval<int> value, int stepSize)
-            => Closure(value, x => x + stepSize, x => x - stepSize);
-        public static Interval<DateOnly> ClosureByDays(this Interval<DateOnly> value, int days)
-            => Closure(value, x => x.AddDays(days), x => x.AddDays(-days));
-        public static Interval<DateOnly> ClosureByMonths(this Interval<DateOnly> value, int days)
-            => Closure(value, x => x.AddDays(days), x => x.AddDays(-days));
-        public static Interval<DateOnly> ClosureByYears(this Interval<DateOnly> value, int days)
-            => Closure(value, x => x.AddDays(days), x => x.AddDays(-days));
-        public static Interval<DateTime> Closure(this Interval<DateTime> value, TimeSpan stepSize)
-            => Closure(value, x => x.Add(stepSize), x => x.Subtract(stepSize));
-        public static Interval<DateTimeOffset> Closure(this Interval<DateTimeOffset> value, TimeSpan stepSize)
-            => Closure(value, x => x.Add(stepSize), x => x.Subtract(stepSize));
+        public static Interval<int> Closure(this Interval<int> value)
+            => Closure(value, Step);
+        public static Interval<int> Closure(this Interval<int> value, int step)
+            => Closure(value, x => x + step, x => x - step);
+
+        public static Interval<DateOnly> ClosureByDays(this Interval<DateOnly> value)
+            => ClosureByDays(value, Step);
+        public static Interval<DateOnly> ClosureByDays(this Interval<DateOnly> value, int step)
+            => Closure(value, x => x.AddDays(step), x => x.AddDays(-step));
+
+        public static Interval<DateOnly> ClosureByMonths(this Interval<DateOnly> value)
+            => Closure(value, x => x.AddDays(Step), x => x.AddDays(-Step));
+        public static Interval<DateOnly> ClosureByMonths(this Interval<DateOnly> value, int step)
+            => Closure(value, x => x.AddDays(step), x => x.AddDays(-step));
+
+        public static Interval<DateOnly> ClosureByYears(this Interval<DateOnly> value, int step)
+            => Closure(value, x => x.AddDays(step), x => x.AddDays(-step));
+        public static Interval<DateTime> Closure(this Interval<DateTime> value, TimeSpan step)
+            => Closure(value, x => x.Add(step), x => x.Subtract(step));
+        public static Interval<DateTimeOffset> Closure(this Interval<DateTimeOffset> value, TimeSpan step)
+            => Closure(value, x => x.Add(step), x => x.Subtract(step));
 
         private static Infinity<double> Length<T>(
             Interval<T> value,
@@ -319,6 +456,10 @@ namespace IntervalRecord
             Func<T, T> substract)
             where T : struct, IEquatable<T>, IComparable<T>, IComparable
         {
+            if (value.StartInclusive && value.EndInclusive)
+            {
+                return value;
+            }
             var result = value with
             {
                 Start = value.StartInclusive || value.Start.IsInfinite ? value.Start : add(value.Start.Finite!.Value),
@@ -335,6 +476,10 @@ namespace IntervalRecord
             Func<T, T> substract)
             where T : struct, IEquatable<T>, IComparable<T>, IComparable
         {
+            if (!value.StartInclusive && !value.EndInclusive)
+            {
+                return value;
+            }
             var result = value with
             {
                 Start = value.StartInclusive ? substract(value.Start.Finite!.Value) : value.Start,

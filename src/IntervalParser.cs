@@ -6,7 +6,7 @@ namespace IntervalRecord
     {
         private static readonly Regex _intervalRegex =
             new Regex(@"(?:\[|\()(?:[^[\](),]*,[^,()[\]]*)(?:\)|\])");
-
+        private static readonly string[] infinity = { "-inf", "+inf", "inf", "-∞", "+∞", "∞", "null" };
         private const string intervalNotFound = "Interval not found in string. Please provide an interval string in correct format";
 
         internal static Interval<T> Parse<T>(string value)
@@ -90,11 +90,7 @@ namespace IntervalRecord
         private static T? ParseBoundary<T>(string value)
             where T : struct, IEquatable<T>, IComparable<T>
         {
-            if (string.IsNullOrEmpty(value)
-                || value == "-∞"
-                || value == "+∞"
-                || value == "∞"
-                || value == "null")
+            if (string.IsNullOrEmpty(value) || infinity.Contains(value))
             {
                 return null;
             }
