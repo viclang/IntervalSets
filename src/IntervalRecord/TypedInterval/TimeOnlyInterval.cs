@@ -4,55 +4,34 @@ namespace IntervalRecord
 {
     public static partial class Interval
     {
-        public static Interval<TimeOnly> Canonicalize(this Interval<TimeOnly> value, BoundaryType boundaryType, TimeSpan step)
-            => new TimeOnlyInterval(value).Canonicalize(boundaryType, step);
-        public static Interval<TimeOnly> Closure(this Interval<TimeOnly> value, TimeSpan step)
-            => new TimeOnlyInterval(value).Closure(step);
-        public static Interval<TimeOnly> Interior(this Interval<TimeOnly> value, TimeSpan step)
-            => new TimeOnlyInterval(value).Interior(step);
-        
+        public static bool IsEmpty(this Interval<TimeOnly> value, TimeSpan closureStep)
+            => Closure(value, closureStep).IsEmpty();
+
         public static Infinity<TimeSpan> Length(this Interval<TimeOnly> value, TimeSpan closureStep)
-            => new TimeOnlyInterval(value, closureStep).Length();
+            => Closure(value, closureStep).Length();
+
         public static TimeSpan? Radius(this Interval<TimeOnly> value, TimeSpan closureStep)
-            => new TimeOnlyInterval(value, closureStep).Radius();
+            => Closure(value, closureStep).Radius();
+
         public static TimeOnly? Centre(this Interval<TimeOnly> value, TimeSpan closureStep)
-            => new TimeOnlyInterval(value, closureStep).Centre();
-        
-        public static Infinity<TimeSpan> Length(this Interval<TimeOnly> value) => new TimeOnlyInterval(value).Length();
-        public static TimeSpan? Radius(this Interval<TimeOnly> value) => new TimeOnlyInterval(value).Radius();        
-        public static TimeOnly? Centre(this Interval<TimeOnly> value) => new TimeOnlyInterval(value).Centre();
-    }
+            => Closure(value, closureStep).Centre();
 
-    internal class TimeOnlyInterval : AbstractInterval<TimeOnly>
-        , IIntervalConverter<TimeOnly, TimeSpan>
-        , IIntervalMeasurements<TimeSpan, TimeSpan, TimeOnly>
-    {
-        private readonly Interval<TimeOnly> value;
-        public TimeOnlyInterval(Interval<TimeOnly> value, TimeSpan step)
-        {
-            this.value = ToClosed(value, x => x.Add(step), x => x.Add(-step));
-        }
+        public static Infinity<TimeSpan> Length(this Interval<TimeOnly> value)
+            => IntervalHelper.ValueOrInfinity(value, (end, start) => end - start);
 
-        public TimeOnlyInterval(Interval<TimeOnly> value)
-        {
-            this.value = value;
-        }
+        public static TimeSpan? Radius(this Interval<TimeOnly> value)
+            => IntervalHelper.ValueOrNull(value, (end, start) => (end.ToTimeSpan() - start.ToTimeSpan()) / 2);
 
-        public Interval<TimeOnly> Canonicalize(BoundaryType boundaryType, TimeSpan step)
-            => Canonicalize(value, boundaryType, x => x.Add(step), x => x.Add(-step));
+        public static TimeOnly? Centre(this Interval<TimeOnly> value)
+            => IntervalHelper.ValueOrNull(value, (end, start) => start.Add((end - start) / 2));
 
-        public Interval<TimeOnly> Closure(TimeSpan step)
-            => ToClosed(value, x => x.Add(step), x => x.Add(-step));
+        public static Interval<TimeOnly> Canonicalize(this Interval<TimeOnly> value, BoundaryType boundaryType, TimeSpan step)
+            => IntervalHelper.Canonicalize(value, boundaryType, x => x.Add(step), x => x.Add(-step));
 
-        public Interval<TimeOnly> Interior(TimeSpan step)
-            => ToOpen(value, x => x.Add(step), x => x.Add(-step));
+        public static Interval<TimeOnly> Closure(this Interval<TimeOnly> value, TimeSpan step)
+            => IntervalHelper.ToClosed(value, x => x.Add(step), x => x.Add(-step));
 
-        public Infinity<TimeSpan> Length() => ValueOrInfinity(value, (end, start) => end - start);
-
-        public TimeSpan? Radius()
-            => ValueOrNull(value, (end, start) => (end.ToTimeSpan() - start.ToTimeSpan())/2);
-
-        public TimeOnly? Centre()
-            => ValueOrNull(value, (end, start) => start.Add((end - start)/2));
+        public static Interval<TimeOnly> Interior(this Interval<TimeOnly> value, TimeSpan step)
+            => IntervalHelper.ToOpen(value, x => x.Add(step), x => x.Add(-step));
     }
 }

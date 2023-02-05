@@ -2,33 +2,14 @@
 
 namespace IntervalRecord
 {
-    public interface IIntervalConverter<T, TStep>
-        where T : struct, IEquatable<T>, IComparable<T>, IComparable
-        where TStep : struct
+    internal static class IntervalHelper
     {
-        Interval<T> Canonicalize(BoundaryType boundaryType, TStep step);
-        Interval<T> Closure(TStep step);
-        Interval<T> Interior(TStep step);
-    }
-
-    public interface IIntervalMeasurements<TLengthResult, TRadiusResult, TCentreResult>
-        where TLengthResult : struct, IEquatable<TLengthResult>, IComparable<TLengthResult>, IComparable
-        where TRadiusResult : struct
-        where TCentreResult : struct
-    {
-        Infinity<TLengthResult> Length();
-        TRadiusResult? Radius();
-        TCentreResult? Centre();
-    }
-
-    public abstract class AbstractInterval<T>
-            where T : struct, IEquatable<T>, IComparable<T>, IComparable
-    {
-        protected static Interval<T> Canonicalize(
+        internal static Interval<T> Canonicalize<T>(
             Interval<T> value,
             BoundaryType boundaryType,
             Func<T, T> add,
             Func<T, T> substract)
+            where T : struct, IEquatable<T>, IComparable<T>, IComparable
             => boundaryType switch
             {
                 BoundaryType.Closed => ToClosed(value, add, substract),
@@ -38,10 +19,11 @@ namespace IntervalRecord
                 _ => throw new NotImplementedException()
             };
 
-        protected static Interval<T> ToClosed(
+        internal static Interval<T> ToClosed<T>(
             Interval<T> value,
             Func<T, T> add,
             Func<T, T> substract)
+            where T : struct, IEquatable<T>, IComparable<T>, IComparable
         {
             if (value.IsEmpty() || value.StartInclusive && value.EndInclusive)
             {
@@ -56,9 +38,10 @@ namespace IntervalRecord
             };
         }
 
-        protected static Interval<T> ToClosedOpen(
+        internal static Interval<T> ToClosedOpen<T>(
             Interval<T> value,
             Func<T, T> add)
+            where T : struct, IEquatable<T>, IComparable<T>, IComparable
         {
             if (value.IsEmpty() || value.StartInclusive && !value.EndInclusive)
             {
@@ -73,9 +56,8 @@ namespace IntervalRecord
             };
         }
 
-        protected static Interval<T> ToOpenClosed(
-            Interval<T> value,
-            Func<T, T> substract)
+        internal static Interval<T> ToOpenClosed<T>(Interval<T> value, Func<T, T> substract)
+            where T : struct, IEquatable<T>, IComparable<T>, IComparable
         {
             if (value.IsEmpty() || !value.StartInclusive && value.EndInclusive)
             {
@@ -90,10 +72,8 @@ namespace IntervalRecord
             };
         }
 
-        protected static Interval<T> ToOpen(
-            Interval<T> value,
-            Func<T, T> add,
-            Func<T, T> substract)
+        internal static Interval<T> ToOpen<T>(Interval<T> value, Func<T, T> add, Func<T, T> substract)
+            where T : struct, IEquatable<T>, IComparable<T>, IComparable
         {
             if (!value.StartInclusive && !value.EndInclusive)
             {
@@ -108,13 +88,15 @@ namespace IntervalRecord
             };
         }
 
-        protected static Infinity<TResult> ValueOrInfinity<TResult>(Interval<T> value, Func<T, T, TResult> substract)
+        internal static Infinity<TResult> ValueOrInfinity<T, TResult>(Interval<T> value, Func<T, T, TResult> substract)
+            where T : struct, IEquatable<T>, IComparable<T>, IComparable
             where TResult : struct, IEquatable<TResult>, IComparable<TResult>, IComparable
             => value.Start.IsInfinite || value.End.IsInfinite
                 ? Infinity<TResult>.PositiveInfinity
                 : value.IsEmpty() ? default : substract(value.End.Finite.Value, value.Start.Finite.Value);
 
-        protected static TResult? ValueOrNull<TResult>(Interval<T> value, Func<T, T, TResult> centre)
+        internal static TResult? ValueOrNull<T, TResult>(Interval<T> value, Func<T, T, TResult> centre)
+            where T : struct, IEquatable<T>, IComparable<T>, IComparable
             where TResult : struct
             => value.Start.IsInfinite || value.End.IsInfinite || value.IsEmpty()
                 ? null
