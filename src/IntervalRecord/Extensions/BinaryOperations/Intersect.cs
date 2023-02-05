@@ -36,9 +36,9 @@ namespace IntervalRecord
             return value with { Start = maxByStart.Start, End = minByEnd.End, StartInclusive = startInclusive, EndInclusive = endInclusive };
         }
 
-        [Pure]
-        public static IEnumerable<Interval<T>> Intersect<T>(this IEnumerable<Interval<T>> values)
-            where T : struct, IEquatable<T>, IComparable<T>, IComparable
-            => values.PairwiseFilter((a, b) => a.Intersect(b), result => !result.IsEmpty());
+        //[Pure]
+        //public static IEnumerable<Interval<T>> Intersect<T>(this IEnumerable<Interval<T>> values)
+        //    where T : struct, IEquatable<T>, IComparable<T>, IComparable
+        //    => values.PairwiseFilter((a, b) => a.Intersect(b), result => !result.IsEmpty());
     }
 }

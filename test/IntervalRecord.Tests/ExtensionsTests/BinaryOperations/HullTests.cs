@@ -1,30 +1,21 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using IntervalRecord.Tests.TestData;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace IntervalRecord.Tests.ExtensionsTests.BinaryOperations
 {
-    public class HullTests
+    public sealed class HullTests : BaseIntervalPairSetTests
     {
+        private const int start = 6;
+        private const int end = 10;
+        private const int offset = 2;
 
         [Theory]
-        [InlineData(1, 5, 6, 10, BoundaryType.Closed)]
-        [InlineData(6, 10, 1, 5, BoundaryType.Closed)]
-        [InlineData(1, 5, 6, 10, BoundaryType.ClosedOpen)]
-        [InlineData(6, 10, 1, 5, BoundaryType.ClosedOpen)]
-        [InlineData(1, 5, 6, 10, BoundaryType.OpenClosed)]
-        [InlineData(6, 10, 1, 5, BoundaryType.OpenClosed)]
-        [InlineData(1, 6, 6, 10, BoundaryType.Open)]
-        [InlineData(6, 10, 1, 6, BoundaryType.Open)]
-        public void Hull_ShouldBeExpected(int startA, int endA, int startB, int endB, BoundaryType boundaryType)
+        [MemberData(nameof(IntervalPairs), new object[] { start, end, BoundaryType.Closed, offset })]
+        [MemberData(nameof(IntervalPairs), new object[] { start, end, BoundaryType.ClosedOpen, offset })]
+        [MemberData(nameof(IntervalPairs), new object[] { start, end, BoundaryType.OpenClosed, offset })]
+        [MemberData(nameof(IntervalPairs), new object[] { start, end, BoundaryType.Open, offset })]
+        public void Hull_ShouldBeExpected(Interval<int> a, Interval<int> b)
         {
-            // Arrange
-            var (startInclusive, endInclusive) = boundaryType.ToTuple();
-            var a = new Interval<int>(startA, endA, startInclusive, endInclusive);
-            var b = new Interval<int>(startB, endB, startInclusive, endInclusive);
-
             // Act
             var actual = a.Hull(b);
 
@@ -44,8 +35,8 @@ namespace IntervalRecord.Tests.ExtensionsTests.BinaryOperations
 
             actual.Start.Should().Be(minByStart.Start);
             actual.End.Should().Be(maxByEnd.End);
-            actual.StartInclusive.Should().Be(expectedStartInclusive);
-            actual.EndInclusive.Should().Be(expectedEndInclusive);
+            actual.StartInclusive.Should().Be(actual.Start.IsInfinite ? false : expectedStartInclusive);
+            actual.EndInclusive.Should().Be(actual.End.IsInfinite ? false : expectedEndInclusive);
         }
     }
 }

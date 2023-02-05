@@ -17,6 +17,7 @@ namespace IntervalRecord
         public Infinity<T> End { get => _end; init => _end = new Infinity<T>(value, true); }
         public bool StartInclusive { get => _startInclusive; init { _startInclusive = !Start.IsInfinite && value; } }
         public bool EndInclusive { get => _endInclusive; init { _endInclusive = !End.IsInfinite && value; } }
+        public bool IsValid => Start.IsInfinite || End.IsInfinite || End.CompareTo(Start) >= 0;
 
         public Interval()
             : this(Infinity<T>.NegativeInfinity, Infinity<T>.PositiveInfinity, false, false)
@@ -56,8 +57,7 @@ namespace IntervalRecord
         public bool IsHalfOpen() => StartInclusive && !EndInclusive || !StartInclusive && EndInclusive;
 
         [Pure]
-        public bool IsEmpty() => (GetBoundaryType() != BoundaryType.Closed && Start == End)
-            || (!Start.IsInfinite && !End.IsInfinite && Start.CompareTo(End) == 1);
+        public bool IsEmpty() => (GetBoundaryType() != BoundaryType.Closed && Start == End) || !IsValid;
 
         [Pure]
         public bool IsSingleton() => GetBoundaryType() == BoundaryType.Closed && Start == End;
@@ -67,22 +67,23 @@ namespace IntervalRecord
             => !this.IsBefore(other, includeHalfOpen) && !this.IsAfter(other, includeHalfOpen);
 
         [Pure]
-        public static implicit operator string(Interval<T> interval) => interval.ToString();
+        public bool Contains(T other)
+        {
+            return StartInclusive
+                ? Start.CompareTo(other) <= 0
+                : Start.CompareTo(other) == -1
+                && EndInclusive
+                ? End.CompareTo(other) >= 0
+                : End.CompareTo(other) == 1;
+        }
 
-        [Pure]
         public static bool operator >(Interval<T> a, Interval<T> b)
             => a.End.CompareTo(b.End) == 1
                 || a.End.CompareTo(b.End) == 0 && a.Start.CompareTo(b.Start) == -1;
-
-        [Pure]
         public static bool operator <(Interval<T> a, Interval<T> b)
             => a.End.CompareTo(b.End) == -1
                 || a.End.CompareTo(b.End) == 0 && a.Start.CompareTo(b.Start) == 1;
-
-        [Pure]
         public static bool operator >=(Interval<T> a, Interval<T> b) => a == b || a > b;
-
-        [Pure]
         public static bool operator <=(Interval<T> a, Interval<T> b) => a == b || a < b;
 
         [Pure]

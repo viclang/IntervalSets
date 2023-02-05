@@ -34,9 +34,9 @@ namespace IntervalRecord
             return defaultValue;
         }
 
-        [Pure]
-        public static IEnumerable<Interval<T>> Complement<T>(this IEnumerable<Interval<T>> values)
-            where T : struct, IEquatable<T>, IComparable<T>, IComparable
-            => values.PairwiseFilter((a, b) => a.Gap(b), x => !x.IsEmpty());
+        //[Pure]
+        //public static IEnumerable<Interval<T>> Complement<T>(this IEnumerable<Interval<T>> values)
+        //    where T : struct, IEquatable<T>, IComparable<T>, IComparable
+        //    => values.PairwiseFilter((a, b) => a.Gap(b), x => !x.IsEmpty());
     }
 }

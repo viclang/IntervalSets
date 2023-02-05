@@ -39,6 +39,7 @@ namespace IntervalRecord
                 if (result == null)
                 {
                     yield return previous;
+                    previous = e.Current;
                 }
                 else
                 {

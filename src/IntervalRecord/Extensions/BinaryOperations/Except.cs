@@ -44,9 +44,9 @@ namespace IntervalRecord
             return value with { Start = minByStart.Start, End = maxByStart.Start, StartInclusive = startInclusive, EndInclusive = endInclusive };
         }
 
-        [Pure]
-        public static IEnumerable<Interval<T>> Except<T>(this IEnumerable<Interval<T>> values)
-            where T : struct, IEquatable<T>, IComparable<T>, IComparable
-            => values.PairwiseFilter((a, b) => a.Except(b), result => !result.IsEmpty());
+        //[Pure]
+        //public static IEnumerable<Interval<T>> Except<T>(this IEnumerable<Interval<T>> values)
+        //    where T : struct, IEquatable<T>, IComparable<T>, IComparable
+        //    => values.PairwiseFilter((a, b) => a.Except(b), result => !result.IsEmpty());
     }
 }

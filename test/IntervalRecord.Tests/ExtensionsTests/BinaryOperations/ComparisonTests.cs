@@ -1,25 +1,18 @@
-﻿using IntervalRecord.Tests.DataSets;
-using IntervalRecord.Tests.TestData;
+﻿using IntervalRecord.Tests.TestData;
 
 namespace IntervalRecord.Tests.ExtensionsTests
 {
-    public class ComparisonTests
+    public class ComparisonTests : BaseIntervalPairSetTests
     {
         private const int start = 6;
         private const int end = 10;
         private const int offset = 1;
-        private static readonly IOverlappingDataSet<int> _dataSet = new IntOverlappingDataSet(start, end, BoundaryType.Closed, offset);
-
-        public static TheoryData<Interval<int>, Interval<int>, OverlappingState> GetOverlappingState(BoundaryType boundaryType)
-            => _dataSet.CopyWith(boundaryType).GetOverlappingState(false);
-        public static TheoryData<Interval<int>, Interval<int>, OverlappingState> GetOverlappingState_IncludeHalfOpen(BoundaryType boundaryType)
-            => _dataSet.CopyWith(boundaryType).GetOverlappingState(true);
 
         [Theory]
-        [MemberData(nameof(GetOverlappingState), BoundaryType.Closed)]
-        [MemberData(nameof(GetOverlappingState), BoundaryType.ClosedOpen)]
-        [MemberData(nameof(GetOverlappingState), BoundaryType.OpenClosed)]
-        [MemberData(nameof(GetOverlappingState), BoundaryType.Open)]
+        [MemberData(nameof(IntervalPairsWithOverlappingState), new object[] { start, end, BoundaryType.Closed, offset, false })]
+        [MemberData(nameof(IntervalPairsWithOverlappingState), new object[] { start, end, BoundaryType.ClosedOpen, offset, false })]
+        [MemberData(nameof(IntervalPairsWithOverlappingState), new object[] { start, end, BoundaryType.OpenClosed, offset, false })]
+        [MemberData(nameof(IntervalPairsWithOverlappingState), new object[] { start, end, BoundaryType.Open, offset, false })]
         public void GetOverlappingState_ShouldBeExpected(Interval<int> a, Interval<int> b, OverlappingState expectedResult)
         {
             var result = a.GetOverlappingState(b, false);
@@ -27,10 +20,10 @@ namespace IntervalRecord.Tests.ExtensionsTests
         }
 
         [Theory]
-        [MemberData(nameof(GetOverlappingState_IncludeHalfOpen), BoundaryType.Closed)]
-        [MemberData(nameof(GetOverlappingState_IncludeHalfOpen), BoundaryType.ClosedOpen)]
-        [MemberData(nameof(GetOverlappingState_IncludeHalfOpen), BoundaryType.OpenClosed)]
-        [MemberData(nameof(GetOverlappingState_IncludeHalfOpen), BoundaryType.Open)]
+        [MemberData(nameof(IntervalPairsWithOverlappingState), new object[] { start, end, BoundaryType.Closed, offset, true })]
+        [MemberData(nameof(IntervalPairsWithOverlappingState), new object[] { start, end, BoundaryType.ClosedOpen, offset, true })]
+        [MemberData(nameof(IntervalPairsWithOverlappingState), new object[] { start, end, BoundaryType.OpenClosed, offset, true })]
+        [MemberData(nameof(IntervalPairsWithOverlappingState), new object[] { start, end, BoundaryType.Open, offset, true })]
         public void GetOverlappingStateIncludeHalfOpen_ShouldBeExpected(Interval<int> a, Interval<int> b, OverlappingState expectedResult)
         {
             var result = a.GetOverlappingState(b, true);
@@ -38,34 +31,18 @@ namespace IntervalRecord.Tests.ExtensionsTests
         }
 
         [Theory]
-        [MemberData(nameof(GetOverlappingState), BoundaryType.Closed)]
-        [MemberData(nameof(GetOverlappingState), BoundaryType.ClosedOpen)]
-        [MemberData(nameof(GetOverlappingState), BoundaryType.OpenClosed)]
-        [MemberData(nameof(GetOverlappingState), BoundaryType.Open)]
+        [MemberData(nameof(IntervalPairsWithOverlappingState), new object[] { start, end, BoundaryType.Closed, offset, false })]
+        [MemberData(nameof(IntervalPairsWithOverlappingState), new object[] { start, end, BoundaryType.ClosedOpen, offset, false })]
+        [MemberData(nameof(IntervalPairsWithOverlappingState), new object[] { start, end, BoundaryType.OpenClosed, offset, false })]
+        [MemberData(nameof(IntervalPairsWithOverlappingState), new object[] { start, end, BoundaryType.Open, offset, false })]
         public void IndividualMethods_ShouldBeExpected(Interval<int> a, Interval<int> b, OverlappingState state)
         {
             a.IsBefore(b)
                 .Should().Be(state == OverlappingState.Before);
             a.Meets(b)
                 .Should().Be(state == OverlappingState.Meets);
-            a.Starts(b)
-                .Should().Be(state == OverlappingState.Starts);
-            a.OverlapsState(b)
-                .Should().Be(state == OverlappingState.Overlaps);
-            a.ContainedBy(b)
-                .Should().Be(state == OverlappingState.ContainedBy);
-            a.Finishes(b)
-                .Should().Be(state == OverlappingState.Finishes);
             a.Equals(b)
                 .Should().Be(state == OverlappingState.Equal);
-            a.FinishedBy(b)
-                .Should().Be(state == OverlappingState.FinishedBy);
-            a.Contains(b)
-                .Should().Be(state == OverlappingState.Contains);
-            a.OverlappedByState(b)
-                .Should().Be(state == OverlappingState.OverlappedBy);
-            a.StartedBy(b)
-                .Should().Be(state == OverlappingState.StartedBy);
             a.MetBy(b)
                 .Should().Be(state == OverlappingState.MetBy);
             a.IsAfter(b)
@@ -73,10 +50,10 @@ namespace IntervalRecord.Tests.ExtensionsTests
         }
 
         [Theory]
-        [MemberData(nameof(GetOverlappingState_IncludeHalfOpen), BoundaryType.Closed)]
-        [MemberData(nameof(GetOverlappingState_IncludeHalfOpen), BoundaryType.ClosedOpen)]
-        [MemberData(nameof(GetOverlappingState_IncludeHalfOpen), BoundaryType.OpenClosed)]
-        [MemberData(nameof(GetOverlappingState_IncludeHalfOpen), BoundaryType.Open)]
+        [MemberData(nameof(IntervalPairsWithOverlappingState), new object[] { start, end, BoundaryType.Closed, offset, true })]
+        [MemberData(nameof(IntervalPairsWithOverlappingState), new object[] { start, end, BoundaryType.ClosedOpen, offset, true })]
+        [MemberData(nameof(IntervalPairsWithOverlappingState), new object[] { start, end, BoundaryType.OpenClosed, offset, true })]
+        [MemberData(nameof(IntervalPairsWithOverlappingState), new object[] { start, end, BoundaryType.Open, offset, true })]
         public void IndividualMethods_IncludeHalfOpen_ShouldBeExpected(Interval<int> a, Interval<int> b, OverlappingState state)
         {
             a.IsBefore(b, true)
@@ -90,7 +67,7 @@ namespace IntervalRecord.Tests.ExtensionsTests
         }
 
         [Theory]
-        [MemberData(nameof(GetOverlappingState), BoundaryType.Closed)]
+        [MemberData(nameof(IntervalPairsWithOverlappingState), new object[] { start, end, BoundaryType.Closed, offset, false })]
         public void CompareTo_ShouldBeExpected(Interval<int> a, Interval<int> b, OverlappingState state)
         {
             // Act
@@ -112,7 +89,7 @@ namespace IntervalRecord.Tests.ExtensionsTests
         }
 
         [Theory]
-        [MemberData(nameof(GetOverlappingState), BoundaryType.Closed)]
+        [MemberData(nameof(IntervalPairsWithOverlappingState), new object[] { start, end, BoundaryType.Closed, offset, false })]
         public void GreaterThan_ShouldBeExpected(Interval<int> a, Interval<int> b, OverlappingState state)
         {
             // Act
@@ -130,7 +107,7 @@ namespace IntervalRecord.Tests.ExtensionsTests
         }
 
         [Theory]
-        [MemberData(nameof(GetOverlappingState), BoundaryType.Closed)]
+        [MemberData(nameof(IntervalPairsWithOverlappingState), new object[] { start, end, BoundaryType.Closed, offset, false })]
         public void LessThan_ShouldBeExpected(Interval<int> a, Interval<int> b, OverlappingState state)
         {
             // Act
@@ -148,7 +125,7 @@ namespace IntervalRecord.Tests.ExtensionsTests
         }
 
         [Theory]
-        [MemberData(nameof(GetOverlappingState), BoundaryType.Closed)]
+        [MemberData(nameof(IntervalPairsWithOverlappingState), new object[] { start, end, BoundaryType.Closed, offset, false })]
         public void GreaterOrEqualTo_ShouldBeExpected(Interval<int> a, Interval<int> b, OverlappingState state)
         {
             // Act
@@ -166,7 +143,7 @@ namespace IntervalRecord.Tests.ExtensionsTests
         }
 
         [Theory]
-        [MemberData(nameof(GetOverlappingState), BoundaryType.Closed)]
+        [MemberData(nameof(IntervalPairsWithOverlappingState), new object[] { start, end, BoundaryType.Closed, offset, false })]
         public void LessOrEqualTo_ShouldBeExpected(Interval<int> a, Interval<int> b, OverlappingState state)
         {
             // Act

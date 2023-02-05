@@ -7,13 +7,10 @@ using System.Threading.Tasks;
 
 namespace IntervalRecord.Tests
 {
-    public class DeconstructIntervalTests
+    public class DeconstructIntervalTests : BaseIntervalSetTests
     {
-        public static TheoryData<Interval<int>> Intervals(int referencePoint, int maxLength)
-            => IntervalTheoryDataHelper.GenerateTheoryData(referencePoint, maxLength);
-
         [Theory]
-        [MemberData(nameof(Intervals), 3, 2)]
+        [MemberData(nameof(IncrementalLengthSet), 3, 2)]
         public void DeconstructAsTuple_ShouldBeExpected(Interval<int> interval)
         {
             // Act
