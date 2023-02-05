@@ -1,28 +1,65 @@
+using FluentAssertions;
+using RangeExtensions.Interfaces;
+using RangeExtensions.Tests.Models;
+using System;
 using System.Collections.Generic;
-using Range.Tests.Models;
 using Xunit;
 
-namespace Range.Tests
+namespace RangeExtensions.Tests
 {
     public class RangeTests
     {
-        [Fact]
-        public void HappyPath()
+        [MemberData(nameof(InclusiveHappyPath))]
+        [Theory]
+        public void HappyPath(RangeStub rangeToAdd)
         {
-            var ranges = new List<RangeStub>
-            {
-                //new RangeStub(1, 2),
-                new RangeStub(1, 4),
-                new RangeStub(5, 6),
-                new RangeStub(7, 8),
-                new RangeStub(9, 10),
-                new RangeStub(11, null),
-            };
+            //arrange
+            var ranges = Create();
 
-            ranges.AddInclusive(new RangeStub(3,null));
+            //act
+            ranges.AddInclusive(rangeToAdd);
 
-            
+            //assert
 
         }
+
+        [MemberData(nameof(InclusiveSadPath))]
+        [Theory]
+        public void SadPath(RangeStub rangeToAdd)
+        {
+            //arrange
+            var ranges = Create();
+
+            //act
+            var act = () => ranges.AddInclusive(rangeToAdd);
+
+            //assert
+            act.Should().Throw<NotSupportedException>();
+        }
+
+        public IList<RangeStub> Create()
+        {
+            return new List<RangeStub>
+            {
+                new RangeStub(3, 5),
+                new RangeStub(6, 8),
+                new RangeStub(9, null)
+            };
+        }
+
+        public static TheoryData<RangeStub> InclusiveHappyPath => new()
+        {
+            new RangeStub(1, 2),
+            new RangeStub(4, 5),
+            new RangeStub(10, null)
+        };
+
+        public static TheoryData<RangeStub> InclusiveSadPath => new()
+        {
+            new RangeStub(1, 2),
+            new RangeStub(2, 1),
+            new RangeStub(3, 5),
+            new RangeStub(2, 5)
+        };
     }
 }
