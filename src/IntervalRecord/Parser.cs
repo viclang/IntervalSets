@@ -7,16 +7,15 @@ namespace IntervalRecord
     public static partial class Interval
     {
         private static readonly Regex intervalRegex = new Regex(@"(?:\[|\()(?:[^[\](),]*,[^,()[\]]*)(?:\)|\])");
-        private const string infinity = "Infinity";
         private const string intervalNotFound = "Interval not found in string. Please provide an interval string in correct format";
 
         [Pure]
-        public static Interval<T> Parse<T>(string value, string infinityString = infinity)
+        public static Interval<T> Parse<T>(string value)
             where T : struct, IEquatable<T>, IComparable<T>, IComparable
-            => Parse(value, s => (T)Convert.ChangeType(s, typeof(T)), infinityString);
+            => Parse(value, s => Infinity.Parse<T>(s));
 
         [Pure]
-        public static Interval<T> Parse<T>(string value, Func<string, T> boundaryParser, string infinityString = infinity)
+        public static Interval<T> Parse<T>(string value, Func<string, Infinity<T>> infinityParser)
             where T : struct, IEquatable<T>, IComparable<T>, IComparable
         {
             var match = intervalRegex.Match(value);
@@ -24,32 +23,21 @@ namespace IntervalRecord
             {
                 throw new ArgumentException(intervalNotFound);
             }
-            return ParseInterval(match.Value, boundaryParser, infinityString);
+            return ParseInterval(match.Value, infinityParser);
         }
-
-
-        [Pure]
-        public static bool TryParse<T>(string value, Func<string, T> boundaryParser, out Interval<T>? result)
-            where T : struct, IEquatable<T>, IComparable<T>, IComparable
-            => TryParse(value, boundaryParser, infinity, out result);
 
         [Pure]
         public static bool TryParse<T>(string value, out Interval<T>? result)
             where T : struct, IEquatable<T>, IComparable<T>, IComparable
-            => TryParse(value, s => (T)Convert.ChangeType(s, typeof(T)), infinity, out result);
+            => TryParse(value, s => Infinity.Parse<T>(s), out result);
 
         [Pure]
-        public static bool TryParse<T>(string value, string infinityString, out Interval<T>? result)
-            where T : struct, IEquatable<T>, IComparable<T>, IComparable
-            => TryParse(value, s => (T)Convert.ChangeType(s, typeof(T)), infinityString, out result);
-
-        [Pure]
-        public static bool TryParse<T>(string value, Func<string, T> boundaryParser, string infinityString, out Interval<T>? result)
+        public static bool TryParse<T>(string value, Func<string, Infinity<T>> infinityParser, out Interval<T>? result)
             where T : struct, IEquatable<T>, IComparable<T>, IComparable
         {
             try
             {
-                result = Parse(value, boundaryParser, infinityString);
+                result = Parse(value, infinityParser);
                 return true;
             }
             catch
@@ -60,52 +48,37 @@ namespace IntervalRecord
         }
 
         [Pure]
-        public static IEnumerable<Interval<T>> ParseAll<T>(string value, string infinityString = infinity)
+        public static IEnumerable<Interval<T>> ParseAll<T>(string value)
             where T : struct, IEquatable<T>, IComparable<T>, IComparable
-            => ParseAll(value, s => (T)Convert.ChangeType(s, typeof(T)), infinityString);
+            => ParseAll(value, s => Infinity.Parse<T>(s));
 
         [Pure]
-        public static IEnumerable<Interval<T>> ParseAll<T>(string value, Func<string, T> boundaryParser, string infinityString = infinity)
+        public static IEnumerable<Interval<T>> ParseAll<T>(string value, Func<string, Infinity<T>> infinityParser)
             where T : struct, IEquatable<T>, IComparable<T>, IComparable
         {
             var matches = intervalRegex.Matches(value);
             foreach(Match match in matches)
             {
-                yield return ParseInterval(match.Value, boundaryParser, infinityString);
+                yield return ParseInterval(match.Value, infinityParser);
             }
         }
 
         [Pure]
-        private static Interval<T> ParseInterval<T>(string value, Func<string, T> boundaryParser, string infinityString)
+        private static Interval<T> ParseInterval<T>(string value, Func<string, Infinity<T>> infinityParser)
             where T : struct, IEquatable<T>, IComparable<T>, IComparable
         {
             var parts = value.Split(',');
             var startString = parts[0].Trim();
             var endString = parts[1].Trim();
 
-            var start = ParseBoundary(startString[1..], boundaryParser, infinityString);
-            var end = ParseBoundary(endString[..(endString.Length - 1)], boundaryParser, infinityString);
+            var start = infinityParser(startString[1..]);
+            var end = infinityParser(endString[..(endString.Length - 1)]);
 
             return new Interval<T>(
                 start,
                 end,
-                start is null ? false : value.StartsWith('['),
-                end is null ? false : value.EndsWith(']'));
-        }
-
-        [Pure]
-        private static T? ParseBoundary<T>(string value, Func<string, T> boundaryParser, string infinityString)
-            where T : struct, IEquatable<T>, IComparable<T>
-        {
-            if (string.IsNullOrEmpty(value)
-                || value == infinityString
-                || value == "-" + infinityString
-                || value == "+" + infinityString
-                || value == "null")
-            {
-                return null;
-            }
-            return boundaryParser(value);
+                start.IsInfinite ? false : value.StartsWith('['),
+                end.IsInfinite ? false : value.EndsWith(']'));
         }
     }
 }

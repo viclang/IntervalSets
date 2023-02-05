@@ -1,4 +1,5 @@
 ﻿using FluentAssertions;
+using InfinityComparable;
 using System;
 using System.Linq;
 using Xunit;
@@ -48,7 +49,7 @@ namespace IntervalRecord.Tests
         public void FromStringEmpty_ShouldThrowArgumentNullException()
         {
             // Arrange
-            var act = () => Interval.Parse(string.Empty, x => int.Parse(x));
+            var act = () => Interval.Parse(string.Empty, s => Infinity.Parse<int>(s));
 
             // Assert
             act.Should().Throw<ArgumentException>()

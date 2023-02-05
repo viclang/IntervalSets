@@ -71,6 +71,21 @@ namespace IntervalRecord
                     : End.CompareTo(other) == 1;
         }
 
+
+        [Pure]
+        public int CompareTo(Interval<T> other)
+        {
+            if (this > other)
+            {
+                return 1;
+            }
+            if (this < other)
+            {
+                return -1;
+            }
+            return 0;
+        }
+
         public static bool operator >(Interval<T> a, Interval<T> b)
         {
             var compareEnd = a.CompareEnd(b);
@@ -86,20 +101,6 @@ namespace IntervalRecord
         public static bool operator >=(Interval<T> a, Interval<T> b) => a == b || a > b;
 
         public static bool operator <=(Interval<T> a, Interval<T> b) => a == b || a < b;
-
-        [Pure]
-        public int CompareTo(Interval<T> other)
-        {
-            if (this > other)
-            {
-                return 1;
-            }
-            if (this < other)
-            {
-                return -1;
-            }
-            return 0;
-        }
 
         [Pure]
         public override string ToString()

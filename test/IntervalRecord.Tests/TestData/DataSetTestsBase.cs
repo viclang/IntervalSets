@@ -24,7 +24,7 @@ namespace IntervalRecord.Tests.TestData
             }
         }
 
-        protected static IEnumerable<Interval<int>> GetShiftList(Interval<int> value, int length, int offset)
+        public static IEnumerable<Interval<int>> GetShiftList(Interval<int> value, int length, int offset)
         {
             yield return value;
             for (var i = 0; i < length; i++)
@@ -33,10 +33,10 @@ namespace IntervalRecord.Tests.TestData
             }
         }
 
-        protected static TheoryData<Interval<int>> IncrementalLengthSet(int referencePoint, int maxRadius)
+        public static TheoryData<Interval<int>> IncrementalLengthSet(int referencePoint, int maxRadius)
             => IncrementalLengthSet(referencePoint, 0, maxRadius);
 
-        protected static TheoryData<Interval<int>> IncrementalLengthSet(int start, int minLength, int maxLength)
+        public static TheoryData<Interval<int>> IncrementalLengthSet(int start, int minLength, int maxLength)
         {
             var data = new TheoryData<Interval<int>>();
             if (minLength == 0)
