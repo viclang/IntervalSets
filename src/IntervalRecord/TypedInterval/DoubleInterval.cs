@@ -2,6 +2,37 @@
 
 namespace IntervalRecord
 {
+    public static partial class Interval
+    {
+        public static Interval<double> Canonicalize(this Interval<double> value, BoundaryType boundaryType, double step)
+            => new DoubleInterval(value).Canonicalize(boundaryType, step);
+
+        public static Interval<double> Closure(this Interval<double> value, double step)
+            => new DoubleInterval(value).Closure(step);
+
+        public static Interval<double> Interior(this Interval<double> value, double step)
+            => new DoubleInterval(value).Interior(step);
+
+        public static Infinity<double> Length(this Interval<double> value, double closureStep)
+            => new DoubleInterval(value, closureStep).Length();
+
+        public static Infinity<double> Length(this Interval<double> value)
+            => new DoubleInterval(value).Length();
+
+        public static double? Radius(this Interval<double> value, double closureStep)
+            => new DoubleInterval(value, closureStep).Radius();
+
+        public static double? Radius(this Interval<double> value)
+            => new DoubleInterval(value).Radius();
+
+        public static double? Centre(this Interval<double> value, double closureStep)
+            => new DoubleInterval(value, closureStep).Centre();
+
+        public static double? Centre(this Interval<double> value)
+            => new DoubleInterval(value).Centre();
+
+    }
+
     public class DoubleInterval : AbstractInterval<double>,
         IIntervalConverter<double, double>,
         IIntervalMeasurements<double, double, double>

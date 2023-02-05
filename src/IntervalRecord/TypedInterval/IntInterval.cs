@@ -2,6 +2,36 @@
 
 namespace IntervalRecord
 {
+    public static partial class Interval
+    {
+        public static Interval<int> Canonicalize(this Interval<int> value, BoundaryType boundaryType, int step)
+            => new IntInterval(value).Canonicalize(boundaryType, step);
+        public static Interval<int> Closure(this Interval<int> value, int step)
+            => new IntInterval(value).Closure(step);
+
+        public static Interval<int> Interior(this Interval<int> value, int step)
+            => new IntInterval(value).Interior(step);
+
+        public static Infinity<int> Length(this Interval<int> value, int closureStep)
+            => new IntInterval(value, closureStep).Length();
+
+        public static Infinity<int> Length(this Interval<int> value)
+            => new IntInterval(value).Length();
+
+        public static double? Radius(this Interval<int> value, int closureStep)
+            => new IntInterval(value, closureStep).Radius();
+
+        public static double? Radius(this Interval<int> value)
+            => new IntInterval(value).Radius();
+
+        public static double? Centre(this Interval<int> value, int closureStep)
+            => new IntInterval(value, closureStep).Centre();
+
+        public static double? Centre(this Interval<int> value)
+            => new IntInterval(value).Centre();
+
+    }
+
     public class IntInterval : AbstractInterval<int>,
         IIntervalConverter<int, int>,
         IIntervalMeasurements<int, double, double>
@@ -33,6 +63,6 @@ namespace IntervalRecord
             => CalculateOrNull(value, (end, start) => (end - start) / 2);
 
         public double? Centre()
-            => CalculateOrNull(value, (end, start) => (end + start) / 2);
+            => CalculateOrNull(value, (end, start) => (end + (double)start) / 2);
     }
 }

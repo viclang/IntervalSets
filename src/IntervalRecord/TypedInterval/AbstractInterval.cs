@@ -11,14 +11,14 @@ namespace IntervalRecord
         Interval<T> Interior(TStep step);
     }
 
-    public interface IIntervalMeasurements<TLength, TRadius, TCentre>
-        where TLength : struct, IEquatable<TLength>, IComparable<TLength>, IComparable
-        where TRadius : struct
-        where TCentre : struct
+    public interface IIntervalMeasurements<TLengthResult, TRadiusResult, TCentreResult>
+        where TLengthResult : struct, IEquatable<TLengthResult>, IComparable<TLengthResult>, IComparable
+        where TRadiusResult : struct
+        where TCentreResult : struct
     {
-        Infinity<TLength> Length();
-        TRadius? Radius();
-        TCentre? Centre();
+        Infinity<TLengthResult> Length();
+        TRadiusResult? Radius();
+        TCentreResult? Centre();
     }
 
     public abstract class AbstractInterval<T>
