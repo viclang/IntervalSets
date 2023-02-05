@@ -22,9 +22,9 @@ namespace IntervalRecord
     public static partial class Interval
     {
         [Pure]
-        public static OverlappingState GetOverlappingState<T>(this Interval<T> value, Interval<T> other, bool includeHalfOpen = false)
+        public static OverlappingState GetOverlappingState<T>(this Interval<T> source, Interval<T> value, bool includeHalfOpen = false)
             where T : struct, IEquatable<T>, IComparable<T>, IComparable
-            => (value.CompareStart(other), value.CompareEnd(other)) switch
+            => (source.CompareStart(value), source.CompareEnd(value)) switch
             {
                 (0, 0) => OverlappingState.Equal,
                 (0, -1) => OverlappingState.Starts,
@@ -33,14 +33,14 @@ namespace IntervalRecord
                 (-1, 0) => OverlappingState.FinishedBy,
                 (-1, 1) => OverlappingState.Contains,
                 (0, 1) => OverlappingState.StartedBy,
-                (-1, -1) => CompareEndToStart(value, other, includeHalfOpen) switch
+                (-1, -1) => CompareEndToStart(source, value, includeHalfOpen) switch
                 {
                     -1 => OverlappingState.Before,
                     0 => OverlappingState.Meets,
                     1 => OverlappingState.Overlaps,
                     _ => throw new NotSupportedException(),
                 },
-                (1, 1) => CompareStartToEnd(value, other, includeHalfOpen) switch
+                (1, 1) => CompareStartToEnd(source, value, includeHalfOpen) switch
                 {
                     -1 => OverlappingState.OverlappedBy,
                     0 => OverlappingState.MetBy,
@@ -51,42 +51,42 @@ namespace IntervalRecord
             };
 
         [Pure]
-        public static int CompareStart<T>(this Interval<T> value, Interval<T> other)
+        public static int CompareStart<T>(this Interval<T> source, Interval<T> value)
             where T : struct, IEquatable<T>, IComparable<T>, IComparable
         {
-            var result = value.Start.CompareTo(other.Start);
-            return result == 0 ? value.StartInclusive.CompareTo(other.StartInclusive) : result;
+            var result = source.Start.CompareTo(value.Start);
+            return result == 0 ? source.StartInclusive.CompareTo(value.StartInclusive) : result;
         }
 
 
         [Pure]
-        public static int CompareEnd<T>(this Interval<T> value, Interval<T> other)
+        public static int CompareEnd<T>(this Interval<T> source, Interval<T> value)
             where T : struct, IEquatable<T>, IComparable<T>, IComparable
         {
-            var result = value.End.CompareTo(other.End);
-            return result == 0 ? value.EndInclusive.CompareTo(other.EndInclusive) : result;
+            var result = source.End.CompareTo(value.End);
+            return result == 0 ? source.EndInclusive.CompareTo(value.EndInclusive) : result;
         }
 
         [Pure]
-        public static int CompareStartToEnd<T>(this Interval<T> value, Interval<T> other, bool includeHalfOpen = false)
+        public static int CompareStartToEnd<T>(this Interval<T> source, Interval<T> value, bool includeHalfOpen = false)
             where T : struct, IEquatable<T>, IComparable<T>, IComparable
         {
-            var result = value.Start.CompareTo(other.End);
+            var result = source.Start.CompareTo(value.End);
             var startEndNotTouching = includeHalfOpen
-                ? (!value.StartInclusive && !other.EndInclusive)
-                : (!value.StartInclusive || !other.EndInclusive);
+                ? (!source.StartInclusive && !value.EndInclusive)
+                : (!source.StartInclusive || !value.EndInclusive);
 
             return result == 0 && startEndNotTouching ? 1 : result;
         }
 
         [Pure]
-        public static int CompareEndToStart<T>(this Interval<T> value, Interval<T> other, bool includeHalfOpen = false)
+        public static int CompareEndToStart<T>(this Interval<T> source, Interval<T> value, bool includeHalfOpen = false)
             where T : struct, IEquatable<T>, IComparable<T>, IComparable
         {
-            var result = value.End.CompareTo(other.Start);
+            var result = source.End.CompareTo(value.Start);
             var endStartNotTouching = includeHalfOpen
-                ? (!value.EndInclusive && !other.StartInclusive)
-                : (!value.EndInclusive || !other.StartInclusive);
+                ? (!source.EndInclusive && !value.StartInclusive)
+                : (!source.EndInclusive || !value.StartInclusive);
 
             return result == 0 && endStartNotTouching ? -1 : result;
         }

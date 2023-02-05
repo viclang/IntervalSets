@@ -5,27 +5,27 @@ namespace IntervalRecord
     public static partial class Interval
     {
         [Pure]
-        public static Interval<DateOnly> Interior(this Interval<DateOnly> value, int step)
-            => ToOpen(value, x => x.AddDays(step), x => x.AddDays(-step));
+        public static Interval<DateOnly> Interior(this Interval<DateOnly> source, int step)
+            => ToOpen(source, end => end.AddDays(step), start => start.AddDays(-step));
 
         [Pure]
-        public static Interval<DateTime> Interior(this Interval<DateTime> value, TimeSpan step)
-            => ToOpen(value, x => x.Add(step), x => x.Add(-step));
+        public static Interval<DateTime> Interior(this Interval<DateTime> source, TimeSpan step)
+            => ToOpen(source, end => end.Add(step), start => start.Add(-step));
 
         [Pure]
-        public static Interval<DateTimeOffset> Interior(this Interval<DateTimeOffset> value, TimeSpan step)
-            => ToOpen(value, x => x.Add(step), x => x.Add(-step));
+        public static Interval<DateTimeOffset> Interior(this Interval<DateTimeOffset> source, TimeSpan step)
+            => ToOpen(source, end => end.Add(step), start => start.Add(-step));
 
         [Pure]
-        public static Interval<double> Interior(this Interval<double> value, double step)
-            => ToOpen(value, x => x + step, x => x - step);
+        public static Interval<double> Interior(this Interval<double> source, double step)
+            => ToOpen(source, end => end + step, start => start - step);
 
         [Pure]
-        public static Interval<int> Interior(this Interval<int> value, int step)
-            => ToOpen(value, x => x + step, x => x - step);
+        public static Interval<int> Interior(this Interval<int> source, int step)
+            => ToOpen(source, end => end + step, start => start - step);
 
         [Pure]
-        public static Interval<TimeOnly> Interior(this Interval<TimeOnly> value, TimeSpan step)
-            => ToOpen(value, x => x.Add(step), x => x.Add(-step));
+        public static Interval<TimeOnly> Interior(this Interval<TimeOnly> source, TimeSpan step)
+            => ToOpen(source, end => end.Add(step), start => start.Add(-step));
     }
 }

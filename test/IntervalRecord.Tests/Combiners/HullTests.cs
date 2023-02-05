@@ -14,8 +14,8 @@ namespace IntervalRecord.Tests.Combiners
 
             // Assert
             var array = new Interval<int>[] { a, b };
-            var minByStart = array.MinBy(x => x.Start);
-            var maxByEnd = array.MaxBy(x => x.End);
+            var minByStart = array.MinBy(i => i.Start);
+            var maxByEnd = array.MaxBy(i => i.End);
 
 
             var expectedStartInclusive = a.Start == b.Start
@@ -42,7 +42,7 @@ namespace IntervalRecord.Tests.Combiners
             // Arrange
             var list = OverlapList(startingPoint, length, offset, boundaryType);
             var (startInclusive, endInclusive) = boundaryType.ToTuple();
-            var expected = new Interval<int>(list.MinBy(x => x.Start).Start, list.MaxBy(x => x.End).End, startInclusive, endInclusive);
+            var expected = new Interval<int>(list.MinBy(i => i.Start).Start, list.MaxBy(i => i.End).End, startInclusive, endInclusive);
 
             // Act
             var actual = list.Hull();

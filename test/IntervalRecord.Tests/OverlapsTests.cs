@@ -7,14 +7,14 @@ namespace IntervalRecord.Tests
     {
         [Theory]
         [MemberData(nameof(IntervalPairsWithOverlappingState), false)]
-        public void Overlaps(Interval<int> a, Interval<int> b, OverlappingState overlappingState)
+        public void Overlaps(Interval<int> left, Interval<int> right, OverlappingState overlappingState)
         {
             // Arrange
             var expectedResult = overlappingState != OverlappingState.Before
                 && overlappingState != OverlappingState.After;
 
             // Act
-            var actual = a.Overlaps(b);
+            var actual = left.Overlaps(right);
 
             // Assert
             actual.Should().Be(expectedResult);
@@ -23,14 +23,14 @@ namespace IntervalRecord.Tests
 
         [Theory]
         [MemberData(nameof(IntervalPairsWithOverlappingState), true)]
-        public void Overlaps_IncludeHalfOpen(Interval<int> a, Interval<int> b, OverlappingState overlappingState)
+        public void Overlaps_IncludeHalfOpen(Interval<int> left, Interval<int> right, OverlappingState overlappingState)
         {
             // Arrange
             var expectedResult = overlappingState != OverlappingState.Before
                 && overlappingState != OverlappingState.After;
 
             // Act
-            var actual = a.Overlaps(b, true);
+            var actual = left.Overlaps(right, true);
 
             // Assert
             actual.Should().Be(expectedResult);

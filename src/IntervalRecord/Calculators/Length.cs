@@ -6,27 +6,27 @@ namespace IntervalRecord
     public static partial class Interval
     {
         [Pure]
-        public static Infinity<int> Length(this Interval<DateOnly> value)
-            => ValueOrInfinity(value, (end, start) => end.DayNumber - start.DayNumber);
+        public static Infinity<int> Length(this Interval<DateOnly> source)
+            => ValueOrInfinity(source, (end, start) => end.DayNumber - start.DayNumber);
 
         [Pure]
-        public static Infinity<TimeSpan> Length(this Interval<DateTime> value)
-            => ValueOrInfinity(value, (end, start) => end - start);
+        public static Infinity<TimeSpan> Length(this Interval<DateTime> source)
+            => ValueOrInfinity(source, (end, start) => end - start);
 
         [Pure]
-        public static Infinity<TimeSpan> Length(this Interval<DateTimeOffset> value)
-            => ValueOrInfinity(value, (end, start) => end - start);
+        public static Infinity<TimeSpan> Length(this Interval<DateTimeOffset> source)
+            => ValueOrInfinity(source, (end, start) => end - start);
 
         [Pure]
-        public static Infinity<double> Length(this Interval<double> value)
-            => ValueOrInfinity(value, (end, start) => end - start);
+        public static Infinity<double> Length(this Interval<double> source)
+            => ValueOrInfinity(source, (end, start) => end - start);
 
         [Pure]
-        public static Infinity<int> Length(this Interval<int> value)
-            => ValueOrInfinity(value, (end, start) => end - start);
+        public static Infinity<int> Length(this Interval<int> source)
+            => ValueOrInfinity(source, (end, start) => end - start);
 
         [Pure]
-        public static Infinity<TimeSpan> Length(this Interval<TimeOnly> value)
-            => ValueOrInfinity(value, (end, start) => end - start);
+        public static Infinity<TimeSpan> Length(this Interval<TimeOnly> source)
+            => ValueOrInfinity(source, (end, start) => end - start);
     }
 }

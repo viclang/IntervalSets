@@ -5,36 +5,36 @@ namespace IntervalRecord
     public static partial class Interval
     {
         [Pure]
-        public static Interval<T>? Except<T>(this Interval<T> value, Interval<T> other)
+        public static Interval<T>? Except<T>(this Interval<T> first, Interval<T> second)
             where T : struct, IEquatable<T>, IComparable<T>, IComparable
-            => !value.Overlaps(other, true) ? null : GetExceptValue(value, other);
+            => !first.Overlaps(second, true) ? null : GetExceptValue(first, second);
 
         [Pure]
-        public static Interval<T> ExceptOrDefault<T>(this Interval<T> value, Interval<T> other, Interval<T> defaultValue = default)
+        public static Interval<T> ExceptOrDefault<T>(this Interval<T> first, Interval<T> second, Interval<T> defaultValue = default)
             where T : struct, IEquatable<T>, IComparable<T>, IComparable
-            => !value.Overlaps(other, true) ? defaultValue : GetExceptValue(value, other);
+            => !first.Overlaps(second, true) ? defaultValue : GetExceptValue(first, second);
 
         [Pure]
-        public static IEnumerable<Interval<T>> Except<T>(this IEnumerable<Interval<T>> values)
+        public static IEnumerable<Interval<T>> Except<T>(this IEnumerable<Interval<T>> source)
             where T : struct, IEquatable<T>, IComparable<T>, IComparable
-            => values.Pairwise((a, b) => a.Except(b)).Where(x => !x.IsEmpty());
+            => source.Pairwise((a, b) => a.Except(b)).Where(i => !i.IsEmpty());
 
         [Pure]
-        private static Interval<T> GetExceptValue<T>(Interval<T> value, Interval<T> other)
+        private static Interval<T> GetExceptValue<T>(Interval<T> first, Interval<T> second)
             where T : struct, IEquatable<T>, IComparable<T>, IComparable
         {
-            var minByStart = MinBy(value, other, x => x.Start);
-            var maxByStart = MaxBy(value, other, x => x.Start);
+            var minByStart = MinBy(first, second, i => i.Start);
+            var maxByStart = MaxBy(first, second, i => i.Start);
 
-            var startInclusive = value.Start == other.Start
-                ? value.StartInclusive || other.StartInclusive
+            var startInclusive = first.Start == second.Start
+                ? first.StartInclusive || second.StartInclusive
                 : minByStart.StartInclusive;
 
-            var endInclusive = value.End == other.End
-                ? value.EndInclusive || other.EndInclusive
+            var endInclusive = first.End == second.End
+                ? first.EndInclusive || second.EndInclusive
                 : maxByStart.EndInclusive;
 
-            return value with { Start = minByStart.Start, End = maxByStart.Start, StartInclusive = startInclusive, EndInclusive = endInclusive };
+            return first with { Start = minByStart.Start, End = maxByStart.Start, StartInclusive = startInclusive, EndInclusive = endInclusive };
         }
     }
 }

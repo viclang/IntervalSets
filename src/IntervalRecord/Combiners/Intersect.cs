@@ -5,41 +5,41 @@ namespace IntervalRecord
     public static partial class Interval
     {
         [Pure]
-        public static Interval<T>? Intersect<T>(this Interval<T> value, Interval<T> other)
+        public static Interval<T>? Intersect<T>(this Interval<T> first, Interval<T> second)
             where T : struct, IEquatable<T>, IComparable<T>, IComparable
-            => !value.Overlaps(other, true)
+            => !first.Overlaps(second, true)
                 ? null
-                : GetIntersectValue(value, other);
+                : GetIntersectValue(first, second);
 
         [Pure]
-        public static Interval<T> IntersectOrDefault<T>(this Interval<T> value, Interval<T> other, Interval<T> defaultValue = default)
+        public static Interval<T> IntersectOrDefault<T>(this Interval<T> first, Interval<T> second, Interval<T> defaultValue = default)
             where T : struct, IEquatable<T>, IComparable<T>, IComparable
-            => !value.Overlaps(other, true)
+            => !first.Overlaps(second, true)
                 ? defaultValue
-                : GetIntersectValue(value, other);
+                : GetIntersectValue(first, second);
 
         [Pure]
         public static IEnumerable<Interval<T>> Intersect<T>(
-            this IEnumerable<Interval<T>> values)
+            this IEnumerable<Interval<T>> source)
             where T : struct, IEquatable<T>, IComparable<T>, IComparable
-            => values.Pairwise((a, b) => a.Intersect(b)).Where(x => !x.IsEmpty());
+            => source.Pairwise((a, b) => a.Intersect(b)).Where(i => !i.IsEmpty());
 
         [Pure]
-        private static Interval<T> GetIntersectValue<T>(Interval<T> value, Interval<T> other)
+        private static Interval<T> GetIntersectValue<T>(Interval<T> first, Interval<T> second)
             where T : struct, IEquatable<T>, IComparable<T>, IComparable
         {
-            var maxByStart = MaxBy(value, other, x => x.Start);
-            var minByEnd = MinBy(value, other, x => x.End);
+            var maxByStart = MaxBy(first, second, i => i.Start);
+            var minByEnd = MinBy(first, second, i => i.End);
 
-            var startInclusive = value.Start == other.Start
-                ? value.StartInclusive && other.StartInclusive
+            var startInclusive = first.Start == second.Start
+                ? first.StartInclusive && second.StartInclusive
                 : maxByStart.StartInclusive;
 
-            var endInclusive = value.End == other.End
-                ? value.EndInclusive && other.EndInclusive
+            var endInclusive = first.End == second.End
+                ? first.EndInclusive && second.EndInclusive
                 : minByEnd.EndInclusive;
 
-            return value with { Start = maxByStart.Start, End = minByEnd.End, StartInclusive = startInclusive, EndInclusive = endInclusive };
+            return first with { Start = maxByStart.Start, End = minByEnd.End, StartInclusive = startInclusive, EndInclusive = endInclusive };
         }
     }
 }

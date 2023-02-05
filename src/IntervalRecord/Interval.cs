@@ -86,21 +86,21 @@ namespace IntervalRecord
             return 0;
         }
 
-        public static bool operator >(Interval<T> a, Interval<T> b)
+        public static bool operator >(Interval<T> left, Interval<T> right)
         {
-            var compareEnd = a.CompareEnd(b);
-            return compareEnd == 1 || compareEnd == 0 && a.CompareStart(b) == -1;
+            var compareEnd = left.CompareEnd(right);
+            return compareEnd == 1 || compareEnd == 0 && left.CompareStart(right) == -1;
         }
 
-        public static bool operator <(Interval<T> a, Interval<T> b)
+        public static bool operator <(Interval<T> left, Interval<T> right)
         {
-            var compareEnd = a.CompareEnd(b);
-            return compareEnd == -1 || compareEnd == 0 && a.CompareStart(b) == 1;
+            var compareEnd = left.CompareEnd(right);
+            return compareEnd == -1 || compareEnd == 0 && left.CompareStart(right) == 1;
         }
 
-        public static bool operator >=(Interval<T> a, Interval<T> b) => a == b || a > b;
+        public static bool operator >=(Interval<T> left, Interval<T> right) => left == right || left > right;
 
-        public static bool operator <=(Interval<T> a, Interval<T> b) => a == b || a < b;
+        public static bool operator <=(Interval<T> left, Interval<T> right) => left == right || left < right;
 
         [Pure]
         public override string ToString()

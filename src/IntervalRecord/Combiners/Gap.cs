@@ -5,29 +5,29 @@ namespace IntervalRecord
     public static partial class Interval
     {
         [Pure]
-        public static Interval<T>? Gap<T>(this Interval<T> value, Interval<T> other)
+        public static Interval<T>? Gap<T>(this Interval<T> first, Interval<T> second)
             where T : struct, IEquatable<T>, IComparable<T>, IComparable
-            => value.GetOverlappingState(other, true) switch
+            => first.GetOverlappingState(second, true) switch
             {
-                OverlappingState.Before => new Interval<T>(value.End, other.Start, !value.EndInclusive, !other.StartInclusive),
-                OverlappingState.After => new Interval<T>(other.End, value.Start, !other.EndInclusive, !value.StartInclusive),
+                OverlappingState.Before => new Interval<T>(first.End, second.Start, !first.EndInclusive, !second.StartInclusive),
+                OverlappingState.After => new Interval<T>(second.End, first.Start, !second.EndInclusive, !first.StartInclusive),
                 _ => null
             };
 
         [Pure]
-        public static Interval<T> GapOrDefault<T>(this Interval<T> value, Interval<T> other, Interval<T> defaultValue = default)
+        public static Interval<T> GapOrDefault<T>(this Interval<T> first, Interval<T> second, Interval<T> defaultValue = default)
             where T : struct, IEquatable<T>, IComparable<T>, IComparable
-            => value.GetOverlappingState(other, true) switch
+            => first.GetOverlappingState(second, true) switch
             {
-                OverlappingState.Before => new Interval<T>(value.End, other.Start, !value.EndInclusive, !other.StartInclusive),
-                OverlappingState.After => new Interval<T>(other.End, value.Start, !other.EndInclusive, !value.StartInclusive),
+                OverlappingState.Before => new Interval<T>(first.End, second.Start, !first.EndInclusive, !second.StartInclusive),
+                OverlappingState.After => new Interval<T>(second.End, first.Start, !second.EndInclusive, !first.StartInclusive),
                 _ => defaultValue
             };
 
         [Pure]
         public static IEnumerable<Interval<T>> Complement<T>(
-            this IEnumerable<Interval<T>> values)
+            this IEnumerable<Interval<T>> source)
             where T : struct, IEquatable<T>, IComparable<T>, IComparable
-            => values.Pairwise((a, b) => a.Gap(b));
+            => source.Pairwise((a, b) => a.Gap(b));
     }
 }

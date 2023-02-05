@@ -17,12 +17,12 @@ namespace IntervalRecord.Tests.Calculators
             var b = new Interval<int>(startB, endB, true, true);
 
             // Act
-            var actualMaxByStart = Interval.MaxBy(a, b, x => x.Start);
-            var actualMaxByEnd = Interval.MaxBy(a, b, x => x.End);
+            var actualMaxByStart = Interval.MaxBy(a, b, i => i.Start);
+            var actualMaxByEnd = Interval.MaxBy(a, b, i => i.End);
 
             // Assert
-            actualMaxByStart.Should().Be(new[] { a, b }.MaxBy(x => x.Start));
-            actualMaxByEnd.Should().Be(new[] { a, b }.MaxBy(x => x.End));
+            actualMaxByStart.Should().Be(new[] { a, b }.MaxBy(i => i.Start));
+            actualMaxByEnd.Should().Be(new[] { a, b }.MaxBy(i => i.End));
         }
 
         [Theory]

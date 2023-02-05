@@ -17,12 +17,12 @@ namespace IntervalRecord.Tests.Calculators
             var b = new Interval<int>(startB, endB, true, true);
 
             // Act
-            var actualMinByStart = Interval.MinBy(a, b, x => x.Start);
-            var actualMinByEnd = Interval.MinBy(a, b, x => x.End);
+            var actualMinByStart = Interval.MinBy(a, b, i => i.Start);
+            var actualMinByEnd = Interval.MinBy(a, b, i => i.End);
 
             // Assert
-            actualMinByStart.Should().Be(new[] { a, b }.MinBy(x => x.Start));
-            actualMinByEnd.Should().Be(new[] { a, b }.MinBy(x => x.End));
+            actualMinByStart.Should().Be(new[] { a, b }.MinBy(i => i.Start));
+            actualMinByEnd.Should().Be(new[] { a, b }.MinBy(i => i.End));
         }
 
         [Theory]

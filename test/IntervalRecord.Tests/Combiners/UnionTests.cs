@@ -15,8 +15,8 @@ namespace IntervalRecord.Tests.Combiners
 
             // Assert
             var array = new Interval<int>[] { a, b };
-            var minByStart = array.MinBy(x => x.Start);
-            var maxByEnd = array.MaxBy(x => x.End);
+            var minByStart = array.MinBy(i => i.Start);
+            var maxByEnd = array.MaxBy(i => i.End);
 
 
             var expectedStartInclusive = a.Start == b.Start
@@ -49,8 +49,8 @@ namespace IntervalRecord.Tests.Combiners
 
             // Assert
             var array = new Interval<int>[] { a, b };
-            var minByStart = array.MinBy(x => x.Start);
-            var maxByEnd = array.MaxBy(x => x.End);
+            var minByStart = array.MinBy(i => i.Start);
+            var maxByEnd = array.MaxBy(i => i.End);
 
 
             var expectedStartInclusive = a.Start == b.Start

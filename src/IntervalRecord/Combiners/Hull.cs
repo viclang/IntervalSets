@@ -5,18 +5,18 @@ namespace IntervalRecord
     public static partial class Interval
     {
         [Pure]
-        public static Interval<T> Hull<T>(this Interval<T> value, Interval<T> other)
+        public static Interval<T> Hull<T>(this Interval<T> first, Interval<T> second)
             where T : struct, IEquatable<T>, IComparable<T>, IComparable
         {
-            var minByStart = MinBy(value, other, x => x.Start);
-            var maxByEnd = MaxBy(value, other, x => x.End);
+            var minByStart = MinBy(first, second, i => i.Start);
+            var maxByEnd = MaxBy(first, second, i => i.End);
 
-            var startInclusive = value.Start == other.Start
-                ? value.StartInclusive || other.StartInclusive
+            var startInclusive = first.Start == second.Start
+                ? first.StartInclusive || second.StartInclusive
                 : minByStart.StartInclusive;
 
-            var endInclusive = value.End == other.End
-                ? value.EndInclusive || other.EndInclusive
+            var endInclusive = first.End == second.End
+                ? first.EndInclusive || second.EndInclusive
                 : maxByEnd.EndInclusive;
 
             return new Interval<T>(minByStart.Start, maxByEnd.End, startInclusive, endInclusive);
@@ -24,15 +24,15 @@ namespace IntervalRecord
 
         [Pure]
         public static Interval<T>? Hull<T>(
-            this IEnumerable<Interval<T>> values)
+            this IEnumerable<Interval<T>> source)
             where T : struct, IEquatable<T>, IComparable<T>, IComparable
         {
-            if (!values.Any())
+            if (!source.Any())
             {
                 return null;
             }
-            var min = values.MinBy(x => x.Start);
-            var max = values.MaxBy(x => x.End);
+            var min = source.MinBy(i => i.Start);
+            var max = source.MaxBy(i => i.End);
 
             return new Interval<T>(
                 min.Start,

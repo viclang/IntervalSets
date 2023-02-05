@@ -6,11 +6,11 @@ namespace IntervalRecord
     {
         [Pure]
         public static IEnumerable<Interval<T>> Reduce<T>(
-            this IEnumerable<Interval<T>> values,
+            this IEnumerable<Interval<T>> source,
             Func<Interval<T>, Interval<T>, Interval<T>?> resultSelector)
             where T : struct, IEquatable<T>, IComparable<T>, IComparable
         {
-            using var e = values.GetEnumerator();
+            using var e = source.GetEnumerator();
 
             if (!e.MoveNext())
                 yield break;
@@ -34,11 +34,11 @@ namespace IntervalRecord
 
         [Pure]
         public static IEnumerable<Interval<T>> Reduce<T>(
-            this IEnumerable<Interval<T>> values,
+            this IEnumerable<Interval<T>> source,
             Func<Interval<T>, Interval<T>, Interval<T>> resultSelector)
             where T : struct, IEquatable<T>, IComparable<T>, IComparable
         {
-            using var e = values.GetEnumerator();
+            using var e = source.GetEnumerator();
 
             if (!e.MoveNext())
                 yield break;
