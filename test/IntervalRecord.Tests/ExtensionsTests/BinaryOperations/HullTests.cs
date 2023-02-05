@@ -5,15 +5,15 @@ namespace IntervalRecord.Tests.ExtensionsTests.BinaryOperations
 {
     public sealed class HullTests : BaseIntervalPairSetTests
     {
-        private const int start = 6;
-        private const int end = 10;
-        private const int offset = 2;
+        private const int startingPoint = 0;
+        private const int length = 4;
+        private const int offset = 1;
 
         [Theory]
-        [MemberData(nameof(IntervalPairs), new object[] { start, end, BoundaryType.Closed, offset })]
-        [MemberData(nameof(IntervalPairs), new object[] { start, end, BoundaryType.ClosedOpen, offset })]
-        [MemberData(nameof(IntervalPairs), new object[] { start, end, BoundaryType.OpenClosed, offset })]
-        [MemberData(nameof(IntervalPairs), new object[] { start, end, BoundaryType.Open, offset })]
+        [MemberData(nameof(IntervalPairs), new object[] { startingPoint, length, offset, BoundaryType.Closed })]
+        [MemberData(nameof(IntervalPairs), new object[] { startingPoint, length, offset, BoundaryType.ClosedOpen })]
+        [MemberData(nameof(IntervalPairs), new object[] { startingPoint, length, offset, BoundaryType.OpenClosed })]
+        [MemberData(nameof(IntervalPairs), new object[] { startingPoint, length, offset, BoundaryType.Open })]
         public void Hull_ShouldBeExpected(Interval<int> a, Interval<int> b)
         {
             // Act
