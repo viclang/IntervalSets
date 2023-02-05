@@ -6,11 +6,11 @@ using System.Threading.Tasks;
 
 namespace IntervalExtensions
 {
-
-    public interface IInterval<T>
-        where T : struct
+    public enum IntervalType
     {
-        T? Start { get; init; }
-        T? End { get; init; }
+        Closed,
+        Open,        
+        ClosedOpen,
+        OpenClosed
     }
 }

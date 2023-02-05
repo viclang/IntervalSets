@@ -37,7 +37,7 @@ namespace IntervalExtensions
         {
             if (value.Start is null && other.Start is not null)
             {
-                return -1;
+                return                                                                    -1;
             }
 
             if (value.Start is not null && other.Start is null)
