@@ -4,7 +4,7 @@ The record Interval<T> will make it easy to deal with https://en.wikipedia.org/w
 The interval supports Closed, ClosedOpen, OpenClosed and Open boundaryTypes.
 ```mermaid
 gantt
-    Reference :active, a, 2022-01-06, 2022-01-10   
+    Reference :crit, active, a, 2022-01-06, 2022-01-10   
 
 	section Before
     Before :crit, b, 2022-01-03, 2022-01-05
