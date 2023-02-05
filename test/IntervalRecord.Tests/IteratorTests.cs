@@ -3,7 +3,7 @@ using System.Linq;
 
 namespace IntervalRecord.Tests
 {
-    public class IterateTests
+    public class IteratorTests
     {
         [Theory]
         [InlineData(BoundaryType.Closed, 10)]

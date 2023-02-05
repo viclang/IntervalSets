@@ -2,7 +2,7 @@
 
 namespace IntervalRecord.Tests
 {
-    public class DeconstructIntervalTests : OverlappingStateTestsBase
+    public class DeconstructTests : OverlappingStateTestsBase
     {
         [Theory]
         [MemberData(nameof(IncrementalLengthSet), 3, 2)]
