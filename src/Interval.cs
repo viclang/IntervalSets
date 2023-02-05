@@ -127,14 +127,16 @@ namespace IntervalRecord
 
         public static bool operator >(Interval<T> a, Interval<T> b)
         {
-            return _startComparer.Compare(a, b) == 1
-                && _endComparer.Compare(a, b) == 1;
+            return (_startComparer.Compare(a, b) == 1 || _startComparer.Compare(a, b) == -1) && _endComparer.Compare(a, b) == 1
+                || _startComparer.Compare(a, b) == 0 && _endComparer.Compare(a, b) == 1
+                || _endComparer.Compare(a, b) == 0 && _startComparer.Compare(a, b) == 1;
         }
 
         public static bool operator <(Interval<T> a, Interval<T> b)
         {
-            return _startComparer.Compare(a, b) == -1
-                && _endComparer.Compare(a, b) == -1;
+            return (_startComparer.Compare(a, b) == 1 || _startComparer.Compare(a, b) == -1) && _endComparer.Compare(a, b) == -1
+                || _startComparer.Compare(a, b) == 0 && _endComparer.Compare(a, b) == -1
+                || _endComparer.Compare(a, b) == 0 && _startComparer.Compare(a, b) == -1;
         }
 
         public static bool operator >=(Interval<T> a, Interval<T> b)
