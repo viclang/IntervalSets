@@ -7,11 +7,11 @@ using System.Threading.Tasks;
 namespace RangeExtensions
 {
     public interface IRangeInclusive<T> : IRange<T>
-    where T : struct, IComparable<T>, IComparable
+        where T : struct, IComparable<T>, IComparable
     { }
 
-    public interface IRangeExclusive<T> : IRange<T> 
-    where T : struct, IComparable<T>, IComparable
+    public interface IRangeExclusive<T> : IRange<T>
+        where T : struct, IComparable<T>, IComparable
     { }
 
     public interface IRange<T>

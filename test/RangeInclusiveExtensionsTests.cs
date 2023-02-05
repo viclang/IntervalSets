@@ -1,5 +1,6 @@
 ﻿using FluentAssertions;
 using RangeExtensions.Interfaces;
+using RangeExtensions.Tests.Extensions;
 using RangeExtensions.Tests.Models;
 using System;
 using System.Collections.Generic;
@@ -34,6 +35,15 @@ namespace RangeExtensions.Tests.RangeInclusive
 
             //assert
             actual.Should().BeFalse();
+        }
+
+        [Fact]
+        public void Cast()
+        {
+            var ex = RangeInclusiveTestData.RelativeRange.ToExclusive();
+            //var inw = RangeExclusiveTestData.RelativeRange.ToInclusive();
+
+            var actual = new RangeInclusiveTestData.NonOverlapping().AsEnumerable<IRangeInclusive<int>>();
         }
     }
 }

@@ -4,13 +4,11 @@ namespace RangeExtensions.Interfaces
 {
     public static class RangeInclusiveIntExtensions
     {
-        private static AddStrategy _configuration = new AddStrategy();
-
         public static bool HasValidRange<TSource>(this TSource value)
             where TSource : IRangeInclusive<int>
         {
             return value.To is null
-                || value.To is not null && value.To!.Value <= value.From;
+                || value.To is not null && value.To!.Value >= value.From;
         }
 
         public static void Add<T>(
@@ -140,17 +138,7 @@ namespace RangeExtensions.Interfaces
                 .MinBy(x => x.From);
         }    
 
-        private static TSource? GetFirstRange<TSource>(this IEnumerable<TSource> ranges)
-            where TSource : IRangeInclusive<int>
-        {
-            return ranges.MinBy(x => x.From);
-        }
-
-        private static TSource? GetLastRange<TSource>(this IEnumerable<TSource> ranges)
-            where TSource : IRangeInclusive<int>
-        {
-            return ranges.MaxBy(x => x.From);
-        }
+        
 
         private static (TProperty from, TProperty? to) GetCollectionRange<TSource, TProperty>(this IEnumerable<TSource> ranges)
             where TSource : IRangeInclusive<TProperty>

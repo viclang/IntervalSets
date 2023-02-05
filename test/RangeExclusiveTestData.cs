@@ -10,13 +10,13 @@ namespace RangeExtensions.Tests.RangeInclusive
 {
     public abstract class RangeExclusiveTestData
     {
-        public static readonly RangeStub RelativeRange = new RangeStub(3, 6);
+        public static readonly RangeExclusiveStub RelativeRange = new RangeExclusiveStub(3, 6);
 
-        public class NonOverlapping : TheoryData<RangeStub>
+        public class NonOverlapping : TheoryData<RangeExclusiveStub>
         {
-            public static readonly RangeStub Before = new RangeStub(1, 3);
-            public static readonly RangeStub After = new RangeStub(6, 8);
-            public static readonly RangeStub AfterNull = new RangeStub(6, null);
+            public static readonly RangeExclusiveStub Before = new RangeExclusiveStub(1, 3);
+            public static readonly RangeExclusiveStub After = new RangeExclusiveStub(6, 8);
+            public static readonly RangeExclusiveStub AfterNull = new RangeExclusiveStub(6, null);
 
             public NonOverlapping()
             {
@@ -26,15 +26,15 @@ namespace RangeExtensions.Tests.RangeInclusive
             }
         }
 
-        public class Overlapping : TheoryData<RangeStub>
+        public class Overlapping : TheoryData<RangeExclusiveStub>
         {
-            public static readonly RangeStub FromInside = new RangeStub(2, 4);
-            public static readonly RangeStub ToInside = new RangeStub(5, 7);
-            public static readonly RangeStub InsideNull = new RangeStub(5, null);
-            public static readonly RangeStub Inside = new RangeStub(4, 5);
-            public static readonly RangeStub FromNull = new RangeStub(3, null);
-            public static readonly RangeStub ToNull = new RangeStub(5, null);
-            public static readonly RangeStub BeforeNull = new RangeStub(4, null);
+            public static readonly RangeExclusiveStub FromInside = new RangeExclusiveStub(2, 4);
+            public static readonly RangeExclusiveStub ToInside = new RangeExclusiveStub(5, 7);
+            public static readonly RangeExclusiveStub InsideNull = new RangeExclusiveStub(5, null);
+            public static readonly RangeExclusiveStub Inside = new RangeExclusiveStub(4, 5);
+            public static readonly RangeExclusiveStub FromNull = new RangeExclusiveStub(3, null);
+            public static readonly RangeExclusiveStub ToNull = new RangeExclusiveStub(5, null);
+            public static readonly RangeExclusiveStub BeforeNull = new RangeExclusiveStub(4, null);
 
             public Overlapping()
             {

@@ -26,7 +26,7 @@ namespace RangeExtensions.Tests.RangeInclusive
             }
         }
 
-        public class Overlapping : TheoryData<RangeStub>
+        public class Overlapping : TheoryData<RangeInclusiveStub>
         {
             public static readonly RangeInclusiveStub FromInside = new RangeInclusiveStub(2, 3);
             public static readonly RangeInclusiveStub ToInside = new RangeInclusiveStub(5, 6);
