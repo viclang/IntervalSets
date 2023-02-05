@@ -1,5 +1,5 @@
 ﻿using System.Linq;
-using IntervalRecord.Tests.Extensions;
+using IntervalRecord.Tests.TestData;
 
 namespace IntervalRecord.Tests.Combiners
 {

@@ -1,6 +1,6 @@
 ﻿using System.Linq;
 
-namespace IntervalRecord.Tests
+namespace IntervalRecord.Tests.Calculators
 {
     public class MinByMaxByTests
     {

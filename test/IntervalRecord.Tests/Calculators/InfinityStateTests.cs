@@ -1,9 +1,9 @@
 ﻿using FluentAssertions;
 using Xunit;
 
-namespace IntervalRecord.Tests
+namespace IntervalRecord.Tests.Calculators
 {
-    public class InfinityTests
+    public class InfinityStateTests
     {
         [Fact]
         public void NegativeInfinity_ShouldBeGreaterThanMin()

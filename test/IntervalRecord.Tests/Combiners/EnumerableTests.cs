@@ -1,5 +1,4 @@
-﻿using IntervalRecord.Tests.IntervalExtensionsTests;
-using IntervalRecord.Tests.TestData;
+﻿using IntervalRecord.Tests.TestData;
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics.Metrics;

@@ -1,4 +1,4 @@
-﻿using IntervalRecord.Tests.Extensions;
+﻿using IntervalRecord.Tests.TestData;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Linq;
