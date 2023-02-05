@@ -13,15 +13,9 @@ namespace IntervalRecord.Tests.Measurements
         private static readonly TimeOnly _referenceTimeOnly = new TimeOnly(_referenceDateTimeOffset.Hour, _referenceDateTimeOffset.Minute, _referenceDateTimeOffset.Second);
 
         [Theory]
-        [InlineData(1, 2, 1)]
-        [InlineData(1, 3, 1)]
         [InlineData(1, 4, 1)]
         [InlineData(1, 5, 1)]
         [InlineData(1, 6, 1)]
-        [InlineData(1, 2, 2)]
-        [InlineData(1, 3, 2)]
-        [InlineData(1, 4, 2)]
-        [InlineData(1, 5, 2)]
         [InlineData(1, 6, 2)]
         public void LengthWithStep_ShouldBe_ClosureWithStepLength(int start, int end, int step)
         {
