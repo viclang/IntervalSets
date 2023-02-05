@@ -8,20 +8,20 @@ namespace IntervalRecord
 {
     public static class IntervalTypeMapper
     {
-        public static IntervalType ToType(bool startInclusive, bool endInclusive) => (startInclusive, endInclusive) switch
+        public static BoundaryType ToType(bool startInclusive, bool endInclusive) => (startInclusive, endInclusive) switch
         {
-            (false, false) => IntervalType.Open,
-            (true, true) => IntervalType.Closed,
-            (false, true) => IntervalType.OpenClosed,
-            (true, false) => IntervalType.ClosedOpen,
+            (false, false) => BoundaryType.Open,
+            (true, true) => BoundaryType.Closed,
+            (false, true) => BoundaryType.OpenClosed,
+            (true, false) => BoundaryType.ClosedOpen,
         };
 
-        public static (bool, bool) ToTuple(IntervalType intervalType) => intervalType switch
+        public static (bool, bool) ToTuple(BoundaryType intervalType) => intervalType switch
         {
-            IntervalType.Open => (false, false),
-            IntervalType.Closed => (true, true),
-            IntervalType.OpenClosed => (false, true),
-            IntervalType.ClosedOpen => (true, false),
+            BoundaryType.Open => (false, false),
+            BoundaryType.Closed => (true, true),
+            BoundaryType.OpenClosed => (false, true),
+            BoundaryType.ClosedOpen => (true, false),
             _ => throw new NotSupportedException()
         };
     }

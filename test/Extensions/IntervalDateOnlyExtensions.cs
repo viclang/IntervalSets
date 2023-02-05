@@ -1,4 +1,5 @@
-﻿using System;
+﻿using IntervalRecord.Extensions;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -11,7 +12,7 @@ namespace IntervalRecord.Tests.Extensions
         public static Interval<DateOnly> CreateBefore(this Interval<DateOnly> interval, int offset)
         {
             var end = interval.Start!.Value.AddDays(-offset);
-            var start = end.AddDays(-interval.Length());
+            var start = end.AddDays(-interval.Length()!.Value);
             return interval with { Start = start, End = end };
         }
 
@@ -25,7 +26,7 @@ namespace IntervalRecord.Tests.Extensions
         public static Interval<DateOnly> CreateAfter(this Interval<DateOnly> interval, int offset)
         {
             var start = interval.End!.Value.AddDays(offset);
-            var end = start.AddDays(interval.Length());
+            var end = start.AddDays(interval.Length()!.Value);
             return interval with { Start = start, End = end };
         }
     }

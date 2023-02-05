@@ -4,37 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace IntervalRecord
+namespace IntervalRecord.Extensions
 {
-    public static class IntervalExtensions
+    public static partial class IntervalExtensions
     {
-        public static int Length(this Interval<int> interval)
-        {
-            var start = interval.Start ?? int.MinValue;
-            var end = interval.End ?? int.MaxValue;
-            return end - start;
-        }
-
-        public static int Length(this Interval<DateOnly> interval)
-        {
-            var start = interval.Start ?? DateOnly.MinValue;
-            var end = interval.End ?? DateOnly.MaxValue;
-            return end.DayNumber - start.DayNumber;
-        }
-
-        public static TimeSpan Length(this Interval<DateTime> interval)
-        {
-            var start = interval.Start ?? DateTime.MinValue;
-            var end = interval.End ?? DateTime.MaxValue;
-            return end.Subtract(start);
-        }
-
-        public static TimeSpan Length(this Interval<DateTimeOffset> interval)
-        {
-            var start = interval.Start ?? DateTimeOffset.MinValue;
-            var end = interval.End ?? DateTimeOffset.MaxValue;
-            return end.Subtract(start);
-        }
+        
 
         public static int CompareStart<T>(this Interval<T> value,
             Interval<T> other)

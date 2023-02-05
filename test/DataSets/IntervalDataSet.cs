@@ -43,7 +43,7 @@ namespace IntervalRecord.Tests.DataSets
         public TheoryData<Interval<T>, Interval<T>, bool> OverlapsWith => new TheoryData<Interval<T>, Interval<T>, bool>
         {
             { Reference, Before, false },
-            { Reference, Meets, Reference.GetIntervalType() == IntervalType.Closed },
+            { Reference, Meets, Reference.GetIntervalType() == BoundaryType.Closed },
             { Reference, Overlaps, true },
             { Reference, Starts, true },
             { Reference, ContainedBy, true },
@@ -53,7 +53,7 @@ namespace IntervalRecord.Tests.DataSets
             { Reference, Contains, true },
             { Reference, StartedBy, true },
             { Reference, OverlappedBy, true },
-            { Reference, MetBy, Reference.GetIntervalType() == IntervalType.Closed },
+            { Reference, MetBy, Reference.GetIntervalType() == BoundaryType.Closed },
             { Reference, After, false },
             { Reference, Before with { End = null, EndInclusive = false }, true },
             { Reference, Before with { Start = null, StartInclusive = false }, false },
@@ -67,7 +67,7 @@ namespace IntervalRecord.Tests.DataSets
         public TheoryData<Interval<T>, Interval<T>, bool> IsConnected => new TheoryData<Interval<T>, Interval<T>, bool>
         {
             { Reference, Before, false },
-            { Reference, Meets, Reference.GetIntervalType() == IntervalType.Closed },
+            { Reference, Meets, Reference.GetIntervalType() == BoundaryType.Closed },
             { Reference, Overlaps, true },
             { Reference, Starts, true },
             { Reference, ContainedBy, true },
@@ -77,7 +77,7 @@ namespace IntervalRecord.Tests.DataSets
             { Reference, Contains, true },
             { Reference, StartedBy, true },
             { Reference, OverlappedBy, true },
-            { Reference, MetBy, Reference.GetIntervalType() == IntervalType.Closed },
+            { Reference, MetBy, Reference.GetIntervalType() == BoundaryType.Closed },
             { Reference, After, false },
             { Reference, Before with { End = null, EndInclusive = false }, false },
             { Reference, Before with { Start = null, StartInclusive = false }, false },

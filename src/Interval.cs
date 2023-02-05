@@ -1,4 +1,5 @@
-﻿using System;
+﻿using IntervalRecord.Extensions;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -21,24 +22,54 @@ namespace IntervalRecord
             StartInclusive = start is null ? false : startInclusive;
             EndInclusive = end is null ? false : endInclusive;
 
-            if (Start is not null && End is not null
-                    && StartInclusive && EndInclusive
-                    && End.Value.CompareTo(Start.Value) == -1)
+            if (IsBounded() && StartInclusive && EndInclusive
+                    && End!.Value.CompareTo(Start!.Value) == -1)
             {
                 throw new ArgumentOutOfRangeException("The end parameter must be greater or equal to the start parameter");
             }
 
-            if (Start is not null && End is not null
-                    && (!StartInclusive || !EndInclusive)
-                    && End.Value.CompareTo(Start.Value) <= 0)
+            if (IsBounded() && !IsEmpty()
+                && (!StartInclusive || !EndInclusive)
+                && End!.Value.CompareTo(Start!.Value) <= 0)
             {
                 throw new ArgumentOutOfRangeException("The end parameter must be greater than the start parameter");
             }
         }
 
-        public IntervalType GetIntervalType()
+        public BoundaryType GetIntervalType()
         {
             return IntervalTypeMapper.ToType(StartInclusive, EndInclusive);
+        }
+
+        public bool IsEmpty()
+        {
+            if (!IsBounded())
+            {
+                return false;
+            }
+
+            return Start!.Value.Equals(End!.Value)
+                && !StartInclusive || !EndInclusive;
+        }
+
+        public bool IsBounded()
+        {
+            return Start is not null && End is not null;
+        }
+
+        public bool IsHalfBounded()
+        {
+            return IsLeftBounded() || IsRightBounded();
+        }
+
+        public bool IsLeftBounded()
+        {
+            return Start is not null && End is null;
+        }
+
+        public bool IsRightBounded()
+        {
+            return Start is null && End is not null;
         }
 
         public bool IsConnected(Interval<T> other)
@@ -48,14 +79,14 @@ namespace IntervalRecord
                 return true;
             }
 
-            return (Start is not null && End is not null
-                    && other.Start is not null && other.End is not null
-                    && End.Value.CompareTo(other.Start.Value) == 1
-                    && other.End.Value.CompareTo(Start.Value) == 1)
-                || End is not null && other.Start is not null
-                    && End.Value.Equals(other.Start.Value) && (EndInclusive || other.StartInclusive)
-                || Start is not null && other.End is not null
-                    && Start.Value.Equals(other.End) && (StartInclusive || other.EndInclusive);
+            return (IsBounded()
+                    && other.IsBounded()
+                    && End!.Value.CompareTo(other.Start!.Value) == 1
+                    && other.End!.Value.CompareTo(Start!.Value) == 1)
+                || IsRightBounded() && other.IsLeftBounded()
+                    && End!.Value.Equals(other.Start!.Value) && (EndInclusive || other.StartInclusive)
+                || IsLeftBounded() && other.IsRightBounded()
+                    && Start!.Value.Equals(other.End) && (StartInclusive || other.EndInclusive);
         }
 
         public bool OverlapsWith(Interval<T> other)
@@ -65,61 +96,47 @@ namespace IntervalRecord
 
         public bool IsBefore(Interval<T> other)
         {
-            if (End is null || other.Start is null)
+            if (End is null && other.Start is null)
             {
                 return false;
             }
 
             if (!EndInclusive || !other.StartInclusive)
             {
-                return End.Value.CompareTo(other.Start.Value) <= 0;
+                return End!.Value.CompareTo(other.Start!.Value) <= 0;
             }
 
-            return End.Value.CompareTo(other.Start.Value) == -1;
+            return End!.Value.CompareTo(other.Start!.Value) == -1;
         }
 
         public bool IsAfter(Interval<T> other)
         {
-            if (Start is null || other.End is null)
+            if (Start is null && other.End is null)
             {
                 return false;
             }
 
             if (!StartInclusive || !other.EndInclusive)
             {
-                return Start.Value.CompareTo(other.End.Value) >= 0;
+                return Start!.Value.CompareTo(other.End!.Value) >= 0;
             }
 
-            return Start.Value.CompareTo(other.End.Value) == 1;
+            return Start!.Value.CompareTo(other.End!.Value) == 1;
         }
 
         public static bool operator >(Interval<T> a, Interval<T> b)
         {
-            if(a == b)
+            if ((a == b)
+                || (a.IsBounded() && !b.IsBounded())
+                || (a.IsHalfBounded() && !b.IsBounded())
+                || (a.IsBounded() && b.IsHalfBounded()))
             {
                 return false;
             }
 
-            if (a.Start is null && a.End is null
-                && (b.Start is not null || b.End is not null))
-            {
-                return true;
-            }
-
-            if ((a.Start is not null || a.End is not null)
-                && b.Start is null && b.End is null)
-            {
-                return false;
-            }
-
-            if((a.Start is null || a.End is null)
-                && b.Start is not null && b.End is not null)
-            {
-                return true;
-            }
-
-            if (a.Start is not null && a.End is not null
-                && (b.Start is null || b.End is null))
+            if ((!a.IsBounded() && b.IsBounded())
+                || (!a.IsBounded() && b.IsHalfBounded())
+                || (a.IsHalfBounded() && b.IsBounded()))
             {
                 return true;
             }
@@ -134,26 +151,14 @@ namespace IntervalRecord
                 return false;
             }
 
-            if (a.Start is null && a.End is null
-                && (b.Start is not null || b.End is not null))
+            if (!a.IsBounded() && b.IsHalfBounded()
+                || a.IsHalfBounded() && b.IsBounded())
             {
                 return false;
             }
 
-            if ((a.Start is not null || a.End is not null)
-                && b.Start is null && b.End is null)
-            {
-                return true;
-            }
-
-            if (a.Start is not null && a.End is not null
-                && (b.Start is null || b.End is null))
-            {
-                return false;
-            }
-
-            if ((a.Start is null || a.End is null)
-                && b.Start is not null && b.End is not null)
+            if (a.IsHalfBounded() && !b.IsBounded()
+                || a.IsBounded() && b.IsHalfBounded())
             {
                 return true;
             }
@@ -191,6 +196,12 @@ namespace IntervalRecord
 
     public static class Interval
     {
+        public static Interval<T> Empty<T>()
+            where T : struct, IEquatable<T>, IComparable<T>, IComparable
+        {
+            return new Interval<T>(default(T), default(T), false, false);
+        }
+
         public static Interval<T> Open<T>(T start, T end)
             where T : struct, IEquatable<T>, IComparable<T>, IComparable
         {
@@ -213,6 +224,12 @@ namespace IntervalRecord
             where T : struct, IEquatable<T>, IComparable<T>, IComparable
         {
             return new Interval<T>(start, end, true, false);
+        }
+
+        public static Interval<T> Singleton<T>(T value)
+            where T : struct, IEquatable<T>, IComparable<T>, IComparable
+        {
+            return new Interval<T>(value, value, true, true);
         }
 
         public static Interval<T> GreaterThan<T>(T start)

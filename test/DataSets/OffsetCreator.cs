@@ -1,4 +1,5 @@
-﻿using System;
+﻿using IntervalRecord.Extensions;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -6,14 +7,6 @@ using System.Threading.Tasks;
 
 namespace IntervalRecord.Tests.DataSets
 {
-    public interface IOffsetCreator<T, TOffset>
-        where T : struct, IEquatable<T>, IComparable<T>, IComparable
-    {
-        Interval<T> Before { get; init; }
-        Interval<T> Contains { get; init; }
-        Interval<T> After { get; init; }
-    }
-
     public static class OffsetCreator
     {
         public static IOffsetCreator<T, TOffset> Create<T, TOffset>(Interval<T> reference, TOffset offset)
@@ -61,12 +54,13 @@ namespace IntervalRecord.Tests.DataSets
 
         public DateOnlyCreator(Interval<DateOnly> reference, int offset)
         {
+            var length = reference.Length()!.Value;
             var beforeEnd = reference.Start!.Value.AddDays(-offset);
-            var beforeStart = beforeEnd.AddDays(-reference.Length());
+            var beforeStart = beforeEnd.AddDays(-length);
             var containsStart = reference.Start!.Value.AddDays(offset);
             var containsEnd = reference.End!.Value.AddDays(-offset);
             var afterStart = reference.End!.Value.AddDays(offset);
-            var afterEnd = afterStart.AddDays(reference.Length());
+            var afterEnd = afterStart.AddDays(length);
 
             Before = reference with { Start = beforeStart, End = beforeEnd };
             Contains = reference with { Start = containsStart, End = containsEnd };

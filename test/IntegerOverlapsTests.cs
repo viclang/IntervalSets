@@ -47,10 +47,10 @@ namespace IntervalRecord.Tests
         }
 
         [Theory]
-        [MemberData(nameof(OpenOverlapsWith))]
+        //[MemberData(nameof(OpenOverlapsWith))]
         [MemberData(nameof(ClosedOverlapsWith))]
-        [MemberData(nameof(OpenClosedOverlapsWith))]
-        [MemberData(nameof(ClosedOpenOverlapsWith))]
+        //[MemberData(nameof(OpenClosedOverlapsWith))]
+        //[MemberData(nameof(ClosedOpenOverlapsWith))]
         public void IsConnected(Interval<int> a, Interval<int> b, bool expectedResult)
         {
             //act

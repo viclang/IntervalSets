@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace IntervalRecord
 {
-    public enum IntervalType
+    public enum BoundaryType
     {
         Open,
         Closed,
