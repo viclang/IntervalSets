@@ -24,7 +24,7 @@ namespace IntervalRecord
         [Pure]
         public static OverlappingState GetOverlappingState<T>(this Interval<T> value, Interval<T> other, bool includeHalfOpen = false)
             where T : struct, IEquatable<T>, IComparable<T>, IComparable
-            => (value.Start.CompareTo(other.Start), value.End.CompareTo(other.End)) switch
+            => (value.CompareStart(other), value.CompareEnd(other)) switch
             {
                 (0, 0) => OverlappingState.Equal,
                 (0, -1) => OverlappingState.Starts,
@@ -51,7 +51,24 @@ namespace IntervalRecord
             };
 
         [Pure]
-        private static int CompareStartToEnd<T>(Interval<T> value, Interval<T> other, bool includeHalfOpen)
+        public static int CompareStart<T>(this Interval<T> value, Interval<T> other)
+            where T : struct, IEquatable<T>, IComparable<T>, IComparable
+        {
+            var result = value.Start.CompareTo(other.Start);
+            return result == 0 ? value.StartInclusive.CompareTo(other.StartInclusive) : result;
+        }
+
+
+        [Pure]
+        public static int CompareEnd<T>(this Interval<T> value, Interval<T> other)
+            where T : struct, IEquatable<T>, IComparable<T>, IComparable
+        {
+            var result = value.End.CompareTo(other.End);
+            return result == 0 ? value.EndInclusive.CompareTo(other.EndInclusive) : result;
+        }
+
+        [Pure]
+        public static int CompareStartToEnd<T>(this Interval<T> value, Interval<T> other, bool includeHalfOpen = false)
             where T : struct, IEquatable<T>, IComparable<T>, IComparable
         {
             var result = value.Start.CompareTo(other.End);
@@ -59,13 +76,11 @@ namespace IntervalRecord
                 ? (!value.StartInclusive && !other.EndInclusive)
                 : (!value.StartInclusive || !other.EndInclusive);
 
-            return result == 0 && startEndNotTouching
-                ? 1
-                : result;
+            return result == 0 && startEndNotTouching ? 1 : result;
         }
 
         [Pure]
-        private static int CompareEndToStart<T>(Interval<T> value, Interval<T> other, bool includeHalfOpen)
+        public static int CompareEndToStart<T>(this Interval<T> value, Interval<T> other, bool includeHalfOpen = false)
             where T : struct, IEquatable<T>, IComparable<T>, IComparable
         {
             var result = value.End.CompareTo(other.Start);
@@ -73,9 +88,7 @@ namespace IntervalRecord
                 ? (!value.EndInclusive && !other.StartInclusive)
                 : (!value.EndInclusive || !other.StartInclusive);
 
-            return result == 0 && endStartNotTouching
-                ? -1
-                : result;
+            return result == 0 && endStartNotTouching ? -1 : result;
         }
     }
 }

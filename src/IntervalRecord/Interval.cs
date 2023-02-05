@@ -72,12 +72,19 @@ namespace IntervalRecord
         }
 
         public static bool operator >(Interval<T> a, Interval<T> b)
-            => a.End.CompareTo(b.End) == 1
-                || a.End.CompareTo(b.End) == 0 && a.Start.CompareTo(b.Start) == -1;
+        {
+            var compareEnd = a.CompareEnd(b);
+            return compareEnd == 1 || compareEnd == 0 && a.CompareStart(b) == -1;
+        }
+
         public static bool operator <(Interval<T> a, Interval<T> b)
-            => a.End.CompareTo(b.End) == -1
-                || a.End.CompareTo(b.End) == 0 && a.Start.CompareTo(b.Start) == 1;
+        {
+            var compareEnd = a.CompareEnd(b);
+            return compareEnd == -1 || compareEnd == 0 && a.CompareStart(b) == 1;
+        }
+
         public static bool operator >=(Interval<T> a, Interval<T> b) => a == b || a > b;
+
         public static bool operator <=(Interval<T> a, Interval<T> b) => a == b || a < b;
 
         [Pure]

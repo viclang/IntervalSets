@@ -2,14 +2,15 @@
 
 namespace IntervalRecord.Tests.Calculators
 {
-    public class MinByMaxByTests
+    public class MinTests
     {
         [Theory]
-        [InlineData(1, 10, 10, 1)]
-        [InlineData(10, 1, 1, 10)]
-        [InlineData(5, 6, 7, 8)]
-        [InlineData(8, 7, 6, 5)]
-        public void MinBy(int startA, int endA, int startB, int endB)
+        [InlineData(1, 2, 2, 3)]
+        [InlineData(2, 3, 1, 2)]
+        [InlineData(1, 2, 1, 2)]
+        [InlineData(1, 2, 1, 3)]
+        [InlineData(1, 3, 2, 3)]
+        public void MinBy_ShouldBeEnumerableMinBy(int startA, int endA, int startB, int endB)
         {
             // Arrange
             var a = new Interval<int>(startA, endA, true, true);
@@ -25,23 +26,24 @@ namespace IntervalRecord.Tests.Calculators
         }
 
         [Theory]
-        [InlineData(1, 10, 10, 1)]
-        [InlineData(10, 1, 1, 10)]
-        [InlineData(5, 6, 7, 8)]
-        [InlineData(8, 7, 6, 5)]
-        public void MaxBy(int startA, int endA, int startB, int endB)
+        [InlineData(1, 2, 2, 3)]
+        [InlineData(2, 3, 1, 2)]
+        [InlineData(1, 2, 1, 2)]
+        [InlineData(1, 2, 1, 3)]
+        [InlineData(1, 3, 2, 3)]
+        public void Min_ShouldBeEnumerableMin(int startA, int endA, int startB, int endB)
         {
             // Arrange
             var a = new Interval<int>(startA, endA, true, true);
             var b = new Interval<int>(startB, endB, true, true);
 
             // Act
-            var actualMinByStart = Interval.MaxBy(a, b, x => x.Start);
-            var actualMinByEnd = Interval.MaxBy(a, b, x => x.End);
+            var actualMinByStart = Interval.Min(a, b);
+            var actualMinByEnd = Interval.Min(a, b);
 
             // Assert
-            actualMinByStart.Should().Be(new[] { a, b }.MaxBy(x => x.Start));
-            actualMinByEnd.Should().Be(new[] { a, b }.MaxBy(x => x.End));
+            actualMinByStart.Should().Be(new[] { a, b }.Min());
+            actualMinByEnd.Should().Be(new[] { a, b }.Min());
         }
     }
 }

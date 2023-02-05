@@ -28,8 +28,4 @@
     <ProjectReference Include="..\..\src\IntervalRecord\IntervalRecord.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="TestFactories\" />
-  </ItemGroup>
-
 </Project>

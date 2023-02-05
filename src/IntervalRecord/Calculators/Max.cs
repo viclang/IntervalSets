@@ -13,8 +13,6 @@ namespace IntervalRecord
         public static Interval<T> MaxBy<T, TProperty>(Interval<T> a, Interval<T> b, Func<Interval<T>, TProperty> selector)
             where T : struct, IEquatable<T>, IComparable<T>, IComparable
             where TProperty : IComparable<TProperty>
-            => selector(a).CompareTo(selector(b)) == 1
-                ? a
-                : b;
+            => selector(a).CompareTo(selector(b)) >= 0 ? a : b;
     }
 }
