@@ -9,7 +9,7 @@ namespace IntervalRecord
         {
             if (!value.IsConnected(other))
             {
-                throw new ArgumentOutOfRangeException("other", "Intersection is only supported for Overlapping intervals.");
+                throw new ArgumentOutOfRangeException("other", "Intersection is only supported for connected intervals.");
             }
             var maxByStart = MaxBy(value, other, x => x.Start);
             var minByEnd = MinBy(value, other, x => x.End);
@@ -32,7 +32,7 @@ namespace IntervalRecord
             {
                 throw new ArgumentOutOfRangeException(
                     nameof(other),
-                    "Intersection is only supported for Overlapping intervals.");
+                    "Intersection is only supported for connected intervals.");
             }
             var minByStart = MinBy(value, other, x => x.Start);
             var minByEnd = MinBy(value, other, x => x.End);
@@ -186,22 +186,13 @@ namespace IntervalRecord
                 ? new Infinity<int>()
                 : value.IsEmpty() ? 0 : substract(value.End.Value, value.Start.Value);
 
-        private static Infinity<double> Length<T>(
-            Interval<T> value,
-            Func<T, T, double> length)
-            where T : struct, IEquatable<T>, IComparable<T>, IComparable
-            => value.Start.IsInfinite || value.End.IsInfinite
-                ? new Infinity<double>()
-                : value.IsEmpty() ? 0 : length(value.End.Value, value.Start.Value);
-
-
         private static Infinity<TimeSpan> Length<T>(
             Interval<T> value,
-            Func<T, T, TimeSpan> length)
+            Func<T, T, TimeSpan> substract)
             where T : struct, IEquatable<T>, IComparable<T>, IComparable
             => value.Start.IsInfinite || value.End.IsInfinite
                 ? new Infinity<TimeSpan>()
-                : value.IsEmpty() ? TimeSpan.Zero : length(value.End.Value, value.Start.Value);
+                : value.IsEmpty() ? TimeSpan.Zero : substract(value.End.Value, value.Start.Value);
 
         private static TResult? CentreOrRadius<T, TResult>(Interval<T> value, Func<T, T, TResult> calculate)
             where T : struct, IEquatable<T>, IComparable<T>, IComparable

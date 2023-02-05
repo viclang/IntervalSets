@@ -1,4 +1,5 @@
 ﻿using InfinityComparable;
+using IntervalRecord.Enums;
 using System.Text;
 
 namespace IntervalRecord
@@ -29,7 +30,31 @@ namespace IntervalRecord
             _endInclusive = !_end.IsInfinite && endInclusive;
         }
 
-        public bool IsConnected(Interval<T> other) => !this.IsBefore(other) && !this.IsAfter(other);
+        public InfinityState GetInfinityState() => (Start.IsInfinite, End.IsInfinite) switch
+        {
+            (false, false) => InfinityState.Bounded,
+            (true, true) => InfinityState.Unbounded,
+            (true, false) => InfinityState.LeftBounded,
+            (false, true) => InfinityState.RightBounded
+        };
+
+        public bool IsHalfBounded() => !Start.IsInfinite && End.IsInfinite || Start.IsInfinite && !End.IsInfinite;
+
+        public BoundaryType GetBoundaryType() => (StartInclusive, EndInclusive) switch
+        {
+            (true, true) => BoundaryType.Closed,
+            (true, false) => BoundaryType.ClosedOpen,
+            (false, true) => BoundaryType.OpenClosed,
+            (false, false) => BoundaryType.Open,
+        };
+
+        public bool IsEmpty() => !Start.IsInfinite && !End.IsInfinite
+            && (Start.CompareTo(End) == 1
+                || Start.Value.Equals(End.Value) && GetBoundaryType() != BoundaryType.Closed);
+
+        public bool IsSingleton() => StartInclusive && EndInclusive && Start.Value.Equals(End.Value);
+
+        public bool IsConnected(Interval<T> other) => !this.IsBefore(other, true) && !this.IsAfter(other, true);
         public bool OverlapsWith(Interval<T> other) => !this.IsBefore(other) && !this.IsAfter(other);
 
         public static explicit operator string(Interval<T> interval) => interval.ToString();
@@ -46,10 +71,9 @@ namespace IntervalRecord
         public static bool operator <(Interval<T> a, Interval<T> b)
             => a.End.CompareTo(b.End) == -1
                 || a.End.CompareTo(b.End) == 0 && a.Start.CompareTo(b.Start) == -1;
+
         public static bool operator >=(Interval<T> a, Interval<T> b) => a == b || a > b;
         public static bool operator <=(Interval<T> a, Interval<T> b) => a == b || a < b;
-        public static Interval<T> operator &(Interval<T> a, Interval<T> b) => a.Intersect(b);
-        public static Interval<T> operator |(Interval<T> a, Interval<T> b) => a.Union(b);
 
         public int CompareTo(Interval<T> other)
         {

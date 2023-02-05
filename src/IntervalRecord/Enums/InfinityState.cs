@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace IntervalRecord.Enums
 {
-    public enum IntervalType
+    public enum InfinityState
     {
         Bounded = 0,
         Unbounded = 1,

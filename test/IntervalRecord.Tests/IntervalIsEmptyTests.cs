@@ -24,12 +24,12 @@ namespace IntervalRecord.Tests
             // Act
             var resultTrue = new bool[]
             {
-                open.IsEmpty(1),
-                openClosed.IsEmpty(1),
-                closedOpen.IsEmpty(1),
+                open.IsEmpty(),
+                openClosed.IsEmpty(),
+                closedOpen.IsEmpty(),
             };
 
-            var resultFalse = closed.IsEmpty(1);
+            var resultFalse = closed.IsEmpty();
 
             // Assert
             resultTrue.Should().AllBeEquivalentTo(true);
@@ -38,8 +38,8 @@ namespace IntervalRecord.Tests
 
         [Theory]
         [InlineData(0, 1)]
-        [InlineData(-1, 0)]
-        [InlineData(int.MinValue, int.MaxValue)]
+        [InlineData(2, 3)]
+        [InlineData(int.MaxValue-1, int.MaxValue)]
         [InlineData(80, 443)]
         public void NotEqualValueWithAnOpenBound_ShouldNeverBeEmpty(int start, int end)
         {
@@ -52,10 +52,10 @@ namespace IntervalRecord.Tests
             // Act
             var result = new bool[]
             {
-                open.IsEmpty(1),
-                openClosed.IsEmpty(1),
-                closedOpen.IsEmpty(1),
-                closed.IsEmpty(1)
+                open.IsEmpty(),
+                openClosed.IsEmpty(),
+                closedOpen.IsEmpty(),
+                closed.IsEmpty()
             };
 
             // Assert
