@@ -4,12 +4,15 @@ The record Interval<T> will make it easy to deal with https://en.wikipedia.org/w
 The interval supports Closed, ClosedOpen, OpenClosed and Open boundaryTypes.
 ```mermaid
 gantt
-    Reference :active, a, 2022-01-06, 2022-01-10
-    section
-    Before :crit, b, 2022-01-03, 2022-01-05
+    Reference :active, a, 2022-01-06, 2022-01-10   
 
-    section Overlaps
-    Meets :crit, c, 2022-01-04, 2022-01-06
+	section Not overlapping
+    Before :crit, b, 2022-01-03, 2022-01-05
+   
+    section Overlaps when Closed or HalfOpen  
+    Meets :crit, c, 2022-01-04, 2022-01-06
+
+	section Overlaps
     EndInsideOnly :crit, d, 2022-01-05, 2022-01-07
     Starts :crit, e, 2022-01-06, 2022-01-08
     ContainedBy :crit, f, 2022-01-07, 2022-01-09
@@ -19,8 +22,10 @@ gantt
     Contains :crit, j, 2022-01-05, 2022-01-11
     StartedBy :crit, k, 2022-01-06, 2022-01-11
     StartInsideOnly :crit, l, 2022-01-09, 2022-01-11
+   
+	section Overlaps when Closed or HalfOpen
     MetBy :crit, m, 2022-01-10, 2022-01-12
 
-    section
+    section Not overlapping
     After :crit, n, 2022-01-11, 2022-01-13
 ```
