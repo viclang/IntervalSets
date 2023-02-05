@@ -2,14 +2,14 @@
 {
     public static partial class Interval
     {
-        public static Interval<int> Canonicalize(this Interval<int> value, BoundaryType boundaryType, int step) => ConvertTo(value, boundaryType, x => x + step, x => x - step);
-        public static Interval<double> Canonicalize(this Interval<double> value, BoundaryType boundaryType, double step) => ConvertTo(value, boundaryType, x => x + step, x => x - step);
-        public static Interval<DateOnly> Canonicalize(this Interval<DateOnly> value, BoundaryType boundaryType, int step) => ConvertTo(value, boundaryType, x => x.AddDays(step), x => x.AddDays(-step));
-        public static Interval<TimeOnly> Canonicalize(this Interval<TimeOnly> value, BoundaryType boundaryType, TimeSpan step) => ConvertTo(value, boundaryType, x => x.Add(step), x => x.Add(-step));
-        public static Interval<DateTime> Canonicalize(this Interval<DateTime> value, BoundaryType boundaryType, TimeSpan step) => ConvertTo(value, boundaryType, x => x + step, x => x - step);
-        public static Interval<DateTimeOffset> Canonicalize(this Interval<DateTimeOffset> value, BoundaryType boundaryType, TimeSpan step) => ConvertTo(value, boundaryType, x => x + step, x => x - step);
+        public static Interval<int> Canonicalize(this Interval<int> value, BoundaryType boundaryType, int step) => Canonicalize(value, boundaryType, x => x + step, x => x - step);
+        public static Interval<double> Canonicalize(this Interval<double> value, BoundaryType boundaryType, double step) => Canonicalize(value, boundaryType, x => x + step, x => x - step);
+        public static Interval<DateOnly> Canonicalize(this Interval<DateOnly> value, BoundaryType boundaryType, int step) => Canonicalize(value, boundaryType, x => x.AddDays(step), x => x.AddDays(-step));
+        public static Interval<TimeOnly> Canonicalize(this Interval<TimeOnly> value, BoundaryType boundaryType, TimeSpan step) => Canonicalize(value, boundaryType, x => x.Add(step), x => x.Add(-step));
+        public static Interval<DateTime> Canonicalize(this Interval<DateTime> value, BoundaryType boundaryType, TimeSpan step) => Canonicalize(value, boundaryType, x => x + step, x => x - step);
+        public static Interval<DateTimeOffset> Canonicalize(this Interval<DateTimeOffset> value, BoundaryType boundaryType, TimeSpan step) => Canonicalize(value, boundaryType, x => x + step, x => x - step);
 
-        private static Interval<T> ConvertTo<T>(
+        private static Interval<T> Canonicalize<T>(
             this Interval<T> value,
             BoundaryType boundaryType,
             Func<T, T> add,
