@@ -10,12 +10,7 @@ namespace IntervalRecord.Tests.OverlapsTests
         //arrange
         private const int start = 6;
         private const int end = 10;
-        private const int offset = 1;
-        private static IntervalDataSet<int> _openDataSet = new IntervalDataSet<int>(start, end, BoundaryType.Open, offset);
-        private static IntervalDataSet<int> _closedDataSet = _openDataSet.CopyWith(BoundaryType.Closed);
-        private static IntervalDataSet<int> _openClosedDataSet = _openDataSet.CopyWith(BoundaryType.OpenClosed);
-        private static IntervalDataSet<int> _closedOpenDataSet = _openDataSet.CopyWith(BoundaryType.ClosedOpen);
-        
+        private const int offset = 1;        
         private static IntervalDataSet<int> _dataSet = new IntervalDataSet<int>(start, end, BoundaryType.Closed, offset);
 
         public static TheoryData<Interval<int>, Interval<int>, bool> IntervalOverlaps(BoundaryType boundaryType)
@@ -32,9 +27,9 @@ namespace IntervalRecord.Tests.OverlapsTests
         public void IsConnected(Interval<int> a, Interval<int> b, bool expectedResult)
         {
             //act
-            var result = a.IsConnected(b);
+            var actual = a.IsConnected(b);
             //assert
-            result.Should().Be(expectedResult);
+            actual.Should().Be(expectedResult);
         }
 
 
@@ -46,9 +41,9 @@ namespace IntervalRecord.Tests.OverlapsTests
         public void IsConnected_IncludeHalfOpen(Interval<int> a, Interval<int> b, bool expectedResult)
         {
             //act
-            var result = a.IsConnected(b, true);
+            var actual = a.IsConnected(b, true);
             //assert
-            result.Should().Be(expectedResult);
+            actual.Should().Be(expectedResult);
         }
     }
 }

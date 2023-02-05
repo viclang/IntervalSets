@@ -10,7 +10,6 @@ namespace IntervalRecord.Tests.OverlapsTests
         private static readonly DateOnly _start = new DateOnly(2022, 7, 30);
         private static readonly DateOnly _end = _start.AddDays(4);
         private const int offset = 1;
-
         private static IntervalDataSet<DateOnly> _dataSet = new IntervalDataSet<DateOnly>(_start, _end, BoundaryType.Closed, offset);
 
         public static TheoryData<Interval<DateOnly>, Interval<DateOnly>, bool> IntervalOverlaps(BoundaryType boundaryType)
@@ -27,10 +26,10 @@ namespace IntervalRecord.Tests.OverlapsTests
         public void IsConnected(Interval<DateOnly> a, Interval<DateOnly> b, bool expectedResult)
         {
             //act
-            var result = a.IsConnected(b);
+            var actual = a.IsConnected(b);
 
             //assert
-            result.Should().Be(expectedResult);
+            actual.Should().Be(expectedResult);
         }
 
         [Theory]
@@ -41,10 +40,10 @@ namespace IntervalRecord.Tests.OverlapsTests
         public void IsConnected_IncludeHalfOpen(Interval<DateOnly> a, Interval<DateOnly> b, bool expectedResult)
         {
             //act
-            var result = a.IsConnected(b, true);
+            var actual = a.IsConnected(b, true);
 
             //assert
-            result.Should().Be(expectedResult);
+            actual.Should().Be(expectedResult);
         }
     }
 }

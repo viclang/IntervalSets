@@ -11,11 +11,6 @@ namespace IntervalRecord.Tests.OverlapsTests
         private static readonly DateTime _start = new DateTime(2022, 7, 30);
         private static readonly DateTime _end = _start.AddDays(4);
         private static readonly TimeSpan offset = TimeSpan.FromDays(1);
-        private static readonly IntervalDataSet<DateTime> _openDataSet = new IntervalDataSet<DateTime>(_start, _end, BoundaryType.Open, offset);
-        private static readonly IntervalDataSet<DateTime> _closedDataSet = _openDataSet.CopyWith(BoundaryType.Closed);
-        private static readonly IntervalDataSet<DateTime> _openClosedDataSet = _openDataSet.CopyWith(BoundaryType.OpenClosed);
-        private static readonly IntervalDataSet<DateTime> _closedOpenDataSet = _openDataSet.CopyWith(BoundaryType.ClosedOpen);
-
         private static readonly IntervalDataSet<DateTime> _dataSet = new IntervalDataSet<DateTime>(_start, _end, BoundaryType.Closed, offset);
 
         public static TheoryData<Interval<DateTime>, Interval<DateTime>, bool> IntervalOverlaps(BoundaryType boundaryType)
@@ -32,9 +27,9 @@ namespace IntervalRecord.Tests.OverlapsTests
         public void IsConnected(Interval<DateTime> a, Interval<DateTime> b, bool expectedResult)
         {
             //act
-            var result = a.IsConnected(b);
+            var actual = a.IsConnected(b);
             //assert
-            result.Should().Be(expectedResult);
+            actual.Should().Be(expectedResult);
         }
 
 
@@ -46,9 +41,9 @@ namespace IntervalRecord.Tests.OverlapsTests
         public void IsConnected_IncludeHalfOpen(Interval<DateTime> a, Interval<DateTime> b, bool expectedResult)
         {
             //act
-            var result = a.IsConnected(b, true);
+            var actual = a.IsConnected(b, true);
             //assert
-            result.Should().Be(expectedResult);
+            actual.Should().Be(expectedResult);
         }
     }
 }
