@@ -1,4 +1,5 @@
 ﻿using FluentAssertions;
+using InfinityComparable;
 using IntervalRecord.Enums;
 using IntervalRecord.Tests.DataSets;
 using System;

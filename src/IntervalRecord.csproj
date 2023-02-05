@@ -7,6 +7,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Infinity\InfinityComparable.csproj" />
+    <PackageReference Include="InfinityComparable" Version="1.0.5" />
   </ItemGroup>
 </Project>
