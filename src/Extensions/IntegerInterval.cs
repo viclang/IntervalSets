@@ -10,7 +10,7 @@ namespace IntervalRecord
     {
         public static int? Length(this Interval<int> value)
         {
-            if (!value.IsBounded())
+            if (value.IsUnBounded())
             {
                 return null;
             }
@@ -20,14 +20,14 @@ namespace IntervalRecord
                 return 0;
             }
 
-            var start = value.Start ?? int.MinValue;
-            var end = value.End ?? int.MaxValue;
+            var start = value.Start.Finite ?? int.MinValue;
+            var end = value.End.Finite ?? int.MaxValue;
             return end - start;
         }
 
         public static double? Radius(this Interval<int> value)
         {
-            if (!value.IsBounded() || value.IsEmpty())
+            if (value.IsUnBounded() || value.IsEmpty())
             {
                 return null;
             }
@@ -37,13 +37,13 @@ namespace IntervalRecord
 
         public static double? Centre(this Interval<int> value)
         {
-            if (!value.IsBounded() || value.IsEmpty())
+            if (value.IsUnBounded() || value.IsEmpty())
             {
                 return null;
             }
 
-            var start = value.Start ?? int.MinValue;
-            var end = value.End ?? int.MaxValue;
+            var start = value.Start.Finite ?? int.MinValue;
+            var end = value.End.Finite ?? int.MaxValue;
             return (start + end) / 2;
         }
 

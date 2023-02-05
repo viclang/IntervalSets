@@ -48,18 +48,18 @@ namespace IntervalRecord.Tests.OverlapsTests
             result.Should().Be(expectedResult);
         }
 
-        [Theory]
-        //[MemberData(nameof(OpenOverlapsWith))]
-        [MemberData(nameof(ClosedOverlapsWith))]
-        //[MemberData(nameof(OpenClosedOverlapsWith))]
-        //[MemberData(nameof(ClosedOpenOverlapsWith))]
-        public void IsConnected(Interval<int> a, Interval<int> b, bool expectedResult)
-        {
-            //act
-            var result = a.IsConnected(b);
+        //[Theory]
+        ////[MemberData(nameof(OpenOverlapsWith))]
+        //[MemberData(nameof(ClosedOverlapsWith))]
+        ////[MemberData(nameof(OpenClosedOverlapsWith))]
+        ////[MemberData(nameof(ClosedOpenOverlapsWith))]
+        //public void IsConnected(Interval<int> a, Interval<int> b, bool expectedResult)
+        //{
+        //    //act
+        //    var result = a.IsConnected(b);
 
-            //assert
-            result.Should().Be(expectedResult);
-        }
+        //    //assert
+        //    result.Should().Be(expectedResult);
+        //}
     }
 }

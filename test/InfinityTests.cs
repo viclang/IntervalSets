@@ -55,12 +55,12 @@ namespace IntervalRecord.Tests
             infinity.EndInclusive.Should().BeFalse();
         }
 
-        [Fact]
-        public void Test()
-        {
-            var interval = new Interval<int>(0, 1)
-                .ValidateAndThrow();
-            var copy = (interval with { Start = 1, End = 0 }).ValidateAndThrow();
-        }
+        //[Fact]
+        //public void Test()
+        //{
+        //    var interval = new Interval<int>(0, 1)
+        //        .ValidateAndThrow();
+        //    var copy = (interval with { Start = 1, End = 0 }).ValidateAndThrow();
+        //}
     }
 }

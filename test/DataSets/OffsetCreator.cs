@@ -61,11 +61,11 @@ namespace IntervalRecord.Tests.DataSets
         public DateOnlyCreator(Interval<DateOnly> reference, int offset)
         {
             var length = reference.Length()!.Value;
-            var beforeEnd = reference.Start!.Value.AddDays(-offset);
+            var beforeEnd = reference.Start.Finite!.Value.AddDays(-offset);
             var beforeStart = beforeEnd.AddDays(-length);
-            var containsStart = reference.Start!.Value.AddDays(offset);
-            var containsEnd = reference.End!.Value.AddDays(-offset);
-            var afterStart = reference.End!.Value.AddDays(offset);
+            var containsStart = reference.Start.Finite.Value.AddDays(offset);
+            var containsEnd = reference.End.Finite!.Value.AddDays(-offset);
+            var afterStart = reference.End.Finite!.Value.AddDays(offset);
             var afterEnd = afterStart.AddDays(length);
 
             Before = reference with { Start = beforeStart, End = beforeEnd };
@@ -82,12 +82,15 @@ namespace IntervalRecord.Tests.DataSets
 
         public DateTimeCreator(Interval<DateTime> reference, TimeSpan offset)
         {
-            var beforeEnd = reference.Start - offset;
-            var beforeStart = beforeEnd - reference.Length();
-            var containsStart = reference.Start + offset;
-            var containsEnd = reference.End - offset;
-            var afterStart = reference.End + offset;
-            var afterEnd = afterStart + reference.Length();
+            DateTime referenceStart = (DateTime)reference.Start!;
+            DateTime referenceEnd = (DateTime)reference.End!;
+
+            DateTime beforeEnd = referenceStart - offset;
+            DateTime beforeStart = beforeEnd - reference.Length();
+            DateTime containsStart = referenceStart + offset;
+            DateTime containsEnd = referenceEnd - offset;
+            DateTime afterStart = referenceEnd + offset;
+            DateTime afterEnd = afterStart + reference.Length();
 
             Before = reference with { Start = beforeStart, End = beforeEnd };
             ContainedBy = reference with { Start = containsStart, End = containsEnd };
@@ -103,11 +106,14 @@ namespace IntervalRecord.Tests.DataSets
 
         public DateTimeOffsetCreator(Interval<DateTimeOffset> reference, TimeSpan offset)
         {
-            var beforeEnd = reference.Start - offset;
+            DateTimeOffset referenceStart = (DateTimeOffset)reference.Start!;
+            DateTimeOffset referenceEnd = (DateTimeOffset)reference.End!;
+
+            var beforeEnd = referenceStart - offset;
             var beforeStart = beforeEnd - reference.Length();
-            var containsStart = reference.Start + offset;
-            var containsEnd = reference.End - offset;
-            var afterStart = reference.End + offset;
+            var containsStart = referenceStart + offset;
+            var containsEnd = referenceEnd - offset;
+            var afterStart = referenceEnd + offset;
             var afterEnd = afterStart + reference.Length();
 
             Before = reference with { Start = beforeStart, End = beforeEnd };

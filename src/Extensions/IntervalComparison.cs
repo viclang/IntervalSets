@@ -8,6 +8,11 @@ using System.Threading.Tasks;
 
 namespace IntervalRecord
 {
+    /*
+        http://grouper.ieee.org/groups/1788/PositionPapers/ARITHYY.pdf
+        http://grouper.ieee.org/groups/1788/PositionPapers/overlapping.pdf
+        https://en.wikipedia.org/wiki/Interval_(mathematics)
+     */
     public static class IntervalComparison
     {
         private static Dictionary<ValueTuple<int, int, int ,int>, OverlappingState> OverlapStateLookup => new()
@@ -41,10 +46,10 @@ namespace IntervalRecord
         public static OverlappingState GetOverlappingState<T>(this Interval<T> a, Interval<T> b)
             where T : struct, IEquatable<T>, IComparable<T>, IComparable
         {
-            var compareStart = a.start.CompareTo(b.start);
-            var compareEnd = a.end.CompareTo(b.end);
-            var compareStartToEnd = a.start.CompareTo(b.end);
-            var compareEndToStart = a.end.CompareTo(b.start);
+            var compareStart = a.Start.CompareTo(b.Start);
+            var compareEnd = a.End.CompareTo(b.End);
+            var compareStartToEnd = a.Start.CompareTo(b.End);
+            var compareEndToStart = a.End.CompareTo(b.Start);
 
             return OverlapStateLookup[(compareStart, compareEnd, compareStartToEnd, compareEndToStart)];
         }
@@ -52,117 +57,76 @@ namespace IntervalRecord
         public static bool HasInside<T>(this Interval<T> a, Interval<T> b)
             where T : struct, IEquatable<T>, IComparable<T>, IComparable
         {
-            return (a.CompareStart(b) > 1 || a.CompareEnd(b) < 1);
+            return a.Start.CompareTo(b.Start) > 1 || a.End.CompareTo(b.End) < 1;
         }
 
 
         public static bool IsBefore<T>(this Interval<T> a, Interval<T> b)
             where T : struct, IEquatable<T>, IComparable<T>, IComparable
         {
-            if (a.End is null || b.Start is null)
-            {
-                return false;
-            }
             if (!a.EndInclusive || !b.StartInclusive)
             {
-                return a.End!.Value.CompareTo(b.Start!.Value) <= 0;
+                return a.End.CompareTo(b.Start) <= 0;
             }
-            return a.End!.Value.CompareTo(b.Start!.Value) == -1;
+            return a.End.CompareTo(b.Start) == -1;
         }
 
         public static bool IsAfter<T>(this Interval<T> a, Interval<T> b)
             where T : struct, IEquatable<T>, IComparable<T>, IComparable
         {
-            if (a.Start is null || b.End is null)
-            {
-                return false;
-            }
             if (!a.StartInclusive || !b.EndInclusive)
             {
-                return a.Start!.Value.CompareTo(b.End!.Value) >= 0;
+                return a.Start.CompareTo(b.End) >= 0;
             }
-            return a.Start!.Value.CompareTo(b.End!.Value) == 1;
+            return a.Start.CompareTo(b.End) == 1;
         }
 
         public static bool Meets<T>(this Interval<T> a, Interval<T> b)
             where T : struct, IEquatable<T>, IComparable<T>, IComparable
         {
-            if(a.Start is null || b.End is null)
-            {
-                return false;
-            }
-
-            if (a.Start!.Value.Equals(b.End!.Value))
-            {
-                return true;
-            }
-
-            return false;
+            return a.Start.Equals(b.End);
         }
 
         public static bool MetBy<T>(this Interval<T> a, Interval<T> b)
             where T : struct, IEquatable<T>, IComparable<T>, IComparable
         {
-            if (a.Start is null || b.End is null)
-            {
-                return false;
-            }
-
-            if (a.End!.Value.Equals(b.Start!.Value))
-            {
-                return true;
-            }
-
-            return false;
+            return a.End.Equals(b.Start);
         }
 
-        //    if (HasInside(period, test))
-        //    {
-        //        if (test.Start == period.Start)
-        //        {
-        //            return PeriodRelation.EnclosingStartTouching;
-        //        }
-        //        return test.End == period.End ? PeriodRelation.EnclosingEndTouching : PeriodRelation.Enclosing;
-        //    }
+        public static bool Starts<T>(this Interval<T> a, Interval<T> b)
+            where T : struct, IEquatable<T>, IComparable<T>, IComparable
+        {
+            return a.Start.Equals(b.Start) && a.End.CompareTo(b.End) == -1;
+        }
+
         public static bool StartedBy<T>(this Interval<T> a, Interval<T> b)
             where T : struct, IEquatable<T>, IComparable<T>, IComparable
         {
-            if (b.End is null)
-            {
-                return false;
-            }
-
-            if (a.Start!.Value.Equals(b.Start!.Value)
-                && a.End!.Value.CompareTo(b.End.Value) == 1)
-            {
-                return true;
-            }
-
-            return false;
+            return a.Start.Equals(b.Start) && a.End.CompareTo(b.End) == 1;
         }
 
-        internal static int CompareStart<T>(this Interval<T> a, Interval<T> b)
+        public static bool ContainedBy<T>(this Interval<T> a, Interval<T> b)
             where T : struct, IEquatable<T>, IComparable<T>, IComparable
         {
-            return a.start.CompareTo(b.start);
+            return a.Start.CompareTo(b.Start) == -1 && a.End.CompareTo(b.End) == 1;
         }
 
-        internal static int CompareEnd<T>(this Interval<T> a, Interval<T> b)
+        public static bool Contains<T>(this Interval<T> a, Interval<T> b)
             where T : struct, IEquatable<T>, IComparable<T>, IComparable
         {
-            return a.end.CompareTo(b.end);
+            return a.Start.CompareTo(b.Start) == 1 && a.End.CompareTo(b.End) == -1;
         }
 
-        internal static int CompareEndToStart<T>(this Interval<T> a, Interval<T> b)
+        public static bool Finishes<T>(this Interval<T> a, Interval<T> b)
             where T : struct, IEquatable<T>, IComparable<T>, IComparable
         {
-            return a.end.CompareTo(b.start);
+            return a.End.Equals(b.End) && a.Start.CompareTo(b.Start) == 1;
         }
 
-        internal static int CompareStartToEnd<T>(this Interval<T> a, Interval<T> b)
+        public static bool FinishedBy<T>(this Interval<T> a, Interval<T> b)
             where T : struct, IEquatable<T>, IComparable<T>, IComparable
         {
-            return a.start.CompareTo(b.end);
+            return a.End.Equals(b.End) && a.Start.CompareTo(b.Start) == -1;
         }
     }
 }

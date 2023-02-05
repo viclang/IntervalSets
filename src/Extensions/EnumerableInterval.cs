@@ -65,12 +65,8 @@ namespace IntervalRecord
             {
                 throw new NotSupportedException("Collection is empty");
             }
-
-            var min = values.Any(x => x.Start is null) ? new Interval<T>()
-                    : values.MinBy(x => x.Start);
-
-            var max = values.Any(x => x.End is null) ? new Interval<T>()
-                    : values.MaxBy(x => x.End!.Value);
+            var min = values.MinBy(x => x.Start);
+            var max = values.MaxBy(x => x.End);
 
             return new Interval<T>(
                 min.Start,

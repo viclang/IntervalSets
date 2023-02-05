@@ -5,23 +5,23 @@ using Xunit;
 
 namespace IntervalRecord.Tests.DataSets
 {
-    public readonly record struct IntervalDataSet<T>
+    public record struct IntervalDataSet<T>
         where T : struct, IEquatable<T>, IComparable<T>, IComparable
     {
-        public Interval<T> Reference { get; init; }
-        public Interval<T> Before { get; init; }
-        public Interval<T> After { get; init; }
-        public Interval<T> ContainedBy { get; init; }
-        public Interval<T> Meets { get; init; }
-        public Interval<T> OverlappedBy { get; init; }
-        public Interval<T> StartedBy { get; init; }
-        public Interval<T> Contains { get; init; }
-        public Interval<T> Finishes { get; init; }
-        public Interval<T> Equal { get; init; }
-        public Interval<T> FinishedBy { get; init; }
-        public Interval<T> Starts { get; init; }
-        public Interval<T> Overlaps { get; init; }
-        public Interval<T> MetBy { get; init; }
+        public Interval<T> Reference { get; private set; } = default;
+        public Interval<T> Before { get; private set; } = default;
+        public Interval<T> After { get; private set; } = default;
+        public Interval<T> ContainedBy { get; private set; } = default;
+        public Interval<T> Meets { get; private set; } = default;
+        public Interval<T> OverlappedBy { get; private set; } = default;
+        public Interval<T> StartedBy { get; private set; } = default;
+        public Interval<T> Contains { get; private set; } = default;
+        public Interval<T> Finishes { get; private set; } = default;
+        public Interval<T> Equal { get; private set; } = default;
+        public Interval<T> FinishedBy { get; private set; } = default;
+        public Interval<T> Starts { get; private set; } = default;
+        public Interval<T> Overlaps { get; private set; } = default;
+        public Interval<T> MetBy { get; private set; } = default;
 
         /// <summary>
         /// Creates a DataSet with 13 different states <see cref="OverlappingState"/> relative to the reference interval.
@@ -32,11 +32,25 @@ namespace IntervalRecord.Tests.DataSets
         /// <param name="offset"></param>
         public IntervalDataSet(T start, T end, BoundaryType boundaryType, int offset)
         {
-            Reference = new Interval<T>(start, end, boundaryType);
-            var dataSetCreator = OffsetCreator.Create(Reference, offset);
-            After = dataSetCreator.After;
-            ContainedBy = dataSetCreator.ContainedBy;
-            Before = dataSetCreator.Before;
+            var (startInclusinve, endInclusive) = BoundaryTypeMapper.ToTuple(boundaryType);
+            Reference = new Interval<T>(start, end, startInclusinve, endInclusive);
+            var offsetCreator = OffsetCreator.Create(Reference, offset);
+            Init(offsetCreator);
+        }
+
+        public IntervalDataSet(T start, T end, BoundaryType boundaryType, TimeSpan offset)
+        {
+            var (startInclusinve, endInclusive) = BoundaryTypeMapper.ToTuple(boundaryType);
+            Reference = new Interval<T>(start, end, startInclusinve, endInclusive);
+            var offsetCreator = OffsetCreator.Create(Reference, offset);
+            Init(offsetCreator);
+        }
+
+        private void Init(IOffsetCreator<T> offsetCreator)
+        {
+            After = offsetCreator.After;
+            ContainedBy = offsetCreator.ContainedBy;
+            Before = offsetCreator.Before;
             Meets = Reference with { Start = Before.Start, End = Reference.Start };
             OverlappedBy = Reference with { Start = ContainedBy.End, End = After.End };
             StartedBy = Reference with { End = After.Start };
@@ -47,25 +61,6 @@ namespace IntervalRecord.Tests.DataSets
             Starts = Reference with { End = ContainedBy.End };
             Overlaps = Reference with { Start = Before.Start, End = ContainedBy.Start };
             MetBy = Reference with { Start = Reference.End, End = After.End };
-        }
-
-        public IntervalDataSet(T start, T end, BoundaryType boundaryType, TimeSpan offset)
-        {
-            Reference = new Interval<T>(start, end, boundaryType);
-            var dataSetCreator = OffsetCreator.Create(Reference, offset);
-            After = dataSetCreator.After;
-            ContainedBy = dataSetCreator.ContainedBy;
-            Before = dataSetCreator.Before;
-            Meets = Reference with { Start = Before.Start, End = Reference.Start };
-            Overlaps = Reference with { Start = After.Start, End = ContainedBy.Start };
-            OverlappedBy = Reference with { Start = ContainedBy.End, End = Before.End };
-            StartedBy = Reference with { End = Before.Start };
-            Contains = Reference with { Start = After.Start, End = Before.End };
-            Finishes = Reference with { Start = ContainedBy.Start };
-            Equal = Reference with { };
-            FinishedBy = Reference with { Start = After.Start };
-            Starts = Reference with { End = ContainedBy.End };
-            MetBy = Reference with { Start = Reference.End, End = Before.End };
         }
 
         public IEnumerable<Interval<T>> ToList()
@@ -113,7 +108,7 @@ namespace IntervalRecord.Tests.DataSets
         public TheoryData<Interval<T>, Interval<T>, OverlappingState> GetOverlappingState => new TheoryData<Interval<T>, Interval<T>, OverlappingState>
         {
             { Before, Reference, OverlappingState.Before },
-            { Meets, Reference, Reference.GetIntervalType() == BoundaryType.Closed ? OverlappingState.Meets : OverlappingState.Before },
+            { Meets, Reference, OverlappingState.Meets },
             { Overlaps, Reference, OverlappingState.Overlaps },
             { Starts, Reference, OverlappingState.Starts },
             { ContainedBy, Reference, OverlappingState.ContainedBy },
@@ -123,7 +118,7 @@ namespace IntervalRecord.Tests.DataSets
             { Contains, Reference, OverlappingState.Contains },
             { StartedBy, Reference, OverlappingState.StartedBy },
             { OverlappedBy, Reference, OverlappingState.OverlappedBy },
-            { MetBy, Reference, Reference.GetIntervalType() == BoundaryType.Closed ? OverlappingState.MetBy : OverlappingState.After },
+            { MetBy, Reference, OverlappingState.MetBy },
             { After, Reference, OverlappingState.After }
         };
 

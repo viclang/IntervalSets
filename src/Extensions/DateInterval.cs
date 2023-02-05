@@ -10,7 +10,7 @@ namespace IntervalRecord
     {
         public static int? Length(this Interval<DateOnly> value)
         {
-            if (!value.IsBounded())
+            if (value.IsUnBounded())
             {
                 return null;
             }
@@ -26,21 +26,21 @@ namespace IntervalRecord
 
         public static TimeSpan Length(this Interval<DateTime> interval)
         {
-            var start = interval.Start ?? DateTime.MinValue;
-            var end = interval.End ?? DateTime.MaxValue;
+            var start = interval.Start.Finite ?? DateTime.MinValue;
+            var end = interval.End.Finite ?? DateTime.MaxValue;
             return end.Subtract(start);
         }
 
         public static TimeSpan Length(this Interval<DateTimeOffset> interval)
         {
-            var start = interval.Start ?? DateTimeOffset.MinValue;
-            var end = interval.End ?? DateTimeOffset.MaxValue;
+            var start = interval.Start.Finite ?? DateTimeOffset.MinValue;
+            var end = interval.End.Finite ?? DateTimeOffset.MaxValue;
             return end.Subtract(start);
         }
 
         public static double? Radius(this Interval<DateOnly> value)
         {
-            if (!value.IsBounded())
+            if (value.IsUnBounded())
             {
                 return null;
             }
@@ -60,7 +60,7 @@ namespace IntervalRecord
 
         public static double? Centre(this Interval<DateOnly> value)
         {
-            if (!value.IsBounded())
+            if (value.IsUnBounded())
             {
                 return null;
             }
@@ -70,8 +70,8 @@ namespace IntervalRecord
                 return 0;
             }
 
-            var start = value.Start ?? DateOnly.MinValue;
-            var end = value.End ?? DateOnly.MaxValue;
+            var start = value.Start.Finite ?? DateOnly.MinValue;
+            var end = value.End.Finite ?? DateOnly.MaxValue;
             return (start.DayNumber + end.DayNumber) / 2;
         }
 
@@ -105,10 +105,8 @@ namespace IntervalRecord
 
         private static (DateOnly, DateOnly) ToNonNullableTuple(this Interval<DateOnly> value)
         {
-            
-
-            var start = value.Start ?? DateOnly.MinValue;
-            var end = value.End ?? DateOnly.MaxValue;
+            var start = value.Start.Finite ?? DateOnly.MinValue;
+            var end = value.End.Finite ?? DateOnly.MaxValue;
             return (start, end);
         }
     }
