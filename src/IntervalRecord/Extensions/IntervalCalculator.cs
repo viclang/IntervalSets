@@ -7,7 +7,7 @@ namespace IntervalRecord
         public static Interval<T> Intersect<T>(this Interval<T> value, Interval<T> other)
             where T : struct, IEquatable<T>, IComparable<T>, IComparable
         {
-            if (!value.IsConnected(other))
+            if (!value.IsConnected(other, true))
             {
                 throw new ArgumentOutOfRangeException("other", "Intersection is only supported for connected intervals.");
             }
@@ -28,7 +28,7 @@ namespace IntervalRecord
         public static Interval<T> Except<T>(this Interval<T> value, Interval<T> other)
             where T : struct, IEquatable<T>, IComparable<T>, IComparable
         {
-            if (!value.IsConnected(other))
+            if (!value.IsConnected(other, true))
             {
                 throw new ArgumentOutOfRangeException(
                     nameof(other),
@@ -51,7 +51,7 @@ namespace IntervalRecord
         public static Interval<T> Union<T>(this Interval<T> value, Interval<T> other)
             where T : struct, IEquatable<T>, IComparable<T>, IComparable
         {
-            if (!value.IsConnected(other))
+            if (!value.IsConnected(other, true))
             {
                 throw new ArgumentOutOfRangeException("other", "Union is not continuous.");
             }
@@ -163,7 +163,7 @@ namespace IntervalRecord
         public static DateTime? Centre(this Interval<DateTime> value, TimeSpan closureStep) => CentreOrRadius(value.Closure(closureStep), (a, b) => a.Add(a.Subtract(b) / 2));
         public static DateTimeOffset? Centre(this Interval<DateTimeOffset> value, TimeSpan closureStep) => CentreOrRadius(value.Closure(closureStep), (a, b) => a.Add(a.Subtract(b) / 2));
 
-        public static bool HasGap(this Interval<int> value, Interval<int> other, int step) => DistanceTo(value.Closure(step), other) == step;
+        public static bool HasGap(this Interval<int> value, Interval<int> other, int step) => DistanceTo(value.Closure(step), other) > step;
 
         /// <summary>
         /// Order does matter

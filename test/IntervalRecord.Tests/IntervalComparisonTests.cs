@@ -52,7 +52,7 @@ namespace IntervalRecord.Tests
                 .Should().Be(state == OverlappingState.Meets);
             a.Starts(b)
                 .Should().Be(state == OverlappingState.Starts);
-            a.EndInside(b)
+            a.Overlaps(b)
                 .Should().Be(state == OverlappingState.Overlaps);
             a.ContainedBy(b)
                 .Should().Be(state == OverlappingState.ContainedBy);
@@ -64,7 +64,7 @@ namespace IntervalRecord.Tests
                 .Should().Be(state == OverlappingState.FinishedBy);
             a.Contains(b)
                 .Should().Be(state == OverlappingState.Contains);
-            a.StartInside(b)
+            a.OverlappedBy(b)
                 .Should().Be(state == OverlappingState.OverlappedBy);
             a.StartedBy(b)
                 .Should().Be(state == OverlappingState.StartedBy);

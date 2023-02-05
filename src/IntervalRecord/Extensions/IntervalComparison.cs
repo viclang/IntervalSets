@@ -68,7 +68,7 @@
             return value.Start.Equals(other.Start) && value.End.CompareTo(other.End) == 1;
         }
 
-        public static bool StartInside<T>(this Interval<T> value, Interval<T> other)
+        public static bool OverlappedBy<T>(this Interval<T> value, Interval<T> other)
             where T : struct, IEquatable<T>, IComparable<T>, IComparable
         {
             return value.Start.CompareTo(other.Start) == 1
@@ -76,7 +76,7 @@
                 && value.Start.CompareTo(other.End) == -1;
         }
 
-        public static bool EndInside<T>(this Interval<T> value, Interval<T> other)
+        public static bool Overlaps<T>(this Interval<T> value, Interval<T> other)
             where T : struct, IEquatable<T>, IComparable<T>, IComparable
         {
             return value.Start.CompareTo(other.Start) == -1
