@@ -11,7 +11,7 @@
         {
             { (-1, -1, -1, -1), OverlappingState.Before },
             { (-1, -1, -1, 0), OverlappingState.Meets },
-            { (-1, -1, -1, 1), OverlappingState.Overlaps },
+            { (-1, -1, -1, 1), OverlappingState.EndInsideOnly },
             { (0, -1, -1, 1), OverlappingState.Starts },
             { (1, -1, -1, 1), OverlappingState.ContainedBy },
             { (1, 0, -1, 1), OverlappingState.Finishes },
@@ -19,7 +19,7 @@
             { (-1, 0, -1, 1), OverlappingState.FinishedBy },
             { (-1, 1, -1, 1), OverlappingState.Contains },
             { (0, 1, -1, 1), OverlappingState.StartedBy },
-            { (1, 1, -1, 1), OverlappingState.OverlappedBy },
+            { (1, 1, -1, 1), OverlappingState.StartInsideOnly },
             { (1, 1, 0, 1), OverlappingState.MetBy },
             { (1, 1, 1, 1), OverlappingState.After },
         };
