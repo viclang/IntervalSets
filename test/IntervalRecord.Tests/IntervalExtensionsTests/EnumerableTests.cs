@@ -21,68 +21,115 @@ namespace IntervalRecord.Tests.ExtensionsTests
         public void Hull_ShouldBeExpected(BoundaryType boundaryType)
         {
             // Arrange
-            var (startInclusive, endInclusive) = boundaryType.ToTuple();
-            var list = GetShiftList(new Interval<int>(1, 4, startInclusive, endInclusive), 5, 2).ToList();
+            var list = OverlapList(startingPoint, length, offset, boundaryType);
 
             // Act
             var actual = list.Hull();
 
             // Assert
-            actual.Should().Be(new Interval<int>(1, list.Last().End, startInclusive, endInclusive));
+            var (startInclusive, endInclusive) = boundaryType.ToTuple();
+            actual.Should().Be(new Interval<int>(startingPoint, list.Last().End, startInclusive, endInclusive));
         }
 
-        [Fact]
-        public void UnionAll_ShouldBeExpected()
+        [Theory]
+        [InlineData(BoundaryType.Closed, 4)]
+        [InlineData(BoundaryType.ClosedOpen, 4)]
+        [InlineData(BoundaryType.OpenClosed, 4)]
+        [InlineData(BoundaryType.Open, 6)]
+        public void UnionAll_ShouldBeExpected(BoundaryType boundaryType, int expectedCount)
         {
             // Arrange
-            var list = OverlapList(startingPoint, length, offset, BoundaryType.Closed);
+            var list = OverlapList(startingPoint, length, offset, boundaryType);
 
             // Act
             var actual = list.UnionAll().ToList();
 
             // Assert
-            actual.Should().HaveCount(4);
+            actual.Should().HaveCount(expectedCount);
         }
 
-
-        [Fact]
-        public void ExceptAll_ShouldBeExpected()
+        [Theory]
+        [InlineData(BoundaryType.Closed, 6)]
+        [InlineData(BoundaryType.ClosedOpen, 4)]
+        [InlineData(BoundaryType.OpenClosed, 4)]
+        [InlineData(BoundaryType.Open, 3)]
+        public void ExceptAll_ShouldBeExpected(BoundaryType boundaryType, int expectedCount)
         {
             // Arrange
-            var list = OverlapList(startingPoint, length, offset, BoundaryType.Closed).ToList();
+            var list = OverlapList(startingPoint, length, offset, boundaryType).ToList();
 
             // Act
             var actual = list.ExceptAll().ToList();
 
             // Assert
-            actual.Should().HaveCount(5);
+            actual.Should().HaveCount(expectedCount);
         }
 
-        [Fact]
-        public void IntersectAll_ShouldBeExpected()
+        [Theory]
+        [InlineData(BoundaryType.Closed, 6)]
+        [InlineData(BoundaryType.ClosedOpen, 3)]
+        [InlineData(BoundaryType.OpenClosed, 3)]
+        [InlineData(BoundaryType.Open, 3)]
+        public void IntersectAll_ShouldBeExpected(BoundaryType boundaryType, int expectedCount)
         {
             // Arrange
-            var list = OverlapList(startingPoint, length, offset, BoundaryType.Closed).ToList();
+            var list = OverlapList(startingPoint, length, offset, boundaryType).ToList();
 
             // Act
             var actual = list.IntersectAll().ToList();
 
             // Assert
-            actual.Should().HaveCount(6);
+            actual.Should().HaveCount(expectedCount);
         }
 
 
-        [Fact]
-        public void Complement_ShouldBeExpected()
+        [Theory]
+        [InlineData(BoundaryType.Closed, 4)]
+        [InlineData(BoundaryType.ClosedOpen, 4)]
+        [InlineData(BoundaryType.OpenClosed, 4)]
+        [InlineData(BoundaryType.Open, 5)]
+        public void Complement_ShouldHaveExpectedCount(BoundaryType boundaryType, int expectedCount)
         {
             // Arrange
-            var list = OverlapList(startingPoint, length, offset, BoundaryType.Closed).ToList();
+            var list = OverlapList(startingPoint, length, offset, boundaryType).ToList();
 
             // Act
-            var actual = list.Complement(x => !x.Closure(1).IsEmpty()).ToList();
+            var actual = list.Complement().ToList();
 
             // Assert
-            actual.Should().HaveCount(4);
+            actual.Should().HaveCount(expectedCount);
+        }
+
+        [Fact]
+        public void Hull_EmptyList_ShouldBeNull()
+        {
+            // Arrange
+            var list = Enumerable.Empty<Interval<int>>();
+
+            // Act
+            var actual = list.Hull();
+
+            // Assert
+            actual.Should().BeNull();
+        }
+
+        [Fact]
+        public void EmptyList_ShouldBeEmpty()
+        {
+            // Arrange
+            var emptyList = Enumerable.Empty<Interval<int>>();
+
+            // Act
+            var actual = new IEnumerable<Interval<int>>[]
+            {
+                emptyList.UnionAll(),
+                emptyList.ExceptAll(),
+                emptyList.IntersectAll(),
+                emptyList.Complement()
+            };
+
+            // Assert
+            actual.Should().AllBeEquivalentTo(emptyList);
         }
     }
 }
