@@ -5,7 +5,7 @@ using System.Linq;
 
 namespace IntervalRecord.Tests.ExtensionsTests.BinaryOperations
 {
-    public class ExceptTests : BaseIntervalPairSetTests
+    public class ExceptTests : BaseIntervalSetTests
     {
         private const int startingPoint = 0;
         private const int length = 4;

@@ -1,6 +1,4 @@
-﻿using System.Diagnostics.Contracts;
-
-namespace IntervalRecord
+﻿namespace IntervalRecord
 {
     public enum BoundaryType
     {

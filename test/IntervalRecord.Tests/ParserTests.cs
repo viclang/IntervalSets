@@ -34,11 +34,25 @@ namespace IntervalRecord.Tests
         [InlineData("[1..2]")]
         [InlineData("[..]")]
         [InlineData("[.]")]
+        [InlineData("()")]
         [InlineData("[]")]
+        [InlineData("(]")]
+        [InlineData("[)")]
+        [InlineData(",")]
+        [InlineData(",,")]
+        [InlineData("1,2")]
+        [InlineData("],[")]
+        [InlineData("],]")]
+        [InlineData("[,[")]
+        [InlineData("),(")]
+        [InlineData("),)")]
+        [InlineData("(,(")]
+        [InlineData("{,}")]
+        [InlineData("<,>")]
         public void Parse_ShouldThrowArgumentException(string stringToParse)
         {
             // Act
-            var act = () => Interval.Parse(stringToParse, x => int.Parse(x));
+            var act = () => Interval.Parse<int>(stringToParse);
 
             // Assert
             act.Should()
@@ -50,10 +64,10 @@ namespace IntervalRecord.Tests
         [InlineData("[1.0,2.0]")]
         [InlineData("[03/08/2022, 03/08/2022]")]
         [InlineData("[03-08-2022, 03-08-2022]")]
-        public void Parse_ShouldThrowException(string stringToParse)
+        public void Parse_ShouldThrowFormatException(string stringToParse)
         {
             // Act
-            var act = () => Interval.Parse(stringToParse, x => int.Parse(x));
+            var act = () => Interval.Parse<int>(stringToParse);
 
             // Assert
             act.Should()
@@ -67,7 +81,7 @@ namespace IntervalRecord.Tests
         public void Parse_ShouldBeExpectedResult(string stringToParse, Interval<int> expectedResult)
         {
             // Act
-            var result = Interval.Parse(stringToParse, x => int.Parse(x));
+            var result = Interval.Parse<int>(stringToParse);
 
             // Assert
             result.Should().Be(expectedResult);
@@ -80,7 +94,7 @@ namespace IntervalRecord.Tests
         public void TryParse_ShouldBeExpectedResult(string stringToParse, Interval<int>? expectedResult)
         {
             // Act
-            var isValid = Interval.TryParse<int>(stringToParse, x => int.Parse(x), out var result);
+            var isValid = Interval.TryParse<int>(stringToParse, out var result);
 
             // Assert
             isValid.Should().Be(expectedResult is not null);
@@ -91,7 +105,7 @@ namespace IntervalRecord.Tests
         public void ParseAll_ShouldBeEmpty()
         {
             // Act
-            var result = Interval.ParseAll(InvalidString, x => int.Parse(x));
+            var result = Interval.ParseAll<int>(InvalidString);
 
             // Assert
             result.Should().BeEmpty();
@@ -101,7 +115,7 @@ namespace IntervalRecord.Tests
         public void ParseAll_ShouldHaveCount()
         {
             // Act
-            var result = Interval.ParseAll(validString, x => int.Parse(x));
+            var result = Interval.ParseAll<int>(validString);
 
             // Assert
             result.Should().HaveCount(8);

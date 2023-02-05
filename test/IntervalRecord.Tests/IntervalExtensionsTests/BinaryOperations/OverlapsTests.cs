@@ -3,7 +3,7 @@ using System;
 
 namespace IntervalRecord.Tests.ExtensionsTests.BinaryOperations
 {
-    public class OverlapsTests : BaseIntervalPairSetTests
+    public class OverlapsTests : BaseIntervalSetTests
     {
         private const int startingPoint = 0;
         private const int length = 4;

@@ -1,6 +1,6 @@
 ﻿using System.Linq;
 
-namespace IntervalRecord.Tests.ExtensionsTests.BinaryOperations
+namespace IntervalRecord.Tests
 {
     public class MinByMaxByTests
     {

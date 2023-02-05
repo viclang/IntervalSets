@@ -1,8 +1,8 @@
 ﻿using IntervalRecord.Tests.TestData;
 
-namespace IntervalRecord.Tests.ExtensionsTests
+namespace IntervalRecord.Tests.IntervalExtensionsTests
 {
-    public class ComparisonTests : BaseIntervalPairSetTests
+    public class ComparisonTests : BaseIntervalSetTests
     {
         private const int startingPoint = 0;
         private const int length = 4;

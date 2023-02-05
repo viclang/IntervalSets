@@ -3,7 +3,7 @@ using System.Data;
 
 namespace IntervalRecord.Tests.ExtensionsTests.BinaryOperations
 {
-    public class GapsTests : BaseIntervalPairSetTests
+    public class GapsTests : BaseIntervalSetTests
     {
         private const int startingPoint = 0;
         private const int length = 4;

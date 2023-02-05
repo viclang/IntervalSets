@@ -1,10 +1,43 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace IntervalRecord.Tests.TestData
 {
     public abstract class BaseIntervalSetTests
     {
+        public static IEnumerable<object[]> IntervalPairsWithOverlappingState(
+            int startingPoint,
+            int length,
+            int offset,
+            BoundaryType boundaryType,
+            bool halfOpenIncluded)
+            => new IntOverlappingDataSet(startingPoint, length, offset, boundaryType).GetIntervalPairsWithOverlappingState(halfOpenIncluded);
+
+        public static IEnumerable<object[]> IntervalPairs(
+            int startingPoint,
+            int length,
+            int offset,
+            BoundaryType boundaryType)
+            => new IntOverlappingDataSet(startingPoint, length, offset, boundaryType).GetIntervalPairs();
+
+        public static IEnumerable<Interval<int>> GetSingletonList(int start, int end)
+        {
+            for(var point = start; point <= end; point++)
+            {
+                yield return new Interval<int>(point, point, true, true);
+            }
+        }
+
+        public static IEnumerable<Interval<int>> GetShiftList(Interval<int> value, int length, int offset)
+        {
+            yield return value;
+            for (var i = 0; i < length; i++)
+            {
+                yield return value = value with { Start = value.Start + offset, End = value.End + offset };
+            }
+        }
+
         public static TheoryData<Interval<int>> IncrementalLengthSet(int referencePoint, int maxRadius)
             => IncrementalLengthSet(referencePoint, 0, maxRadius);
 

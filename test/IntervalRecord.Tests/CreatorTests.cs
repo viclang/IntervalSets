@@ -34,19 +34,7 @@ namespace IntervalRecord.Tests
             { Interval.GreaterThan(_start), GreaterThan },
             { Interval.AtLeast(_start), AtLeast },
             { Interval.LessThan(_end), LessThan },
-            { Interval.AtMost(_end), AtMost },
-            { Interval.Parse($"(,)", x => int.Parse(x)), All },
-            { Interval.Parse($"[,]", x => int.Parse(x)), All },
-            { Interval.Parse($"(,]", x => int.Parse(x)), All },
-            { Interval.Parse($"[,)", x => int.Parse(x)), All },
-            { Interval.Parse($"(-∞,+∞)", x => int.Parse(x), "∞"), All },
-            { Interval.Parse($"(∞,∞)", x => int.Parse(x), "∞"), All },
-            { Interval.Parse($"(null,null)", x => int.Parse(x)), All },
-            { Interval.Parse($"({_start},{_end})", x => int.Parse(x)), Open },
-            { Interval.Parse($"(       {_start}       ,      {_end}          )", x => int.Parse(x)), Open },
-            { Interval.Parse($"[{_start},{_end}]", x => int.Parse(x)), Closed },
-            { Interval.Parse($"({_start},{_end}]", x => int.Parse(x)), OpenClosed },
-            { Interval.Parse($"[{_start},{_end})", x => int.Parse(x)), ClosedOpen },
+            { Interval.AtMost(_end), AtMost }
         };
 
         [Theory]
@@ -64,33 +52,6 @@ namespace IntervalRecord.Tests
 
             // Assert
             act.Should().Throw<ArgumentException>()
-                .WithMessage($"Interval not found in string. Please provide an interval string in correct format");
-        }
-
-        [Theory]
-        [InlineData("()")]
-        [InlineData("[]")]
-        [InlineData("(]")]
-        [InlineData("[)")]
-        [InlineData(",")]
-        [InlineData(",,")]
-        [InlineData("1,2")]
-        [InlineData("],[")]
-        [InlineData("],]")]
-        [InlineData("[,[")]
-        [InlineData("),(")]
-        [InlineData("),)")]
-        [InlineData("(,(")]
-        [InlineData("{,}")]
-        [InlineData("<,>")]
-        public void FromStringIncorrectFormat_ShouldThrowArgumentException(string interval)
-        {
-            // Arrange
-            var act = () => Interval.Parse(interval, x => int.Parse(x));
-
-            // Assert
-            act.Should()
-                .Throw<ArgumentException>()
                 .WithMessage($"Interval not found in string. Please provide an interval string in correct format");
         }
     }

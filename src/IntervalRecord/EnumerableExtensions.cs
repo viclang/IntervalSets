@@ -32,7 +32,7 @@ namespace IntervalRecord
         public static IEnumerable<Interval<T>> ExceptAll<T>(
             this IEnumerable<Interval<T>> values)
             where T : struct, IEquatable<T>, IComparable<T>, IComparable
-            => values.Pairwise((a, b) => a.Except(b));
+            => values.Reduce((a, b) => a.Except(b));
 
         [Pure]
         public static IEnumerable<Interval<T>> ExceptAll<T>(

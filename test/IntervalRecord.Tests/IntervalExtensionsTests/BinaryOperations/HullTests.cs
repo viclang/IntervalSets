@@ -3,7 +3,7 @@ using System.Linq;
 
 namespace IntervalRecord.Tests.ExtensionsTests.BinaryOperations
 {
-    public sealed class HullTests : BaseIntervalPairSetTests
+    public sealed class HullTests : BaseIntervalSetTests
     {
         private const int startingPoint = 0;
         private const int length = 4;
