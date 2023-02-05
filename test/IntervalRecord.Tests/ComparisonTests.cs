@@ -1,8 +1,5 @@
-﻿using FluentAssertions;
-using IntervalRecord.Tests.DataSets;
+﻿using IntervalRecord.Tests.DataSets;
 using IntervalRecord.Tests.TestData;
-using System.Collections.Generic;
-using Xunit;
 
 namespace IntervalRecord.Tests
 {

@@ -1,9 +1,11 @@
 ﻿using InfinityComparable;
+using System.Diagnostics.Contracts;
 
 namespace IntervalRecord.Internal
 {
     internal static class IntervalHelper
     {
+        [Pure]
         internal static Interval<T> Canonicalize<T>(
             Interval<T> value,
             BoundaryType boundaryType,
@@ -19,6 +21,7 @@ namespace IntervalRecord.Internal
                 _ => throw new NotImplementedException()
             };
 
+        [Pure]
         internal static Interval<T> ToClosed<T>(
             Interval<T> value,
             Func<T, T> add,
@@ -38,6 +41,7 @@ namespace IntervalRecord.Internal
             };
         }
 
+        [Pure]
         internal static Interval<T> ToClosedOpen<T>(
             Interval<T> value,
             Func<T, T> add)
@@ -56,6 +60,7 @@ namespace IntervalRecord.Internal
             };
         }
 
+        [Pure]
         internal static Interval<T> ToOpenClosed<T>(Interval<T> value, Func<T, T> substract)
             where T : struct, IEquatable<T>, IComparable<T>, IComparable
         {
@@ -72,6 +77,7 @@ namespace IntervalRecord.Internal
             };
         }
 
+        [Pure]
         internal static Interval<T> ToOpen<T>(Interval<T> value, Func<T, T> add, Func<T, T> substract)
             where T : struct, IEquatable<T>, IComparable<T>, IComparable
         {
@@ -88,6 +94,7 @@ namespace IntervalRecord.Internal
             };
         }
 
+        [Pure]
         internal static Infinity<TResult> ValueOrInfinity<T, TResult>(Interval<T> value, Func<T, T, TResult> substract)
             where T : struct, IEquatable<T>, IComparable<T>, IComparable
             where TResult : struct, IEquatable<TResult>, IComparable<TResult>, IComparable
@@ -95,6 +102,7 @@ namespace IntervalRecord.Internal
                 ? Infinity<TResult>.PositiveInfinity
                 : value.IsEmpty() ? default : substract(value.End.Finite.Value, value.Start.Finite.Value);
 
+        [Pure]
         internal static TResult? ValueOrNull<T, TResult>(Interval<T> value, Func<T, T, TResult> centre)
             where T : struct, IEquatable<T>, IComparable<T>, IComparable
             where TResult : struct

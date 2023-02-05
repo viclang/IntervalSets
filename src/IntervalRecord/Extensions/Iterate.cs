@@ -1,7 +1,10 @@
-﻿namespace IntervalRecord
+﻿using System.Diagnostics.Contracts;
+
+namespace IntervalRecord
 {
     public static partial class Interval
     {
+        [Pure]
         public static IEnumerable<T> Iterate<T>(this Interval<T> value, Func<T, T> AddStep)
             where T : struct, IEquatable<T>, IComparable<T>, IComparable
         {
@@ -13,6 +16,7 @@
             return value.Iterate(start, AddStep);
         }
 
+        [Pure]
         public static IEnumerable<T> Iterate<T>(this Interval<T> value, T start, Func<T, T> AddStep)
             where T : struct, IEquatable<T>, IComparable<T>, IComparable
         {

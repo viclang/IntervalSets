@@ -23,7 +23,7 @@ namespace IntervalRecord.Tests.BinaryOperations
             var b = new Interval<int>(startB, endB, startInclusive, endInclusive);
 
             // Act
-            var actual = a.Intersect(b);
+            var actual = a.Intersect(b)!.Value;
 
             // Assert
             var array = new Interval<int>[] { a, b };
@@ -54,7 +54,7 @@ namespace IntervalRecord.Tests.BinaryOperations
         [InlineData(6, 10, 1, 5, BoundaryType.OpenClosed)]
         [InlineData(1, 6, 6, 10, BoundaryType.Open)]
         [InlineData(6, 10, 1, 6, BoundaryType.Open)]
-        public void Intersect_ShouldThrowException(int startA, int endA, int startB, int endB, BoundaryType boundaryType)
+        public void Intersect_ShouldBeNull(int startA, int endA, int startB, int endB, BoundaryType boundaryType)
         {
             // Arrange
             var (startInclusive, endInclusive) = boundaryType.ToTuple();
@@ -62,12 +62,10 @@ namespace IntervalRecord.Tests.BinaryOperations
             var b = new Interval<int>(startB, endB, startInclusive, endInclusive);
 
             // Act
-            var actual = () => a.Intersect(b);
+            var actual = a.Intersect(b);
 
             // Assert
-            actual.Should()
-                .Throw<ArgumentOutOfRangeException>()
-                .WithMessage("Intersection is only supported for connected intervals. (Parameter 'other')");
+            actual.Should().BeNull();
         }
     }
 }

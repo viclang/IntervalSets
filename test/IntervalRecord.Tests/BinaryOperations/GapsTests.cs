@@ -13,8 +13,8 @@ namespace IntervalRecord.Tests.BinaryOperations
         private const int offset = 2;
         private static IOverlappingDataSet<int> _dataSet = new IntOverlappingDataSet(start, end, BoundaryType.Closed, offset);
 
-        public static TheoryData<Interval<int>, Interval<int>, OverlappingState> IntervalOverlaps_IncludeHalfOpen(BoundaryType boundaryType)
-            => _dataSet.CopyWith(boundaryType).GetOverlappingState(true);
+        public static TheoryData<Interval<int>, Interval<int>, OverlappingState> IntervalOverlaps(BoundaryType boundaryType)
+            => _dataSet.CopyWith(boundaryType).GetOverlappingState(false);
 
         [Theory]
         [InlineData(6, 10, BoundaryType.Closed)]
@@ -64,10 +64,10 @@ namespace IntervalRecord.Tests.BinaryOperations
         }
 
         [Theory]
-        [MemberData(nameof(IntervalOverlaps_IncludeHalfOpen), BoundaryType.Closed)]
-        [MemberData(nameof(IntervalOverlaps_IncludeHalfOpen), BoundaryType.ClosedOpen)]
-        [MemberData(nameof(IntervalOverlaps_IncludeHalfOpen), BoundaryType.OpenClosed)]
-        [MemberData(nameof(IntervalOverlaps_IncludeHalfOpen), BoundaryType.Open)]
+        [MemberData(nameof(IntervalOverlaps), BoundaryType.Closed)]
+        [MemberData(nameof(IntervalOverlaps), BoundaryType.ClosedOpen)]
+        [MemberData(nameof(IntervalOverlaps), BoundaryType.OpenClosed)]
+        [MemberData(nameof(IntervalOverlaps), BoundaryType.Open)]
         public void OverlappingIntervalsGap_ShouldBeNull(Interval<int> a, Interval<int> b, OverlappingState overlappingState)
         {
             // Act
@@ -77,11 +77,11 @@ namespace IntervalRecord.Tests.BinaryOperations
             if (overlappingState != OverlappingState.Before
                 && overlappingState != OverlappingState.After)
             {
-                actual.IsEmpty().Should().BeTrue();
+                actual.Should().BeNull();
             }
             else
             {
-                actual.IsEmpty().Should().BeFalse();
+                actual.Should().NotBeNull();
             }
         }
     }

@@ -1,5 +1,6 @@
 ﻿using InfinityComparable;
 using IntervalRecord.Enums;
+using System.Diagnostics.Contracts;
 using System.Text;
 
 namespace IntervalRecord
@@ -30,6 +31,7 @@ namespace IntervalRecord
             _endInclusive = !_end.IsInfinite && endInclusive;
         }
 
+        [Pure]
         public InfinityState GetInfinityState() => (Start.IsInfinite, End.IsInfinite) switch
         {
             (false, false) => InfinityState.Bounded,
@@ -38,8 +40,10 @@ namespace IntervalRecord
             (false, true) => InfinityState.LeftBounded
         };
 
+        [Pure]
         public bool IsHalfBounded() => Start.IsInfinite && !End.IsInfinite || !Start.IsInfinite && End.IsInfinite;
 
+        [Pure]
         public BoundaryType GetBoundaryType() => (StartInclusive, EndInclusive) switch
         {
             (true, true) => BoundaryType.Closed,
@@ -48,27 +52,40 @@ namespace IntervalRecord
             (false, false) => BoundaryType.Open,
         };
 
+        [Pure]
         public bool IsHalfOpen() => StartInclusive && !EndInclusive || !StartInclusive && EndInclusive;
 
+        [Pure]
         public bool IsEmpty() => (GetBoundaryType() != BoundaryType.Closed && Start == End)
             || (!Start.IsInfinite && !End.IsInfinite && Start.CompareTo(End) == 1);
 
+        [Pure]
         public bool IsSingleton() => GetBoundaryType() == BoundaryType.Closed && Start == End;
 
-        public bool Overlaps(Interval<T> other, bool includeHalfOpen = false) => !this.IsBefore(other, includeHalfOpen) && !this.IsAfter(other, includeHalfOpen);
-        
+        [Pure]
+        public bool Overlaps(Interval<T> other, bool includeHalfOpen = false)
+            => !this.IsBefore(other, includeHalfOpen) && !this.IsAfter(other, includeHalfOpen);
+
+        [Pure]
         public static implicit operator string(Interval<T> interval) => interval.ToString();
-        
+
+        [Pure]
         public static bool operator >(Interval<T> a, Interval<T> b)
             => a.End.CompareTo(b.End) == 1
                 || a.End.CompareTo(b.End) == 0 && a.Start.CompareTo(b.Start) == -1;
+
+        [Pure]
         public static bool operator <(Interval<T> a, Interval<T> b)
             => a.End.CompareTo(b.End) == -1
                 || a.End.CompareTo(b.End) == 0 && a.Start.CompareTo(b.Start) == 1;
 
+        [Pure]
         public static bool operator >=(Interval<T> a, Interval<T> b) => a == b || a > b;
+
+        [Pure]
         public static bool operator <=(Interval<T> a, Interval<T> b) => a == b || a < b;
 
+        [Pure]
         public int CompareTo(Interval<T> other)
         {
             if (this > other)
@@ -82,6 +99,7 @@ namespace IntervalRecord
             return 0;
         }
 
+        [Pure]
         public override string ToString()
         {
             return new StringBuilder()
@@ -93,6 +111,7 @@ namespace IntervalRecord
                 .ToString();
         }
 
+        [Pure]
         public void Deconstruct(out Infinity<T> start, out Infinity<T> end, out bool startInclusive, out bool endInclusive)
         {
             start = Start;

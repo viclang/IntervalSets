@@ -1,4 +1,5 @@
 ﻿using InfinityComparable;
+using System.Diagnostics.Contracts;
 using System.Text.RegularExpressions;
 
 namespace IntervalRecord
@@ -9,6 +10,7 @@ namespace IntervalRecord
         private const string infinity = "Infinity";
         private const string intervalNotFound = "Interval not found in string. Please provide an interval string in correct format";
 
+        [Pure]
         public static Interval<T> Parse<T>(string value, Func<string, T> boundaryParser, string infinityString = infinity)
             where T : struct, IEquatable<T>, IComparable<T>, IComparable
         {
@@ -20,10 +22,12 @@ namespace IntervalRecord
             return ParseInterval(match.Value, boundaryParser, infinityString);
         }
 
+        [Pure]
         public static bool TryParse<T>(string value, Func<string, T> boundaryParser, out Interval<T>? result)
             where T : struct, IEquatable<T>, IComparable<T>, IComparable
             => TryParse(value, boundaryParser, infinity, out result);
 
+        [Pure]
         public static bool TryParse<T>(string value, Func<string, T> boundaryParser, string infinityString, out Interval<T>? result)
             where T : struct, IEquatable<T>, IComparable<T>, IComparable
         {
@@ -39,6 +43,7 @@ namespace IntervalRecord
             }
         }
 
+        [Pure]
         public static IEnumerable<Interval<T>> ParseAll<T>(string value, Func<string, T> boundaryParser, string infinityString = infinity)
             where T : struct, IEquatable<T>, IComparable<T>, IComparable
         {
@@ -49,6 +54,7 @@ namespace IntervalRecord
             }
         }
 
+        [Pure]
         private static Interval<T> ParseInterval<T>(string value, Func<string, T> boundaryParser, string infinityString)
             where T : struct, IEquatable<T>, IComparable<T>, IComparable
         {
@@ -66,6 +72,7 @@ namespace IntervalRecord
                 end is null ? false : value.EndsWith(']'));
         }
 
+        [Pure]
         private static T? ParseBoundary<T>(string value, Func<string, T> boundaryParser, string infinityString)
             where T : struct, IEquatable<T>, IComparable<T>
         {

@@ -1,7 +1,10 @@
-﻿namespace IntervalRecord
+﻿using System.Diagnostics.Contracts;
+
+namespace IntervalRecord
 {
     public static partial class Interval
     {
+        [Pure]
         public static Interval<T>? Except<T>(this Interval<T> value, Interval<T> other)
             where T : struct, IEquatable<T>, IComparable<T>, IComparable
         {
@@ -12,6 +15,7 @@
             return GetExceptValue(value, other);
         }
 
+        [Pure]
         public static Interval<T> ExceptOrDefault<T>(this Interval<T> value, Interval<T> other, Interval<T> defaultValue)
             where T : struct, IEquatable<T>, IComparable<T>, IComparable
         {
@@ -22,6 +26,7 @@
             return GetExceptValue(value, other);
         }
 
+        [Pure]
         private static Interval<T> GetExceptValue<T>(Interval<T> value, Interval<T> other)
             where T : struct, IEquatable<T>, IComparable<T>, IComparable
         {
@@ -39,8 +44,9 @@
             return value with { Start = minByStart.Start, End = maxByStart.Start, StartInclusive = startInclusive, EndInclusive = endInclusive };
         }
 
+        [Pure]
         public static IEnumerable<Interval<T>> Except<T>(this IEnumerable<Interval<T>> values)
             where T : struct, IEquatable<T>, IComparable<T>, IComparable
-            => values.PairwiseNotNullOrEmpty((a, b) => a.Except(b));
+            => values.PairwiseFilter((a, b) => a.Except(b), result => !result.IsEmpty());
     }
 }

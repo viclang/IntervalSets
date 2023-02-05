@@ -23,7 +23,7 @@ namespace IntervalRecord.Tests.BinaryOperations
             var b = new Interval<int>(startB, endB, startInclusive, endInclusive);
 
             // Act
-            var actual = a.Except(b);
+            var actual = a.Except(b)!.Value;
 
             // Assert
             var array = new Interval<int>[] { a, b };
@@ -61,12 +61,10 @@ namespace IntervalRecord.Tests.BinaryOperations
             var b = new Interval<int>(startB, endB, startInclusive, endInclusive);
 
             // Act
-            var actual = () => a.Except(b);
+            var actual = a.Except(b);
 
             // Assert
-            actual.Should()
-                .Throw<ArgumentOutOfRangeException>()
-                .WithMessage("Except is only supported for connected intervals. (Parameter 'other')");
+            actual.Should().BeNull();
         }
     }
 }

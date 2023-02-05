@@ -1,4 +1,6 @@
-﻿namespace IntervalRecord
+﻿using System.Diagnostics.Contracts;
+
+namespace IntervalRecord
 {
     public static partial class Interval
     {
@@ -19,8 +21,11 @@
             }
         }
 
-        public static IEnumerable<Interval<T>> PairwiseNotEmpty<T>(
-            this IEnumerable<Interval<T>> values, Func<Interval<T>, Interval<T>, Interval<T>> resultSelector)
+        [Pure]
+        public static IEnumerable<Interval<T>> PairwiseFilter<T>(
+            this IEnumerable<Interval<T>> values,
+            Func<Interval<T>, Interval<T>, Interval<T>> resultSelector,
+            Func<Interval<T>, bool> predicate)
         where T : struct, IEquatable<T>, IComparable<T>, IComparable
         {
             using var e = values.GetEnumerator();
@@ -32,16 +37,17 @@
             while (e.MoveNext())
             {
                 var result = resultSelector(previous, e.Current);
-
-                if (!result.IsEmpty())
+                if (predicate(result))
                     yield return result;
                 
                 previous = e.Current;
             }
         }
 
-        public static IEnumerable<Interval<T>> PairwiseNotNullOrEmpty<T>(
-            this IEnumerable<Interval<T>> values, Func<Interval<T>, Interval<T>, Interval<T>?> resultSelector)
+        [Pure]
+        public static IEnumerable<Interval<T>> Pairwise<T>(
+            this IEnumerable<Interval<T>> values,
+            Func<Interval<T>, Interval<T>, Interval<T>?> resultSelector)
         where T : struct, IEquatable<T>, IComparable<T>, IComparable
         {
             using var e = values.GetEnumerator();
@@ -53,30 +59,34 @@
             while (e.MoveNext())
             {
                 var result = resultSelector(previous, e.Current);
-
-                if (result != null && !result.Value.IsEmpty())
+                if (result != null)
                     yield return result.Value;
 
                 previous = e.Current;
             }
         }
 
-        public static Interval<T> Hull<T>(
-            this IEnumerable<Interval<T>> values)
-            where T : struct, IEquatable<T>, IComparable<T>, IComparable
+        [Pure]
+        public static IEnumerable<Interval<T>> PairwiseFilter<T>(
+            this IEnumerable<Interval<T>> values,
+            Func<Interval<T>, Interval<T>, Interval<T>?> resultSelector,
+            Func<Interval<T>, bool> predicate)
+        where T : struct, IEquatable<T>, IComparable<T>, IComparable
         {
-            if (!values.Any())
-            {
-                throw new NotSupportedException("Collection is empty");
-            }
-            var min = values.MinBy(x => x.Start);
-            var max = values.MaxBy(x => x.End);
+            using var e = values.GetEnumerator();
 
-            return new Interval<T>(
-                min.Start,
-                max.End,
-                min.StartInclusive,
-                max.EndInclusive);
+            if (!e.MoveNext())
+                yield break;
+
+            var previous = e.Current;
+            while (e.MoveNext())
+            {
+                var result = resultSelector(previous, e.Current);
+                if (result != null && predicate(result.Value))
+                    yield return result.Value;
+
+                previous = e.Current;
+            }
         }
     }
 }
