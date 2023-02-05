@@ -6,11 +6,9 @@ using System.Threading.Tasks;
 
 namespace IntervalExtensions
 {
-    public enum IntervalType
+    public interface IHasInterval<T>
+        where T : struct, IComparable<T>, IComparable
     {
-        Closed,
-        Open,
-        ClosedOpen,
-        OpenClosed
+        Interval<T> Interval { get; }
     }
 }

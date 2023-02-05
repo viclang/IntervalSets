@@ -3,41 +3,18 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using IntervalExtensions.Comparers;
-using IntervalExtensions.Interfaces;
 
 namespace IntervalExtensions
 {
     public static class IntervalExtensions
     {
-        public static int Compare<T>(this Interval<T> value,
-            Interval<T> other, bool hasInclusiveEnd)
-            where T : struct, IComparable<T>, IComparable
-        {
-            if (value.Start is not null
-                && other.End is not null
-                && value.Start.Value.IsGreaterThan(other.End.Value, hasInclusiveEnd))
-            {
-                return 1;
-            }
-
-            if (value.End is not null
-                && other.Start is not null
-                && value.End.Value.IsSmallerThan(other.Start.Value, hasInclusiveEnd))
-            {
-                return -1;
-            }
-
-            return 0;
-        }
-
         public static int CompareStart<T>(this Interval<T> value,
             Interval<T> other)
             where T : struct, IComparable<T>, IComparable
         {
             if (value.Start is null && other.Start is not null)
             {
-                return                                                                    -1;
+                return -1;
             }
 
             if (value.Start is not null && other.Start is null)
@@ -75,22 +52,6 @@ namespace IntervalExtensions
             return value.End!.Value.CompareTo(other.End!.Value);
         }
 
-        public static bool IsGreaterThan<T>(this T value, T other, bool hasInclusiveEnd)
-            where T : struct, IComparable<T>, IComparable
-        {
-            return hasInclusiveEnd
-                ? value.CompareTo(other) is 1
-                : value.CompareTo(other) is 0 or 1;
-        }
-
-        public static bool IsSmallerThan<T>(this T value, T other, bool hasInclusiveEnd)
-            where T : struct, IComparable<T>, IComparable
-        {
-            return hasInclusiveEnd
-                ? value.CompareTo(other) is -1
-                : value.CompareTo(other) is -1 or 0;
-        }
-
         public static bool IsConnected(
             this Interval<DateOnly> value,
             Interval<DateOnly> other,
@@ -116,11 +77,10 @@ namespace IntervalExtensions
         }
 
         public static bool IsConnected(
-            this IInterval<DateTimeOffset> value,
-            IInterval<DateTimeOffset> other,
+            this Interval<DateTimeOffset> value,
+            Interval<DateTimeOffset> other,
             bool hasInclusiveEnd)
         {
-
             return value.End is not null
                    && other.Start.Equals(
                        hasInclusiveEnd
@@ -140,17 +100,6 @@ namespace IntervalExtensions
                            : value.End.Value);
         }
 
-        public static bool IsValidInterval<T>(
-            this Interval<T> value, bool hasInclusiveEnd)
-            where T : struct, IComparable<T>, IComparable
-        {
-            return value.End is null
-                   || value.End is not null
-                   && (value.Start is null 
-                       || value.Start is not null
-                       && value.End!.Value.IsGreaterThan(value.Start!.Value, hasInclusiveEnd));
-        }
-
         private static Interval<T> GetCollectionInterval<T>(
             this IEnumerable<Interval<T>> values)
             where T : struct, IComparable<T>, IComparable
@@ -160,59 +109,17 @@ namespace IntervalExtensions
                 throw new NotSupportedException("Collection is empty");
             }
 
-            return new Interval(
-                values.Any(x => x.Start is null) ? null
-                    : values.Min(x => x.Start),
-                values.Any(x => x.End is null) ? null
-                    : values.Max(x => x.End!.Value));
-        }
-        
-        public static IInterval<T>? GetPreviousInterval<T>(
-            this IInterval<T> value,
-            IEnumerable<IInterval<T>> intervals)
-            where T : struct, IComparable<T>, IComparable<T?>, IComparable
-        {
-            return intervals
-                .Where(x => x.CompareStart(value) is -1)
-                .MaxBy(x => x.Start);
-        }
+            var min = values.Any(x => x.Start is null) ? new Interval<T>()
+                    : values.MinBy(x => x.Start);
 
-        public static Interval<T>? GetNextInterval<T>(this Interval<T> value, IEnumerable<Interval<T>> intervals)
-            where T : struct, IComparable<T>, IComparable
-        {
-            return intervals
-                .Where(x => x.CompareStart(value) is 1)
-                .MinBy(x => x.Start);
-        }
+            var max = values.Any(x => x.End is null) ? new Interval<T>()
+                    : values.MaxBy(x => x.End!.Value);
 
-        public static Interval<T>? GetFirstInterval<T>(this IEnumerable<Interval<T>> values)
-            where T : struct, IComparable<T>, IComparable
-        {
-            return  values.FirstOrDefault(x => x.Start is null) ?? values.MinBy(x => x.Start!.Value);
-        }
-
-        public static IInterval<T>? GetLastInterval<T>(this IEnumerable<IInterval<T>> values)
-            where T : struct, IComparable<T>, IComparable
-        {
-            return values.LastOrDefault(x => x.End is null) ?? values.MaxBy(x => x.End!.Value);
-        }
-
-        public static bool OverlapsWith<T>(this Interval<T> value, Interval<T> other, bool hasInclusiveEnd)
-            where T : struct, IComparable<T>, IComparable
-        {
-            return Compare(value, other, hasInclusiveEnd) is 0;
-        }
-
-        public static bool IsBefore<T>(this Interval<T> value, Interval<T> other, bool hasInclusiveEnd)
-            where T : struct, IComparable<T>, IComparable
-        {
-            return Compare(value, other, hasInclusiveEnd) is -1;
-        }
-
-        public static bool IsAfter<T>(this Interval<T> value, Interval<T> other, bool hasInclusiveEnd)
-            where T : struct, IComparable<T>, IComparable
-        {
-            return Compare(value, other, hasInclusiveEnd) is 1;
+            return new Interval<T>(
+                min.Start,
+                max.End,
+                min.Inclusive.Start,
+                max.Inclusive.End);
         }
     }
 }

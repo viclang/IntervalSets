@@ -6,39 +6,56 @@ using System.Threading.Tasks;
 
 namespace IntervalExtensions
 {
-    public readonly record struct Interval<T>
+    public record struct Interval<T>
         where T : struct, IComparable<T>, IComparable
     {
-        public readonly record struct Endpoint
-        {
-            public T EndpointValue { get; init; }
-            public bool Included { get; init; }
+        public T? Start { get; init; }
+        public T? End { get; init; }
+        public (bool Start, bool End) Inclusive { get; init; }
 
-            public Endpoint(T value, bool included)
-            {
-                EndpointValue = value;
-                Included = included;
-            }
-        }
-
-        public Endpoint? Start { get; init; }
-        public Endpoint? End { get; init; }
-
-        public Interval(Endpoint? start, Endpoint? end)
+        public Interval(T? start, T? end, bool startInclusive, bool endInclusive)
         {
             Start = start;
             End = end;
+            Inclusive = (startInclusive, endInclusive);
+
+            Validate();
+
+            if (Start is not null && End is not null && !Inclusive.Start && !Inclusive.End)
+            {
+                throw new NotSupportedException("Open interval is not supported!");
+            }
         }
 
-        public Interval(T? start, T? end, (bool start, bool end) included)
+        public Interval(T? start, T? end, (bool start, bool end) inclusive)
         {
-            Start = start is not null
-                ? new Endpoint(start.Value, included.start)
-                : null;
+            Start = start;
+            End = end;
+            Inclusive = inclusive;
 
-            End = end is not null
-                ? new Endpoint(end.Value, included.end)
-                : null;
+            Validate();
+
+            if (Start is not null && End is not null && !Inclusive.Start && !Inclusive.End)
+            {
+                throw new NotSupportedException("Open interval is not supported");
+            }
+        }
+
+        private void Validate()
+        {
+            if (Start is not null && End is not null
+                    && Inclusive.Start && Inclusive.End
+                    && End.Value.CompareTo(Start.Value) == -1)
+            {
+                throw new ArgumentOutOfRangeException(nameof(End), "The end parameter must be greater or equal to the start parameter");
+            }
+
+            if (Start is not null && End is not null
+                    && (!Inclusive.Start || !Inclusive.End)
+                    && End.Value.CompareTo(Start.Value) <= 0)
+            {
+                throw new ArgumentOutOfRangeException(nameof(End), "The end parameter must be greater than the start parameter");
+            }
         }
 
         public bool OverlapsWith(Interval<T> other)
@@ -53,18 +70,12 @@ namespace IntervalExtensions
                 return false;
             }
 
-            if (a.Start.Value.Included && !b.End.Value.Included
-                || !a.Start.Value.Included && b.End.Value.Included)
+            if (!a.Inclusive.Start || !b.Inclusive.End)
             {
-                return a.Start.Value.EndpointValue.CompareTo(b.End.Value.EndpointValue) >= 0;
+                return a.Start.Value.CompareTo(b.End.Value) >= 0;
             }
 
-            if (!a.Start.Value.Included && !b.End.Value.Included)
-            {
-                return a.Start.Value.EndpointValue.CompareTo(b.End.Value.EndpointValue) == 0;
-            }
-
-            return a.Start.Value.EndpointValue.CompareTo(b.End.Value.EndpointValue) == 1;
+            return a.Start.Value.CompareTo(b.End.Value) == 1;
         }
 
         public static bool operator <(Interval<T> a, Interval<T> b)
@@ -74,31 +85,25 @@ namespace IntervalExtensions
                 return false;
             }
 
-            if(a.End.Value.Included && !b.Start.Value.Included
-                || !a.End.Value.Included && b.Start.Value.Included)
+            if(!a.Inclusive.End || !b.Inclusive.Start)
             {
-                return a.End.Value.EndpointValue.CompareTo(b.Start.Value.EndpointValue) <= 0;
+                return a.End.Value.CompareTo(b.Start.Value) <= 0;
             }
 
-            if (!a.End.Value.Included && !b.Start.Value.Included)
-            {
-                return a.End.Value.EndpointValue.CompareTo(b.Start.Value.EndpointValue) == 0;
-            }
-
-            return a.End.Value.EndpointValue.CompareTo(b.Start.Value.EndpointValue) == -1;
+            return a.End.Value.CompareTo(b.Start.Value) == -1;
         }
 
         public override string? ToString()
         {
             var start = Start is null
                 ? "(-∞"
-                : Start.Value.Included ? "[" : "("
-                    + Start.Value.EndpointValue;
+                : Inclusive.Start ? "[" : "("
+                    + Start.Value;
 
             var end = End is null
                 ? "+∞)"
-                : End.Value.Included ? "]" : ")"
-                    + End.Value.EndpointValue;
+                : Inclusive.End ? "]" : ")"
+                    + End.Value;
 
             return string.Join(", ", start, end);
         }
