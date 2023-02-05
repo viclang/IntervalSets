@@ -4,17 +4,18 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace RangeExtensions.Tests.Models
+namespace RangeExtensions.Tests.RangeInclusive
 {
-    public class RangeStub : IRangeInclusive<int>
+    public class RangeInclusiveStub : IRangeInclusive<int>
     {
         public int From { get; set; }
         public int? To { get; set; }
 
-        public RangeStub(int from, int? to)
+        public RangeInclusiveStub(int from, int? to)
         {
             From = from;
             To = to;
         }
+
     }
 }

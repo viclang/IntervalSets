@@ -2,9 +2,9 @@
 
 namespace RangeExtensions.Interfaces
 {
-    public static class RangeInclusiveExtensions
+    public static class RangeInclusiveIntExtensions
     {
-        private static Configuration _configuration = new Configuration();
+        private static AddStrategy _configuration = new AddStrategy();
 
         public static bool HasValidRange<TSource>(this TSource value)
             where TSource : IRangeInclusive<int>
@@ -42,14 +42,51 @@ namespace RangeExtensions.Interfaces
             ranges.Add(value);
         }
 
+        public static void RemoveAllBefore<TSource>(this List<TSource> ranges, int value)
+            where TSource : IRangeInclusive<int>
+        {
+            ranges.RemoveAll(x => x.To < value);
+        }
+
+        public static void RemoveAllAfter<TSource>(this List<TSource> ranges, int value)
+            where TSource : IRangeInclusive<int>
+        {
+            ranges.RemoveAll(x => x.From > value);
+        }
+
+        public static void InsertShrinkPrevious<TSource>(this IList<TSource> ranges, TSource value)
+            where TSource : IRangeInclusive<int>
+        {
+            var previous = value.GetPreviousRange(ranges);
+            if (previous is not null)
+            {
+                previous.To = value.From - 1;
+            }
+            
+            var next = value.GetNextRange(ranges);
+            if (next is not null)
+            {
+                if(value.To is null)
+                {
+                    value.To = next.From - 1;
+                }
+
+                if (ranges.Any(x => x.OverlapsWith(value)))
+                {
+                    throw new NotSupportedException("Found overlap");
+                }                
+            }            
+            ranges.Add(value);
+        }
+
         private static void AddRanged<TSource>(
             this IList<TSource> ranges,
             TSource value,
             Func<int, int> previousTo,
-            Action<Configuration> options)
+            Action<AddStrategy> options)
             where TSource : IRangeInclusive<int>
         {
-            var strategy = new Configuration();
+            var strategy = new AddStrategy();
             options(strategy);
 
             if (!value.HasValidRange())
@@ -90,28 +127,18 @@ namespace RangeExtensions.Interfaces
         private static T? GetPreviousRange<T>(this T value, IList<T> ranges)
             where T : IRangeInclusive<int>
         {
-            return ranges.LastOrDefault(x => x.From.CompareTo(value.From) < 0);
+            return ranges
+                .Where(x => x.From < value.From )
+                .MaxBy(x => x.From);
         }
 
         private static T? GetNextRange<T>(this T value, IList<T> ranges)
             where T : IRangeInclusive<int>
         {
-            return ranges.FirstOrDefault(x => x.From.CompareTo(value.From) > 0);
-        }
-
-
-        private static void AddNotOverlapping<T>(
-            this IList<T> ranges,
-            T value,
-            Func<T, T> previousTo)
-            where T : struct, IRange<T>, IComparable<T>, IComparable
-        {
-            if (ranges.Any(x => x.OverlapsWith(value)))
-            {
-                throw new NotSupportedException("Found one or more overlapping ranges!");
-            }
-            ranges.Add(value);
-        }        
+            return ranges
+                .Where(x => x.From > value.From)
+                .MinBy(x => x.From);
+        }    
 
         private static TSource? GetFirstRange<TSource>(this IList<TSource> ranges)
             where TSource : IRangeInclusive<int>
@@ -139,16 +166,16 @@ namespace RangeExtensions.Interfaces
                 : ranges.Max(x => x.To!.Value));
         }
 
-        public static bool OverlapsWithA<TSource>(this TSource source, TSource value)
+        public static bool OverlapsWith<TSource>(this TSource source, TSource value)
         where TSource : IRangeInclusive<int>
         {
-            return OverlapsWithA(source.From, source.To, value.From, value.To);
+            return OverlapsWith(source.From, source.To, value.From, value.To);
         }
 
-        public static bool OverlapsWithB<TSource>(this TSource source, TSource value)
+        public static bool IsConnected<TSource>(this TSource source, TSource value)
         where TSource : IRangeInclusive<int>
         {
-            return OverlapsWithB(source.From, source.To, value.From, value.To);
+            return IsConnected(source.From, source.To, value.From, value.To);
         }
 
         private static bool IsConnected(
@@ -161,42 +188,18 @@ namespace RangeExtensions.Interfaces
         }
         private static bool IsConnected(this int? to, int from)
         {
-            return to.Equals(from - 1);
+            var exclusive = GetRangeExclusive(from, to);
+            return exclusive.to.Equals(exclusive.from);
         }
 
-        private static bool OverlapsWithA<TProperty>(
-            TProperty sourceFrom,
-            TProperty? sourceTo,
-            TProperty valueFrom,
-            TProperty? valueTo)
-            where TProperty : struct, IComparable<TProperty>, IComparable
+        private static (int from, int? to) GetRangeExclusive(int from, int? to)
         {
-
-            if (sourceTo is null
-                && valueTo is null)
-            {
-                return true;
-            }
-
-            if (sourceTo is null
-                && valueTo is not null)
-            {
-                return sourceFrom.CompareTo(valueFrom) <= 0
-                    || sourceFrom.CompareTo(valueTo) <= 0;
-            }
-
-            if (sourceTo is not null
-                && valueTo is null)
-            {
-                return valueFrom.CompareTo(sourceFrom) <= 0
-                    || valueFrom.CompareTo(sourceTo) <= 0;
-            }
-
-            return sourceFrom.CompareTo(valueTo) <= 0
-                && valueFrom.CompareTo(sourceTo) <= 0;
+            return to is null
+                ? (from, to)
+                : (from, to + 1);
         }
 
-        private static bool OverlapsWithB(
+        private static bool OverlapsWith(
             int sourceFrom,
             int? sourceTo,
             int valueFrom,
@@ -209,18 +212,18 @@ namespace RangeExtensions.Interfaces
                 return true;
             }
 
-            var before = sourceFrom > valueTo;
+            var after = sourceFrom > valueTo;
             if (sourceTo is null
                 && valueTo is not null)
             {
-                return !before;
+                return !after;
             }
 
-            var after = sourceTo < valueFrom;
+            var before = sourceTo < valueFrom;
             if (sourceTo is not null
                 && valueTo is null)
             {
-                return !after;
+                return !before;
             }
 
             return !before && !after;
