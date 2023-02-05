@@ -49,12 +49,12 @@ namespace IntervalRecord
             => ToOpen(value, x => x.AddDays(step), x => x.AddDays(-step));
 
         public Infinity<int> Length()
-            => CalculateOrInfinity(value, (end, start) => end.DayNumber - start.DayNumber);
+            => ValueOrInfinity(value, (end, start) => end.DayNumber - start.DayNumber);
 
         public double? Radius()
-            => CalculateOrNull(value, (end, start) => (end.DayNumber - start.DayNumber) / 2);
+            => ValueOrNull(value, (end, start) => (end.DayNumber - start.DayNumber) / 2);
 
         public DateOnly? Centre()
-            => CalculateOrNull(value, (end, start) => start.AddDays((end.DayNumber - start.DayNumber)/2));
+            => ValueOrNull(value, (end, start) => start.AddDays((end.DayNumber - start.DayNumber)/2));
     }
 }

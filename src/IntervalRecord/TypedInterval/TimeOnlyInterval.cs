@@ -47,12 +47,12 @@ namespace IntervalRecord
         public Interval<TimeOnly> Interior(TimeSpan step)
             => ToOpen(value, x => x.Add(step), x => x.Add(-step));
 
-        public Infinity<TimeSpan> Length() => CalculateOrInfinity(value, (end, start) => end - start);
+        public Infinity<TimeSpan> Length() => ValueOrInfinity(value, (end, start) => end - start);
 
         public TimeSpan? Radius()
-            => CalculateOrNull(value, (end, start) => (end.ToTimeSpan() - start.ToTimeSpan())/2);
+            => ValueOrNull(value, (end, start) => (end.ToTimeSpan() - start.ToTimeSpan())/2);
 
         public TimeOnly? Centre()
-            => CalculateOrNull(value, (end, start) => start.Add((end - start)/2));
+            => ValueOrNull(value, (end, start) => start.Add((end - start)/2));
     }
 }

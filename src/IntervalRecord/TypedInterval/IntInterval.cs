@@ -48,12 +48,12 @@ namespace IntervalRecord
             => ToOpen(value, x => x + step, x => x - step);
 
         public Infinity<int> Length()
-            => CalculateOrInfinity(value, (end, start) => end - start);
+            => ValueOrInfinity(value, (end, start) => end - start);
 
         public double? Radius()
-            => CalculateOrNull(value, (end, start) => (end - start) / 2);
+            => ValueOrNull(value, (end, start) => (end - start) / 2);
 
         public double? Centre()
-            => CalculateOrNull(value, (end, start) => (end + (double)start) / 2);
+            => ValueOrNull(value, (end, start) => (end + (double)start) / 2);
     }
 }

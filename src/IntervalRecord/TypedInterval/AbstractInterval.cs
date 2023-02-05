@@ -108,13 +108,13 @@ namespace IntervalRecord
             };
         }
 
-        protected static Infinity<TResult> CalculateOrInfinity<TResult>(Interval<T> value, Func<T, T, TResult> substract)
+        protected static Infinity<TResult> ValueOrInfinity<TResult>(Interval<T> value, Func<T, T, TResult> substract)
             where TResult : struct, IEquatable<TResult>, IComparable<TResult>, IComparable
             => value.Start.IsInfinite || value.End.IsInfinite
                 ? Infinity<TResult>.PositiveInfinity
                 : value.IsEmpty() ? default : substract(value.End.Finite.Value, value.Start.Finite.Value);
 
-        protected static TResult? CalculateOrNull<TResult>(Interval<T> value, Func<T, T, TResult> centre)
+        protected static TResult? ValueOrNull<TResult>(Interval<T> value, Func<T, T, TResult> centre)
             where TResult : struct
             => value.Start.IsInfinite || value.End.IsInfinite || value.IsEmpty()
                 ? null
