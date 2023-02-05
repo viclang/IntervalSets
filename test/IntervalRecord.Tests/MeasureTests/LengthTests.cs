@@ -19,34 +19,15 @@ namespace IntervalRecord.Tests.Calculators
         [InlineData(1, 4)]
         [InlineData(1, 5)]
         [InlineData(1, 6)]
-        public void Length(int start, int end)
+        public void GivenBoundedInterval_WhenMeasureLength_ReturnsExpected<T, TResult>(Interval<T> interval, Interval<TResult> expected)
+            where T : struct, IEquatable<T>, IComparable<T>, IComparable
+            where TResult : struct, IEquatable<TResult>, IComparable<TResult>, IComparable
         {
-            // Arrange
-            var integer = new Interval<int>(start, end, false, false);
-            var doubles = new Interval<double>(start, end, false, false);
-            var dateOnly = new Interval<DateOnly>(_referenceDateOnly.AddDays(start), _referenceDateOnly.AddDays(end), false, false);
-            var timeOnly = new Interval<TimeOnly>(_referenceTimeOnly.AddHours(start), _referenceTimeOnly.AddHours(end), false, false);
-            var dateTime = new Interval<DateTime>(_referenceDateTimeOffset.DateTime.AddHours(start), _referenceDateTimeOffset.DateTime.AddHours(end), false, false);
-            var dateTimeOffset = new Interval<DateTimeOffset>(_referenceDateTimeOffset.AddHours(start), _referenceDateTimeOffset.AddHours(end), false, false);
-
             // Act
-            var actualInteger = integer.Length();
-            var actualDouble = doubles.Length();
-            var actualDateOnly = dateOnly.Length();
-            var actualTimeOnly = timeOnly.Length();
-            var actualDateTime = dateTime.Length();
-            var actualDateTimeOffset = dateTimeOffset.Length();
+            var actual = Length<T, TResult>(interval);
 
             // Assert
-            using (new AssertionScope())
-            {
-                actualInteger.Should().Be(integer.End.Substract(integer.Start));
-                actualDouble.Should().Be(doubles.End.Substract(doubles.Start));
-                actualDateOnly.Should().Be(dateOnly.End.Finite!.Value.DayNumber - dateOnly.Start.Finite!.Value.DayNumber);
-                actualTimeOnly.Should().Be(timeOnly.End.Finite!.Value - timeOnly.Start.Finite!.Value);
-                actualDateTime.Should().Be(dateTime.End.Finite!.Value - dateTime.Start.Finite!.Value);
-                actualDateTimeOffset.Should().Be(dateTimeOffset.End.Finite!.Value - dateTimeOffset.Start.Finite!.Value);
-            }
+            actual.Should().BeEquivalentTo(expected);
         }
 
         [Theory]
@@ -101,6 +82,23 @@ namespace IntervalRecord.Tests.Calculators
                 actualDateTime.Should().Be(Infinity<TimeSpan>.PositiveInfinity);
                 actualDateTimeOffset.Should().Be(Infinity<TimeSpan>.PositiveInfinity);
             }
+        }
+
+        public Infinity<T> Length<T, TResult>(Interval<T> interval)
+            where T : struct, IEquatable<T>, IComparable<T>, IComparable
+            where TResult : struct, IEquatable<TResult>, IComparable<TResult>, IComparable
+        {
+            var type = typeof(T);
+            return Type.GetTypeCode(type) switch
+            {
+                TypeCode.Int32 => (Infinity<T>)(object)Interval.Length((Interval<int>)(object)interval),
+                TypeCode.Double => (Infinity<T>)(object)Interval.Length((Interval<double>)(object)interval),
+                TypeCode.DateTime => (Infinity<T>)(object)Interval.Length((Interval<DateTime>)(object)interval),
+                _ when type == typeof(DateTimeOffset) => (Infinity<T>)(object)Interval.Length((Interval<DateTimeOffset>)(object)interval),
+                _ when type == typeof(DateOnly) => (Infinity<T>)(object)Interval.Length((Interval<DateOnly>)(object)interval),
+                _ when type == typeof(TimeOnly) => (Infinity<T>)(object)Interval.Length((Interval<TimeOnly>)(object)interval),
+                _ => throw new NotSupportedException()
+            };
         }
     }
 }

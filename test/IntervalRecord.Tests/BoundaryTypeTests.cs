@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace IntervalRecord.Tests.Calculators
+namespace IntervalRecord.Tests
 {
     public class BoundaryTypeTests
     {

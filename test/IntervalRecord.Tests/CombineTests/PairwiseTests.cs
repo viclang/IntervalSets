@@ -14,10 +14,10 @@ namespace IntervalRecord.Tests.Combiners
         [InlineData(IntervalType.ClosedOpen, 4)]
         [InlineData(IntervalType.OpenClosed, 4)]
         [InlineData(IntervalType.Open, 5)]
-        public void PairwiseGap_ShouldHaveExpectedCount(IntervalType boundaryType, int expectedCount)
+        public void PairwiseGap_ShouldHaveExpectedCount(IntervalType intervalType, int expectedCount)
         {
             // Arrange
-            var list = OverlapList(startingPoint, length, offset, boundaryType);
+            var list = OverlapList(startingPoint, length, offset, intervalType);
 
             // Act
             var actual = list.Pairwise((a, b) => a.Gap(b)).ToList();
@@ -31,10 +31,10 @@ namespace IntervalRecord.Tests.Combiners
         [InlineData(IntervalType.ClosedOpen)]
         [InlineData(IntervalType.OpenClosed)]
         [InlineData(IntervalType.Open)]
-        public void PairwiseGapOrDefault_ShouldHaveExpectedCount(IntervalType boundaryType)
+        public void PairwiseGapOrDefault_ShouldHaveExpectedCount(IntervalType intervalType)
         {
             // Arrange
-            var list = OverlapList(startingPoint, length, offset, boundaryType);
+            var list = OverlapList(startingPoint, length, offset, intervalType);
 
             // Act
             var actual = list.Pairwise((a, b) => a.GapOrDefault(b, Interval.Empty<int>())).ToList();

@@ -19,9 +19,9 @@ namespace IntervalRecord.Tests.TestData
         {
             var list = new List<object[]>();
             IntOverlappingDataSet dataSet;
-            foreach (var boundaryType in BoundaryTypes)
+            foreach (var intervalType in BoundaryTypes)
             {
-                dataSet = new IntOverlappingDataSet(StartingPoint, Length, Offset, boundaryType);
+                dataSet = new IntOverlappingDataSet(StartingPoint, Length, Offset, intervalType);
                 list.AddRange(GetPairsWithOverlappingState(dataSet, IncludeHalfOpen));
             }
 

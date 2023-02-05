@@ -60,9 +60,9 @@ namespace IntervalRecord.Tests.TestData
             int startingPoint,
             int length,
             int offset,
-            IntervalType boundaryType)
+            IntervalType intervalType)
         {
-            var (startInclusinve, endInclusive) = boundaryType.ToTuple();
+            var (startInclusinve, endInclusive) = intervalType.ToTuple();
             var lastValue = new Interval<int>(
                 startingPoint,
                 startingPoint + length,

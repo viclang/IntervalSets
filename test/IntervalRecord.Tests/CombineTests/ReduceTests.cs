@@ -14,10 +14,10 @@ namespace IntervalRecord.Tests.Combiners
         [InlineData(IntervalType.ClosedOpen, 4)]
         [InlineData(IntervalType.OpenClosed, 4)]
         [InlineData(IntervalType.Open, 6)]
-        public void ReduceUnion_ShouldHaveExpectedCount(IntervalType boundaryType, int expectedCount)
+        public void ReduceUnion_ShouldHaveExpectedCount(IntervalType intervalType, int expectedCount)
         {
             // Arrange
-            var list = OverlapList(startingPoint, length, offset, boundaryType);
+            var list = OverlapList(startingPoint, length, offset, intervalType);
 
             // Act
             var actual = list.Reduce((a, b) => a.Union(b)).ToList();
@@ -31,10 +31,10 @@ namespace IntervalRecord.Tests.Combiners
         [InlineData(IntervalType.ClosedOpen)]
         [InlineData(IntervalType.OpenClosed)]
         [InlineData(IntervalType.Open)]
-        public void ReduceUnionOrDefault_ShouldHaveExpectedCount(IntervalType boundaryType)
+        public void ReduceUnionOrDefault_ShouldHaveExpectedCount(IntervalType intervalType)
         {
             // Arrange
-            var list = OverlapList(startingPoint, length, offset, boundaryType);
+            var list = OverlapList(startingPoint, length, offset, intervalType);
 
             // Act
             var actual = list.Reduce((a, b) => a.UnionOrDefault(b, Interval.Empty<int>())).ToList();

@@ -19,10 +19,10 @@ namespace IntervalRecord.Tests.Canonicalizers
         [InlineData(IntervalType.ClosedOpen)]
         [InlineData(IntervalType.OpenClosed)]
         [InlineData(IntervalType.Open)]
-        public void Closure(IntervalType boundaryType)
+        public void Closure(IntervalType intervalType)
         {
             // Arrange
-            var (startInclusive, endInclusive) = boundaryType.ToTuple();
+            var (startInclusive, endInclusive) = intervalType.ToTuple();
             var integer = new Interval<int>(start, end, startInclusive, endInclusive);
             var doubles = new Interval<double>(start, end, startInclusive, endInclusive);
             var dateOnly = new Interval<DateOnly>(_referenceDateOnly.AddDays(start), _referenceDateOnly.AddDays(end), startInclusive, endInclusive);
@@ -59,10 +59,10 @@ namespace IntervalRecord.Tests.Canonicalizers
         [InlineData(IntervalType.ClosedOpen)]
         [InlineData(IntervalType.OpenClosed)]
         [InlineData(IntervalType.Open)]
-        public void Interior(IntervalType boundaryType)
+        public void Interior(IntervalType intervalType)
         {
             // Arrange
-            var (startInclusive, endInclusive) = boundaryType.ToTuple();
+            var (startInclusive, endInclusive) = intervalType.ToTuple();
             var integer = new Interval<int>(start, end, startInclusive, endInclusive);
             var doubles = new Interval<double>(start, end, startInclusive, endInclusive);
             var dateOnly = new Interval<DateOnly>(_referenceDateOnly.AddDays(start), _referenceDateOnly.AddDays(end), startInclusive, endInclusive);
@@ -114,10 +114,10 @@ namespace IntervalRecord.Tests.Canonicalizers
         [InlineData(IntervalType.ClosedOpen, IntervalType.Open)]
         [InlineData(IntervalType.OpenClosed, IntervalType.Open)]
         [InlineData(IntervalType.Open, IntervalType.Open)]
-        public void Canonicalize_ShouldBeExpected(IntervalType boundaryType, IntervalType expectedBoundaryType)
+        public void Canonicalize_ShouldBeExpected(IntervalType intervalType, IntervalType expectedBoundaryType)
         {
             // Arrange
-            var (startInclusive, endInclusive) = boundaryType.ToTuple();
+            var (startInclusive, endInclusive) = intervalType.ToTuple();
             var integer = new Interval<int>(start, end, startInclusive, endInclusive);
             var doubles = new Interval<double>(start, end, startInclusive, endInclusive);
             var dateOnly = new Interval<DateOnly>(_referenceDateOnly.AddDays(start), _referenceDateOnly.AddDays(end), startInclusive, endInclusive);

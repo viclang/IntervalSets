@@ -47,11 +47,11 @@ namespace IntervalRecord.Tests
         public void IntervalWithBoundaryType_ReturnsExpected(
             int start,
             int end,
-            IntervalType boundaryType,
+            IntervalType intervalType,
             bool startInclusive,
             bool endInclusive)
         {
-            var actual = Interval.WithBoundaryType<int>(start, end, boundaryType);
+            var actual = Interval.WithType<int>(start, end, intervalType);
 
             actual.Should().Be(new(start, end, startInclusive, endInclusive));
         }

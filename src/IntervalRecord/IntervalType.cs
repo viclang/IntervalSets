@@ -10,10 +10,10 @@ namespace IntervalRecord
         Open = 3,
     }
 
-    public static class BoundaryTypeExtensions
+    public static class IntervalTypeExtensions
     {
         [Pure]
-        public static (bool, bool) ToTuple(this IntervalType boundaryType) => boundaryType switch
+        public static (bool, bool) ToTuple(this IntervalType intervalType) => intervalType switch
         {
             IntervalType.Closed => (true, true),
             IntervalType.ClosedOpen => (true, false),

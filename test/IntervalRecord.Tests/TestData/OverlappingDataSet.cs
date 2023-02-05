@@ -13,13 +13,13 @@ namespace IntervalRecord.Tests.TestData
         /// <param name="startingPoint"></param>
         /// <param name="length"></param>
         /// <param name="offset"></param>
-        /// <param name="boundaryType"></param>
+        /// <param name="intervalType"></param>
         /// <exception cref="ArgumentException"></exception>
-        public IntOverlappingDataSet(int startingPoint, int length, int offset, IntervalType boundaryType)
+        public IntOverlappingDataSet(int startingPoint, int length, int offset, IntervalType intervalType)
         {
             if((offset * 2) >= length) throw new ArgumentException("Length must be greater than (offset * 2)");
 
-            var (startInclusinve, endInclusive) = boundaryType.ToTuple();
+            var (startInclusinve, endInclusive) = intervalType.ToTuple();
             Reference = new Interval<int>(
                 startingPoint + length + offset,
                 startingPoint + length + offset + length,

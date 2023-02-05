@@ -13,10 +13,10 @@
         [InlineData(3, 4, IntervalType.OpenClosed, "(3, 4]")]
         [InlineData(1, 2, IntervalType.Open, "(1, 2)")]
         [InlineData(3, 4, IntervalType.Open, "(3, 4)")]
-        public void ToString_ShouldBeExpected(int? start, int? end, IntervalType boundaryType, string expected)
+        public void ToString_ShouldBeExpected(int? start, int? end, IntervalType intervalType, string expected)
         {
             // Arrange
-            var (startInclusive, endInclusive) = boundaryType.ToTuple();
+            var (startInclusive, endInclusive) = intervalType.ToTuple();
             var interval = new Interval<int>(start, end, startInclusive, endInclusive);
 
             // Act

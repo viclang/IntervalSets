@@ -10,10 +10,10 @@ namespace IntervalRecord.Tests
         [InlineData(IntervalType.ClosedOpen, 9)]
         [InlineData(IntervalType.OpenClosed, 9)]
         [InlineData(IntervalType.Open, 8)]
-        public void Iterate_ShouldHaveExpectedCount(IntervalType boundaryType, int expectedCount)
+        public void Iterate_ShouldHaveExpectedCount(IntervalType intervalType, int expectedCount)
         {
             // Arrange
-            var (startInclusive, endInclusive) = boundaryType.ToTuple();
+            var (startInclusive, endInclusive) = intervalType.ToTuple();
             var interval = new Interval<int>(1, 10, startInclusive, endInclusive);
             var list = new List<Interval<int>>();
             // Act
@@ -28,10 +28,10 @@ namespace IntervalRecord.Tests
         [InlineData(IntervalType.ClosedOpen, 5)]
         [InlineData(IntervalType.OpenClosed, 6)]
         [InlineData(IntervalType.Open, 5)]
-        public void IterateWithStart_ShouldHaveExpectedCount(IntervalType boundaryType, int count)
+        public void IterateWithStart_ShouldHaveExpectedCount(IntervalType intervalType, int count)
         {
             // Arrange
-            var (startInclusive, endInclusive) = boundaryType.ToTuple();
+            var (startInclusive, endInclusive) = intervalType.ToTuple();
             var interval = new Interval<int>(1, 10, startInclusive, endInclusive);
 
             // Act

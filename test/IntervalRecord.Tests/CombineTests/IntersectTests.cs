@@ -6,34 +6,35 @@ using System.Linq;
 
 namespace IntervalRecord.Tests.Combiners
 {
-    public class ExceptTests : DataSetTestsBase
+    public class IntersectTests : DataSetTestsBase
     {
         [Theory]
         [MemberData(nameof(IntervalPairsWithOverlappingState), true)]
-        public void Except_ShouldBeExpectedOrNull(Interval<int> a, Interval<int> b, OverlappingState overlappingState)
+        public void Intersect_ShouldBeExpectedOrNull(Interval<int> a, Interval<int> b, OverlappingState overlappingState)
         {
             // Act
-            var actual = a.Except(b);
+            var actual = a.Intersect(b);
 
             // Assert
             var array = new Interval<int>[] { a, b };
-            var minByStart = array.MinBy(i => i.Start);
             var maxByStart = array.MaxBy(i => i.Start);
+            var minByEnd = array.MinBy(i => i.End);
+
 
             var expectedStartInclusive = a.Start == b.Start
-                ? a.StartInclusive || b.StartInclusive
-                : minByStart.StartInclusive;
+                ? a.StartInclusive && b.StartInclusive
+                : maxByStart.StartInclusive;
 
             var expectedEndInclusive = a.End == b.End
-                ? a.EndInclusive || b.EndInclusive
-                : maxByStart.EndInclusive;
+                ? a.EndInclusive && b.EndInclusive
+                : minByEnd.EndInclusive;
 
             using (new AssertionScope())
             {
                 if (overlappingState != OverlappingState.Before && overlappingState != OverlappingState.After)
                 {
-                    actual!.Value.Start.Should().Be(minByStart.Start);
-                    actual!.Value.End.Should().Be(+maxByStart.Start);
+                    actual!.Value.Start.Should().Be(maxByStart.Start);
+                    actual!.Value.End.Should().Be(minByEnd.End);
                     actual!.Value.StartInclusive.Should().Be(actual!.Value.Start.IsInfinity ? false : expectedStartInclusive);
                     actual!.Value.EndInclusive.Should().Be(actual!.Value.End.IsInfinity ? false : expectedEndInclusive);
                 }
@@ -46,30 +47,31 @@ namespace IntervalRecord.Tests.Combiners
 
         [Theory]
         [MemberData(nameof(IntervalPairsWithOverlappingState), true)]
-        public void Except_ShouldBeExpectedOrDefault(Interval<int> a, Interval<int> b, OverlappingState overlappingState)
+        public void Intersect_ShouldBeExpectedOrDefault(Interval<int> a, Interval<int> b, OverlappingState overlappingState)
         {
             // Act
-            var actual = a.ExceptOrDefault(b, a);
+            var actual = a.IntersectOrDefault(b, a);
 
             // Assert
             var array = new Interval<int>[] { a, b };
-            var minByStart = array.MinBy(i => i.Start);
             var maxByStart = array.MaxBy(i => i.Start);
+            var minByEnd = array.MinBy(i => i.End);
+
 
             var expectedStartInclusive = a.Start == b.Start
-                ? a.StartInclusive || b.StartInclusive
-                : minByStart.StartInclusive;
+                ? a.StartInclusive && b.StartInclusive
+                : maxByStart.StartInclusive;
 
             var expectedEndInclusive = a.End == b.End
-                ? a.EndInclusive || b.EndInclusive
-                : maxByStart.EndInclusive;
+                ? a.EndInclusive && b.EndInclusive
+                : minByEnd.EndInclusive;
 
             using (new AssertionScope())
             {
                 if (overlappingState != OverlappingState.Before && overlappingState != OverlappingState.After)
                 {
-                    actual.Start.Should().Be(minByStart.Start);
-                    actual.End.Should().Be(+maxByStart.Start);
+                    actual.Start.Should().Be(maxByStart.Start);
+                    actual.End.Should().Be(minByEnd.End);
                     actual.StartInclusive.Should().Be(actual.Start.IsInfinity ? false : expectedStartInclusive);
                     actual.EndInclusive.Should().Be(actual.End.IsInfinity ? false : expectedEndInclusive);
                 }
@@ -82,16 +84,16 @@ namespace IntervalRecord.Tests.Combiners
 
         [Theory]
         [InlineData(IntervalType.Closed, 6)]
-        [InlineData(IntervalType.ClosedOpen, 4)]
-        [InlineData(IntervalType.OpenClosed, 4)]
-        [InlineData(IntervalType.Open, 3)]
-        public void Except_ShouldBeExpected(IntervalType boundaryType, int expectedCount)
+        [InlineData(IntervalType.ClosedOpen, 5)]
+        [InlineData(IntervalType.OpenClosed, 5)]
+        [InlineData(IntervalType.Open, 5)]
+        public void Intersect_ShouldBeExpected(IntervalType intervalType, int expectedCount)
         {
             // Arrange
-            var list = OverlapList(startingPoint, length, offset, boundaryType).ToList();
+            var list = OverlapList(startingPoint, length, offset, intervalType).ToList();
 
             // Act
-            var actual = list.Except().ToList();
+            var actual = list.Intersect().ToList();
 
             // Assert
             actual.Should().HaveCount(expectedCount);

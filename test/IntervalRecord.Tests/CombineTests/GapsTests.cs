@@ -87,10 +87,10 @@ namespace IntervalRecord.Tests.Combiners
         [InlineData(IntervalType.ClosedOpen, 4)]
         [InlineData(IntervalType.OpenClosed, 4)]
         [InlineData(IntervalType.Open, 5)]
-        public void Complement_ShouldHaveExpectedCount(IntervalType boundaryType, int expectedCount)
+        public void Complement_ShouldHaveExpectedCount(IntervalType intervalType, int expectedCount)
         {
             // Arrange
-            var list = OverlapList(startingPoint, length, offset, boundaryType).ToList();
+            var list = OverlapList(startingPoint, length, offset, intervalType).ToList();
 
             // Act
             var actual = list.Complement().ToList();

@@ -5,7 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace IntervalRecord.Tests.Calculators
+namespace IntervalRecord.Tests
 {
     public class CentreTests
     {

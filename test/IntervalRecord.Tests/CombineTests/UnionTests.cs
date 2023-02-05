@@ -86,10 +86,10 @@ namespace IntervalRecord.Tests.Combiners
         [InlineData(IntervalType.ClosedOpen, 4)]
         [InlineData(IntervalType.OpenClosed, 4)]
         [InlineData(IntervalType.Open, 6)]
-        public void Union_ShouldBeExpected(IntervalType boundaryType, int expectedCount)
+        public void Union_ShouldBeExpected(IntervalType intervalType, int expectedCount)
         {
             // Arrange
-            var list = OverlapList(startingPoint, length, offset, boundaryType);
+            var list = OverlapList(startingPoint, length, offset, intervalType);
 
             // Act
             var actual = list.Union().ToList();

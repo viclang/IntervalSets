@@ -17,10 +17,10 @@ namespace IntervalRecord.Tests
         [InlineData(1, 2, IntervalType.ClosedOpen, false)]
         [InlineData(1, 2, IntervalType.OpenClosed, false)]
         [InlineData(1, 2, IntervalType.Open, false)]
-        public void IsSingleton_ShouldBeExpected(int start, int end, IntervalType boundaryType, bool expected)
+        public void IsSingleton_ShouldBeExpected(int start, int end, IntervalType intervalType, bool expected)
         {
             // Arrange
-            var (startInclusive, endInclusive) = boundaryType.ToTuple();
+            var (startInclusive, endInclusive) = intervalType.ToTuple();
             var interval = new Interval<int>(start, end, startInclusive, endInclusive);
 
             // Act

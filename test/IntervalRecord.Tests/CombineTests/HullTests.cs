@@ -41,11 +41,11 @@ namespace IntervalRecord.Tests.Combiners
         [InlineData(IntervalType.ClosedOpen)]
         [InlineData(IntervalType.OpenClosed)]
         [InlineData(IntervalType.Open)]
-        public void ListHull_ShouldBeExpected(IntervalType boundaryType)
+        public void ListHull_ShouldBeExpected(IntervalType intervalType)
         {
             // Arrange
-            var list = OverlapList(startingPoint, length, offset, boundaryType);
-            var (startInclusive, endInclusive) = boundaryType.ToTuple();
+            var list = OverlapList(startingPoint, length, offset, intervalType);
+            var (startInclusive, endInclusive) = intervalType.ToTuple();
             var expected = new Interval<int>(list.MinBy(i => i.Start).Start, list.MaxBy(i => i.End).End, startInclusive, endInclusive);
 
             // Act

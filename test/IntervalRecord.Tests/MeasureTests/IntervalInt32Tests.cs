@@ -22,10 +22,10 @@ namespace IntervalRecord.Tests.MeasurementsTests
         [InlineData(1, 1, IntervalType.Open, 0)]
         [InlineData(1, 2, IntervalType.Open, 1)]
         [InlineData(1, 3, IntervalType.Open, 2)]
-        public void GivenBoundedInterval_WhenMeasuringLength_ReturnsExpected(int start, int end, IntervalType boundaryType, int expected)
+        public void GivenBoundedInterval_WhenMeasureLength_ReturnsExpected(int start, int end, IntervalType intervalType, int expected)
         {
             // Arrange
-            var interval = Interval.WithBoundaryType<int>(start, end, boundaryType);
+            var interval = Interval.WithType<int>(start, end, intervalType);
 
             // Act
             var actual = interval.Length();
@@ -47,10 +47,10 @@ namespace IntervalRecord.Tests.MeasurementsTests
         [InlineData(1, 1, IntervalType.Open, null)]
         [InlineData(1, 2, IntervalType.Open, 1.5)]
         [InlineData(1, 3, IntervalType.Open, 2d)]
-        public void GivenBoundedInterval_WhenMeasuringCentre_ReturnsExpected(int? start, int? end, IntervalType boundaryType, double? expected)
+        public void GivenBoundedInterval_WhenMeasureCentre_ReturnsExpected(int? start, int? end, IntervalType intervalType, double? expected)
         {
             // Arrange
-            var interval = Interval.WithBoundaryType<int>(start, end, boundaryType);
+            var interval = Interval.WithType<int>(start, end, intervalType);
 
             // Act
             var actual = interval.Centre();
@@ -72,10 +72,10 @@ namespace IntervalRecord.Tests.MeasurementsTests
         [InlineData(1, 1, IntervalType.Open, null)]
         [InlineData(1, 2, IntervalType.Open, 0.5)]
         [InlineData(1, 3, IntervalType.Open, 1d)]
-        public void GivenBoundedInterval_WhenMeasuringRadius_ReturnsExpected(int? start, int? end, IntervalType boundaryType, double? expected)
+        public void GivenBoundedInterval_WhenMeasureRadius_ReturnsExpected(int? start, int? end, IntervalType intervalType, double? expected)
         {
             // Arrange
-            var interval = Interval.WithBoundaryType<int>(start, end, boundaryType);
+            var interval = Interval.WithType<int>(start, end, intervalType);
 
             // Act
             var actual = interval.Radius();
@@ -101,10 +101,10 @@ namespace IntervalRecord.Tests.MeasurementsTests
         [InlineData(IntervalType.ClosedOpen, IntervalType.Open)]
         [InlineData(IntervalType.OpenClosed, IntervalType.Open)]
         [InlineData(IntervalType.Open, IntervalType.Open)]
-        public void GivenBoundedIntervalWithBoundaryType_WhenCanonicalized_ReturnsExpected(IntervalType boundaryType, IntervalType expectedBoundaryType)
+        public void GivenBoundedIntervalWithBoundaryType_WhenCanonicalized_ReturnsExpected(IntervalType intervalType, IntervalType expectedBoundaryType)
         {
             // Arrange
-            var interval = Interval.WithBoundaryType<int>(start, end, boundaryType);
+            var interval = Interval.WithType<int>(start, end, intervalType);
 
             // Act
             var actual = interval.Canonicalize(expectedBoundaryType, step);
@@ -124,7 +124,7 @@ namespace IntervalRecord.Tests.MeasurementsTests
         }
 
         [Fact]
-        public void GivenEmptyInterval_WhenMeasuringLength_ReturnsZero()
+        public void GivenEmptyInterval_WhenMeasureLength_ReturnsZero()
         {
             // Arrange
             var interval = Interval.Empty<int>();
@@ -137,7 +137,7 @@ namespace IntervalRecord.Tests.MeasurementsTests
         }
 
         [Fact]
-        public void GivenEmptyInterval_WhenMeasuringCentre_ReturnsNull()
+        public void GivenEmptyInterval_WhenMeasureCentre_ReturnsNull()
         {
             // Arrange
             var interval = Interval.Empty<int>();
@@ -150,7 +150,7 @@ namespace IntervalRecord.Tests.MeasurementsTests
         }
 
         [Fact]
-        public void GivenEmptyInterval_WhenMeasuringRadius_ReturnsNull()
+        public void GivenEmptyInterval_WhenMeasureRadius_ReturnsNull()
         {
             // Arrange
             var interval = Interval.Empty<int>();
@@ -167,13 +167,13 @@ namespace IntervalRecord.Tests.MeasurementsTests
         [InlineData(IntervalType.ClosedOpen)]
         [InlineData(IntervalType.OpenClosed)]
         [InlineData(IntervalType.Open)]
-        public void GivenEmptyInterval_WhenCanonicalized_ThenIntervalRemainsTheSame(IntervalType boundaryType)
+        public void GivenEmptyInterval_WhenCanonicalized_ThenIntervalRemainsTheSame(IntervalType intervalType)
         {
             // Arrange
             var empty = Interval.Empty<int>();
 
             // Act
-            var actual = empty.Canonicalize(boundaryType, 1);
+            var actual = empty.Canonicalize(intervalType, 1);
 
             // Assert
             actual.Should().Be(empty);
@@ -209,7 +209,7 @@ namespace IntervalRecord.Tests.MeasurementsTests
         [InlineData(null, null)]
         [InlineData(1, null)]
         [InlineData(null, 1)]
-        public void GivenUnboundedOrHalfBoundedInterval_WhenMeasuringLength_ReturnsPositiveInfinity(int? start, int? end)
+        public void GivenUnboundedOrHalfBoundedInterval_WhenMeasureLength_ReturnsPositiveInfinity(int? start, int? end)
         {
             // Arrange
             var interval = new Interval<int>(start, end, false, false);
@@ -225,7 +225,7 @@ namespace IntervalRecord.Tests.MeasurementsTests
         [InlineData(null, null)]
         [InlineData(1, null)]
         [InlineData(null, 1)]
-        public void GivenUnboundedOrHalfBoundedInterval_WhenMeasuringCentre_ReturnsNull(int? start, int? end)
+        public void GivenUnboundedOrHalfBoundedInterval_WhenMeasureCentre_ReturnsNull(int? start, int? end)
         {
             // Arrange
             var interval = new Interval<int>(start, end, true, true);
@@ -241,7 +241,7 @@ namespace IntervalRecord.Tests.MeasurementsTests
         [InlineData(null, null)]
         [InlineData(1, null)]
         [InlineData(null, 1)]
-        public void GivenUnboundedOrHalfBoundedInterval_WhenMeasuringRadius_ReturnsNull(int? start, int? end)
+        public void GivenUnboundedOrHalfBoundedInterval_WhenMeasureRadius_ReturnsNull(int? start, int? end)
         {
             // Arrange
             var interval = new Interval<int>(start, end, true, true);
@@ -258,13 +258,13 @@ namespace IntervalRecord.Tests.MeasurementsTests
         [InlineData(IntervalType.ClosedOpen)]
         [InlineData(IntervalType.OpenClosed)]
         [InlineData(IntervalType.Open)]
-        public void GivenUnboundedOrHalfBoundedInterval_WhenCanonicalized_ThenIntervalRemainsTheSame(IntervalType boundaryType)
+        public void GivenUnboundedOrHalfBoundedInterval_WhenCanonicalized_ThenIntervalRemainsTheSame(IntervalType intervalType)
         {
             // Arrange
             var unbounded = Interval.All<int>();
 
             // Act
-            var actual = unbounded.Canonicalize(boundaryType, 1);
+            var actual = unbounded.Canonicalize(intervalType, 1);
 
             // Assert
             actual.Should().Be(unbounded);
