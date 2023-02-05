@@ -5,17 +5,10 @@ using System.Linq;
 
 namespace IntervalRecord.Tests.Combiners
 {
-    public class ExceptTests : OverlappingStateTestsBase
+    public class ExceptTests : DataSetTestsBase
     {
-        private const int startingPoint = 0;
-        private const int length = 4;
-        private const int offset = 1;
-
         [Theory]
-        [MemberData(nameof(IntervalPairsWithOverlappingState), new object[] { startingPoint, length, offset, BoundaryType.Closed, true })]
-        [MemberData(nameof(IntervalPairsWithOverlappingState), new object[] { startingPoint, length, offset, BoundaryType.ClosedOpen, true })]
-        [MemberData(nameof(IntervalPairsWithOverlappingState), new object[] { startingPoint, length, offset, BoundaryType.OpenClosed, true })]
-        [MemberData(nameof(IntervalPairsWithOverlappingState), new object[] { startingPoint, length, offset, BoundaryType.Open, true })]
+        [MemberData(nameof(IntervalPairsWithOverlappingState), true)]
         public void Except_ShouldBeExpectedOrNull(Interval<int> a, Interval<int> b, OverlappingState overlappingState)
         {
             // Act
@@ -48,10 +41,7 @@ namespace IntervalRecord.Tests.Combiners
         }
 
         [Theory]
-        [MemberData(nameof(IntervalPairsWithOverlappingState), new object[] { startingPoint, length, offset, BoundaryType.Closed, true })]
-        [MemberData(nameof(IntervalPairsWithOverlappingState), new object[] { startingPoint, length, offset, BoundaryType.ClosedOpen, true })]
-        [MemberData(nameof(IntervalPairsWithOverlappingState), new object[] { startingPoint, length, offset, BoundaryType.OpenClosed, true })]
-        [MemberData(nameof(IntervalPairsWithOverlappingState), new object[] { startingPoint, length, offset, BoundaryType.Open, true })]
+        [MemberData(nameof(IntervalPairsWithOverlappingState), true)]
         public void Except_ShouldBeExpectedOrDefault(Interval<int> a, Interval<int> b, OverlappingState overlappingState)
         {
             // Act
@@ -81,6 +71,23 @@ namespace IntervalRecord.Tests.Combiners
             {
                 actual.Should().Be(a);
             }
+        }
+
+        [Theory]
+        [InlineData(BoundaryType.Closed, 6)]
+        [InlineData(BoundaryType.ClosedOpen, 4)]
+        [InlineData(BoundaryType.OpenClosed, 4)]
+        [InlineData(BoundaryType.Open, 3)]
+        public void Except_ShouldBeExpected(BoundaryType boundaryType, int expectedCount)
+        {
+            // Arrange
+            var list = OverlapList(startingPoint, length, offset, boundaryType).ToList();
+
+            // Act
+            var actual = list.Except().ToList();
+
+            // Assert
+            actual.Should().HaveCount(expectedCount);
         }
     }
 }

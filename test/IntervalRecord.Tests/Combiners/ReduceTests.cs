@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace IntervalRecord.Tests.Combiners
 {
-    internal class ReduceTests
+    public class ReduceTests
     {
     }
 }

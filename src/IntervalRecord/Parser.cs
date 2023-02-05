@@ -13,7 +13,7 @@ namespace IntervalRecord
         [Pure]
         public static Interval<T> Parse<T>(string value, string infinityString = infinity)
             where T : struct, IEquatable<T>, IComparable<T>, IComparable
-            => Parse(value, x => (T)Convert.ChangeType(x, typeof(T)), infinityString);
+            => Parse(value, s => (T)Convert.ChangeType(s, typeof(T)), infinityString);
 
         [Pure]
         public static Interval<T> Parse<T>(string value, Func<string, T> boundaryParser, string infinityString = infinity)
@@ -36,12 +36,12 @@ namespace IntervalRecord
         [Pure]
         public static bool TryParse<T>(string value, out Interval<T>? result)
             where T : struct, IEquatable<T>, IComparable<T>, IComparable
-            => TryParse(value, x => (T)Convert.ChangeType(x, typeof(T)), infinity, out result);
+            => TryParse(value, s => (T)Convert.ChangeType(s, typeof(T)), infinity, out result);
 
         [Pure]
         public static bool TryParse<T>(string value, string infinityString, out Interval<T>? result)
             where T : struct, IEquatable<T>, IComparable<T>, IComparable
-            => TryParse(value, x => (T)Convert.ChangeType(x, typeof(T)), infinityString, out result);
+            => TryParse(value, s => (T)Convert.ChangeType(s, typeof(T)), infinityString, out result);
 
         [Pure]
         public static bool TryParse<T>(string value, Func<string, T> boundaryParser, string infinityString, out Interval<T>? result)
@@ -62,7 +62,7 @@ namespace IntervalRecord
         [Pure]
         public static IEnumerable<Interval<T>> ParseAll<T>(string value, string infinityString = infinity)
             where T : struct, IEquatable<T>, IComparable<T>, IComparable
-            => ParseAll(value, x => (T)Convert.ChangeType(x, typeof(T)), infinityString);
+            => ParseAll(value, s => (T)Convert.ChangeType(s, typeof(T)), infinityString);
 
         [Pure]
         public static IEnumerable<Interval<T>> ParseAll<T>(string value, Func<string, T> boundaryParser, string infinityString = infinity)

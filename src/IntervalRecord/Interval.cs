@@ -12,10 +12,30 @@ namespace IntervalRecord
         private readonly bool startInclusive;
         private readonly bool endInclusive;
 
-        public Infinity<T> Start { get => start; init => start = new Infinity<T>(value, false); }
-        public Infinity<T> End { get => end; init => end = new Infinity<T>(value, true); }
+        public Infinity<T> Start
+        {
+            get => start;
+            init
+            {
+                start = new Infinity<T>(value, false);
+                startInclusive = !Start.IsInfinite && startInclusive;
+            }
+        }
+
+        public Infinity<T> End
+        {
+            get => end;
+            init
+            {
+                end = new Infinity<T>(value, true);
+                endInclusive = !End.IsInfinite && endInclusive;
+            }
+        }
+
         public bool StartInclusive { get => startInclusive; init { startInclusive = !Start.IsInfinite && value; } }
+
         public bool EndInclusive { get => endInclusive; init { endInclusive = !End.IsInfinite && value; } }
+
         public bool IsValid => Start.IsInfinite || End.IsInfinite || End.CompareTo(Start) >= 0;
 
         public Interval()
@@ -32,24 +52,23 @@ namespace IntervalRecord
         }
 
         [Pure]
-        public bool IsEmpty() => (this.GetBoundaryType() != BoundaryType.Closed && Start == End) || !IsValid;
+        public bool IsEmpty() => !IsValid || (this.GetBoundaryType() != BoundaryType.Closed && Start == End);
 
         [Pure]
         public bool IsSingleton() => this.GetBoundaryType() == BoundaryType.Closed && Start == End;
 
         [Pure]
         public bool Overlaps(Interval<T> other, bool includeHalfOpen = false)
-            => !this.IsBefore(other, includeHalfOpen) && !this.IsAfter(other, includeHalfOpen);
+            => this.GetOverlappingState(other, includeHalfOpen) is not OverlappingState.Before and not OverlappingState.After;
 
         [Pure]
         public bool Contains(T other)
         {
             return StartInclusive
                 ? Start.CompareTo(other) <= 0
-                : Start.CompareTo(other) == -1
-                && EndInclusive
-                ? End.CompareTo(other) >= 0
-                : End.CompareTo(other) == 1;
+                : Start.CompareTo(other) == -1 && EndInclusive
+                    ? End.CompareTo(other) >= 0
+                    : End.CompareTo(other) == 1;
         }
 
         public static bool operator >(Interval<T> a, Interval<T> b)

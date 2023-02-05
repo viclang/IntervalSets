@@ -1,19 +1,13 @@
 ﻿using System.Data;
+using System.Linq;
 using IntervalRecord.Tests.TestData;
 
 namespace IntervalRecord.Tests.Combiners
 {
-    public class GapsTests : OverlappingStateTestsBase
+    public class GapsTests : DataSetTestsBase
     {
-        private const int startingPoint = 0;
-        private const int length = 4;
-        private const int offset = 1;
-
         [Theory]
-        [MemberData(nameof(IntervalPairsWithOverlappingState), new object[] { startingPoint, length, offset, BoundaryType.Closed, false })]
-        [MemberData(nameof(IntervalPairsWithOverlappingState), new object[] { startingPoint, length, offset, BoundaryType.ClosedOpen, false })]
-        [MemberData(nameof(IntervalPairsWithOverlappingState), new object[] { startingPoint, length, offset, BoundaryType.OpenClosed, false })]
-        [MemberData(nameof(IntervalPairsWithOverlappingState), new object[] { startingPoint, length, offset, BoundaryType.Open, false })]
+        [MemberData(nameof(IntervalPairsWithOverlappingState), true)]
         public void OverlappingIntervalsGap_ShouldBeExpectedOrNull(Interval<int> a, Interval<int> b, OverlappingState overlappingState)
         {
             // Act
@@ -51,10 +45,7 @@ namespace IntervalRecord.Tests.Combiners
         }
 
         [Theory]
-        [MemberData(nameof(IntervalPairsWithOverlappingState), new object[] { startingPoint, length, offset, BoundaryType.Closed, false })]
-        [MemberData(nameof(IntervalPairsWithOverlappingState), new object[] { startingPoint, length, offset, BoundaryType.ClosedOpen, false })]
-        [MemberData(nameof(IntervalPairsWithOverlappingState), new object[] { startingPoint, length, offset, BoundaryType.OpenClosed, false })]
-        [MemberData(nameof(IntervalPairsWithOverlappingState), new object[] { startingPoint, length, offset, BoundaryType.Open, false })]
+        [MemberData(nameof(IntervalPairsWithOverlappingState), true)]
         public void OverlappingIntervalsGap_ShouldBeExpectedOrDefault(Interval<int> a, Interval<int> b, OverlappingState overlappingState)
         {
             // Act
@@ -89,6 +80,23 @@ namespace IntervalRecord.Tests.Combiners
             {
                 actual.Should().Be(a);
             }
+        }
+
+        [Theory]
+        [InlineData(BoundaryType.Closed, 4)]
+        [InlineData(BoundaryType.ClosedOpen, 4)]
+        [InlineData(BoundaryType.OpenClosed, 4)]
+        [InlineData(BoundaryType.Open, 5)]
+        public void Complement_ShouldHaveExpectedCount(BoundaryType boundaryType, int expectedCount)
+        {
+            // Arrange
+            var list = OverlapList(startingPoint, length, offset, boundaryType).ToList();
+
+            // Act
+            var actual = list.Complement().ToList();
+
+            // Assert
+            actual.Should().HaveCount(expectedCount);
         }
     }
 }

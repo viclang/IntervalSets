@@ -51,31 +51,15 @@ namespace IntervalRecord
             };
 
         [Pure]
-        public static bool IsBefore<T>(this Interval<T> value, Interval<T> other, bool includeHalfOpen = false)
-            where T : struct, IEquatable<T>, IComparable<T>, IComparable
-            => CompareEndToStart(value, other, includeHalfOpen) == -1;
-
-        [Pure]
-        public static bool Meets<T>(this Interval<T> value, Interval<T> other, bool includeHalfOpen = false)
-            where T : struct, IEquatable<T>, IComparable<T>, IComparable
-            => CompareEndToStart(value, other, includeHalfOpen) == 0;
-
-        [Pure]
-        public static bool MetBy<T>(this Interval<T> value, Interval<T> other, bool includeHalfOpen = false)
-            where T : struct, IEquatable<T>, IComparable<T>, IComparable
-            => CompareStartToEnd(value, other, includeHalfOpen) == 0;
-
-        [Pure]
-        public static bool IsAfter<T>(this Interval<T> value, Interval<T> other, bool includeHalfOpen = false)
-            where T : struct, IEquatable<T>, IComparable<T>, IComparable
-            => CompareStartToEnd(value, other, includeHalfOpen) == 1;
-
-        [Pure]
         private static int CompareStartToEnd<T>(Interval<T> value, Interval<T> other, bool includeHalfOpen)
             where T : struct, IEquatable<T>, IComparable<T>, IComparable
         {
             var result = value.Start.CompareTo(other.End);
-            return result == 0 && StartEndNotTouching(value, other, includeHalfOpen)
+            var startEndNotTouching = includeHalfOpen
+                ? (!value.StartInclusive && !other.EndInclusive)
+                : (!value.StartInclusive || !other.EndInclusive);
+
+            return result == 0 && startEndNotTouching
                 ? 1
                 : result;
         }
@@ -85,27 +69,13 @@ namespace IntervalRecord
             where T : struct, IEquatable<T>, IComparable<T>, IComparable
         {
             var result = value.End.CompareTo(other.Start);
-            return result == 0 && EndStartNotTouching(value, other, includeHalfOpen)
-                ? -1
-                : result;
-        }
-
-        [Pure]
-        private static bool StartEndNotTouching<T>(Interval<T> value, Interval<T> other, bool includeHalfOpen = false)
-            where T : struct, IEquatable<T>, IComparable<T>, IComparable
-        {
-            return includeHalfOpen
-                ? (!value.StartInclusive && !other.EndInclusive)
-                : (!value.StartInclusive || !other.EndInclusive);
-        }
-
-        [Pure]
-        private static bool EndStartNotTouching<T>(Interval<T> value, Interval<T> other, bool includeHalfOpen = false)
-            where T : struct, IEquatable<T>, IComparable<T>, IComparable
-        {
-            return includeHalfOpen
+            var endStartNotTouching = includeHalfOpen
                 ? (!value.EndInclusive && !other.StartInclusive)
                 : (!value.EndInclusive || !other.StartInclusive);
+
+            return result == 0 && endStartNotTouching
+                ? -1
+                : result;
         }
     }
 }

@@ -10,14 +10,14 @@ namespace IntervalRecord
             => !value.Overlaps(other, true) ? null : GetExceptValue(value, other);
 
         [Pure]
-        public static Interval<T> ExceptOrDefault<T>(this Interval<T> value, Interval<T> other, Interval<T> defaultValue)
+        public static Interval<T> ExceptOrDefault<T>(this Interval<T> value, Interval<T> other, Interval<T> defaultValue = default)
             where T : struct, IEquatable<T>, IComparable<T>, IComparable
             => !value.Overlaps(other, true) ? defaultValue : GetExceptValue(value, other);
 
         [Pure]
         public static IEnumerable<Interval<T>> Except<T>(this IEnumerable<Interval<T>> values)
             where T : struct, IEquatable<T>, IComparable<T>, IComparable
-            => values.Pairwise((a, b) => a.Except(b), x => !x.IsEmpty());
+            => values.Pairwise((a, b) => a.Except(b)).Where(x => !x.IsEmpty());
 
         [Pure]
         private static Interval<T> GetExceptValue<T>(Interval<T> value, Interval<T> other)

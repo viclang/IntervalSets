@@ -12,7 +12,7 @@ namespace IntervalRecord
                 : GetIntersectValue(value, other);
 
         [Pure]
-        public static Interval<T> IntersectOrDefault<T>(this Interval<T> value, Interval<T> other, Interval<T> defaultValue)
+        public static Interval<T> IntersectOrDefault<T>(this Interval<T> value, Interval<T> other, Interval<T> defaultValue = default)
             where T : struct, IEquatable<T>, IComparable<T>, IComparable
             => !value.Overlaps(other, true)
                 ? defaultValue
@@ -22,7 +22,7 @@ namespace IntervalRecord
         public static IEnumerable<Interval<T>> Intersect<T>(
             this IEnumerable<Interval<T>> values)
             where T : struct, IEquatable<T>, IComparable<T>, IComparable
-            => values.Pairwise((a, b) => a.Intersect(b), x => !x.IsEmpty());
+            => values.Pairwise((a, b) => a.Intersect(b)).Where(x => !x.IsEmpty());
 
         [Pure]
         private static Interval<T> GetIntersectValue<T>(Interval<T> value, Interval<T> other)

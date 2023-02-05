@@ -12,7 +12,7 @@ namespace IntervalRecord
                 : Hull(value, other);
 
         [Pure]
-        public static Interval<T> UnionOrDefault<T>(this Interval<T> value, Interval<T> other, Interval<T> defaultValue)
+        public static Interval<T> UnionOrDefault<T>(this Interval<T> value, Interval<T> other, Interval<T> defaultValue = default)
             where T : struct, IEquatable<T>, IComparable<T>, IComparable
             => !value.Overlaps(other, true)
                 ? defaultValue
