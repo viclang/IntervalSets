@@ -2,6 +2,10 @@
 {
     public static partial class Interval
     {
+        public static Interval<T> Canonicalize<T>(this Interval<T> value, BoundaryType intervalType, Func<T, int, T> add, int step)
+        where T : struct, IEquatable<T>, IComparable<T>, IComparable
+            => ConvertTo(value, intervalType, x => add(x, step), x => add(x, -step));
+
         public static Interval<int> Canonicalize(this Interval<int> value, BoundaryType intervalType, int step)
             => ConvertTo(value, intervalType, x => x + step, x => x - step);
         public static Interval<DateOnly> CanonicalizeDays(this Interval<DateOnly> value, BoundaryType intervalType, int step)
