@@ -4,43 +4,35 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace IntervalExtensions
+namespace IntervalRecord
 {
-    public static class IntervalUtil
+    public static class IntervalExtensions
     {
-        public static Interval<T> ToInclusive<T>(this T start, T end)
-            where T : struct, IComparable<T>, IComparable
+        public static int Length(this Interval<int> interval)
         {
-            return new Interval<T>(start, end, true, true);
+            var end = interval.End ?? int.MaxValue;
+            var start = interval.Start ?? int.MinValue;
+            return end - start;
         }
 
-        public static Interval<T> ToExclusive<T>(this T start, T end)
-            where T : struct, IComparable<T>, IComparable
+        public static TimeSpan Length(this Interval<DateTimeOffset> interval)
         {
-            return new Interval<T>(start, end, true, false);
+            return (interval.End ?? DateTimeOffset.MaxValue).Subtract(interval.Start ?? DateTimeOffset.MinValue);
         }
 
-        public static Interval<T> ToInfinity<T>(this T start)
-            where T : struct, IComparable<T>, IComparable
+        public static TimeSpan Length(this Interval<DateTime> interval)
         {
-            return new Interval<T>(start, null, true, true);
+            return (interval.End ?? DateTime.MaxValue).Subtract(interval.Start ?? DateTime.MinValue);
         }
 
-        public static Interval<T> FromInfinityToInclusive<T>(T end)
-            where T : struct, IComparable<T>, IComparable
+        public static int Length(this Interval<DateOnly> interval)
         {
-            return new Interval<T>(null, end, true, true);
-        }
-
-        public static Interval<T> FromInfinityToExclusive<T>(T end)
-            where T : struct, IComparable<T>, IComparable
-        {
-            return new Interval<T>(null, end, true, false);
+            return (interval.End ?? DateOnly.MaxValue).DayNumber - (interval.Start ?? DateOnly.MinValue).DayNumber;
         }
 
         public static int CompareStart<T>(this Interval<T> value,
             Interval<T> other)
-            where T : struct, IComparable<T>, IComparable
+            where T : struct, IEquatable<T>, IComparable<T>, IComparable
         {
             if (value.Start is null && other.Start is not null)
             {
@@ -62,7 +54,7 @@ namespace IntervalExtensions
 
         public static int CompareEnd<T>(this Interval<T> value,
             Interval<T> other)
-            where T : struct, IComparable<T>, IComparable
+            where T : struct, IEquatable<T>, IComparable<T>, IComparable
         {
             if (value.End is null && other.End is not null)
             {
@@ -130,9 +122,9 @@ namespace IntervalExtensions
                            : value.End.Value);
         }
 
-        public static Interval<T> GetCollectionInterval<T>(
+        public static Interval<T> Hull<T>(
             this IEnumerable<Interval<T>> values)
-            where T : struct, IComparable<T>, IComparable
+            where T : struct, IEquatable<T>, IComparable<T>, IComparable
         {
             if (!values.Any())
             {
@@ -148,8 +140,8 @@ namespace IntervalExtensions
             return new Interval<T>(
                 min.Start,
                 max.End,
-                min.Inclusive.Start,
-                max.Inclusive.End);
+                min.StartInclusive,
+                max.EndInclusive);
         }
     }
 }

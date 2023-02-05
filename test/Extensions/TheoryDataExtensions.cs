@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Xunit;
 
-namespace IntervalExtensions.Tests.Extensions
+namespace IntervalRecord.Tests.Extensions
 {
     internal static class TheoryDataExtensions
     {

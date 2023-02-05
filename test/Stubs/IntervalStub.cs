@@ -4,16 +4,15 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace IntervalExtensions.Tests.Models
+namespace IntervalRecord.Tests.Models
 {
 
     public class IntervalInclusiveStub : IHasInterval<int>
     {
-        public Interval<int> Interval { get; }
+        public int Start { get; set; }
 
-        public IntervalInclusiveStub(Interval<int> interval)
-        {
-            Interval = interval;
-        }
+        public int End { get; set; }
+
+        public Interval<int> Interval => IntervalRecord.Interval.Closed(Start, End);
     }
 }
