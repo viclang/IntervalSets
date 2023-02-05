@@ -1,4 +1,4 @@
-﻿using IntervalRecord.Tests.TestData;
+﻿using IntervalRecord.Tests.Extensions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace IntervalRecord.Tests
 {
-    public class DeconstructIntervalTests : BaseIntervalSetTests
+    public class DeconstructIntervalTests : OverlappingStateTestsBase
     {
         [Theory]
         [MemberData(nameof(IncrementalLengthSet), 3, 2)]

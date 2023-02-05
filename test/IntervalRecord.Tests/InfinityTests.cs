@@ -1,5 +1,4 @@
 ﻿using FluentAssertions;
-using IntervalRecord.Enums;
 using Xunit;
 
 namespace IntervalRecord.Tests

@@ -1,5 +1,4 @@
 ﻿using InfinityComparable;
-using IntervalRecord.Enums;
 using System.Diagnostics.Contracts;
 using System.Text;
 
@@ -8,15 +7,15 @@ namespace IntervalRecord
     public readonly record struct Interval<T> : IComparable<Interval<T>>
         where T : struct, IEquatable<T>, IComparable<T>, IComparable
     {
-        private readonly Infinity<T> _start;
-        private readonly Infinity<T> _end;
-        private readonly bool _startInclusive;
-        private readonly bool _endInclusive;
+        private readonly Infinity<T> start;
+        private readonly Infinity<T> end;
+        private readonly bool startInclusive;
+        private readonly bool endInclusive;
 
-        public Infinity<T> Start { get => _start; init => _start = new Infinity<T>(value, false); }
-        public Infinity<T> End { get => _end; init => _end = new Infinity<T>(value, true); }
-        public bool StartInclusive { get => _startInclusive; init { _startInclusive = !Start.IsInfinite && value; } }
-        public bool EndInclusive { get => _endInclusive; init { _endInclusive = !End.IsInfinite && value; } }
+        public Infinity<T> Start { get => start; init => start = new Infinity<T>(value, false); }
+        public Infinity<T> End { get => end; init => end = new Infinity<T>(value, true); }
+        public bool StartInclusive { get => startInclusive; init { startInclusive = !Start.IsInfinite && value; } }
+        public bool EndInclusive { get => endInclusive; init { endInclusive = !End.IsInfinite && value; } }
         public bool IsValid => Start.IsInfinite || End.IsInfinite || End.CompareTo(Start) >= 0;
 
         public Interval()
@@ -26,41 +25,17 @@ namespace IntervalRecord
 
         public Interval(Infinity<T> start, Infinity<T> end, bool startInclusive, bool endInclusive)
         {
-            _start = -start;
-            _end = +end;
-            _startInclusive = !_start.IsInfinite && startInclusive;
-            _endInclusive = !_end.IsInfinite && endInclusive;
+            this.start = -start;
+            this.end = +end;
+            this.startInclusive = !this.start.IsInfinite && startInclusive;
+            this.endInclusive = !this.end.IsInfinite && endInclusive;
         }
 
         [Pure]
-        public InfinityState GetInfinityState() => (Start.IsInfinite, End.IsInfinite) switch
-        {
-            (false, false) => InfinityState.Bounded,
-            (true, true) => InfinityState.Unbounded,
-            (true, false) => InfinityState.RightBounded,
-            (false, true) => InfinityState.LeftBounded
-        };
+        public bool IsEmpty() => (this.GetBoundaryType() != BoundaryType.Closed && Start == End) || !IsValid;
 
         [Pure]
-        public bool IsHalfBounded() => Start.IsInfinite && !End.IsInfinite || !Start.IsInfinite && End.IsInfinite;
-
-        [Pure]
-        public BoundaryType GetBoundaryType() => (StartInclusive, EndInclusive) switch
-        {
-            (true, true) => BoundaryType.Closed,
-            (true, false) => BoundaryType.ClosedOpen,
-            (false, true) => BoundaryType.OpenClosed,
-            (false, false) => BoundaryType.Open,
-        };
-
-        [Pure]
-        public bool IsHalfOpen() => StartInclusive && !EndInclusive || !StartInclusive && EndInclusive;
-
-        [Pure]
-        public bool IsEmpty() => (GetBoundaryType() != BoundaryType.Closed && Start == End) || !IsValid;
-
-        [Pure]
-        public bool IsSingleton() => GetBoundaryType() == BoundaryType.Closed && Start == End;
+        public bool IsSingleton() => this.GetBoundaryType() == BoundaryType.Closed && Start == End;
 
         [Pure]
         public bool Overlaps(Interval<T> other, bool includeHalfOpen = false)

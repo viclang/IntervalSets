@@ -6,7 +6,7 @@ namespace IntervalRecord
 {
     public static partial class Interval
     {
-        private static readonly Regex _intervalRegex = new Regex(@"(?:\[|\()(?:[^[\](),]*,[^,()[\]]*)(?:\)|\])");
+        private static readonly Regex intervalRegex = new Regex(@"(?:\[|\()(?:[^[\](),]*,[^,()[\]]*)(?:\)|\])");
         private const string infinity = "Infinity";
         private const string intervalNotFound = "Interval not found in string. Please provide an interval string in correct format";
 
@@ -19,7 +19,7 @@ namespace IntervalRecord
         public static Interval<T> Parse<T>(string value, Func<string, T> boundaryParser, string infinityString = infinity)
             where T : struct, IEquatable<T>, IComparable<T>, IComparable
         {
-            var match = _intervalRegex.Match(value);
+            var match = intervalRegex.Match(value);
             if (!match.Success)
             {
                 throw new ArgumentException(intervalNotFound);
@@ -68,7 +68,7 @@ namespace IntervalRecord
         public static IEnumerable<Interval<T>> ParseAll<T>(string value, Func<string, T> boundaryParser, string infinityString = infinity)
             where T : struct, IEquatable<T>, IComparable<T>, IComparable
         {
-            var matches = _intervalRegex.Matches(value);
+            var matches = intervalRegex.Matches(value);
             foreach(Match match in matches)
             {
                 yield return ParseInterval(match.Value, boundaryParser, infinityString);
