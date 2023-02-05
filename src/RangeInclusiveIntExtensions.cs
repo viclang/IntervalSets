@@ -34,7 +34,7 @@ namespace RangeExtensions.Interfaces
                 //    throw new NotSupportedException("Collection range has overlap with value to add!");
                 //}
 
-                if (last.To is null)
+                if (last!.To is null)
                 {
                     last.To = replaceTo;
                 }
@@ -124,7 +124,7 @@ namespace RangeExtensions.Interfaces
             ranges.Add(value);
         }
 
-        private static T? GetPreviousRange<T>(this T value, IList<T> ranges)
+        private static T? GetPreviousRange<T>(this T value, IEnumerable<T> ranges)
             where T : IRangeInclusive<int>
         {
             return ranges
@@ -132,7 +132,7 @@ namespace RangeExtensions.Interfaces
                 .MaxBy(x => x.From);
         }
 
-        private static T? GetNextRange<T>(this T value, IList<T> ranges)
+        private static T? GetNextRange<T>(this T value, IEnumerable<T> ranges)
             where T : IRangeInclusive<int>
         {
             return ranges
@@ -140,19 +140,19 @@ namespace RangeExtensions.Interfaces
                 .MinBy(x => x.From);
         }    
 
-        private static TSource? GetFirstRange<TSource>(this IList<TSource> ranges)
+        private static TSource? GetFirstRange<TSource>(this IEnumerable<TSource> ranges)
             where TSource : IRangeInclusive<int>
         {
             return ranges.MinBy(x => x.From);
         }
 
-        private static TSource? GetLastRange<TSource>(this IList<TSource> ranges)
+        private static TSource? GetLastRange<TSource>(this IEnumerable<TSource> ranges)
             where TSource : IRangeInclusive<int>
         {
             return ranges.MaxBy(x => x.From);
         }
 
-        private static (TProperty from, TProperty? to) GetCollectionRange<TSource, TProperty>(this IList<TSource> ranges)
+        private static (TProperty from, TProperty? to) GetCollectionRange<TSource, TProperty>(this IEnumerable<TSource> ranges)
             where TSource : IRangeInclusive<TProperty>
             where TProperty : struct, IComparable<TProperty>, IComparable
         {
@@ -192,11 +192,31 @@ namespace RangeExtensions.Interfaces
             return exclusive.to.Equals(exclusive.from);
         }
 
+        public static IRangeExclusive<int> ToExclusive(this IRangeInclusive<int> range)
+        {
+            range.To = range.To.GetExlcusiveTo();
+            return (IRangeExclusive<int>)range;
+        }
+
+        public static IEnumerable<IRangeExclusive<int>> ToExclusive<TSource>(this IEnumerable<TSource> ranges)
+            where TSource : IRangeInclusive<int>
+        {
+            foreach(var range in ranges)
+            {
+                yield return range.ToExclusive();
+            }
+        }
+
         private static (int from, int? to) GetRangeExclusive(int from, int? to)
         {
             return to is null
                 ? (from, to)
-                : (from, to + 1);
+                : (from, to.GetExlcusiveTo());
+        }
+
+        private static int? GetExlcusiveTo(this int? to)
+        {
+            return to is null ? to : to + 1;
         }
 
         private static bool OverlapsWith(

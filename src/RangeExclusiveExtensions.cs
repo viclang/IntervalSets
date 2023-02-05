@@ -51,5 +51,24 @@ namespace RangeExtensions
             return !before && !after
                 && !IsConnected(sourceFrom, sourceTo, valueFrom, valueTo);
         }
+
+        public static IRangeInclusive<int> ToInclusive(this IRangeExclusive<int> range)
+        {
+            range.To = range.To.GetInclusiveTo();
+            return (IRangeInclusive<int>)range;
+        }
+
+        public static IEnumerable<IRangeInclusive<int>> ToInclusive<TSource>(this IEnumerable<TSource> ranges)
+            where TSource : IRangeExclusive<int>
+        {
+            foreach (var range in ranges)
+            {
+                yield return range.ToInclusive();
+            }
+        }
+        private static int? GetInclusiveTo(this int? to)
+        {
+            return to is null ? to : to - 1;
+        }
     }
 }

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using RangeExtensions.Tests.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -7,7 +8,7 @@ using Xunit;
 
 namespace RangeExtensions.Tests.RangeInclusive
 {
-    public class RangeInclusiveTestData
+    public abstract class RangeInclusiveTestData
     {
         public static readonly RangeInclusiveStub RelativeRange = new RangeInclusiveStub(3, 5);
 
@@ -17,10 +18,6 @@ namespace RangeExtensions.Tests.RangeInclusive
             public static readonly RangeInclusiveStub After = new RangeInclusiveStub(6, 7);
             public static readonly RangeInclusiveStub AfterNull = new RangeInclusiveStub(6, null);
 
-            public IEnumerable<RangeInclusiveStub> ToList() => this
-            .SelectMany(x => x)
-            .Cast<RangeInclusiveStub>();
-
             public NonOverlapping()
             {
                 Add(Before);
@@ -29,7 +26,7 @@ namespace RangeExtensions.Tests.RangeInclusive
             }
         }
 
-        public class Overlapping : TheoryData<RangeInclusiveStub>
+        public class Overlapping : TheoryData<RangeStub>
         {
             public static readonly RangeInclusiveStub FromInside = new RangeInclusiveStub(2, 3);
             public static readonly RangeInclusiveStub ToInside = new RangeInclusiveStub(5, 6);
@@ -38,10 +35,6 @@ namespace RangeExtensions.Tests.RangeInclusive
             public static readonly RangeInclusiveStub FromNull = new RangeInclusiveStub(3, null);
             public static readonly RangeInclusiveStub ToNull = new RangeInclusiveStub(5, null);
             public static readonly RangeInclusiveStub BeforeNull = new RangeInclusiveStub(4, null);
-
-            public IEnumerable<RangeInclusiveStub> ToList() => this
-            .SelectMany(x => x)
-            .Cast<RangeInclusiveStub>();
 
             public Overlapping()
             {

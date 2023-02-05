@@ -6,16 +6,18 @@ using System.Threading.Tasks;
 
 namespace RangeExtensions
 {
-    public interface IRangeInclusive<T> : IRangeExclusive<T>
+    public interface IRangeInclusive<T> : IRange<T>
     where T : struct, IComparable<T>, IComparable
     { }
 
-    public interface IRangeExclusive<T>
+    public interface IRangeExclusive<T> : IRange<T> 
     where T : struct, IComparable<T>, IComparable
+    { }
+
+    public interface IRange<T>
+        where T : struct, IComparable<T>, IComparable
     {
         T From { get; set; }
         T? To { get; set; }
     }
-
-
 }

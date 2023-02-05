@@ -1,5 +1,6 @@
 ﻿using FluentAssertions;
 using RangeExtensions.Interfaces;
+using RangeExtensions.Tests.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,19 +13,20 @@ namespace RangeExtensions.Tests.RangeInclusive
 {
     public class RangeInclusiveExtensionsTests
     {
-        [ClassData(typeof(RangeInclusiveTestData.Overlapping))]
         [Theory]
+        [ClassData(typeof(RangeInclusiveTestData.Overlapping))]
         public void OverlapsWith_Should_BeTrue(RangeInclusiveStub value)
         {
             //act
             var actual = value.OverlapsWith(RangeInclusiveTestData.RelativeRange);
+            value.ToExclusive();
 
             //assert
             actual.Should().BeTrue();
         }
 
-        [ClassData(typeof(RangeInclusiveTestData.NonOverlapping))]
         [Theory]
+        [ClassData(typeof(RangeInclusiveTestData.NonOverlapping))]
         public void OverlapsWith_Should_BeFalse(RangeInclusiveStub value)
         {
             //act
