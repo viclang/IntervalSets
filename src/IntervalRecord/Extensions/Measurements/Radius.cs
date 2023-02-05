@@ -19,7 +19,7 @@ namespace IntervalRecord
         public static TimeSpan? Radius(this Interval<DateTimeOffset> value) => Radius(value, (end, start) => end.Subtract(start)/2);
 
         private static TResult? Radius<T, TResult>(this Interval<T> value, Func<T, T, TResult> radius)
-            where T : struct, IComparable<T>, IComparable
+            where T : struct, IEquatable<T>, IComparable<T>, IComparable
             where TResult : struct
             => value.Start.IsInfinite || value.End.IsInfinite || value.IsEmpty()
                 ? null

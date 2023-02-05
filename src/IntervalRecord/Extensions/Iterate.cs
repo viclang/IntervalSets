@@ -5,7 +5,7 @@ namespace IntervalRecord
     public static partial class Interval
     {
         public static IEnumerable<T> Iterate<T>(this Interval<T> value, Func<T, T> AddStep)
-            where T : struct, IComparable<T>, IComparable
+            where T : struct, IEquatable<T>, IComparable<T>, IComparable
         {
             if (value.Start.IsInfinite)
             {
@@ -16,7 +16,7 @@ namespace IntervalRecord
         }
 
         public static IEnumerable<T> Iterate<T>(this Interval<T> value, T start, Func<T, T> AddStep)
-            where T : struct, IComparable<T>, IComparable
+            where T : struct, IEquatable<T>, IComparable<T>, IComparable
         {
             if (value.Contains(start) && !value.IsEmpty() && !value.Start.IsInfinite && !value.End.IsInfinite)
             {

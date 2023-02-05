@@ -11,7 +11,7 @@ namespace IntervalRecord
         private const string intervalNotFound = "Interval not found in string. Please provide an interval string in correct format";
 
         public static Interval<T> Parse<T>(string value, Func<string, T> boundaryParser)
-            where T : struct, IComparable<T>, IComparable
+            where T : struct, IEquatable<T>, IComparable<T>, IComparable
         {
             var match = _intervalRegex.Match(value);
             if (!match.Success)
@@ -22,7 +22,7 @@ namespace IntervalRecord
         }
 
         public static bool TryParse<T>(string value, Func<string, T> boundaryParser, out Interval<T>? result)
-            where T : struct, IComparable<T>, IComparable
+            where T : struct, IEquatable<T>, IComparable<T>, IComparable
         {
             try
             {
@@ -37,7 +37,7 @@ namespace IntervalRecord
         }
 
         public static IEnumerable<Interval<T>> ParseAll<T>(string value, Func<string, T> boundaryParser)
-            where T : struct, IComparable<T>, IComparable
+            where T : struct, IEquatable<T>, IComparable<T>, IComparable
         {
             var matches = _intervalRegex.Matches(value);
             foreach(Match match in matches)
@@ -47,7 +47,7 @@ namespace IntervalRecord
         }
 
         private static Interval<T> ParseInterval<T>(string value, Func<string, T> boundaryParser)
-            where T : struct, IComparable<T>, IComparable
+            where T : struct, IEquatable<T>, IComparable<T>, IComparable
         {
             var parts = value.Split(',');
             var startString = parts[0].Trim();
@@ -64,7 +64,7 @@ namespace IntervalRecord
         }
 
         private static T? ParseBoundary<T>(string value, Func<string, T> boundaryParser)
-            where T : struct, IComparable<T>
+            where T : struct, IEquatable<T>, IComparable<T>
         {
             if (string.IsNullOrEmpty(value) || infinity.Contains(value))
             {

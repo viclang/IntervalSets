@@ -19,7 +19,7 @@ namespace IntervalRecord
         public static DateTimeOffset? Centre(this Interval<DateTimeOffset> value) => Centre(value, (end, start) => start.Add((end - start) / 2));
 
         private static TResult? Centre<T, TResult>(this Interval<T> value, Func<T, T, TResult> centre)
-            where T : struct, IComparable<T>, IComparable
+            where T : struct, IEquatable<T>, IComparable<T>, IComparable
             where TResult : struct
             => value.Start.IsInfinite || value.End.IsInfinite || value.IsEmpty()
                 ? null

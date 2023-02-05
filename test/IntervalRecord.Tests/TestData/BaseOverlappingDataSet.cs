@@ -7,7 +7,7 @@ using Xunit;
 namespace IntervalRecord.Tests.DataSets
 {
     public abstract record BaseOverlappingDataSet<T> : IOverlappingDataSet<T>
-        where T : struct, IComparable<T>, IComparable
+        where T : struct, IEquatable<T>, IComparable<T>, IComparable
     {
         public Interval<T> Reference { get; init; }
         public Interval<T> Before { get; protected set; }

@@ -5,7 +5,7 @@ namespace IntervalRecord
     public static partial class Interval
     {
         public static Interval<T> Union<T>(this Interval<T> value, Interval<T> other)
-            where T : struct, IComparable<T>, IComparable
+            where T : struct, IEquatable<T>, IComparable<T>, IComparable
         {
             if (!value.Overlaps(other, true))
             {

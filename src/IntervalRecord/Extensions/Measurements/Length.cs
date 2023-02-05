@@ -19,7 +19,7 @@ namespace IntervalRecord
         public static Infinity<TimeSpan> Length(this Interval<DateTimeOffset> value) => Length(value, (end, start) => end - start);
 
         private static Infinity<TResult> Length<T, TResult>(this Interval<T> value, Func<T, T, TResult> substract)
-            where T : struct, IComparable<T>, IComparable
+            where T : struct, IEquatable<T>, IComparable<T>, IComparable
             where TResult : struct, IEquatable<TResult>, IComparable<TResult>, IComparable
             => value.Start.IsInfinite || value.End.IsInfinite
                 ? Infinity<TResult>.PositiveInfinity

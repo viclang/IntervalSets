@@ -1,12 +1,11 @@
 ﻿using InfinityComparable;
 using IntervalRecord.Enums;
-using System.Diagnostics.CodeAnalysis;
 using System.Text;
 
 namespace IntervalRecord
 {
     public readonly record struct Interval<T> : IComparable<Interval<T>>
-        where T : struct, IComparable<T>, IComparable
+        where T : struct, IEquatable<T>, IComparable<T>, IComparable
     {
         private readonly Infinity<T> _start;
         private readonly Infinity<T> _end;
@@ -53,11 +52,11 @@ namespace IntervalRecord
 
         public bool IsEmpty() => !Start.IsInfinite && !End.IsInfinite
             && (Start.CompareTo(End) == 1
-                || Start.Finite.Value.Equals(End.Finite.Value) && GetBoundaryType() != BoundaryType.Closed);
+                || Start.Equals(End) && GetBoundaryType() != BoundaryType.Closed);
 
         public bool IsSingleton() => !Start.IsInfinite && !End.IsInfinite
             && GetBoundaryType() == BoundaryType.Closed
-            && Start.Finite.Value.Equals(End.Finite.Value);
+            && Start.Equals(End);
 
         public bool Overlaps(Interval<T> other, bool includeHalfOpen = false) => !this.IsBefore(other, includeHalfOpen) && !this.IsAfter(other, includeHalfOpen);
         
