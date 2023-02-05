@@ -2,7 +2,7 @@
 
 namespace IntervalRecord
 {
-    public static partial class Interval
+    public static partial class IntervalExtensions
     {
         [Pure]
         public static Interval<T>? Gap<T>(this Interval<T> value, Interval<T> other)

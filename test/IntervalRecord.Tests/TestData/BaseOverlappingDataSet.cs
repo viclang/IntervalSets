@@ -78,6 +78,22 @@ namespace IntervalRecord.Tests.DataSets
             Overlaps = Reference with { Start = Before.Start, End = ContainedBy.Start };
             MetBy = Reference with { Start = Reference.End, End = After.End };
         }
+        public List<Interval<T>> ToList() => new List<Interval<T>>
+        {
+            Before,
+            Meets,
+            Overlaps,
+            Starts,
+            ContainedBy,
+            Finishes,
+            Equal,
+            FinishedBy,
+            Contains,
+            StartedBy,
+            OverlappedBy,
+            MetBy,
+            After,
+        };
 
         public TheoryData<Interval<T>> ToTheoryData() => new TheoryData<Interval<T>>
             {
@@ -150,7 +166,7 @@ namespace IntervalRecord.Tests.DataSets
             {
                 { Before, Reference, OverlappingState.Before },
                 { Meets, Reference, expectedMeets },
-                { Overlaps, Reference, OverlappingState.EndInsideOnly },
+                { Overlaps, Reference, OverlappingState.Overlaps },
                 { Starts, Reference, OverlappingState.Starts },
                 { ContainedBy, Reference, OverlappingState.ContainedBy },
                 { Finishes, Reference, OverlappingState.Finishes },
@@ -158,12 +174,12 @@ namespace IntervalRecord.Tests.DataSets
                 { FinishedBy, Reference, OverlappingState.FinishedBy },
                 { Contains, Reference, OverlappingState.Contains },
                 { StartedBy, Reference, OverlappingState.StartedBy },
-                { OverlappedBy, Reference, OverlappingState.StartInsideOnly },
+                { OverlappedBy, Reference, OverlappingState.OverlappedBy },
                 { MetBy, Reference, expectedMetBy },
                 { After, Reference, OverlappingState.After },
                 { Before with { Start = null }, Reference with { End = null }, OverlappingState.Before },
                 { Meets with { Start = null }, Reference with { End = null }, expectedMeets },
-                { After with { Start = null }, Reference with { End = null }, OverlappingState.EndInsideOnly },
+                { After with { Start = null }, Reference with { End = null }, OverlappingState.Overlaps },
                 { Before with { Start = null }, Reference with { Start = null }, OverlappingState.Starts },
                 { Equal with { Start = null }, Reference with { Start = null, End = null }, OverlappingState.Starts },
                 { Equal, Reference with { Start = null, End = null }, OverlappingState.ContainedBy },
@@ -173,7 +189,7 @@ namespace IntervalRecord.Tests.DataSets
                 { Before with { End = null }, Reference with { End = null }, OverlappingState.FinishedBy },
                 { Equal with { Start = null, End = null }, Reference, OverlappingState.Contains },
                 { After with { Start = null }, Reference with { Start = null }, OverlappingState.StartedBy },
-                { Before with { End = null }, Reference with { Start = null }, OverlappingState.StartInsideOnly },
+                { Before with { End = null }, Reference with { Start = null }, OverlappingState.OverlappedBy },
                 { MetBy with { End = null }, Reference with { Start = null }, expectedMetBy },
                 { After with { End = null }, Reference with { Start = null }, OverlappingState.After },
             };

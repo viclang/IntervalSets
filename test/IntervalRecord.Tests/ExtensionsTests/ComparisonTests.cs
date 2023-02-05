@@ -1,7 +1,7 @@
 ﻿using IntervalRecord.Tests.DataSets;
 using IntervalRecord.Tests.TestData;
 
-namespace IntervalRecord.Tests
+namespace IntervalRecord.Tests.ExtensionsTests
 {
     public class ComparisonTests
     {
@@ -50,8 +50,8 @@ namespace IntervalRecord.Tests
                 .Should().Be(state == OverlappingState.Meets);
             a.Starts(b)
                 .Should().Be(state == OverlappingState.Starts);
-            a.EndInsideOnly(b)
-                .Should().Be(state == OverlappingState.EndInsideOnly);
+            a.OverlapsState(b)
+                .Should().Be(state == OverlappingState.Overlaps);
             a.ContainedBy(b)
                 .Should().Be(state == OverlappingState.ContainedBy);
             a.Finishes(b)
@@ -62,8 +62,8 @@ namespace IntervalRecord.Tests
                 .Should().Be(state == OverlappingState.FinishedBy);
             a.Contains(b)
                 .Should().Be(state == OverlappingState.Contains);
-            a.StartInsideOnly(b)
-                .Should().Be(state == OverlappingState.StartInsideOnly);
+            a.OverlappedByState(b)
+                .Should().Be(state == OverlappingState.OverlappedBy);
             a.StartedBy(b)
                 .Should().Be(state == OverlappingState.StartedBy);
             a.MetBy(b)
@@ -97,7 +97,7 @@ namespace IntervalRecord.Tests
             var actual = a.CompareTo(b);
 
             // Assert
-            if((int)state < 6)
+            if ((int)state < 6)
             {
                 actual.Should().Be(-1);
             }

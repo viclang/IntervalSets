@@ -2,7 +2,7 @@
 
 namespace IntervalRecord
 {
-    public static partial class Interval
+    public static partial class IntervalExtensions
     {
         [Pure]
         public static IEnumerable<T> Iterate<T>(this Interval<T> value, Func<T, T> AddStep)

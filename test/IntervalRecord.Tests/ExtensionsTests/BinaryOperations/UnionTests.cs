@@ -1,8 +1,6 @@
-﻿using Newtonsoft.Json.Linq;
-using System;
-using System.Linq;
+﻿using System.Linq;
 
-namespace IntervalRecord.Tests.BinaryOperations
+namespace IntervalRecord.Tests.ExtensionsTests.BinaryOperations
 {
     public class UnionTests
     {

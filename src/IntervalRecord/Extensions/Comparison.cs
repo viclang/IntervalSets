@@ -2,7 +2,7 @@
 
 namespace IntervalRecord
 {
-    public static partial class Interval
+    public static partial class IntervalExtensions
     {
         //private readonly static Dictionary<ValueTuple<int, int, int, int>, OverlappingState> OverlapStateLookup = new()
         //{
@@ -37,14 +37,14 @@ namespace IntervalRecord
                 {
                     -1 => OverlappingState.Before,
                     0 => OverlappingState.Meets,
-                    1 => OverlappingState.EndInsideOnly,
+                    1 => OverlappingState.Overlaps,
                     _ => throw new NotImplementedException(),
                 },
                 (1, 1) => CompareStartToEnd(value, other, includeHalfOpen) switch
                 {
-                    1 => OverlappingState.After,
+                    -1 => OverlappingState.OverlappedBy,
                     0 => OverlappingState.MetBy,
-                    -1 => OverlappingState.StartInsideOnly,
+                    1 => OverlappingState.After,
                     _ => throw new NotImplementedException(),
                 },
                 (_, _) => throw new NotImplementedException()
@@ -102,7 +102,7 @@ namespace IntervalRecord
         }
 
         [Pure]
-        public static bool StartInsideOnly<T>(this Interval<T> value, Interval<T> other)
+        public static bool OverlappedByState<T>(this Interval<T> value, Interval<T> other)
             where T : struct, IEquatable<T>, IComparable<T>, IComparable
         {
             return value.Start.CompareTo(other.Start) == 1
@@ -111,7 +111,7 @@ namespace IntervalRecord
         }
 
         [Pure]
-        public static bool EndInsideOnly<T>(this Interval<T> value, Interval<T> other)
+        public static bool OverlapsState<T>(this Interval<T> value, Interval<T> other)
             where T : struct, IEquatable<T>, IComparable<T>, IComparable
         {
             return value.Start.CompareTo(other.Start) == -1

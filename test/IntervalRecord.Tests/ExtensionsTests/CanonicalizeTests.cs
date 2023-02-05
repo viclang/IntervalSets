@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace IntervalRecord.Tests
+namespace IntervalRecord.Tests.ExtensionsTests
 {
     public class CanonicalizeTests
     {
@@ -125,7 +125,7 @@ namespace IntervalRecord.Tests
             var actualTimeOnly = timeOnly.Canonicalize(expectedBoundaryType, _stepInHours);
             var actualDateTime = dateTime.Canonicalize(expectedBoundaryType, _stepInHours);
             var actualDateTimeOffset = dateTimeOffset.Canonicalize(expectedBoundaryType, _stepInHours);
-            
+
             // Assert
             var (expectedStartInclusive, expectedEndInclusive) = expectedBoundaryType.ToTuple();
 

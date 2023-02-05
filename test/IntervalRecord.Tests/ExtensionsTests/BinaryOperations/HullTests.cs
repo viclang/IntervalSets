@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace IntervalRecord.Tests.BinaryOperations
+namespace IntervalRecord.Tests.ExtensionsTests.BinaryOperations
 {
     public class HullTests
     {

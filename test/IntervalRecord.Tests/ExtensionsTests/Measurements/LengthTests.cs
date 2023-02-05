@@ -4,7 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace IntervalRecord.Tests.Measurements
+namespace IntervalRecord.Tests.ExtensionsTests.Measurements
 {
     public class LengthTests
     {
@@ -54,10 +54,10 @@ namespace IntervalRecord.Tests.Measurements
             // Arrange
             var integer = new Interval<int>(start, end, false, false);
             var doubles = new Interval<double>(start, end, false, false);
-            
+
             var dateOnly = new Interval<DateOnly>(
                 start.HasValue ? _referenceDateOnly.AddDays(start.Value) : null,
-                end.HasValue ?  _referenceDateOnly.AddDays(end.Value) : null,
+                end.HasValue ? _referenceDateOnly.AddDays(end.Value) : null,
                 false,
                 false);
 

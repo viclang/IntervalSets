@@ -1,8 +1,9 @@
-﻿using System.Diagnostics.Contracts;
+﻿using System.ComponentModel.DataAnnotations;
+using System.Diagnostics.Contracts;
 
 namespace IntervalRecord
 {
-    public static partial class Interval
+    public static partial class IntervalExtensions
     {
         [Pure]
         public static Interval<T>? Union<T>(this Interval<T> value, Interval<T> other)
@@ -21,6 +22,8 @@ namespace IntervalRecord
         [Pure]
         public static IEnumerable<Interval<T>> Union<T>(this IEnumerable<Interval<T>> values)
             where T : struct, IEquatable<T>, IComparable<T>, IComparable
-            => values.Pairwise((a, b) => a.UnionOrDefault(b, a));
+        {
+            return values.Reduce((a, b) => a.Union(b));
+        }
     }
 }

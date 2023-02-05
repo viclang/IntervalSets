@@ -2,7 +2,7 @@
 
 namespace IntervalRecord
 {
-    public static partial class Interval
+    public static partial class IntervalExtensions
     {
         [Pure]
         public static Interval<T>? Intersect<T>(this Interval<T> value, Interval<T> other)
@@ -22,8 +22,8 @@ namespace IntervalRecord
         private static Interval<T> GetIntersectValue<T>(Interval<T> value, Interval<T> other)
             where T : struct, IEquatable<T>, IComparable<T>, IComparable
         {
-            var maxByStart = MaxBy(value, other, x => x.Start);
-            var minByEnd = MinBy(value, other, x => x.End);
+            var maxByStart = Interval.MaxBy(value, other, x => x.Start);
+            var minByEnd = Interval.MinBy(value, other, x => x.End);
 
             var startInclusive = value.Start == other.Start
                 ? value.StartInclusive && other.StartInclusive

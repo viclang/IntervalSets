@@ -4,7 +4,7 @@ using System.Diagnostics.Contracts;
 
 namespace IntervalRecord
 {
-    public static partial class Interval
+    public static partial class IntervalExtensions
     {
         [Pure]
         public static Infinity<TimeSpan> Length(this Interval<DateTimeOffset> value)

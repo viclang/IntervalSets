@@ -1,9 +1,7 @@
 ﻿using IntervalRecord.Tests.DataSets;
 using IntervalRecord.Tests.TestData;
-using System.Collections.Generic;
-using System.Linq;
 
-namespace IntervalRecord.Tests.BinaryOperations
+namespace IntervalRecord.Tests.ExtensionsTests.BinaryOperations
 {
     public class GapsTests
     {

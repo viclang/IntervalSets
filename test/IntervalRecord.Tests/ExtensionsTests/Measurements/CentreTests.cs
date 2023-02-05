@@ -4,7 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace IntervalRecord.Tests.Measurements
+namespace IntervalRecord.Tests.ExtensionsTests.Measurements
 {
     public class CentreTests
     {

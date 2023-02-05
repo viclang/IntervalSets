@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 
-namespace IntervalRecord.Tests
+namespace IntervalRecord.Tests.ExtensionsTests
 {
     public class IterateTests
     {
