@@ -84,7 +84,7 @@ namespace IntervalRecord.Tests.DataSets
 
         public IntervalDataSet<T> CopyWith(BoundaryType boundaryType)
         {
-            var (startInclusive, endInclusive) = Interval.ToTuple(boundaryType);
+            var (startInclusive, endInclusive) = boundaryType.ToTuple();
             return this with
             {
                 Reference = Reference with { StartInclusive = startInclusive, EndInclusive = endInclusive },
