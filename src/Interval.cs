@@ -1,7 +1,9 @@
-﻿using IntervalRecord.BoundaryComparers;
+﻿using Infinity;
+using IntervalRecord.BoundaryComparers;
 using IntervalRecord.Enums;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -11,48 +13,81 @@ namespace IntervalRecord
     public readonly record struct Interval<T> : IComparable<Interval<T>>
         where T : struct, IEquatable<T>, IComparable<T>
     {
-        private static bool _startInclusive;
-        private static bool _endInclusive;
-        public T? Start { get; init; }
-        public T? End { get; init; }
-        public bool StartInclusive { get => Start is not null && _startInclusive; init => _startInclusive = value; }
-        public bool EndInclusive { get => End is not null && _endInclusive; init => _endInclusive = value; }
+
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        private Infinity<T> _start { get; init; } = null;
+
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        private Infinity<T> _end { get; init; } = null;
+
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        private bool _startInclusive { get; init; } = false;
+
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        private bool _endInclusive { get; init; } = false;
+
+        public T? Start { get => _start.IsInfinite ? null : _start.Value; init => _start = value.ToNegativeInfinity(); }
+
+        public T? End { get => _end.IsInfinite ? null : _end.Value; init => _end = value.ToPositiveInfinity(); }
+        public bool StartInclusive { get => !_start.IsInfinite && _startInclusive; init => _startInclusive = value; }
+        public bool EndInclusive { get => !_end.IsInfinite && _endInclusive; init => _endInclusive = value; }
 
 
         public Interval(T? start, T? end)
+            : this(start, end, (false, false))
         {
-            Start = start;
-            End = end;
         }
 
         public Interval(T? start, T? end, BoundaryType boundaryType)
+            : this(start, end, BoundaryTypeMapper.ToTuple(boundaryType))
         {
-            var (startInclusive, endInclusive) = BoundaryTypeMapper.ToTuple(boundaryType);
-            Start = start;
-            End = end;
-            StartInclusive = startInclusive;
-            EndInclusive = endInclusive;
         }
 
         public Interval(T? start, T? end, bool startInclusive, bool endInclusive)
+            : this(start, end,(startInclusive, endInclusive))
+        {
+        }
+
+        private Interval(T? start, T? end, (bool start, bool end) inclusive)
         {
             Start = start;
             End = end;
-            StartInclusive = startInclusive;
-            EndInclusive = endInclusive;
+            StartInclusive = inclusive.start;
+            EndInclusive = inclusive.end;
+        }
 
-            if (IsBounded() && StartInclusive && EndInclusive
-                    && End!.Value.CompareTo(Start!.Value) == -1)
+        public bool IsValid()
+        {
+            return Validate(out var _);
+        }
+
+        public bool Validate(out string? message)
+        {
+            if (!_start.IsInfinite && !_end.IsInfinite && _startInclusive && _endInclusive
+                    && _end.CompareTo(_start) == -1)
             {
-                throw new ArgumentOutOfRangeException("The end parameter must be greater or equal to the start parameter");
+                message = "The End parameter must be greater or equal to the Start parameter";
+                return false;
             }
 
-            if (IsBounded() && !IsEmpty()
-                && (!StartInclusive || !EndInclusive)
-                && End!.Value.CompareTo(Start!.Value) <= 0)
+            if (!_start.IsInfinite && !_end.IsInfinite && !(_start.Equals(_end)
+                && (!_startInclusive || !_endInclusive))
+                && _end.CompareTo(_start) <= 0)
             {
-                throw new ArgumentOutOfRangeException("The end parameter must be greater than the start parameter");
+                message = "The End parameter must be greater than the Start parameter";
+                return false;
             }
+            message = null;
+            return true;
+        }
+
+        public Interval<T> ValidateAndThrow()
+        {
+            if (!Validate(out var message))
+            {
+                throw new ArgumentOutOfRangeException("End", message);
+            }
+            return this;
         }
 
         public BoundaryType GetIntervalType()
@@ -73,7 +108,7 @@ namespace IntervalRecord
 
         public bool IsBounded()
         {
-            return Start is not null && End is not null;
+            return !_start.IsInfinite && !_end.IsInfinite;
         }
 
         public bool IsHalfBounded()
@@ -83,12 +118,12 @@ namespace IntervalRecord
 
         public bool IsLeftBounded()
         {
-            return Start is not null && End is null;
+            return !_start.IsInfinite && _end.IsInfinite;
         }
 
         public bool IsRightBounded()
         {
-            return Start is null && End is not null;
+            return _start.IsInfinite && !_end.IsInfinite;
         }
 
         public bool IsConnected(Interval<T> other)
@@ -138,10 +173,10 @@ namespace IntervalRecord
 
         public override string? ToString()
         {
-            return (StartInclusive ? "[" : "(")
-                + (Start is null ? "-∞" : Start!.Value.ToString())
+            return (_startInclusive ? "[" : "(")
+                + _start
                 + ", "
-                + (End is null ? "+∞" : End.Value.ToString())
+                + _end
                 + (EndInclusive ? "]" : ")");
         }
 

@@ -58,17 +58,10 @@ namespace IntervalRecord.Tests
         [Fact]
         public void Test()
         {
-            int? i = 1;
-            var positive = -i.OrInfinite();
-            var negative = -new Infinity<int>();
+            var interval = new Interval<int>(0, 1)
+                .ValidateAndThrow();
 
-            var val = positive.IsFinite();
-
-            var greaterThan = positive > negative;
-            var lessThan = negative < positive;
-
-            greaterThan.Should().BeTrue();
-            positive.IsFinite().Should().BeTrue();
+            var copy = (interval with { Start = 1, End = 0 }).ValidateAndThrow();
         }
     }
 }
