@@ -173,7 +173,7 @@ namespace IntervalRecord
         /// <returns></returns>
         public static int DistanceTo(this Interval<int> value, Interval<int> other)
         {
-            return value.OverlapsWith(other)
+            return value.IsConnected(other)
                 ? 0
                 : other.Start.Value - value.End.Value;
         }

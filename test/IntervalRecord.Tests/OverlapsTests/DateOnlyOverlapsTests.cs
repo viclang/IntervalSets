@@ -24,10 +24,10 @@ namespace IntervalRecord.Tests.OverlapsTests
         [MemberData(nameof(IntervalOverlaps), BoundaryType.ClosedOpen)]
         [MemberData(nameof(IntervalOverlaps), BoundaryType.OpenClosed)]
         [MemberData(nameof(IntervalOverlaps), BoundaryType.Open)]
-        public void OverlapsWith(Interval<DateOnly> a, Interval<DateOnly> b, bool expectedResult)
+        public void IsConnected(Interval<DateOnly> a, Interval<DateOnly> b, bool expectedResult)
         {
             //act
-            var result = a.OverlapsWith(b);
+            var result = a.IsConnected(b);
 
             //assert
             result.Should().Be(expectedResult);
@@ -38,10 +38,10 @@ namespace IntervalRecord.Tests.OverlapsTests
         [MemberData(nameof(IntervalOverlaps_HalfOpen), BoundaryType.ClosedOpen)]
         [MemberData(nameof(IntervalOverlaps_HalfOpen), BoundaryType.OpenClosed)]
         [MemberData(nameof(IntervalOverlaps_HalfOpen), BoundaryType.Open)]
-        public void OverlapsWith_IncludeHalfOpen(Interval<DateOnly> a, Interval<DateOnly> b, bool expectedResult)
+        public void IsConnected_IncludeHalfOpen(Interval<DateOnly> a, Interval<DateOnly> b, bool expectedResult)
         {
             //act
-            var result = a.IsConnected(b);
+            var result = a.IsConnected(b, true);
 
             //assert
             result.Should().Be(expectedResult);

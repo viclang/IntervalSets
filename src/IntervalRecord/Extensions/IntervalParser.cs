@@ -20,7 +20,7 @@ namespace IntervalRecord
             return ParseInterval<T>(match.Value);
         }
 
-        internal static bool TryParse<T>(string value, out Interval<T>? result)
+        public static bool TryParse<T>(string value, out Interval<T>? result)
             where T : struct, IEquatable<T>, IComparable<T>, IComparable
         {
             try

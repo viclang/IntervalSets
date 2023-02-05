@@ -123,7 +123,7 @@ namespace IntervalRecord.Tests.DataSets
             return new TheoryData<Interval<T>, Interval<T>, OverlappingState>
             {
                 { Before, Reference, OverlappingState.Before },
-                { Meets, Reference, expectedMeets},
+                { Meets, Reference, expectedMeets },
                 { Overlaps, Reference, OverlappingState.Overlaps },
                 { Starts, Reference, OverlappingState.Starts },
                 { ContainedBy, Reference, OverlappingState.ContainedBy },

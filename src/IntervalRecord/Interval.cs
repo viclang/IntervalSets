@@ -54,9 +54,8 @@ namespace IntervalRecord
 
         public bool IsSingleton() => StartInclusive && EndInclusive && Start.Value.Equals(End.Value);
 
-        public bool IsConnected(Interval<T> other) => !this.IsBefore(other, true) && !this.IsAfter(other, true);
-        public bool OverlapsWith(Interval<T> other) => !this.IsBefore(other) && !this.IsAfter(other);
-
+        public bool IsConnected(Interval<T> other, bool includeHalfOpen = false) => !this.IsBefore(other, includeHalfOpen) && !this.IsAfter(other, includeHalfOpen);
+        
         public static explicit operator string(Interval<T> interval) => interval.ToString();
         public static explicit operator Interval<T>(string str) => Interval.Parse<T>(str);
         public static implicit operator Interval<T>?(string str)
