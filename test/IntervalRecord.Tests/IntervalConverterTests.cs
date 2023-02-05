@@ -24,16 +24,16 @@ namespace IntervalRecord.Tests
             var interval = new Interval<int>(start, end, startInclusive, endInclusive);
 
             // Act
-            var result = interval.Closure(1);
+            var actual = interval.Closure(1);
 
             // Assert
             var expectedStart = startInclusive ? start : start + 1;
             var expectedEnd = endInclusive ? end : end - 1;
 
-            result.Start.Should().Be(expectedStart);
-            result.End.Should().Be(expectedEnd);
-            result.StartInclusive.Should().BeTrue();
-            result.EndInclusive.Should().BeTrue();
+            actual.Start.Should().Be(expectedStart);
+            actual.End.Should().Be(expectedEnd);
+            actual.StartInclusive.Should().BeTrue();
+            actual.EndInclusive.Should().BeTrue();
         }
 
         [Theory]
@@ -47,16 +47,16 @@ namespace IntervalRecord.Tests
             var interval = new Interval<int>(start, end, startInclusive, endInclusive);
 
             // Act
-            var result = interval.Interior(1);
+            var actual = interval.Interior(1);
 
             // Assert
             var expectedStart = startInclusive ? start - 1 : start;
             var expectedEnd = endInclusive ? end + 1 : end;
 
-            result.Start.Should().Be(expectedStart);
-            result.End.Should().Be(expectedEnd);
-            result.StartInclusive.Should().BeFalse();
-            result.EndInclusive.Should().BeFalse();
+            actual.Start.Should().Be(expectedStart);
+            actual.End.Should().Be(expectedEnd);
+            actual.StartInclusive.Should().BeFalse();
+            actual.EndInclusive.Should().BeFalse();
         }
 
         [Theory]
@@ -82,7 +82,7 @@ namespace IntervalRecord.Tests
             var interval = new Interval<int>(start, end, startInclusive, endInclusive);
 
             // Act
-            var result = interval.Canonicalize(intervalType, 1);
+            var actual = interval.Canonicalize(intervalType, 1);
 
             // Assert
             var (expectedStartInclusive, expectedEndInclusive) = intervalType.ToTuple();
@@ -95,38 +95,38 @@ namespace IntervalRecord.Tests
                 ? endInclusive ? end : end - 1
                 : endInclusive ? end + 1 : end;
 
-            result.Start.Should().Be(expectedStart);
-            result.End.Should().Be(expectedEnd);
-            result.StartInclusive.Should().Be(expectedStartInclusive);
-            result.EndInclusive.Should().Be(expectedEndInclusive);
+            actual.Start.Should().Be(expectedStart);
+            actual.End.Should().Be(expectedEnd);
+            actual.StartInclusive.Should().Be(expectedStartInclusive);
+            actual.EndInclusive.Should().Be(expectedEndInclusive);
         }
 
         [Fact]
-        public void Closure_ShouldBeEquivalentTo_CanonicalizeClosed()
+        public void Closure_ShouldBe_CanonicalizeClosed()
         {
             // Arrange
             var open = Interval.Open(start, end);
 
             // Act
-            var result = open.Closure(1);
-            var resultCanonicalize = open.Canonicalize(BoundaryType.Closed, 1);
+            var actual = open.Closure(1);
+            var actualCanonicalize = open.Canonicalize(BoundaryType.Closed, 1);
 
             // Assert
-            result.Should().BeEquivalentTo(resultCanonicalize);
+            actual.Should().Be(actualCanonicalize);
         }
 
         [Fact]
-        public void Interior_ShouldBeEquivalentTo_CanonicalizeOpen()
+        public void Interior_ShouldBe_CanonicalizeOpen()
         {
             // Arrange
             var closed = Interval.Closed(start, end);
 
             // Act
-            var resultInterior = closed.Interior(1);
-            var resultCanonicalize = closed.Canonicalize(BoundaryType.Open, 1);
+            var actualInterior = closed.Interior(1);
+            var actualCanonicalize = closed.Canonicalize(BoundaryType.Open, 1);
 
             // Assert
-            resultInterior.Should().BeEquivalentTo(resultCanonicalize);
+            actualInterior.Should().Be(actualCanonicalize);
         }
 
         [Fact]
@@ -136,11 +136,11 @@ namespace IntervalRecord.Tests
             var unbounded = new Interval<int>();
 
             // Act
-            var result = unbounded.Closure(1);
+            var actual = unbounded.Closure(1);
 
             // Assert
             unbounded.GetBoundaryType().Should().Be(BoundaryType.Open);
-            result.Should().BeEquivalentTo(unbounded);
+            actual.Should().Be(unbounded);
         }
 
         [Fact]
@@ -150,11 +150,11 @@ namespace IntervalRecord.Tests
             var empty = Interval.Empty<int>();
 
             // Act
-            var result = empty.Closure(1);
+            var actual = empty.Closure(1);
 
             // Assert
             empty.GetBoundaryType().Should().Be(BoundaryType.Open);
-            result.Should().BeEquivalentTo(empty);
+            actual.Should().Be(empty);
         }
     }
 }

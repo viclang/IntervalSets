@@ -38,7 +38,7 @@ namespace IntervalRecord
             (false, true) => InfinityState.RightBounded
         };
 
-        public bool IsHalfBounded() => !Start.IsInfinite && End.IsInfinite || Start.IsInfinite && !End.IsInfinite;
+        public bool IsHalfBounded() => Start.IsInfinite && !End.IsInfinite || !Start.IsInfinite && End.IsInfinite;
 
         public BoundaryType GetBoundaryType() => (StartInclusive, EndInclusive) switch
         {
@@ -47,6 +47,7 @@ namespace IntervalRecord
             (false, true) => BoundaryType.OpenClosed,
             (false, false) => BoundaryType.Open,
         };
+        public bool IsHalfOpen() => StartInclusive && !EndInclusive || !StartInclusive && EndInclusive;
 
         public bool IsEmpty() => !Start.IsInfinite && !End.IsInfinite
             && (Start.CompareTo(End) == 1

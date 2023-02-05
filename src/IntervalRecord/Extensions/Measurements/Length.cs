@@ -11,12 +11,12 @@ namespace IntervalRecord
         public static Infinity<TimeSpan> Length(this Interval<DateTime> value, TimeSpan closureStep) => Length(Closure(value, closureStep));
         public static Infinity<TimeSpan> Length(this Interval<DateTimeOffset> value, TimeSpan closureStep) => Length(Closure(value, closureStep));
 
-        public static Infinity<int> Length(this Interval<int> value) => Length(value, (a, b) => a - b);
-        public static Infinity<double> Length(this Interval<double> value) => Length(value, (a, b) => a - b);
-        public static Infinity<int> Length(this Interval<DateOnly> value) => Length(value, (a, b) => a.DayNumber - b.DayNumber);
-        public static Infinity<TimeSpan> Length(this Interval<TimeOnly> value) => Length(value, (a, b) => a.ToTimeSpan() - a.ToTimeSpan());
-        public static Infinity<TimeSpan> Length(this Interval<DateTime> value) => Length(value, (a, b) => a.Subtract(b));
-        public static Infinity<TimeSpan> Length(this Interval<DateTimeOffset> value) => Length(value, (a, b) => a.Subtract(b));
+        public static Infinity<int> Length(this Interval<int> value) => Length(value, (end, start) => end - start);
+        public static Infinity<double> Length(this Interval<double> value) => Length(value, (end, start) => end - start);
+        public static Infinity<int> Length(this Interval<DateOnly> value) => Length(value, (end, start) => end.DayNumber - start.DayNumber);
+        public static Infinity<TimeSpan> Length(this Interval<TimeOnly> value) => Length(value, (end, start) => end - start);
+        public static Infinity<TimeSpan> Length(this Interval<DateTime> value) => Length(value, (end, start) => end - start);
+        public static Infinity<TimeSpan> Length(this Interval<DateTimeOffset> value) => Length(value, (end, start) => end - start);
 
         private static Infinity<TResult> Length<T, TResult>(this Interval<T> value, Func<T, T, TResult> substract)
             where T : struct, IEquatable<T>, IComparable<T>, IComparable

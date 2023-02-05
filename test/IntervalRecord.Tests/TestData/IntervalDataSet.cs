@@ -153,7 +153,7 @@ namespace IntervalRecord.Tests.DataSets
             };
         }
 
-        public TheoryData<Interval<T>, Interval<T>, bool> GetOverlapsWithData(bool includeHalfOpen)
+        public TheoryData<Interval<T>, Interval<T>, bool> GetIsConnectedData(bool includeHalfOpen)
         {
             var expectedMeets = includeHalfOpen
                 ? Reference.GetBoundaryType() is BoundaryType.Closed or BoundaryType.OpenClosed or BoundaryType.ClosedOpen

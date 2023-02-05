@@ -15,10 +15,10 @@ namespace IntervalRecord.Tests.OverlapsTests
         private static IntervalDataSet<DateTimeOffset> _dataSet = new IntervalDataSet<DateTimeOffset>(_start, _end, BoundaryType.Closed, offset);
 
         public static TheoryData<Interval<DateTimeOffset>, Interval<DateTimeOffset>, bool> IntervalOverlaps(BoundaryType boundaryType)
-            => _dataSet.CopyWith(boundaryType).GetOverlapsWithData(false);
+            => _dataSet.CopyWith(boundaryType).GetIsConnectedData(false);
 
         public static TheoryData<Interval<DateTimeOffset>, Interval<DateTimeOffset>, bool> IntervalOverlaps_IncludeHalfOpen(BoundaryType boundaryType)
-            => _dataSet.CopyWith(boundaryType).GetOverlapsWithData(true);
+            => _dataSet.CopyWith(boundaryType).GetIsConnectedData(true);
 
         [Theory]
         [MemberData(nameof(IntervalOverlaps), BoundaryType.Closed)]
