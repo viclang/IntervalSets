@@ -13,13 +13,6 @@ namespace IntervalRecord
         public T? End { get; init; }
         public bool StartInclusive { get; init; }
         public bool EndInclusive { get; init; }
-        public IntervalType IntervalType => (StartInclusive, EndInclusive) switch
-        {
-            (false, false) => IntervalType.Open,
-            (true, true) => IntervalType.Closed,
-            (false, true) => IntervalType.OpenClosed,
-            (true, false) => IntervalType.ClosedOpen,
-        };
 
         public Interval(T? start, T? end, bool startInclusive, bool endInclusive)
         {
@@ -43,7 +36,12 @@ namespace IntervalRecord
             }
         }
 
-        private bool IsConnected(Interval<T> other)
+        public IntervalType GetIntervalType()
+        {
+            return IntervalTypeMapper.ToType(StartInclusive, EndInclusive);
+        }
+
+        public bool IsConnected(Interval<T> other)
         {
             if (this == other)
             {

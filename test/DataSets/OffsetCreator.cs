@@ -14,6 +14,24 @@ namespace IntervalRecord.Tests.DataSets
         Interval<T> After { get; init; }
     }
 
+    public static class OffsetCreator
+    {
+        public static IOffsetCreator<T, TOffset> Create<T, TOffset>(Interval<T> reference, TOffset offset)
+            where T : struct, IEquatable<T>, IComparable<T>, IComparable
+            => (reference, offset) switch
+        {
+            (Interval<int> typedReference, int typedOffset) =>
+                (IOffsetCreator<T, TOffset>)(object)new IntegerCreator(typedReference, typedOffset),
+            (Interval<DateOnly> typedReference, int typedOffset) =>
+                (IOffsetCreator<T, TOffset>)(object)new DateOnlyCreator(typedReference, typedOffset),
+            (Interval<DateTime> typedReference, TimeSpan typedOffset) =>
+                (IOffsetCreator<T, TOffset>)(object)new DateTimeCreator(typedReference, typedOffset),
+            (Interval<DateTimeOffset> typedReference, TimeSpan typedOffset) =>
+                (IOffsetCreator<T, TOffset>)(object)new DateTimeOffsetCreator(typedReference, typedOffset),
+            (_, _) => throw new NotImplementedException()
+        };
+    }
+
     public readonly struct IntegerCreator : IOffsetCreator<int, int>
     {
         public Interval<int> Before { get; init; }
