@@ -114,7 +114,7 @@ namespace IntervalRecord.Tests.Canonicalizers
         [InlineData(IntervalType.ClosedOpen, IntervalType.Open)]
         [InlineData(IntervalType.OpenClosed, IntervalType.Open)]
         [InlineData(IntervalType.Open, IntervalType.Open)]
-        public void Canonicalize_ShouldBeExpected(IntervalType intervalType, IntervalType expectedBoundaryType)
+        public void Canonicalize_ShouldBeExpected(IntervalType intervalType, IntervalType expectedIntervalType)
         {
             // Arrange
             var (startInclusive, endInclusive) = intervalType.ToTuple();
@@ -126,15 +126,15 @@ namespace IntervalRecord.Tests.Canonicalizers
             var dateTimeOffset = new Interval<DateTimeOffset>(_referenceDateTimeOffset.AddHours(start), _referenceDateTimeOffset.AddHours(end), startInclusive, endInclusive);
 
             // Act
-            var actualInteger = integer.Canonicalize(expectedBoundaryType, step);
-            var actualDouble = doubles.Canonicalize(expectedBoundaryType, step);
-            var actualDateOnly = dateOnly.Canonicalize(expectedBoundaryType, step);
-            var actualTimeOnly = timeOnly.Canonicalize(expectedBoundaryType, _stepInHours);
-            var actualDateTime = dateTime.Canonicalize(expectedBoundaryType, _stepInHours);
-            var actualDateTimeOffset = dateTimeOffset.Canonicalize(expectedBoundaryType, _stepInHours);
+            var actualInteger = integer.Canonicalize(expectedIntervalType, step);
+            var actualDouble = doubles.Canonicalize(expectedIntervalType, step);
+            var actualDateOnly = dateOnly.Canonicalize(expectedIntervalType, step);
+            var actualTimeOnly = timeOnly.Canonicalize(expectedIntervalType, _stepInHours);
+            var actualDateTime = dateTime.Canonicalize(expectedIntervalType, _stepInHours);
+            var actualDateTimeOffset = dateTimeOffset.Canonicalize(expectedIntervalType, _stepInHours);
 
             // Assert
-            var (expectedStartInclusive, expectedEndInclusive) = expectedBoundaryType.ToTuple();
+            var (expectedStartInclusive, expectedEndInclusive) = expectedIntervalType.ToTuple();
 
             var expectedStart = expectedStartInclusive
                 ? startInclusive ? start : start + step

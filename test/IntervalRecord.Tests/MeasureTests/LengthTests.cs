@@ -1,9 +1,7 @@
 ﻿using FluentAssertions.Execution;
 using InfinityComparable;
-using IntervalRecord.Tests.TestData;
+using Microsoft.VisualStudio.TestPlatform.ObjectModel;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace IntervalRecord.Tests.Calculators
 {
@@ -14,6 +12,7 @@ namespace IntervalRecord.Tests.Calculators
         private static readonly TimeOnly _referenceTimeOnly = new(_referenceDateTimeOffset.Hour, _referenceDateTimeOffset.Minute, _referenceDateTimeOffset.Second);
 
         [Theory]
+        // TODO: create a generic factory of Interval<T> with Interval<TResult>
         [InlineData(1, 2)]
         [InlineData(1, 3)]
         [InlineData(1, 4)]
@@ -84,19 +83,19 @@ namespace IntervalRecord.Tests.Calculators
             }
         }
 
-        public Infinity<T> Length<T, TResult>(Interval<T> interval)
+        public Infinity<TResult> Length<T, TResult>(Interval<T> interval)
             where T : struct, IEquatable<T>, IComparable<T>, IComparable
             where TResult : struct, IEquatable<TResult>, IComparable<TResult>, IComparable
         {
             var type = typeof(T);
             return Type.GetTypeCode(type) switch
             {
-                TypeCode.Int32 => (Infinity<T>)(object)Interval.Length((Interval<int>)(object)interval),
-                TypeCode.Double => (Infinity<T>)(object)Interval.Length((Interval<double>)(object)interval),
-                TypeCode.DateTime => (Infinity<T>)(object)Interval.Length((Interval<DateTime>)(object)interval),
-                _ when type == typeof(DateTimeOffset) => (Infinity<T>)(object)Interval.Length((Interval<DateTimeOffset>)(object)interval),
-                _ when type == typeof(DateOnly) => (Infinity<T>)(object)Interval.Length((Interval<DateOnly>)(object)interval),
-                _ when type == typeof(TimeOnly) => (Infinity<T>)(object)Interval.Length((Interval<TimeOnly>)(object)interval),
+                TypeCode.Int32 => (Infinity<TResult>)(object)Interval.Length((Interval<int>)(object)interval),
+                TypeCode.Double => (Infinity<TResult>)(object)Interval.Length((Interval<double>)(object)interval),
+                TypeCode.DateTime => (Infinity<TResult>)(object)Interval.Length((Interval<DateTime>)(object)interval),
+                _ when type == typeof(DateTimeOffset) => (Infinity<TResult>)(object)Interval.Length((Interval<DateTimeOffset>)(object)interval),
+                _ when type == typeof(DateOnly) => (Infinity<TResult>)(object)Interval.Length((Interval<DateOnly>)(object)interval),
+                _ when type == typeof(TimeOnly) => (Infinity<TResult>)(object)Interval.Length((Interval<TimeOnly>)(object)interval),
                 _ => throw new NotSupportedException()
             };
         }

@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace IntervalRecord.Tests.TestData
 {
-    public record OverlappingTestDataBuilder(int StartingPoint, int Length, int Offset, IntervalType[] BoundaryTypes)
+    public record OverlappingTestDataBuilder(int StartingPoint, int Length, int Offset, IntervalType[] IntervalTypes)
     {
         public bool IncludeHalfOpen { get; init; } = true;
         public bool WithOverlappingState { get; init; } = true;
@@ -19,7 +19,7 @@ namespace IntervalRecord.Tests.TestData
         {
             var list = new List<object[]>();
             IntOverlappingDataSet dataSet;
-            foreach (var intervalType in BoundaryTypes)
+            foreach (var intervalType in IntervalTypes)
             {
                 dataSet = new IntOverlappingDataSet(StartingPoint, Length, Offset, intervalType);
                 list.AddRange(GetPairsWithOverlappingState(dataSet, IncludeHalfOpen));

@@ -4,7 +4,7 @@ using Xunit;
 
 namespace IntervalRecord.Tests
 {
-    public class InfinityStateTests
+    public class BoundedStateTests
     {
         [Fact]
         public void Infinity_ShouldBeOpen()
@@ -20,7 +20,7 @@ namespace IntervalRecord.Tests
         [InlineData(0, null, BoundedState.LeftBounded)]
         [InlineData(null, 0, BoundedState.RightBounded)]
         [InlineData(null, null, BoundedState.Unbounded)]
-        public void GetInfinityState_ShouldBeExpected(int? start, int? end, BoundedState expected)
+        public void GetBoundedState_ShouldBeExpected(int? start, int? end, BoundedState expected)
         {
             // Arrange
             var interval = new Interval<int>(start, end, true, true);

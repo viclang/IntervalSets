@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace IntervalRecord.Tests
 {
-    public class BoundaryTypeTests
+    public class IntervalTypeTests
     {
         private const int start = 6;
         private const int end = 10;
@@ -16,17 +16,17 @@ namespace IntervalRecord.Tests
         [InlineData(true, false, IntervalType.ClosedOpen)]
         [InlineData(false, true, IntervalType.OpenClosed)]
         [InlineData(false, false, IntervalType.Open)]
-        public void GetBoundaryType_ToTuple_ShouldBeExpected(bool startInclusive, bool endInclusive, IntervalType expected)
+        public void GetIntervalType_ToTuple_ShouldBeExpected(bool startInclusive, bool endInclusive, IntervalType expected)
         {
             // Arrange
             var interval = new Interval<int>(start, end, startInclusive, endInclusive);
 
             // Act
-            var actualBoundaryType = interval.GetIntervalType();
-            var (actualStartInclusive, actualEndInclusive) = actualBoundaryType.ToTuple();
+            var actualIntervalType = interval.GetIntervalType();
+            var (actualStartInclusive, actualEndInclusive) = actualIntervalType.ToTuple();
 
             // Assert
-            actualBoundaryType.Should().Be(expected);
+            actualIntervalType.Should().Be(expected);
             actualStartInclusive.Should().Be(interval.StartInclusive);
             actualEndInclusive.Should().Be(interval.EndInclusive);
         }

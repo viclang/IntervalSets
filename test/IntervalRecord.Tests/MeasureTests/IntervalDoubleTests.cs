@@ -100,16 +100,16 @@ namespace IntervalRecord.Tests.MeasureTests
         [InlineData(IntervalType.ClosedOpen, IntervalType.Open)]
         [InlineData(IntervalType.OpenClosed, IntervalType.Open)]
         [InlineData(IntervalType.Open, IntervalType.Open)]
-        public void GivenBoundedIntervalWithBoundaryType_WhenCanonicalized_ReturnsExpected(IntervalType intervalType, IntervalType expectedBoundaryType)
+        public void GivenBoundedIntervalWithIntervalType_WhenCanonicalized_ReturnsExpected(IntervalType intervalType, IntervalType expectedIntervalType)
         {
             // Arrange
             var interval = Interval.WithType<double>(start, end, intervalType);
 
             // Act
-            var actual = interval.Canonicalize(expectedBoundaryType, step);
+            var actual = interval.Canonicalize(expectedIntervalType, step);
 
             // Assert
-            var (expectedStartInclusive, expectedEndInclusive) = expectedBoundaryType.ToTuple();
+            var (expectedStartInclusive, expectedEndInclusive) = expectedIntervalType.ToTuple();
 
             var expectedStart = expectedStartInclusive
                 ? interval.StartInclusive ? start : start + step

@@ -44,7 +44,7 @@ namespace IntervalRecord.Tests
         [InlineData(2, 4, IntervalType.OpenClosed, false, true)]
         [InlineData(1, 3, IntervalType.Open, false, false)]
         [InlineData(2, 4, IntervalType.Open, false, false)]
-        public void IntervalWithBoundaryType_ReturnsExpected(
+        public void IntervalWithIntervalType_ReturnsExpected(
             int start,
             int end,
             IntervalType intervalType,
