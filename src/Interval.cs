@@ -338,9 +338,11 @@ namespace IntervalRecord
         /// <param name="other"></param>
         /// <returns></returns>
         public static int DistanceTo(this Interval<int> value, Interval<int> other)
-            => value.IsConnected(other)
+        {
+            return value.IsConnected(other)
                 ? 0
                 : other.Start.Value - value.End.Value;
+        }
 
         public static Interval<int> Interior(this Interval<int> value, int step)
             => Interior(value, x => x + step, x => x - step);

@@ -41,29 +41,10 @@ namespace IntervalRecord
             where T : struct, IEquatable<T>, IComparable<T>, IComparable
         {
             var matches = _intervalRegex.Matches(value);
-            if (!matches.Any())
-            {
-                throw new ArgumentException(intervalNotFound);
-            }
-
+            
             foreach(Match match in matches)
             {
                 yield return ParseInterval<T>(match.Value);
-            }
-        }
-
-        internal static bool TryParseAll<T>(string value, out IEnumerable<Interval<T>> result)
-            where T : struct, IEquatable<T>, IComparable<T>, IComparable
-        {
-            try
-            {
-                result = ParseAll<T>(value);
-                return true;
-            }
-            catch
-            {
-                result = Enumerable.Empty<Interval<T>>();
-                return false;
             }
         }
 

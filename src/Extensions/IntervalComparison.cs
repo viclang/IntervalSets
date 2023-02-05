@@ -88,7 +88,7 @@ namespace IntervalRecord.Extensions
         public static bool IsExclusiveAfter<T>(this Interval<T> value, Interval<T> other)
             where T : struct, IEquatable<T>, IComparable<T>, IComparable
         {
-            return CompareEndToStartExclusive(value, other) == 1;
+            return CompareStartToEndExclusive(value, other) == 1;
         }
 
         public static bool Meets<T>(this Interval<T> value, Interval<T> other)
@@ -185,7 +185,7 @@ namespace IntervalRecord.Extensions
             where T : struct, IEquatable<T>, IComparable<T>, IComparable
         {
             var result = value.Start.CompareTo(other.End);
-            return result == 0 && !value.StartInclusive || !other.EndInclusive
+            return result == 0 && (!value.StartInclusive || !other.EndInclusive)
                 ? 1
                 : result;
         }
@@ -194,7 +194,7 @@ namespace IntervalRecord.Extensions
             where T : struct, IEquatable<T>, IComparable<T>, IComparable
         {
             var result = value.End.CompareTo(other.Start);
-            return result == 0 && !value.EndInclusive || !other.StartInclusive
+            return result == 0 && (!value.EndInclusive || !other.StartInclusive)
                 ? -1
                 : result;
         }
