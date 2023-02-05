@@ -14,13 +14,14 @@ namespace IntervalRecord.Tests
         private static readonly TimeOnly _referenceTimeOnly = new TimeOnly(_referenceDateTime.Hour, _referenceDateTime.Minute, _referenceDateTime.Second, _referenceDateTime.Millisecond);
 
         [Theory]
-        [InlineData(false, false)]
-        [InlineData(true, false)]
-        [InlineData(false, true)]
-        [InlineData(true, true)]
-        public void Closure(bool startInclusive, bool endInclusive)
+        [InlineData(BoundaryType.Closed)]
+        [InlineData(BoundaryType.ClosedOpen)]
+        [InlineData(BoundaryType.OpenClosed)]
+        [InlineData(BoundaryType.Open)]
+        public void Closure(BoundaryType boundaryType)
         {
             // Arrange
+            var (startInclusive, endInclusive) = boundaryType.ToTuple();
             var integer = new Interval<int>(start, end, startInclusive, endInclusive);
             var doubles = new Interval<double>(start, end, startInclusive, endInclusive);
             var dateOnly = new Interval<DateOnly>(_referenceDateOnly.AddDays(start), _referenceDateOnly.AddDays(end), startInclusive, endInclusive);
@@ -37,10 +38,9 @@ namespace IntervalRecord.Tests
             var actualDateTimeOffset = dateTimeOffset.Closure(_stepInHours);
 
             // Assert
+            var (expectedStartInclusive, expectedEndInclusive) = BoundaryType.Closed.ToTuple();
             var expectedStart = startInclusive ? start : start + step;
             var expectedEnd = endInclusive ? end : end - step;
-            var expectedStartInclusive = true;
-            var expectedEndInclusive = true;
 
             actualInteger.Should().Be(new Interval<int>(expectedStart, expectedEnd, expectedStartInclusive, expectedEndInclusive));
             actualDouble.Should().Be(new Interval<double>(expectedStart, expectedEnd, expectedStartInclusive, expectedEndInclusive));
@@ -51,13 +51,14 @@ namespace IntervalRecord.Tests
         }
 
         [Theory]
-        [InlineData(false, false)]
-        [InlineData(true, false)]
-        [InlineData(false, true)]
-        [InlineData(true, true)]
-        public void Interior(bool startInclusive, bool endInclusive)
+        [InlineData(BoundaryType.Closed)]
+        [InlineData(BoundaryType.ClosedOpen)]
+        [InlineData(BoundaryType.OpenClosed)]
+        [InlineData(BoundaryType.Open)]
+        public void Interior(BoundaryType boundaryType)
         {
             // Arrange
+            var (startInclusive, endInclusive) = boundaryType.ToTuple();
             var integer = new Interval<int>(start, end, startInclusive, endInclusive);
             var doubles = new Interval<double>(start, end, startInclusive, endInclusive);
             var dateOnly = new Interval<DateOnly>(_referenceDateOnly.AddDays(start), _referenceDateOnly.AddDays(end), startInclusive, endInclusive);
@@ -74,10 +75,9 @@ namespace IntervalRecord.Tests
             var actualDateTimeOffset = dateTimeOffset.Interior(_stepInHours);
 
             // Assert
+            var (expectedStartInclusive, expectedEndInclusive) = BoundaryType.Open.ToTuple();
             var expectedStart = startInclusive ? start - step : start;
             var expectedEnd = endInclusive ? end + step : end;
-            var expectedStartInclusive = false;
-            var expectedEndInclusive = false;
 
             actualInteger.Should().Be(new Interval<int>(expectedStart, expectedEnd, expectedStartInclusive, expectedEndInclusive));
             actualDouble.Should().Be(new Interval<double>(expectedStart, expectedEnd, expectedStartInclusive, expectedEndInclusive));
@@ -88,25 +88,29 @@ namespace IntervalRecord.Tests
         }
 
         [Theory]
-        [InlineData(BoundaryType.Closed, false, false)]
-        [InlineData(BoundaryType.Closed, true, false)]
-        [InlineData(BoundaryType.Closed, false, true)]
-        [InlineData(BoundaryType.Closed, true, true)]
-        [InlineData(BoundaryType.ClosedOpen, false, false)]
-        [InlineData(BoundaryType.ClosedOpen, true, false)]
-        [InlineData(BoundaryType.ClosedOpen, false, true)]
-        [InlineData(BoundaryType.ClosedOpen, true, true)]
-        [InlineData(BoundaryType.OpenClosed, false, false)]
-        [InlineData(BoundaryType.OpenClosed, true, false)]
-        [InlineData(BoundaryType.OpenClosed, false, true)]
-        [InlineData(BoundaryType.OpenClosed, true, true)]
-        [InlineData(BoundaryType.Open, false, false)]
-        [InlineData(BoundaryType.Open, true, false)]
-        [InlineData(BoundaryType.Open, false, true)]
-        [InlineData(BoundaryType.Open, true, true)]
-        public void Canonicalize_ShouldBeExpected(BoundaryType expectedBoundaryType, bool startInclusive, bool endInclusive)
+        [InlineData(BoundaryType.Closed, BoundaryType.Closed)]
+        [InlineData(BoundaryType.ClosedOpen, BoundaryType.Closed)]
+        [InlineData(BoundaryType.OpenClosed, BoundaryType.Closed)]
+        [InlineData(BoundaryType.Open, BoundaryType.Closed)]
+
+        [InlineData(BoundaryType.Closed, BoundaryType.ClosedOpen)]
+        [InlineData(BoundaryType.ClosedOpen, BoundaryType.ClosedOpen)]
+        [InlineData(BoundaryType.OpenClosed, BoundaryType.ClosedOpen)]
+        [InlineData(BoundaryType.Open, BoundaryType.ClosedOpen)]
+
+        [InlineData(BoundaryType.Closed, BoundaryType.OpenClosed)]
+        [InlineData(BoundaryType.ClosedOpen, BoundaryType.OpenClosed)]
+        [InlineData(BoundaryType.OpenClosed, BoundaryType.OpenClosed)]
+        [InlineData(BoundaryType.Open, BoundaryType.OpenClosed)]
+
+        [InlineData(BoundaryType.Closed, BoundaryType.Open)]
+        [InlineData(BoundaryType.ClosedOpen, BoundaryType.Open)]
+        [InlineData(BoundaryType.OpenClosed, BoundaryType.Open)]
+        [InlineData(BoundaryType.Open, BoundaryType.Open)]
+        public void Canonicalize_ShouldBeExpected(BoundaryType boundaryType, BoundaryType expectedBoundaryType)
         {
             // Arrange
+            var (startInclusive, endInclusive) = boundaryType.ToTuple();
             var integer = new Interval<int>(start, end, startInclusive, endInclusive);
             var doubles = new Interval<double>(start, end, startInclusive, endInclusive);
             var dateOnly = new Interval<DateOnly>(_referenceDateOnly.AddDays(start), _referenceDateOnly.AddDays(end), startInclusive, endInclusive);
@@ -121,6 +125,7 @@ namespace IntervalRecord.Tests
             var actualTimeOnly = timeOnly.Canonicalize(expectedBoundaryType, _stepInHours);
             var actualDateTime = dateTime.Canonicalize(expectedBoundaryType, _stepInHours);
             var actualDateTimeOffset = dateTimeOffset.Canonicalize(expectedBoundaryType, _stepInHours);
+            
             // Assert
             var (expectedStartInclusive, expectedEndInclusive) = expectedBoundaryType.ToTuple();
 

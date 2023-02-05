@@ -25,6 +25,8 @@ namespace IntervalRecord.Tests.TestData
         Interval<T> MetBy { get; }
 
         IOverlappingDataSet<T> CopyWith(BoundaryType boundaryType);
+
+        TheoryData<Interval<T>> ToTheoryData();
         TheoryData<Interval<T>, Interval<T>, OverlappingState> GetOverlappingState(bool includeHalfOpen);
     }
 }

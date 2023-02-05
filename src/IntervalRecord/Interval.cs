@@ -34,8 +34,8 @@ namespace IntervalRecord
         {
             (false, false) => InfinityState.Bounded,
             (true, true) => InfinityState.Unbounded,
-            (true, false) => InfinityState.LeftBounded,
-            (false, true) => InfinityState.RightBounded
+            (true, false) => InfinityState.RightBounded,
+            (false, true) => InfinityState.LeftBounded
         };
 
         public bool IsHalfBounded() => Start.IsInfinite && !End.IsInfinite || !Start.IsInfinite && End.IsInfinite;
@@ -64,10 +64,10 @@ namespace IntervalRecord
         
         public static bool operator >(Interval<T> a, Interval<T> b)
             => a.End.CompareTo(b.End) == 1
-                || a.End.CompareTo(b.End) == 0 && a.Start.CompareTo(b.Start) == 1;
+                || a.End.CompareTo(b.End) == 0 && a.Start.CompareTo(b.Start) == -1;
         public static bool operator <(Interval<T> a, Interval<T> b)
             => a.End.CompareTo(b.End) == -1
-                || a.End.CompareTo(b.End) == 0 && a.Start.CompareTo(b.Start) == -1;
+                || a.End.CompareTo(b.End) == 0 && a.Start.CompareTo(b.Start) == 1;
 
         public static bool operator >=(Interval<T> a, Interval<T> b) => a == b || a > b;
         public static bool operator <=(Interval<T> a, Interval<T> b) => a == b || a < b;

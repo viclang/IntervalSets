@@ -1,4 +1,5 @@
-﻿using IntervalRecord.Tests.TestData;
+﻿using IntervalRecord.Tests.DataSets;
+using IntervalRecord.Tests.TestData;
 using System;
 
 namespace IntervalRecord.Tests
@@ -8,7 +9,7 @@ namespace IntervalRecord.Tests
         private const int start = 6;
         private const int end = 10;
         private const int offset = 1;
-        private static IOverlappingDataSet<int> _dataSet = new IntegerOverlappingDataSet(start, end, BoundaryType.Closed, offset);
+        private static IOverlappingDataSet<int> _dataSet = new IntOverlappingDataSet(start, end, BoundaryType.Closed, offset);
 
         public static TheoryData<Interval<int>, Interval<int>, OverlappingState> IntervalOverlaps(BoundaryType boundaryType)
             => _dataSet.CopyWith(boundaryType).GetOverlappingState(false);

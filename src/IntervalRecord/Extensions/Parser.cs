@@ -1,16 +1,15 @@
-﻿using System.Globalization;
+﻿using InfinityComparable;
 using System.Text.RegularExpressions;
 
 namespace IntervalRecord
 {
     public static partial class Interval
     {
-        private static readonly Regex _intervalRegex =
-            new Regex(@"(?:\[|\()(?:[^[\](),]*,[^,()[\]]*)(?:\)|\])");
-        private static readonly string[] infinity = { "Infinity", "-Infinity", "-inf", "+inf", "inf", "-∞", "+∞", "∞", "null" };
+        private static readonly Regex _intervalRegex = new Regex(@"(?:\[|\()(?:[^[\](),]*,[^,()[\]]*)(?:\)|\])");
+        private const string infinity = "Infinity";
         private const string intervalNotFound = "Interval not found in string. Please provide an interval string in correct format";
 
-        public static Interval<T> Parse<T>(string value, Func<string, T> boundaryParser)
+        public static Interval<T> Parse<T>(string value, Func<string, T> boundaryParser, string infinityString = infinity)
             where T : struct, IEquatable<T>, IComparable<T>, IComparable
         {
             var match = _intervalRegex.Match(value);
@@ -18,15 +17,19 @@ namespace IntervalRecord
             {
                 throw new ArgumentException(intervalNotFound);
             }
-            return ParseInterval(match.Value, boundaryParser);
+            return ParseInterval(match.Value, boundaryParser, infinityString);
         }
 
         public static bool TryParse<T>(string value, Func<string, T> boundaryParser, out Interval<T>? result)
             where T : struct, IEquatable<T>, IComparable<T>, IComparable
+            => TryParse(value, boundaryParser, infinity, out result);
+
+        public static bool TryParse<T>(string value, Func<string, T> boundaryParser, string infinityString, out Interval<T>? result)
+            where T : struct, IEquatable<T>, IComparable<T>, IComparable
         {
             try
             {
-                result = Parse(value, boundaryParser);
+                result = Parse(value, boundaryParser, infinityString);
                 return true;
             }
             catch
@@ -36,25 +39,25 @@ namespace IntervalRecord
             }
         }
 
-        public static IEnumerable<Interval<T>> ParseAll<T>(string value, Func<string, T> boundaryParser)
+        public static IEnumerable<Interval<T>> ParseAll<T>(string value, Func<string, T> boundaryParser, string infinityString = infinity)
             where T : struct, IEquatable<T>, IComparable<T>, IComparable
         {
             var matches = _intervalRegex.Matches(value);
             foreach(Match match in matches)
             {
-                yield return ParseInterval(match.Value, boundaryParser);
+                yield return ParseInterval(match.Value, boundaryParser, infinityString);
             }
         }
 
-        private static Interval<T> ParseInterval<T>(string value, Func<string, T> boundaryParser)
+        private static Interval<T> ParseInterval<T>(string value, Func<string, T> boundaryParser, string infinityString)
             where T : struct, IEquatable<T>, IComparable<T>, IComparable
         {
             var parts = value.Split(',');
             var startString = parts[0].Trim();
             var endString = parts[1].Trim();
 
-            var start = ParseBoundary(startString[1..], boundaryParser);
-            var end = ParseBoundary(endString[..(endString.Length - 1)], boundaryParser);
+            var start = ParseBoundary(startString[1..], boundaryParser, infinityString);
+            var end = ParseBoundary(endString[..(endString.Length - 1)], boundaryParser, infinityString);
 
             return new Interval<T>(
                 start,
@@ -63,10 +66,14 @@ namespace IntervalRecord
                 end is null ? false : value.EndsWith(']'));
         }
 
-        private static T? ParseBoundary<T>(string value, Func<string, T> boundaryParser)
+        private static T? ParseBoundary<T>(string value, Func<string, T> boundaryParser, string infinityString)
             where T : struct, IEquatable<T>, IComparable<T>
         {
-            if (string.IsNullOrEmpty(value) || infinity.Contains(value))
+            if (string.IsNullOrEmpty(value)
+                || value == "null"
+                || value == infinityString
+                || value == "-" + infinityString
+                || value == "+" + infinityString)
             {
                 return null;
             }

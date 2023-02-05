@@ -123,7 +123,7 @@
             where T : struct, IEquatable<T>, IComparable<T>, IComparable
         {
             var result = value.Start.CompareTo(other.End);
-            return result == 0 && NotTouching(value, other, includeHalfOpen)
+            return result == 0 && StartEndNotTouching(value, other, includeHalfOpen)
                 ? 1
                 : result;
         }
@@ -132,17 +132,25 @@
             where T : struct, IEquatable<T>, IComparable<T>, IComparable
         {
             var result = value.End.CompareTo(other.Start);
-            return result == 0 && NotTouching(value, other, includeHalfOpen)
+            return result == 0 && EndStartNotTouching(value, other, includeHalfOpen)
                 ? -1
                 : result;
         }
 
-        private static bool NotTouching<T>(Interval<T> value, Interval<T> other, bool includeHalfOpen = false)
+        private static bool StartEndNotTouching<T>(Interval<T> value, Interval<T> other, bool includeHalfOpen = false)
             where T : struct, IEquatable<T>, IComparable<T>, IComparable
         {
             return includeHalfOpen
-                ? ((!value.StartInclusive && !other.EndInclusive) || (!value.EndInclusive && !other.StartInclusive))
-                : ((!value.StartInclusive || !other.EndInclusive) || (!value.EndInclusive || !other.StartInclusive));
+                ? (!value.StartInclusive && !other.EndInclusive)
+                : (!value.StartInclusive || !other.EndInclusive);
+        }
+
+        private static bool EndStartNotTouching<T>(Interval<T> value, Interval<T> other, bool includeHalfOpen = false)
+            where T : struct, IEquatable<T>, IComparable<T>, IComparable
+        {
+            return includeHalfOpen
+                ? (!value.EndInclusive && !other.StartInclusive)
+                : (!value.EndInclusive || !other.StartInclusive);
         }
     }
 }

@@ -6,6 +6,34 @@ using Xunit;
 
 namespace IntervalRecord.Tests.DataSets
 {
+    public sealed record class IntOverlappingDataSet : BaseOverlappingDataSet<int>
+    {
+        private readonly int _offset;
+
+        public IntOverlappingDataSet(int start, int end, BoundaryType boundaryType, int offset)
+            : base(start, end, boundaryType)
+        {
+            _offset = offset;
+            Init();
+        }
+
+        protected override void Init()
+        {
+            var length = Reference.Length().Finite!.Value;
+            var beforeEnd = Reference.Start.Finite!.Value - _offset;
+            var beforeStart = beforeEnd - length;
+            var containsStart = Reference.Start.Finite!.Value + _offset;
+            var containsEnd = Reference.End.Finite!.Value - _offset;
+            var afterStart = Reference.End.Finite!.Value + _offset;
+            var afterEnd = afterStart + length;
+
+            Before = Reference with { Start = beforeStart, End = beforeEnd };
+            ContainedBy = Reference with { Start = containsStart, End = containsEnd };
+            After = Reference with { Start = afterStart, End = afterEnd };
+            base.Init();
+        }
+    }
+
     public abstract record BaseOverlappingDataSet<T> : IOverlappingDataSet<T>
         where T : struct, IEquatable<T>, IComparable<T>, IComparable
     {
@@ -51,9 +79,7 @@ namespace IntervalRecord.Tests.DataSets
             MetBy = Reference with { Start = Reference.End, End = After.End };
         }
 
-        public IEnumerable<Interval<T>> ToList()
-        {
-            return new List<Interval<T>>
+        public TheoryData<Interval<T>> ToTheoryData() => new TheoryData<Interval<T>>
             {
                 Before,
                 Meets,
@@ -67,9 +93,20 @@ namespace IntervalRecord.Tests.DataSets
                 StartedBy,
                 OverlappedBy,
                 MetBy,
-                After
+                After,
+                Equal with { Start = null },
+                Before with { Start = null },
+                After with { Start = null },
+                ContainedBy with { Start = null },
+                Equal with { End = null },
+                Before with { End = null },
+                After with { End = null },
+                ContainedBy with { End = null },
+                Equal with { Start = null, End = null },
+                Before with { Start = null, End = null },
+                After with { Start = null, End = null },
+                ContainedBy with { Start = null, End = null },
             };
-        }
 
         public IOverlappingDataSet<T> CopyWith(BoundaryType boundaryType)
         {

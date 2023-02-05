@@ -11,7 +11,7 @@ namespace IntervalRecord.Tests
         private const int start = 6;
         private const int end = 10;
         private const int offset = 1;
-        private static readonly IOverlappingDataSet<int> _dataSet = new IntegerOverlappingDataSet(start, end, BoundaryType.Closed, offset);
+        private static readonly IOverlappingDataSet<int> _dataSet = new IntOverlappingDataSet(start, end, BoundaryType.Closed, offset);
 
         public static TheoryData<Interval<int>, Interval<int>, OverlappingState> GetOverlappingState(BoundaryType boundaryType)
             => _dataSet.CopyWith(boundaryType).GetOverlappingState(false);
@@ -90,6 +90,100 @@ namespace IntervalRecord.Tests
                 .Should().Be(state == OverlappingState.MetBy);
             a.IsAfter(b, true)
                 .Should().Be(state == OverlappingState.After);
+        }
+
+        [Theory]
+        [MemberData(nameof(GetOverlappingState), BoundaryType.Closed)]
+        public void CompareTo_ShouldBeExpected(Interval<int> a, Interval<int> b, OverlappingState state)
+        {
+            // Act
+            var actual = a.CompareTo(b);
+
+            // Assert
+            if((int)state < 6)
+            {
+                actual.Should().Be(-1);
+            }
+            else if ((int)state == 6)
+            {
+                actual.Should().Be(0);
+            }
+            else if ((int)state > 6)
+            {
+                actual.Should().Be(1);
+            }
+        }
+
+        [Theory]
+        [MemberData(nameof(GetOverlappingState), BoundaryType.Closed)]
+        public void GreaterThan_ShouldBeExpected(Interval<int> a, Interval<int> b, OverlappingState state)
+        {
+            // Act
+            var actual = a > b;
+
+            // Assert
+            if ((int)state <= 6)
+            {
+                actual.Should().BeFalse();
+            }
+            else if ((int)state > 6)
+            {
+                actual.Should().BeTrue();
+            }
+        }
+
+        [Theory]
+        [MemberData(nameof(GetOverlappingState), BoundaryType.Closed)]
+        public void LessThan_ShouldBeExpected(Interval<int> a, Interval<int> b, OverlappingState state)
+        {
+            // Act
+            var actual = a < b;
+
+            // Assert
+            if ((int)state < 6)
+            {
+                actual.Should().BeTrue();
+            }
+            else if ((int)state >= 6)
+            {
+                actual.Should().BeFalse();
+            }
+        }
+
+        [Theory]
+        [MemberData(nameof(GetOverlappingState), BoundaryType.Closed)]
+        public void GreaterOrEqualTo_ShouldBeExpected(Interval<int> a, Interval<int> b, OverlappingState state)
+        {
+            // Act
+            var actual = a >= b;
+
+            // Assert
+            if ((int)state < 6)
+            {
+                actual.Should().BeFalse();
+            }
+            else if ((int)state >= 6)
+            {
+                actual.Should().BeTrue();
+            }
+        }
+
+        [Theory]
+        [MemberData(nameof(GetOverlappingState), BoundaryType.Closed)]
+        public void LessOrEqualTo_ShouldBeExpected(Interval<int> a, Interval<int> b, OverlappingState state)
+        {
+            // Act
+            var actual = a <= b;
+
+            // Assert
+            if ((int)state <= 6)
+            {
+                actual.Should().BeTrue();
+            }
+            else if ((int)state > 6)
+            {
+                actual.Should().BeFalse();
+            }
         }
     }
 }

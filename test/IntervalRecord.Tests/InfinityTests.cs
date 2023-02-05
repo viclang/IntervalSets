@@ -1,4 +1,5 @@
 ﻿using FluentAssertions;
+using IntervalRecord.Enums;
 using Xunit;
 
 namespace IntervalRecord.Tests
@@ -6,12 +7,12 @@ namespace IntervalRecord.Tests
     public class InfinityTests
     {
         [Fact]
-        public void NegativeInfinity_ShouldBeLessThanMin()
+        public void NegativeInfinity_ShouldBeGreaterThanMin()
         {
             var minValue = new Interval<int>(int.MinValue, 0, true, true);
             var negativeInfinite = new Interval<int>(null, 0, false, true);
 
-            negativeInfinite.Should().BeLessThan(minValue);
+            negativeInfinite.Should().BeGreaterThan(minValue);
         }
 
         [Fact]
@@ -48,6 +49,40 @@ namespace IntervalRecord.Tests
 
             infinity.StartInclusive.Should().BeFalse();
             infinity.EndInclusive.Should().BeFalse();
+        }
+
+        [Theory]
+        [InlineData(0, 0, InfinityState.Bounded)]
+        [InlineData(0, null, InfinityState.LeftBounded)]
+        [InlineData(null, 0, InfinityState.RightBounded)]
+        [InlineData(null, null, InfinityState.Unbounded)]
+        public void GetInfinityState_ShouldBeExpected(int? start, int? end, InfinityState expected)
+        {
+            // Arrange
+            var interval = new Interval<int>(start, end, true, true);
+
+            // Act
+            var actual = interval.GetInfinityState();
+
+            // Assert
+            actual.Should().Be(expected);
+        }
+
+        [Theory]
+        [InlineData(0, 0, false)]
+        [InlineData(0, null, true)]
+        [InlineData(null, 0, true)]
+        [InlineData(null, null, false)]
+        public void IsHalfBounded_ShouldBeExpected(int? start, int? end, bool expected)
+        {
+            // Arrange
+            var interval = new Interval<int>(start, end, true, true);
+
+            // Act
+            var actual = interval.IsHalfBounded();
+
+            // Assert
+            actual.Should().Be(expected);
         }
     }
 }
