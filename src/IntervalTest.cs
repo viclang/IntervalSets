@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace IntervalRecord
 {
-    public readonly record struct Interval<T> : IComparable<Interval<T>>
+    public readonly record struct IntervalTest<T> : IComparable<Interval<T>>
         where T : struct, IEquatable<T>, IComparable<T>
     {
         private static bool _startInclusive;

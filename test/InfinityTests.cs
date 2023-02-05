@@ -54,5 +54,21 @@ namespace IntervalRecord.Tests
             infinity.StartInclusive.Should().BeFalse();
             infinity.EndInclusive.Should().BeFalse();
         }
+
+        [Fact]
+        public void Test()
+        {
+            int? i = 1;
+            var positive = -i.OrInfinite();
+            var negative = -new Infinity<int>();
+
+            var val = positive.IsFinite();
+
+            var greaterThan = positive > negative;
+            var lessThan = negative < positive;
+
+            greaterThan.Should().BeTrue();
+            positive.IsFinite().Should().BeTrue();
+        }
     }
 }
