@@ -11,8 +11,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IntervalExtensions.Tests", 
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IntervalExtensions", "src\IntervalExtensions\IntervalExtensions.csproj", "{731DB49B-A853-4980-BD0A-AFDCEC2E98EC}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IntervalExtensions.NodaTime", "src\IntervalExtensions.NodaTime\IntervalExtensions.NodaTime.csproj", "{6D7EBCE3-8BD0-4B66-A038-A739881E44A1}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,10 +25,6 @@ Global
 		{731DB49B-A853-4980-BD0A-AFDCEC2E98EC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{731DB49B-A853-4980-BD0A-AFDCEC2E98EC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{731DB49B-A853-4980-BD0A-AFDCEC2E98EC}.Release|Any CPU.Build.0 = Release|Any CPU
-		{6D7EBCE3-8BD0-4B66-A038-A739881E44A1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{6D7EBCE3-8BD0-4B66-A038-A739881E44A1}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{6D7EBCE3-8BD0-4B66-A038-A739881E44A1}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{6D7EBCE3-8BD0-4B66-A038-A739881E44A1}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -38,7 +32,6 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 		{A1D1D3B1-0A53-4732-96CB-FB84E2F3A063} = {9171DB87-1FF7-47BE-89A5-E52E53ACD22F}
 		{731DB49B-A853-4980-BD0A-AFDCEC2E98EC} = {4F4BD305-6D91-4DE1-8FDC-FE7F2AD0C1B5}
-		{6D7EBCE3-8BD0-4B66-A038-A739881E44A1} = {4F4BD305-6D91-4DE1-8FDC-FE7F2AD0C1B5}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {0B074394-D08E-4672-A958-FCBEABC5935D}
