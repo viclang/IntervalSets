@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace IntervalRecord.Extensions
 {
-    public static partial class Interval
+    public static partial class DateInterval
     {
         public static int? Length(this Interval<DateOnly> value)
         {
