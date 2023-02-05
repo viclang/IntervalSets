@@ -16,7 +16,7 @@
         public static IEnumerable<T> Iterate<T>(this Interval<T> value, T start, Func<T, T> AddStep)
             where T : struct, IEquatable<T>, IComparable<T>, IComparable
         {
-            if (value.Contains(start) && !value.IsEmpty() && !value.Start.IsInfinite && !value.End.IsInfinite)
+            if (value.Contains(start) && !value.IsEmpty() && !value.End.IsInfinite)
             {
                 for (var i = start; value.EndInclusive ? i <= value.End : i < value.End; i = AddStep(i))
                 {

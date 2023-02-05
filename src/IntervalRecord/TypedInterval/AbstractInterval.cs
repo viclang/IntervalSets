@@ -1,20 +1,34 @@
-﻿namespace IntervalRecord
-{
-    public static partial class Interval
-    {
-        public static Interval<int> Canonicalize(this Interval<int> value, BoundaryType boundaryType, int step) => new IntIntervalConverter().Canonicalize(value, boundaryType, step);
-        public static Interval<double> Canonicalize(this Interval<double> value, BoundaryType boundaryType, double step) => Canonicalize(value, boundaryType, x => x + step, x => x - step);
-        public static Interval<DateOnly> Canonicalize(this Interval<DateOnly> value, BoundaryType boundaryType, int step) => Canonicalize(value, boundaryType, x => x.AddDays(step), x => x.AddDays(-step));
-        public static Interval<TimeOnly> Canonicalize(this Interval<TimeOnly> value, BoundaryType boundaryType, TimeSpan step) => Canonicalize(value, boundaryType, x => x.Add(step), x => x.Add(-step));
-        public static Interval<DateTime> Canonicalize(this Interval<DateTime> value, BoundaryType boundaryType, TimeSpan step) => Canonicalize(value, boundaryType, x => x + step, x => x - step);
-        public static Interval<DateTimeOffset> Canonicalize(this Interval<DateTimeOffset> value, BoundaryType boundaryType, TimeSpan step) => Canonicalize(value, boundaryType, x => x + step, x => x - step);
+﻿using InfinityComparable;
 
-        private static Interval<T> Canonicalize<T>(
-            this Interval<T> value,
+namespace IntervalRecord
+{
+    public interface IIntervalConverter<T, TStep>
+        where T : struct, IEquatable<T>, IComparable<T>, IComparable
+        where TStep : struct
+    {
+        Interval<T> Canonicalize(BoundaryType boundaryType, TStep step);
+        Interval<T> Closure(TStep step);
+        Interval<T> Interior(TStep step);
+    }
+
+    public interface IIntervalMeasurements<TLength, TRadius, TCentre>
+        where TLength : struct, IEquatable<TLength>, IComparable<TLength>, IComparable
+        where TRadius : struct
+        where TCentre : struct
+    {
+        Infinity<TLength> Length();
+        TRadius? Radius();
+        TCentre? Centre();
+    }
+
+    public abstract class AbstractInterval<T>
+            where T : struct, IEquatable<T>, IComparable<T>, IComparable
+    {
+        protected static Interval<T> Canonicalize(
+            Interval<T> value,
             BoundaryType boundaryType,
             Func<T, T> add,
             Func<T, T> substract)
-                where T : struct, IEquatable<T>, IComparable<T>, IComparable
             => boundaryType switch
             {
                 BoundaryType.Closed => ToClosed(value, add, substract),
@@ -24,11 +38,10 @@
                 _ => throw new NotImplementedException()
             };
 
-        private static Interval<T> ToClosed<T>(
+        protected static Interval<T> ToClosed(
             Interval<T> value,
             Func<T, T> add,
             Func<T, T> substract)
-            where T : struct, IEquatable<T>, IComparable<T>, IComparable
         {
             if (value.IsEmpty() || value.StartInclusive && value.EndInclusive)
             {
@@ -43,10 +56,9 @@
             };
         }
 
-        private static Interval<T> ToClosedOpen<T>(
+        protected static Interval<T> ToClosedOpen(
             Interval<T> value,
             Func<T, T> add)
-            where T : struct, IEquatable<T>, IComparable<T>, IComparable
         {
             if (value.IsEmpty() || value.StartInclusive && !value.EndInclusive)
             {
@@ -61,10 +73,9 @@
             };
         }
 
-        private static Interval<T> ToOpenClosed<T>(
+        protected static Interval<T> ToOpenClosed(
             Interval<T> value,
             Func<T, T> substract)
-            where T : struct, IEquatable<T>, IComparable<T>, IComparable
         {
             if (value.IsEmpty() || !value.StartInclusive && value.EndInclusive)
             {
@@ -79,11 +90,10 @@
             };
         }
 
-        private static Interval<T> ToOpen<T>(
+        protected static Interval<T> ToOpen(
             Interval<T> value,
             Func<T, T> add,
             Func<T, T> substract)
-            where T : struct, IEquatable<T>, IComparable<T>, IComparable
         {
             if (!value.StartInclusive && !value.EndInclusive)
             {
@@ -97,5 +107,17 @@
                 EndInclusive = false
             };
         }
+
+        protected static Infinity<TResult> Length<TResult>(Interval<T> value, Func<T, T, TResult> substract)
+            where TResult : struct, IEquatable<TResult>, IComparable<TResult>, IComparable
+            => value.Start.IsInfinite || value.End.IsInfinite
+                ? Infinity<TResult>.PositiveInfinity
+                : value.IsEmpty() ? default : substract(value.End.Finite.Value, value.Start.Finite.Value);
+
+        protected static TResult? CalculateOrNull<TResult>(Interval<T> value, Func<T, T, TResult> centre)
+            where TResult : struct
+            => value.Start.IsInfinite || value.End.IsInfinite || value.IsEmpty()
+                ? null
+                : centre(value.End.Finite.Value, value.Start.Finite.Value);
     }
 }

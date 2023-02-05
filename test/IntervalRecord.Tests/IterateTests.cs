@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Linq;
 
 namespace IntervalRecord.Tests
 {
@@ -45,10 +41,23 @@ namespace IntervalRecord.Tests
         }
 
         [Fact]
-        public void IterateEmpty_ShouldHaveExpectedCount()
+        public void IterateEmpty_ShouldBeEmpty()
         {
             // Arrange
             var interval = Interval.Empty<int>();
+
+            // Act
+            var actual = interval.Iterate(x => x + 1).ToList();
+
+            // Assert
+            actual.Should().BeEmpty();
+        }
+
+        [Fact]
+        public void IterateInfinity_ShouldBeEmpty()
+        {
+            // Arrange
+            var interval = Interval.All<int>();
 
             // Act
             var actual = interval.Iterate(x => x + 1).ToList();
