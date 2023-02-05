@@ -1,5 +1,4 @@
 ﻿using InfinityComparable;
-using IntervalRecord.Internal;
 using System.Diagnostics.Contracts;
 
 namespace IntervalRecord

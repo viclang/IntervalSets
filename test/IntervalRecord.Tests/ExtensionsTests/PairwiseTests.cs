@@ -1,5 +1,6 @@
 ﻿using IntervalRecord.Tests.TestData;
 using System.Collections.Generic;
+using System.Diagnostics.Metrics;
 using System.Linq;
 
 namespace IntervalRecord.Tests.ExtensionsTests
@@ -8,26 +9,19 @@ namespace IntervalRecord.Tests.ExtensionsTests
     {
         private const int startingPoint = 0;
         private const int length = 4;
-        private const int offset = 1;
+        private const int offset = 2;
 
         [Fact]
         public void Pairwise()
         {
             // Arrange
-            var dataset = new IntOverlappingDataSet(startingPoint, length, offset, BoundaryType.Closed);
-            var list = new List<Interval<int>>
-            {
-                dataset.Before,
-                dataset.Starts,
-                dataset.Finishes,
-                dataset.After
-            };
+            var list = OverlapList(startingPoint, length, offset, BoundaryType.Closed).ToList();
 
             // Act
-            var actual = list.Union().ToList();
+            var actual = list.Complement(x => !x.Closure(1).IsEmpty()).ToList();
 
             // Assert
-            actual.Should().HaveCount(3);
+            actual.Should().HaveCount(4);
         }
     }
 }

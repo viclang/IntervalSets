@@ -2,9 +2,78 @@
 
 namespace IntervalRecord
 {
-    public static partial class IntervalExtensions
+    public static class EnumerableExtensions
     {
-        public static IEnumerable<Interval<T>> Reduce<T>(
+        [Pure]
+        public static Interval<T> Hull<T>(
+            this IEnumerable<Interval<T>> values)
+            where T : struct, IEquatable<T>, IComparable<T>, IComparable
+        {
+            if (!values.Any())
+            {
+                throw new NotSupportedException("Collection is empty");
+            }
+            var min = values.MinBy(x => x.Start);
+            var max = values.MaxBy(x => x.End);
+
+            return new Interval<T>(
+                min.Start,
+                max.End,
+                min.StartInclusive,
+                max.EndInclusive);
+        }
+
+        [Pure]
+        public static IEnumerable<Interval<T>> UnionAll<T>(this IEnumerable<Interval<T>> values)
+            where T : struct, IEquatable<T>, IComparable<T>, IComparable
+            => values.Reduce((a, b) => a.Union(b));
+
+        [Pure]
+        public static IEnumerable<Interval<T>> ExceptAll<T>(
+            this IEnumerable<Interval<T>> values)
+            where T : struct, IEquatable<T>, IComparable<T>, IComparable
+            => values.Pairwise((a, b) => a.Except(b));
+
+        [Pure]
+        public static IEnumerable<Interval<T>> ExceptAll<T>(
+            this IEnumerable<Interval<T>> values,
+            Func<Interval<T>, bool> predicate)
+            where T : struct, IEquatable<T>, IComparable<T>, IComparable
+            => values.PairwiseFilter((a, b) => a.Except(b), predicate);
+
+        [Pure]
+        public static IEnumerable<Interval<T>> IntersectAll<T>(
+            this IEnumerable<Interval<T>> values)
+            where T : struct, IEquatable<T>, IComparable<T>, IComparable
+            => values.Pairwise((a, b) => a.Intersect(b));
+
+        [Pure]
+        public static IEnumerable<Interval<T>> IntersectAll<T>(
+            this IEnumerable<Interval<T>> values,
+            Func<Interval<T>, bool> predicate)
+            where T : struct, IEquatable<T>, IComparable<T>, IComparable
+            => values.PairwiseFilter((a, b) => a.Intersect(b), predicate);
+
+
+        [Pure]
+        public static IEnumerable<Interval<T>> Complement<T>(
+            this IEnumerable<Interval<T>> values)
+            where T : struct, IEquatable<T>, IComparable<T>, IComparable
+        {
+            return values.Pairwise((a, b) => a.Gap(b));
+        }
+
+        [Pure]
+        public static IEnumerable<Interval<T>> Complement<T>(
+            this IEnumerable<Interval<T>> values,
+            Func<Interval<T>, bool> predicate)
+            where T : struct, IEquatable<T>, IComparable<T>, IComparable
+        {
+            return values.PairwiseFilter((a, b) => a.Gap(b), predicate);
+        }
+
+        [Pure]
+        public static IEnumerable<Interval<T>> Reduce<T, TResult>(
             this IEnumerable<Interval<T>> values,
             Func<Interval<T>, Interval<T>, Interval<T>> resultSelector)
             where T : struct, IEquatable<T>, IComparable<T>, IComparable
@@ -22,6 +91,7 @@ namespace IntervalRecord
             }
         }
 
+        [Pure]
         public static IEnumerable<Interval<T>> Reduce<T>(
             this IEnumerable<Interval<T>> values,
             Func<Interval<T>, Interval<T>, Interval<T>?> resultSelector)
@@ -49,8 +119,9 @@ namespace IntervalRecord
             yield return previous;
         }
 
-        public static IEnumerable<Interval<T>> Pairwise<T>(
-            this IEnumerable<Interval<T>> values, Func<Interval<T>, Interval<T>, Interval<T>> resultSelector)
+        [Pure]
+        public static IEnumerable<TResult> Pairwise<T, TResult>(
+            this IEnumerable<Interval<T>> values, Func<Interval<T>, Interval<T>, TResult> resultSelector)
         where T : struct, IEquatable<T>, IComparable<T>, IComparable
         {
             using var e = values.GetEnumerator();
@@ -67,10 +138,11 @@ namespace IntervalRecord
         }
 
         [Pure]
-        public static IEnumerable<Interval<T>> Pairwise<T>(
+        public static IEnumerable<TResult> Pairwise<T, TResult>(
             this IEnumerable<Interval<T>> values,
-            Func<Interval<T>, Interval<T>, Interval<T>?> resultSelector)
+            Func<Interval<T>, Interval<T>, TResult?> resultSelector)
         where T : struct, IEquatable<T>, IComparable<T>, IComparable
+        where TResult : struct
         {
             using var e = values.GetEnumerator();
 
@@ -89,10 +161,10 @@ namespace IntervalRecord
         }
 
         [Pure]
-        public static IEnumerable<Interval<T>> PairwiseFilter<T>(
+        public static IEnumerable<TResult> PairwiseFilter<T, TResult>(
             this IEnumerable<Interval<T>> values,
-            Func<Interval<T>, Interval<T>, Interval<T>> resultSelector,
-            Func<Interval<T>, bool> predicate)
+            Func<Interval<T>, Interval<T>, TResult> resultSelector,
+            Func<TResult, bool> predicate)
         where T : struct, IEquatable<T>, IComparable<T>, IComparable
         {
             using var e = values.GetEnumerator();
@@ -112,11 +184,12 @@ namespace IntervalRecord
         }
 
         [Pure]
-        public static IEnumerable<Interval<T>> PairwiseFilter<T>(
+        public static IEnumerable<TResult> PairwiseFilter<T, TResult>(
             this IEnumerable<Interval<T>> values,
-            Func<Interval<T>, Interval<T>, Interval<T>?> resultSelector,
-            Func<Interval<T>, bool> predicate)
+            Func<Interval<T>, Interval<T>, TResult?> resultSelector,
+            Func<TResult, bool> predicate)
         where T : struct, IEquatable<T>, IComparable<T>, IComparable
+        where TResult : struct
         {
             using var e = values.GetEnumerator();
 

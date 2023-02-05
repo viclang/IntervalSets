@@ -1,7 +1,7 @@
 ﻿using InfinityComparable;
 using System.Diagnostics.Contracts;
 
-namespace IntervalRecord.Internal
+namespace IntervalRecord
 {
     internal static class IntervalHelper
     {
