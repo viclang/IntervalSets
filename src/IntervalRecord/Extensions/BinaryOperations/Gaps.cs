@@ -20,10 +20,10 @@
             return null;
         }
 
-        public static int DistanceTo(this Interval<int> value, Interval<int> other, int step)
-            => value.Overlaps(other)
-                ? 0
-                : substract(other.Start.Finite!.Value, value.End.Finite!.Value);
+        //public static int DistanceTo(this Interval<int> value, Interval<int> other, int step)
+        //    => value.Overlaps(other)
+        //        ? 0
+        //        : substract(other.Start.Finite!.Value, value.End.Finite!.Value);
 
         public static int DistanceTo<T>(this Interval<T> value, Interval<T> other, Func<T, T, int> substract)
             where T : struct, IEquatable<T>, IComparable<T>, IComparable
