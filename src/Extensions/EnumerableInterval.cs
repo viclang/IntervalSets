@@ -59,7 +59,7 @@ namespace IntervalRecord
         
         public static Interval<T> Hull<T>(
             this IEnumerable<Interval<T>> values)
-            where T : struct, IEquatable<T>, IComparable<T>
+            where T : struct, IEquatable<T>, IComparable<T>, IComparable
         {
             if (!values.Any())
             {

@@ -13,7 +13,7 @@ namespace IntervalRecord
             new Regex(@"(?:\[|\()(?:[^[\](),]*,[^,()[\]]*)(?:\)|\])");
 
         internal static Interval<T> ParseSingle<T>(string value)
-            where T : struct, IEquatable<T>, IComparable<T>
+            where T : struct, IEquatable<T>, IComparable<T>, IComparable
         {
             var match = _intervalRegex.Match(value);
 
@@ -26,7 +26,7 @@ namespace IntervalRecord
         }
 
         internal static bool TryParse<T>(string value, out Interval<T> result)
-            where T : struct, IEquatable<T>, IComparable<T>
+            where T : struct, IEquatable<T>, IComparable<T>, IComparable
         {
             var match = _intervalRegex.Match(value);
 
@@ -41,7 +41,7 @@ namespace IntervalRecord
         }
 
         internal static IEnumerable<Interval<T>> ParseAll<T>(string value)
-            where T : struct, IEquatable<T>, IComparable<T>
+            where T : struct, IEquatable<T>, IComparable<T>, IComparable
         {
             var matches = _intervalRegex.Matches(value);
 
@@ -52,7 +52,7 @@ namespace IntervalRecord
         }
 
         private static Interval<T> ParseInterval<T>(string value)
-            where T : struct, IEquatable<T>, IComparable<T>
+            where T : struct, IEquatable<T>, IComparable<T>, IComparable
         {
             var parts = Regex
                 .Replace(value, @"\s", string.Empty)

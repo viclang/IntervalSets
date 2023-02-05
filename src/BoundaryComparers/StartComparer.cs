@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 namespace IntervalRecord.BoundaryComparers
 {
     public class StartComparer<T> : IComparer<Interval<T>>
-        where T : struct, IEquatable<T>, IComparable<T>
+        where T : struct, IEquatable<T>, IComparable<T>, IComparable
     {
         public int Compare(Interval<T> x, Interval<T> y)
         {

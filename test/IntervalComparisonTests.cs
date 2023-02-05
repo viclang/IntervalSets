@@ -18,15 +18,15 @@ namespace IntervalRecord.Tests
         private const int offset = 1;
         private static readonly IntervalDataSet<int> _openDataSet = new IntervalDataSet<int>(start, end, BoundaryType.Open, offset);
 
-        public static TheoryData<Interval<int>, Interval<int>, OverlappingState> GetOverlappingState => _openDataSet.GetOverlappingState;
+        public static TheoryData<Interval<int>, Interval<int>, OverlappingState> OpenGetOverlappingState => _openDataSet.GetOverlappingState;
         public static TheoryData<Interval<int>, Interval<int>, OverlappingState> ClosedGetOverlappingState => _openDataSet.CopyWith(BoundaryType.Closed).GetOverlappingState;
         public static TheoryData<Interval<int>, Interval<int>, OverlappingState> OpenClosedGetOverlappingState => _openDataSet.CopyWith(BoundaryType.OpenClosed).GetOverlappingState;
         public static TheoryData<Interval<int>, Interval<int>, OverlappingState> ClosedOpenGetOverlappingState => _openDataSet.CopyWith(BoundaryType.ClosedOpen).GetOverlappingState;
 
         [Theory]
-        //[MemberData(nameof(OpenGetOverlappingState))]
-        //[MemberData(nameof(ClosedGetOverlappingState))]
-        //[MemberData(nameof(OpenClosedGetOverlappingState))]
+        [MemberData(nameof(OpenGetOverlappingState))]
+        [MemberData(nameof(ClosedGetOverlappingState))]
+        [MemberData(nameof(OpenClosedGetOverlappingState))]
         [MemberData(nameof(ClosedOpenGetOverlappingState))]
         public void GetOverlappingState_ShouldBeExpected(Interval<int> a, Interval<int> b, OverlappingState expectedResult)
         {

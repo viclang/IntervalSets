@@ -6,7 +6,7 @@ using Xunit;
 namespace IntervalRecord.Tests.DataSets
 {
     public readonly record struct IntervalDataSet<T>
-        where T : struct, IEquatable<T>, IComparable<T>
+        where T : struct, IEquatable<T>, IComparable<T>, IComparable
     {
         public Interval<T> Reference { get; init; }
         public Interval<T> Before { get; init; }
@@ -93,6 +93,7 @@ namespace IntervalRecord.Tests.DataSets
             var (startInclusive, endInclusive) = BoundaryTypeMapper.ToTuple(boundaryType);
             return this with
             {
+                Reference = Reference with { StartInclusive = startInclusive, EndInclusive = endInclusive },
                 Before = Before with { StartInclusive = startInclusive, EndInclusive = endInclusive },
                 Meets = Meets with { StartInclusive = startInclusive, EndInclusive = endInclusive },
                 OverlappedBy = OverlappedBy with { StartInclusive = startInclusive, EndInclusive = endInclusive },
@@ -141,12 +142,12 @@ namespace IntervalRecord.Tests.DataSets
             { OverlappedBy, Reference, true },
             { MetBy, Reference, Reference.GetIntervalType() == BoundaryType.Closed },
             { After, Reference, false },
-            { After with { End = null }, Reference, true },
-            { After with { Start = null }, Reference, false },
+            { After with { End = null }, Reference, false },
+            { After with { Start = null }, Reference, true },
             { ContainedBy with { Start = null }, Reference, true },
             { ContainedBy with { End = null }, Reference, true },
-            { Before with { Start = null }, Reference, true },
-            { Before with { End = null }, Reference, false },
+            { Before with { Start = null }, Reference, false },
+            { Before with { End = null }, Reference, true },
             { Equal with { Start = null, End = null }, Reference, true },
         };
 

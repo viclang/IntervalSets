@@ -9,7 +9,7 @@ namespace IntervalRecord.Tests.DataSets
     public static class OffsetCreator
     {
         public static IOffsetCreator<T> Create<T>(Interval<T> reference, int offset)
-            where T : struct, IEquatable<T>, IComparable<T>
+            where T : struct, IEquatable<T>, IComparable<T>, IComparable
             => (reference, offset) switch
             {
                 (Interval<int> typedReference, int typedOffset) =>
@@ -20,7 +20,7 @@ namespace IntervalRecord.Tests.DataSets
             };
 
         public static IOffsetCreator<T> Create<T>(Interval<T> reference, TimeSpan offset)
-            where T : struct, IEquatable<T>, IComparable<T>
+            where T : struct, IEquatable<T>, IComparable<T>, IComparable
             => (reference, offset) switch
         {
             (Interval<DateTime> typedReference, TimeSpan typedOffset) =>

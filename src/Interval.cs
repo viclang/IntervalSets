@@ -1,4 +1,4 @@
-﻿using Infinity;
+﻿using InfinityComparable;
 using IntervalRecord.BoundaryComparers;
 using IntervalRecord.Enums;
 using System;
@@ -11,14 +11,11 @@ using System.Threading.Tasks;
 namespace IntervalRecord
 {
     public readonly record struct Interval<T> : IComparable<Interval<T>>
-        where T : struct, IEquatable<T>, IComparable<T>
+        where T : struct, IEquatable<T>, IComparable<T>, IComparable
     {
+        internal Infinity<T> start { get; init; } = new Infinity<T>(false);
 
-        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-        private Infinity<T> _start { get; init; } = null;
-
-        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-        private Infinity<T> _end { get; init; } = null;
+        internal Infinity<T> end { get; init; } = new Infinity<T>(true);
 
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         private bool _startInclusive { get; init; } = false;
@@ -26,15 +23,19 @@ namespace IntervalRecord
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         private bool _endInclusive { get; init; } = false;
 
-        public T? Start { get => _start.IsInfinite ? null : _start.Value; init => _start = value.ToNegativeInfinity(); }
+        public T? Start { get => start.Finite; init => start = new Infinity<T>(value, false); }
 
-        public T? End { get => _end.IsInfinite ? null : _end.Value; init => _end = value.ToPositiveInfinity(); }
-        public bool StartInclusive { get => !_start.IsInfinite && _startInclusive; init => _startInclusive = value; }
-        public bool EndInclusive { get => !_end.IsInfinite && _endInclusive; init => _endInclusive = value; }
+        public T? End { get => end.Finite; init => end = new Infinity<T>(value, true); }
+        public bool StartInclusive { get => !start.IsInfinite && _startInclusive; init => _startInclusive = value; }
+        public bool EndInclusive { get => !end.IsInfinite && _endInclusive; init => _endInclusive = value; }
 
+
+        public Interval()
+        {
+        }
 
         public Interval(T? start, T? end)
-            : this(start, end, (false, false))
+            : this(start, end, false, false)
         {
         }
 
@@ -43,17 +44,17 @@ namespace IntervalRecord
         {
         }
 
-        public Interval(T? start, T? end, bool startInclusive, bool endInclusive)
-            : this(start, end,(startInclusive, endInclusive))
+        private Interval(T? start, T? end, (bool start, bool end) inclusive)
+            : this(start, end, inclusive.start, inclusive.end)
         {
         }
 
-        private Interval(T? start, T? end, (bool start, bool end) inclusive)
+        public Interval(T? start, T? end, bool startInclusive, bool endInclusive)
         {
-            Start = start;
-            End = end;
-            StartInclusive = inclusive.start;
-            EndInclusive = inclusive.end;
+            this.start = start.ToNegativeInfinity();
+            this.end = end.ToPositiveInfinity();
+            StartInclusive = startInclusive;
+            EndInclusive = endInclusive;
         }
 
         public bool IsValid()
@@ -63,16 +64,16 @@ namespace IntervalRecord
 
         public bool Validate(out string? message)
         {
-            if (!_start.IsInfinite && !_end.IsInfinite && _startInclusive && _endInclusive
-                    && _end.CompareTo(_start) == -1)
+            if (!start.IsInfinite && !end.IsInfinite && _startInclusive && _endInclusive
+                    && end.CompareTo(start) == -1)
             {
                 message = "The End parameter must be greater or equal to the Start parameter";
                 return false;
             }
 
-            if (!_start.IsInfinite && !_end.IsInfinite && !(_start.Equals(_end)
+            if (!start.IsInfinite && !end.IsInfinite && !(start.Equals(end)
                 && (!_startInclusive || !_endInclusive))
-                && _end.CompareTo(_start) <= 0)
+                && end.CompareTo(start) <= 0)
             {
                 message = "The End parameter must be greater than the Start parameter";
                 return false;
@@ -108,7 +109,7 @@ namespace IntervalRecord
 
         public bool IsBounded()
         {
-            return !_start.IsInfinite && !_end.IsInfinite;
+            return !start.IsInfinite && !end.IsInfinite;
         }
 
         public bool IsHalfBounded()
@@ -118,12 +119,12 @@ namespace IntervalRecord
 
         public bool IsLeftBounded()
         {
-            return !_start.IsInfinite && _end.IsInfinite;
+            return !start.IsInfinite && end.IsInfinite;
         }
 
         public bool IsRightBounded()
         {
-            return _start.IsInfinite && !_end.IsInfinite;
+            return start.IsInfinite && !end.IsInfinite;
         }
 
         public bool IsConnected(Interval<T> other)
@@ -174,9 +175,9 @@ namespace IntervalRecord
         public override string? ToString()
         {
             return (_startInclusive ? "[" : "(")
-                + _start
+                + start
                 + ", "
-                + _end
+                + end
                 + (EndInclusive ? "]" : ")");
         }
 
@@ -199,85 +200,85 @@ namespace IntervalRecord
     public static class Interval
     {
         public static Interval<T> Empty<T>()
-            where T : struct, IEquatable<T>, IComparable<T>
+            where T : struct, IEquatable<T>, IComparable<T>, IComparable
         {
             return new Interval<T>(default(T), default(T), false, false);
         }
 
         public static Interval<T> All<T>()
-            where T : struct, IEquatable<T>, IComparable<T>
+            where T : struct, IEquatable<T>, IComparable<T>, IComparable
         {
-            return new Interval<T>(null, null, false, false);
+            return new Interval<T>();
         }
 
         public static Interval<T> Singleton<T>(T value)
-            where T : struct, IEquatable<T>, IComparable<T>
+            where T : struct, IEquatable<T>, IComparable<T>, IComparable
         {
             return new Interval<T>(value, value, true, true);
         }
 
         public static Interval<T> Open<T>(T start, T end)
-            where T : struct, IEquatable<T>, IComparable<T>
+            where T : struct, IEquatable<T>, IComparable<T>, IComparable
         {
             return new Interval<T>(start, end, false, false);
         }
 
         public static Interval<T> Closed<T>(T start, T end)
-            where T : struct, IEquatable<T>, IComparable<T>
+            where T : struct, IEquatable<T>, IComparable<T>, IComparable
         {
             return new Interval<T>(start, end, true, true);
         }
 
         public static Interval<T> OpenClosed<T>(T start, T end)
-            where T : struct, IEquatable<T>, IComparable<T>
+            where T : struct, IEquatable<T>, IComparable<T>, IComparable
         {
             return new Interval<T>(start, end, false, true);
         }
 
         public static Interval<T> ClosedOpen<T>(T start, T end)
-            where T : struct, IEquatable<T>, IComparable<T>
+            where T : struct, IEquatable<T>, IComparable<T>, IComparable
         {
             return new Interval<T>(start, end, true, false);
         }
 
         public static Interval<T> GreaterThan<T>(T start)
-            where T : struct, IEquatable<T>, IComparable<T>
+            where T : struct, IEquatable<T>, IComparable<T>, IComparable
         {
             return new Interval<T>(start, null, false, false);
         }
 
         public static Interval<T> AtLeast<T>(T start)
-            where T : struct, IEquatable<T>, IComparable<T>
+            where T : struct, IEquatable<T>, IComparable<T>, IComparable
         {
             return new Interval<T>(start, null, true, false);
         }
 
         public static Interval<T> LessThan<T>(T end)
-            where T : struct, IEquatable<T>, IComparable<T>
+            where T : struct, IEquatable<T>, IComparable<T>, IComparable
         {
             return new Interval<T>(null, end, false, false);
         }
 
         public static Interval<T> AtMost<T>(T end)
-            where T : struct, IEquatable<T>, IComparable<T>
+            where T : struct, IEquatable<T>, IComparable<T>, IComparable
         {
             return new Interval<T>(null, end, false, true);
         }
 
         public static bool TryParse<T>(string s, out Interval<T> result)
-            where T : struct, IEquatable<T>, IComparable<T>
+            where T : struct, IEquatable<T>, IComparable<T>, IComparable
         {
             return IntervalParser.TryParse<T>(s, out result);
         }
 
         public static Interval<T> Parse<T>(string s)
-            where T : struct, IEquatable<T>, IComparable<T>
+            where T : struct, IEquatable<T>, IComparable<T>, IComparable
         {
             return IntervalParser.ParseSingle<T>(s);
         }
 
         public static IEnumerable<Interval<T>> ParseAll<T>(string s)
-            where T : struct, IEquatable<T>, IComparable<T>
+            where T : struct, IEquatable<T>, IComparable<T>, IComparable
         {
             return IntervalParser.ParseAll<T>(s);
         }
