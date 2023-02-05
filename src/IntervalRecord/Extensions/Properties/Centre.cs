@@ -4,12 +4,12 @@ namespace IntervalRecord
 {
     public static partial class Interval
     {
-        public static double? Centre(this Interval<int> value, int step) => Centre(Closure(value, step));
-        public static double? Centre(this Interval<double> value, double step) => Centre(Closure(value, step));
-        public static double? Centre(this Interval<DateOnly> value, int step) => Centre(Closure(value, step));
-        public static TimeOnly? Centre(this Interval<TimeOnly> value, TimeSpan step) => Centre(Closure(value, step));
-        public static DateTime? Centre(this Interval<DateTime> value, TimeSpan step) => Centre(Closure(value, step));
-        public static DateTimeOffset? Centre(this Interval<DateTimeOffset> value, TimeSpan step) => Centre(Closure(value, step));
+        public static double? Centre(this Interval<int> value, int closureStep) => Centre(Closure(value, closureStep));
+        public static double? Centre(this Interval<double> value, double closureStep) => Centre(Closure(value, closureStep));
+        public static double? Centre(this Interval<DateOnly> value, int closureStep) => Centre(Closure(value, closureStep));
+        public static TimeOnly? Centre(this Interval<TimeOnly> value, TimeSpan closureStep) => Centre(Closure(value, closureStep));
+        public static DateTime? Centre(this Interval<DateTime> value, TimeSpan closureStep) => Centre(Closure(value, closureStep));
+        public static DateTimeOffset? Centre(this Interval<DateTimeOffset> value, TimeSpan closureStep) => Centre(Closure(value, closureStep));
 
         public static double? Centre(this Interval<int> value) => Centre(value, (a, b) => (a + (double)b)/2);
         public static double? Centre(this Interval<double> value) => Centre(value, (a, b) => (a + b)/2);

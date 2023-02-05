@@ -4,12 +4,12 @@ namespace IntervalRecord
 {
     public static partial class Interval
     {
-        public static Infinity<int> Length(this Interval<int> value, int step) => Length(Closure(value, step));
-        public static Infinity<double> Length(this Interval<double> value, double step) => Length(Closure(value, step));
-        public static Infinity<int> Length(this Interval<DateOnly> value, int step) => Length(Closure(value, step));
-        public static Infinity<TimeSpan> Length(this Interval<TimeOnly> value, TimeSpan step) => Length(Closure(value, step));
-        public static Infinity<TimeSpan> Length(this Interval<DateTime> value, TimeSpan step) => Length(Closure(value, step));
-        public static Infinity<TimeSpan> Length(this Interval<DateTimeOffset> value, TimeSpan step) => Length(Closure(value, step));
+        public static Infinity<int> Length(this Interval<int> value, int closureStep) => Length(Closure(value, closureStep));
+        public static Infinity<double> Length(this Interval<double> value, double closureStep) => Length(Closure(value, closureStep));
+        public static Infinity<int> Length(this Interval<DateOnly> value, int closureStep) => Length(Closure(value, closureStep));
+        public static Infinity<TimeSpan> Length(this Interval<TimeOnly> value, TimeSpan closureStep) => Length(Closure(value, closureStep));
+        public static Infinity<TimeSpan> Length(this Interval<DateTime> value, TimeSpan closureStep) => Length(Closure(value, closureStep));
+        public static Infinity<TimeSpan> Length(this Interval<DateTimeOffset> value, TimeSpan closureStep) => Length(Closure(value, closureStep));
 
         public static Infinity<int> Length(this Interval<int> value) => Length(value, (a, b) => a - b);
         public static Infinity<double> Length(this Interval<double> value) => Length(value, (a, b) => a - b);
