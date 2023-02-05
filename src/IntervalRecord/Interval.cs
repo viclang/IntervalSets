@@ -22,10 +22,10 @@ namespace IntervalRecord
         {
         }
 
-        public Interval(T? start, T? end, bool startInclusive, bool endInclusive)
+        public Interval(Infinity<T> start, Infinity<T> end, bool startInclusive, bool endInclusive)
         {
-            _start = new Infinity<T>(start, false);
-            _end = new Infinity<T>(end, true);
+            _start = -start;
+            _end = +end;
             _startInclusive = !_start.IsInfinite && startInclusive;
             _endInclusive = !_end.IsInfinite && endInclusive;
         }

@@ -74,14 +74,13 @@
             {
                 return value;
             }
-            var result = value with
+            return value with
             {
                 Start = value.StartInclusive || value.Start.IsInfinite ? value.Start : add(value.Start.Value),
                 End = value.EndInclusive || value.End.IsInfinite ? value.End : substract(value.End.Value),
                 StartInclusive = true,
                 EndInclusive = true
             };
-            return result.IsValid() ? result : value;
         }
 
         private static Interval<T> ToClosedOpen<T>(
@@ -93,14 +92,13 @@
             {
                 return value;
             }
-            var result = value with
+            return value with
             {
                 Start = value.StartInclusive || value.Start.IsInfinite ? value.Start : add(value.Start.Value),
                 End = value.EndInclusive ? add(value.End.Value) : value.End,
                 StartInclusive = true,
                 EndInclusive = false
             };
-            return result.IsValid() ? result : value;
         }
 
         private static Interval<T> ToOpenClosed<T>(
@@ -112,14 +110,13 @@
             {
                 return value;
             }
-            var result = value with
+            return value with
             {
                 Start = value.StartInclusive ? substract(value.Start.Value) : value.Start,
                 End = value.EndInclusive || value.End.IsInfinite ? value.End : substract(value.End.Value),
                 StartInclusive = false,
                 EndInclusive = true
             };
-            return result.IsValid() ? result : value;
         }
 
         /// <summary>
@@ -140,14 +137,13 @@
             {
                 return value;
             }
-            var result = value with
+            return value with
             {
                 Start = value.StartInclusive ? substract(value.Start.Value) : value.Start,
                 End = value.EndInclusive ? add(value.End.Value) : value.End,
                 StartInclusive = false,
                 EndInclusive = false
             };
-            return result.IsValid() ? result : value;
         }
     }
 }

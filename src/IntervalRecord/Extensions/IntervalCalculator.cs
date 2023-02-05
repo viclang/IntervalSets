@@ -72,7 +72,7 @@ namespace IntervalRecord
                 ? value.EndInclusive || other.EndInclusive
                 : maxByEnd.EndInclusive;
 
-            return new Interval<T>((T?)minByStart.Start, (T?)maxByEnd.End, startInclusive, endInclusive);
+            return new Interval<T>(minByStart.Start, maxByEnd.End, startInclusive, endInclusive);
         }
 
         public static Interval<T> MinBy<T, TProperty>(Interval<T> a, Interval<T> b, Func<Interval<T>, TProperty> selector)
