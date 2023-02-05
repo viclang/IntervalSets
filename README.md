@@ -6,7 +6,7 @@ The interval supports Closed, ClosedOpen, OpenClosed and Open boundaryTypes.
 gantt
     Reference :active, a, 2022-01-06, 2022-01-10   
 
-	section Not overlapping
+	section No overlap
     Before :crit, b, 2022-01-03, 2022-01-05
    
     section Overlaps when Closed or HalfOpen  
@@ -26,6 +26,6 @@ gantt
 	section Overlaps when Closed or HalfOpen
     MetBy :crit, m, 2022-01-10, 2022-01-12
 
-    section Not overlapping
+    section No overlap
     After :crit, n, 2022-01-11, 2022-01-13
 ```
