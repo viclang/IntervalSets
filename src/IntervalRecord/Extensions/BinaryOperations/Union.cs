@@ -9,7 +9,7 @@ namespace IntervalRecord
         {
             if (!value.IsConnected(other, true))
             {
-                throw new ArgumentOutOfRangeException("other", "Union is not continuous.");
+                throw new ArgumentOutOfRangeException(nameof(other), "Union is not continuous.");
             }
             return Hull(value, other);
         }

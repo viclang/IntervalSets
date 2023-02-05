@@ -4,7 +4,7 @@ namespace IntervalRecord
 {
     public static partial class Interval
     {
-        public static bool HasGap(this Interval<int> value, Interval<int> other, int step) => DistanceTo(value.Closure(step), other) > step;
+        //public static bool HasGap(this Interval<int> value, Interval<int> other, int step) => DistanceTo(value.Closure(step), other) > step;
 
         public static Interval<T>? Gap<T>(this Interval<T> value, Interval<T> other)
             where T : struct, IEquatable<T>, IComparable<T>, IComparable
@@ -22,12 +22,6 @@ namespace IntervalRecord
             return null;
         }
 
-        /// <summary>
-        /// Order does matter
-        /// </summary>
-        /// <param name="value"></param>
-        /// <param name="other"></param>
-        /// <returns></returns>
         public static int DistanceTo<T>(this Interval<T> value, Interval<T> other, Func<T, T, int> substract)
             where T : struct, IEquatable<T>, IComparable<T>, IComparable
             => value.IsConnected(other)

@@ -51,7 +51,7 @@ namespace IntervalRecord.Tests.DataSets
 
         public DateOnlyCreator(Interval<DateOnly> reference, int offset)
         {
-            var length = (int)reference.Length().Value;
+            var length = reference.Length().Value;
             var beforeEnd = reference.Start.Value.AddDays(-offset);
             var beforeStart = beforeEnd.AddDays(-length);
             var containsStart = reference.Start.Value.AddDays(offset);
@@ -74,7 +74,7 @@ namespace IntervalRecord.Tests.DataSets
         public DateTimeCreator(Interval<DateTime> reference, TimeSpan offset)
         {
 
-            var length = reference.Length(TimeSpan.FromDays(1)).Value;
+            var length = reference.Length().Value;
             DateTime referenceStart = (DateTime)reference.Start!;
             DateTime referenceEnd = (DateTime)reference.End!;
 
@@ -99,7 +99,7 @@ namespace IntervalRecord.Tests.DataSets
 
         public DateTimeOffsetCreator(Interval<DateTimeOffset> reference, TimeSpan offset)
         {
-            var length = reference.Length(TimeSpan.FromDays(1)).Value;
+            var length = reference.Length().Value;
             DateTimeOffset referenceStart = (DateTimeOffset)reference.Start!;
             DateTimeOffset referenceEnd = (DateTimeOffset)reference.End!;
 

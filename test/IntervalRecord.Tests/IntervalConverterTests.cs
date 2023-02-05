@@ -47,7 +47,7 @@ namespace IntervalRecord.Tests
             var interval = new Interval<int>(start, end, startInclusive, endInclusive);
 
             // Act
-            var result = interval.Interior(1, (x, step) => x + step);
+            var result = interval.Interior(1);
 
             // Assert
             var expectedStart = startInclusive ? start - 1 : start;
@@ -81,10 +81,6 @@ namespace IntervalRecord.Tests
             // Arrange
             var interval = new Interval<int>(start, end, startInclusive, endInclusive);
 
-            var intervalDate = Interval.Closed(new DateTime(2022, 6, 13), new DateTime(2022, 6, 13));
-
-            intervalDate.Canonicalize(BoundaryType.ClosedOpen, 1, (x, step) => x.AddDays(step));
-            interval.Canonicalize(BoundaryType.ClosedOpen, 1, (x, step) => x + step);
             // Act
             var result = interval.Canonicalize(intervalType, 1);
 
@@ -126,8 +122,8 @@ namespace IntervalRecord.Tests
             var closed = Interval.Closed(start, end);
 
             // Act
-            var resultInterior = closed.Interior(1, (x, step) => x + step);
-            var resultCanonicalize = closed.Canonicalize(BoundaryType.Open, 1, (x, step) => x + step);
+            var resultInterior = closed.Interior(1);
+            var resultCanonicalize = closed.Canonicalize(BoundaryType.Open, 1);
 
             // Assert
             resultInterior.Should().BeEquivalentTo(resultCanonicalize);

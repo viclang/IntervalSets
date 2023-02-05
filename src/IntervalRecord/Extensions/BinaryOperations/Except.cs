@@ -26,6 +26,5 @@ namespace IntervalRecord
 
             return value with { Start = minByStart.Start, End = minByEnd.End, StartInclusive = startInclusive, EndInclusive = endInclusive };
         }
-
     }
 }
