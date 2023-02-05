@@ -9,7 +9,7 @@ namespace IntervalExtensions
     public enum IntervalType
     {
         Closed,
-        Open,        
+        Open,
         ClosedOpen,
         OpenClosed
     }
