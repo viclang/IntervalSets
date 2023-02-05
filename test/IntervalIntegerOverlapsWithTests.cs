@@ -1,5 +1,5 @@
 ﻿using FluentAssertions;
-using IntervalRecord.Tests.TestDataSets;
+using IntervalRecord.Tests.DataSets;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,11 +15,10 @@ namespace IntervalRecord.Tests
         private const int start = 6;
         private const int end = 10;
         private const int offset = 1;
-
-        private static IntIntervalTestDataSet _openDataSet = new IntIntervalTestDataSet(Interval.Open(start, end), offset);
-        private static IntIntervalTestDataSet _closedDataSet = new IntIntervalTestDataSet(Interval.Closed(start, end), offset);
-        private static IntIntervalTestDataSet _openClosedDataSet = new IntIntervalTestDataSet(Interval.OpenClosed(start, end), offset);
-        private static IntIntervalTestDataSet _closedOpenDataSet = new IntIntervalTestDataSet(Interval.ClosedOpen(start, end), offset);
+        private static IntervalDataSet<int, int> _openDataSet = IntervalDataSet.Open(start, end, offset);
+        private static IntervalDataSet<int, int> _closedDataSet = IntervalDataSet.Closed(start, end, offset);
+        private static IntervalDataSet<int, int> _openClosedDataSet = IntervalDataSet.OpenClosed(start, end, offset);
+        private static IntervalDataSet<int, int> _closedOpenDataSet = IntervalDataSet.ClosedOpen(start, end, offset);
 
 
         public static TheoryData<Interval<int>, Interval<int>, bool> OpenIntervalOverlapsWith => _openDataSet.OverlapsWith;

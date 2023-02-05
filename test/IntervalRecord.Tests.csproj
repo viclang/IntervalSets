@@ -23,7 +23,10 @@
 
   <ItemGroup>
     <ProjectReference Include="..\src\IntervalRecord.csproj" />
-    <ProjectReference Include="..\src\IntervalRecord\IntervalRecord.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Factories\" />
   </ItemGroup>
 
 </Project>

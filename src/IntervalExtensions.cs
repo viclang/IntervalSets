@@ -10,24 +10,30 @@ namespace IntervalRecord
     {
         public static int Length(this Interval<int> interval)
         {
-            var end = interval.End ?? int.MaxValue;
             var start = interval.Start ?? int.MinValue;
+            var end = interval.End ?? int.MaxValue;
             return end - start;
-        }
-
-        public static TimeSpan Length(this Interval<DateTimeOffset> interval)
-        {
-            return (interval.End ?? DateTimeOffset.MaxValue).Subtract(interval.Start ?? DateTimeOffset.MinValue);
-        }
-
-        public static TimeSpan Length(this Interval<DateTime> interval)
-        {
-            return (interval.End ?? DateTime.MaxValue).Subtract(interval.Start ?? DateTime.MinValue);
         }
 
         public static int Length(this Interval<DateOnly> interval)
         {
-            return (interval.End ?? DateOnly.MaxValue).DayNumber - (interval.Start ?? DateOnly.MinValue).DayNumber;
+            var start = interval.Start ?? DateOnly.MinValue;
+            var end = interval.End ?? DateOnly.MaxValue;
+            return end.DayNumber - start.DayNumber;
+        }
+
+        public static TimeSpan Length(this Interval<DateTime> interval)
+        {
+            var start = interval.Start ?? DateTime.MinValue;
+            var end = interval.End ?? DateTime.MaxValue;
+            return end.Subtract(start);
+        }
+
+        public static TimeSpan Length(this Interval<DateTimeOffset> interval)
+        {
+            var start = interval.Start ?? DateTimeOffset.MinValue;
+            var end = interval.End ?? DateTimeOffset.MaxValue;
+            return end.Subtract(start);
         }
 
         public static int CompareStart<T>(this Interval<T> value,
