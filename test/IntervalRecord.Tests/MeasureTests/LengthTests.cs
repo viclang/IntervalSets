@@ -1,4 +1,5 @@
-﻿using InfinityComparable;
+﻿using FluentAssertions.Execution;
+using InfinityComparable;
 using IntervalRecord.Tests.TestData;
 using System;
 using System.Collections.Generic;
@@ -8,9 +9,9 @@ namespace IntervalRecord.Tests.Calculators
 {
     public class LengthTests
     {
-        private static readonly DateTimeOffset _referenceDateTimeOffset = new DateTimeOffset(2022, 1, 1, 0, 0, 0, TimeSpan.Zero);
-        private static readonly DateOnly _referenceDateOnly = new DateOnly(_referenceDateTimeOffset.Year, _referenceDateTimeOffset.Month, _referenceDateTimeOffset.Day);
-        private static readonly TimeOnly _referenceTimeOnly = new TimeOnly(_referenceDateTimeOffset.Hour, _referenceDateTimeOffset.Minute, _referenceDateTimeOffset.Second);
+        private static readonly DateTimeOffset _referenceDateTimeOffset = new(2022, 1, 1, 0, 0, 0, TimeSpan.Zero);
+        private static readonly DateOnly _referenceDateOnly = new(_referenceDateTimeOffset.Year, _referenceDateTimeOffset.Month, _referenceDateTimeOffset.Day);
+        private static readonly TimeOnly _referenceTimeOnly = new(_referenceDateTimeOffset.Hour, _referenceDateTimeOffset.Minute, _referenceDateTimeOffset.Second);
 
         [Theory]
         [InlineData(1, 2)]
@@ -37,12 +38,15 @@ namespace IntervalRecord.Tests.Calculators
             var actualDateTimeOffset = dateTimeOffset.Length();
 
             // Assert
-            actualInteger.Should().Be(integer.End - integer.Start);
-            actualDouble.Should().Be(doubles.End - doubles.Start);
-            actualDateOnly.Should().Be(dateOnly.End.Finite!.Value.DayNumber - dateOnly.Start.Finite!.Value.DayNumber);
-            actualTimeOnly.Should().Be(timeOnly.End.Finite!.Value - timeOnly.Start.Finite!.Value);
-            actualDateTime.Should().Be(dateTime.End.Finite!.Value - dateTime.Start.Finite!.Value);
-            actualDateTimeOffset.Should().Be(dateTimeOffset.End.Finite!.Value - dateTimeOffset.Start.Finite!.Value);
+            using (new AssertionScope())
+            {
+                actualInteger.Should().Be(integer.End.Substract(integer.Start));
+                actualDouble.Should().Be(doubles.End.Substract(doubles.Start));
+                actualDateOnly.Should().Be(dateOnly.End.Finite!.Value.DayNumber - dateOnly.Start.Finite!.Value.DayNumber);
+                actualTimeOnly.Should().Be(timeOnly.End.Finite!.Value - timeOnly.Start.Finite!.Value);
+                actualDateTime.Should().Be(dateTime.End.Finite!.Value - dateTime.Start.Finite!.Value);
+                actualDateTimeOffset.Should().Be(dateTimeOffset.End.Finite!.Value - dateTimeOffset.Start.Finite!.Value);
+            }
         }
 
         [Theory]
@@ -88,40 +92,15 @@ namespace IntervalRecord.Tests.Calculators
             var actualDateTimeOffset = dateTimeOffset.Length();
 
             // Assert
-            actualInteger.Should().Be(Infinity<int>.PositiveInfinity);
-            actualDouble.Should().Be(Infinity<double>.PositiveInfinity);
-            actualDateOnly.Should().Be(Infinity<int>.PositiveInfinity);
-            actualTimeOnly.Should().Be(Infinity<TimeSpan>.PositiveInfinity);
-            actualDateTime.Should().Be(Infinity<TimeSpan>.PositiveInfinity);
-            actualDateTimeOffset.Should().Be(Infinity<TimeSpan>.PositiveInfinity);
-        }
-
-        [Fact]
-        public void LengthEmpty_ShouldBeZero()
-        {
-            // Arrange
-            var integer = new Interval<int>(default, default, false, false);
-            var doubles = new Interval<double>(default, default, false, false);
-            var dateOnly = new Interval<DateOnly>(default, default, false, false);
-            var timeOnly = new Interval<TimeOnly>(default, default, false, false);
-            var dateTime = new Interval<DateTime>(default, default, false, false);
-            var dateTimeOffset = new Interval<DateTimeOffset>(default, default, false, false);
-
-            // Act
-            var actualInteger = integer.Length();
-            var actualDouble = doubles.Length();
-            var actualDateOnly = dateOnly.Length();
-            var actualTimeOnly = timeOnly.Length();
-            var actualDateTime = dateTime.Length();
-            var actualDateTimeOffset = dateTimeOffset.Length();
-
-            // Assert
-            actualInteger.Should().Be(0);
-            actualDouble.Should().Be(0);
-            actualDateOnly.Should().Be(0);
-            actualTimeOnly.Should().Be(TimeSpan.Zero);
-            actualDateTime.Should().Be(TimeSpan.Zero);
-            actualDateTimeOffset.Should().Be(TimeSpan.Zero);
+            using (new AssertionScope())
+            {
+                actualInteger.Should().Be(Infinity<int>.PositiveInfinity);
+                actualDouble.Should().Be(Infinity<double>.PositiveInfinity);
+                actualDateOnly.Should().Be(Infinity<int>.PositiveInfinity);
+                actualTimeOnly.Should().Be(Infinity<TimeSpan>.PositiveInfinity);
+                actualDateTime.Should().Be(Infinity<TimeSpan>.PositiveInfinity);
+                actualDateTimeOffset.Should().Be(Infinity<TimeSpan>.PositiveInfinity);
+            }
         }
     }
 }

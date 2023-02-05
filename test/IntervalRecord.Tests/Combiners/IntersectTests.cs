@@ -1,4 +1,5 @@
-﻿using IntervalRecord.Tests.TestData;
+﻿using FluentAssertions.Execution;
+using IntervalRecord.Tests.TestData;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Linq;
@@ -28,16 +29,19 @@ namespace IntervalRecord.Tests.Combiners
                 ? a.EndInclusive && b.EndInclusive
                 : minByEnd.EndInclusive;
 
-            if (overlappingState != OverlappingState.Before && overlappingState != OverlappingState.After)
+            using (new AssertionScope())
             {
-                actual!.Value.Start.Should().Be(maxByStart.Start);
-                actual!.Value.End.Should().Be(minByEnd.End);
-                actual!.Value.StartInclusive.Should().Be(actual!.Value.Start.IsInfinite ? false : expectedStartInclusive);
-                actual!.Value.EndInclusive.Should().Be(actual!.Value.End.IsInfinite ? false : expectedEndInclusive);
-            }
-            else
-            {
-                actual.Should().BeNull();
+                if (overlappingState != OverlappingState.Before && overlappingState != OverlappingState.After)
+                {
+                    actual!.Value.Start.Should().Be(maxByStart.Start);
+                    actual!.Value.End.Should().Be(minByEnd.End);
+                    actual!.Value.StartInclusive.Should().Be(actual!.Value.Start.IsInfinity ? false : expectedStartInclusive);
+                    actual!.Value.EndInclusive.Should().Be(actual!.Value.End.IsInfinity ? false : expectedEndInclusive);
+                }
+                else
+                {
+                    actual.Should().BeNull();
+                }
             }
         }
 
@@ -62,25 +66,28 @@ namespace IntervalRecord.Tests.Combiners
                 ? a.EndInclusive && b.EndInclusive
                 : minByEnd.EndInclusive;
 
-            if (overlappingState != OverlappingState.Before && overlappingState != OverlappingState.After)
+            using (new AssertionScope())
             {
-                actual.Start.Should().Be(maxByStart.Start);
-                actual.End.Should().Be(minByEnd.End);
-                actual.StartInclusive.Should().Be(actual.Start.IsInfinite ? false : expectedStartInclusive);
-                actual.EndInclusive.Should().Be(actual.End.IsInfinite ? false : expectedEndInclusive);
-            }
-            else
-            {
-                actual.Should().Be(a);
+                if (overlappingState != OverlappingState.Before && overlappingState != OverlappingState.After)
+                {
+                    actual.Start.Should().Be(maxByStart.Start);
+                    actual.End.Should().Be(minByEnd.End);
+                    actual.StartInclusive.Should().Be(actual.Start.IsInfinity ? false : expectedStartInclusive);
+                    actual.EndInclusive.Should().Be(actual.End.IsInfinity ? false : expectedEndInclusive);
+                }
+                else
+                {
+                    actual.Should().Be(a);
+                }
             }
         }
 
         [Theory]
-        [InlineData(BoundaryType.Closed, 6)]
-        [InlineData(BoundaryType.ClosedOpen, 5)]
-        [InlineData(BoundaryType.OpenClosed, 5)]
-        [InlineData(BoundaryType.Open, 5)]
-        public void Intersect_ShouldBeExpected(BoundaryType boundaryType, int expectedCount)
+        [InlineData(IntervalType.Closed, 6)]
+        [InlineData(IntervalType.ClosedOpen, 5)]
+        [InlineData(IntervalType.OpenClosed, 5)]
+        [InlineData(IntervalType.Open, 5)]
+        public void Intersect_ShouldBeExpected(IntervalType boundaryType, int expectedCount)
         {
             // Arrange
             var list = OverlapList(startingPoint, length, offset, boundaryType).ToList();

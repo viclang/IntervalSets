@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using FluentAssertions.Execution;
+using System.Linq;
 
 namespace IntervalRecord.Tests.Calculators
 {
@@ -21,8 +22,11 @@ namespace IntervalRecord.Tests.Calculators
             var actualMaxByEnd = Interval.MaxBy(a, b, i => i.End);
 
             // Assert
-            actualMaxByStart.Should().Be(new[] { a, b }.MaxBy(i => i.Start));
-            actualMaxByEnd.Should().Be(new[] { a, b }.MaxBy(i => i.End));
+            using (new AssertionScope())
+            {
+                actualMaxByStart.Should().Be(new[] { a, b }.MaxBy(i => i.Start));
+                actualMaxByEnd.Should().Be(new[] { a, b }.MaxBy(i => i.End));
+            }
         }
 
         [Theory]

@@ -30,6 +30,7 @@ namespace IntervalRecord.Tests
         };
 
         [Theory]
+        [InlineData("")]
         [InlineData("[1.2]")]
         [InlineData("[1..2]")]
         [InlineData("[..]")]
@@ -74,7 +75,6 @@ namespace IntervalRecord.Tests
                 .Throw<FormatException>()
                 .WithMessage("Input string was not in a correct format.");
         }
-
 
         [Theory]
         [MemberData(nameof(ValidStringToParseWithExpectedResults))]

@@ -16,17 +16,17 @@ namespace IntervalRecord.Tests.Calculators
         }
 
         [Theory]
-        [InlineData(0, 0, InfinityState.Bounded)]
-        [InlineData(0, null, InfinityState.LeftBounded)]
-        [InlineData(null, 0, InfinityState.RightBounded)]
-        [InlineData(null, null, InfinityState.Unbounded)]
-        public void GetInfinityState_ShouldBeExpected(int? start, int? end, InfinityState expected)
+        [InlineData(0, 0, BoundedState.Bounded)]
+        [InlineData(0, null, BoundedState.LeftBounded)]
+        [InlineData(null, 0, BoundedState.RightBounded)]
+        [InlineData(null, null, BoundedState.Unbounded)]
+        public void GetInfinityState_ShouldBeExpected(int? start, int? end, BoundedState expected)
         {
             // Arrange
             var interval = new Interval<int>(start, end, true, true);
 
             // Act
-            var actual = interval.GetInfinityState();
+            var actual = interval.GetBoundedState();
 
             // Assert
             actual.Should().Be(expected);

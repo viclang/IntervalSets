@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using FluentAssertions.Execution;
+using System.Linq;
 
 namespace IntervalRecord.Tests.Calculators
 {
@@ -21,8 +22,11 @@ namespace IntervalRecord.Tests.Calculators
             var actualMinByEnd = Interval.MinBy(a, b, i => i.End);
 
             // Assert
-            actualMinByStart.Should().Be(new[] { a, b }.MinBy(i => i.Start));
-            actualMinByEnd.Should().Be(new[] { a, b }.MinBy(i => i.End));
+            using (new AssertionScope())
+            {
+                actualMinByStart.Should().Be(new[] { a, b }.MinBy(i => i.Start));
+                actualMinByEnd.Should().Be(new[] { a, b }.MinBy(i => i.End));
+            }
         }
 
         [Theory]

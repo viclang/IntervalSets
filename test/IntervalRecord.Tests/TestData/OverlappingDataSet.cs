@@ -15,7 +15,7 @@ namespace IntervalRecord.Tests.TestData
         /// <param name="offset"></param>
         /// <param name="boundaryType"></param>
         /// <exception cref="ArgumentException"></exception>
-        public IntOverlappingDataSet(int startingPoint, int length, int offset, BoundaryType boundaryType)
+        public IntOverlappingDataSet(int startingPoint, int length, int offset, IntervalType boundaryType)
         {
             if((offset * 2) >= length) throw new ArgumentException("Length must be greater than (offset * 2)");
 
@@ -61,14 +61,14 @@ namespace IntervalRecord.Tests.TestData
         public IEnumerable<object[]> GetIntervalPairsWithOverlappingState(bool includeHalfOpen)
         {
             var expectedMeets = includeHalfOpen
-                ? Reference.GetBoundaryType() is BoundaryType.Closed or BoundaryType.OpenClosed or BoundaryType.ClosedOpen
+                ? Reference.GetIntervalType() is IntervalType.Closed or IntervalType.OpenClosed or IntervalType.ClosedOpen
                     ? OverlappingState.Meets : OverlappingState.Before
-                : Reference.GetBoundaryType() == BoundaryType.Closed ? OverlappingState.Meets : OverlappingState.Before;
+                : Reference.GetIntervalType() == IntervalType.Closed ? OverlappingState.Meets : OverlappingState.Before;
 
             var expectedMetBy = includeHalfOpen
-                ? Reference.GetBoundaryType() is BoundaryType.Closed or BoundaryType.OpenClosed or BoundaryType.ClosedOpen
+                ? Reference.GetIntervalType() is IntervalType.Closed or IntervalType.OpenClosed or IntervalType.ClosedOpen
                     ? OverlappingState.MetBy : OverlappingState.After
-                : Reference.GetBoundaryType() == BoundaryType.Closed ? OverlappingState.MetBy : OverlappingState.After;
+                : Reference.GetIntervalType() == IntervalType.Closed ? OverlappingState.MetBy : OverlappingState.After;
 
             return new List<object[]>
             {

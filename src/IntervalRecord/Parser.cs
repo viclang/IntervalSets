@@ -77,8 +77,8 @@ namespace IntervalRecord
             return new Interval<T>(
                 start,
                 end,
-                start.IsInfinite ? false : value.StartsWith('['),
-                end.IsInfinite ? false : value.EndsWith(']'));
+                !start.IsInfinity && value.StartsWith('['),
+                !end.IsInfinity && value.EndsWith(']'));
         }
     }
 }

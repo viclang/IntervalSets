@@ -1,4 +1,5 @@
-﻿using System;
+﻿using InfinityComparable;
+using System;
 using System.Collections.Generic;
 
 namespace IntervalRecord.Tests.TestData
@@ -9,7 +10,7 @@ namespace IntervalRecord.Tests.TestData
         public const int length = 4;
         public const int offset = 1;
         public static readonly OverlappingTestDataBuilder OverlappingTestDataBuilder =
-            new(startingPoint, length, offset, Enum.GetValues<BoundaryType>());
+            new(startingPoint, length, offset, Enum.GetValues<IntervalType>());
 
         public static IEnumerable<object[]> IntervalPairsWithOverlappingState(bool includeHalfOpen)
             => (OverlappingTestDataBuilder with { IncludeHalfOpen = includeHalfOpen }).Build();
@@ -29,7 +30,7 @@ namespace IntervalRecord.Tests.TestData
             yield return value;
             for (var i = 0; i < length; i++)
             {
-                yield return value = value with { Start = value.Start + offset, End = value.End + offset };
+                yield return value = value with { Start = value.Start.Add(offset), End = value.End.Add(offset) };
             }
         }
 
@@ -59,7 +60,7 @@ namespace IntervalRecord.Tests.TestData
             int startingPoint,
             int length,
             int offset,
-            BoundaryType boundaryType)
+            IntervalType boundaryType)
         {
             var (startInclusinve, endInclusive) = boundaryType.ToTuple();
             var lastValue = new Interval<int>(

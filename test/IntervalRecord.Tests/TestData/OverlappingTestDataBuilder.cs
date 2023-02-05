@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace IntervalRecord.Tests.TestData
 {
-    public record OverlappingTestDataBuilder(int StartingPoint, int Length, int Offset, BoundaryType[] BoundaryTypes)
+    public record OverlappingTestDataBuilder(int StartingPoint, int Length, int Offset, IntervalType[] BoundaryTypes)
     {
         public bool IncludeHalfOpen { get; init; } = true;
         public bool WithOverlappingState { get; init; } = true;
@@ -35,14 +35,14 @@ namespace IntervalRecord.Tests.TestData
         private static IEnumerable<object[]> GetPairsWithOverlappingState(IntOverlappingDataSet dataSet, bool includeHalfOpen)
         {
             var expectedMeets = includeHalfOpen
-                ? dataSet.Reference.GetBoundaryType() is BoundaryType.Closed or BoundaryType.OpenClosed or BoundaryType.ClosedOpen
+                ? dataSet.Reference.GetIntervalType() is IntervalType.Closed or IntervalType.OpenClosed or IntervalType.ClosedOpen
                     ? OverlappingState.Meets : OverlappingState.Before
-                : dataSet.Reference.GetBoundaryType() == BoundaryType.Closed ? OverlappingState.Meets : OverlappingState.Before;
+                : dataSet.Reference.GetIntervalType() == IntervalType.Closed ? OverlappingState.Meets : OverlappingState.Before;
 
             var expectedMetBy = includeHalfOpen
-                ? dataSet.Reference.GetBoundaryType() is BoundaryType.Closed or BoundaryType.OpenClosed or BoundaryType.ClosedOpen
+                ? dataSet.Reference.GetIntervalType() is IntervalType.Closed or IntervalType.OpenClosed or IntervalType.ClosedOpen
                     ? OverlappingState.MetBy : OverlappingState.After
-                : dataSet.Reference.GetBoundaryType() == BoundaryType.Closed ? OverlappingState.MetBy : OverlappingState.After;
+                : dataSet.Reference.GetIntervalType() == IntervalType.Closed ? OverlappingState.MetBy : OverlappingState.After;
 
             return new List<object[]>
             {

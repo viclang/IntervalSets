@@ -1,4 +1,5 @@
-﻿using System.Diagnostics.Contracts;
+﻿using InfinityComparable;
+using System.Diagnostics.Contracts;
 
 namespace IntervalRecord
 {
@@ -15,6 +16,13 @@ namespace IntervalRecord
         [Pure]
         public static Interval<T> Singleton<T>(T value) where T : struct, IEquatable<T>, IComparable<T>, IComparable
             => new(value, value, true, true);
+
+        [Pure]
+        public static Interval<T> WithBoundaryType<T>(Infinity<T> start, Infinity<T> end, IntervalType boundaryType) where T : struct, IEquatable<T>, IComparable<T>, IComparable
+        {
+            var (startInclusive, endInclusive) = boundaryType.ToTuple();
+            return new(start, end, startInclusive, endInclusive);
+        }
 
         [Pure]
         public static Interval<T> Open<T>(T start, T end) where T : struct, IEquatable<T>, IComparable<T>, IComparable
@@ -34,18 +42,18 @@ namespace IntervalRecord
 
         [Pure]
         public static Interval<T> GreaterThan<T>(T start) where T : struct, IEquatable<T>, IComparable<T>, IComparable
-            => new(start, null, false, false);
+            => new(start, Infinity<T>.PositiveInfinity, false, false);
 
         [Pure]
         public static Interval<T> AtLeast<T>(T start) where T : struct, IEquatable<T>, IComparable<T>, IComparable
-            => new(start, null, true, false);
+            => new(start, Infinity<T>.PositiveInfinity, true, false);
 
         [Pure]
         public static Interval<T> LessThan<T>(T end) where T : struct, IEquatable<T>, IComparable<T>, IComparable
-            => new(null, end, false, false);
+            => new(Infinity<T>.NegativeInfinity, end, false, false);
 
         [Pure]
         public static Interval<T> AtMost<T>(T end) where T : struct, IEquatable<T>, IComparable<T>, IComparable
-            => new(null, end, false, true);
+            => new(Infinity<T>.NegativeInfinity, end, false, true);
     }
 }

@@ -9,15 +9,15 @@ namespace IntervalRecord.Tests
     public class IsSingletonTests
     {
         [Theory]
-        [InlineData(1, 1, BoundaryType.Closed, true)]
-        [InlineData(1, 1, BoundaryType.ClosedOpen, false)]
-        [InlineData(1, 1, BoundaryType.OpenClosed, false)]
-        [InlineData(1, 1, BoundaryType.Open, false)]
-        [InlineData(1, 2, BoundaryType.Closed, false)]
-        [InlineData(1, 2, BoundaryType.ClosedOpen, false)]
-        [InlineData(1, 2, BoundaryType.OpenClosed, false)]
-        [InlineData(1, 2, BoundaryType.Open, false)]
-        public void IsSingleton_ShouldBeExpected(int start, int end, BoundaryType boundaryType, bool expected)
+        [InlineData(1, 1, IntervalType.Closed, true)]
+        [InlineData(1, 1, IntervalType.ClosedOpen, false)]
+        [InlineData(1, 1, IntervalType.OpenClosed, false)]
+        [InlineData(1, 1, IntervalType.Open, false)]
+        [InlineData(1, 2, IntervalType.Closed, false)]
+        [InlineData(1, 2, IntervalType.ClosedOpen, false)]
+        [InlineData(1, 2, IntervalType.OpenClosed, false)]
+        [InlineData(1, 2, IntervalType.Open, false)]
+        public void IsSingleton_ShouldBeExpected(int start, int end, IntervalType boundaryType, bool expected)
         {
             // Arrange
             var (startInclusive, endInclusive) = boundaryType.ToTuple();

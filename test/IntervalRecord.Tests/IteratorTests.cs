@@ -6,11 +6,11 @@ namespace IntervalRecord.Tests
     public class IteratorTests
     {
         [Theory]
-        [InlineData(BoundaryType.Closed, 10)]
-        [InlineData(BoundaryType.ClosedOpen, 9)]
-        [InlineData(BoundaryType.OpenClosed, 9)]
-        [InlineData(BoundaryType.Open, 8)]
-        public void Iterate_ShouldHaveExpectedCount(BoundaryType boundaryType, int expectedCount)
+        [InlineData(IntervalType.Closed, 10)]
+        [InlineData(IntervalType.ClosedOpen, 9)]
+        [InlineData(IntervalType.OpenClosed, 9)]
+        [InlineData(IntervalType.Open, 8)]
+        public void Iterate_ShouldHaveExpectedCount(IntervalType boundaryType, int expectedCount)
         {
             // Arrange
             var (startInclusive, endInclusive) = boundaryType.ToTuple();
@@ -24,11 +24,11 @@ namespace IntervalRecord.Tests
         }
 
         [Theory]
-        [InlineData(BoundaryType.Closed, 6)]
-        [InlineData(BoundaryType.ClosedOpen, 5)]
-        [InlineData(BoundaryType.OpenClosed, 6)]
-        [InlineData(BoundaryType.Open, 5)]
-        public void IterateWithStart_ShouldHaveExpectedCount(BoundaryType boundaryType, int count)
+        [InlineData(IntervalType.Closed, 6)]
+        [InlineData(IntervalType.ClosedOpen, 5)]
+        [InlineData(IntervalType.OpenClosed, 6)]
+        [InlineData(IntervalType.Open, 5)]
+        public void IterateWithStart_ShouldHaveExpectedCount(IntervalType boundaryType, int count)
         {
             // Arrange
             var (startInclusive, endInclusive) = boundaryType.ToTuple();

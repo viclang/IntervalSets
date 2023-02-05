@@ -2,7 +2,7 @@
 
 namespace IntervalRecord
 {
-    public enum OverlappingState
+    public enum OverlappingState : byte
     {
         Before = 0,
         Meets = 1,

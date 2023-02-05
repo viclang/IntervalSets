@@ -10,11 +10,11 @@ namespace IntervalRecord.Tests.Combiners
     public class PairwiseTests : DataSetTestsBase
     {
         [Theory]
-        [InlineData(BoundaryType.Closed, 4)]
-        [InlineData(BoundaryType.ClosedOpen, 4)]
-        [InlineData(BoundaryType.OpenClosed, 4)]
-        [InlineData(BoundaryType.Open, 5)]
-        public void PairwiseGap_ShouldHaveExpectedCount(BoundaryType boundaryType, int expectedCount)
+        [InlineData(IntervalType.Closed, 4)]
+        [InlineData(IntervalType.ClosedOpen, 4)]
+        [InlineData(IntervalType.OpenClosed, 4)]
+        [InlineData(IntervalType.Open, 5)]
+        public void PairwiseGap_ShouldHaveExpectedCount(IntervalType boundaryType, int expectedCount)
         {
             // Arrange
             var list = OverlapList(startingPoint, length, offset, boundaryType);
@@ -27,11 +27,11 @@ namespace IntervalRecord.Tests.Combiners
         }
 
         [Theory]
-        [InlineData(BoundaryType.Closed)]
-        [InlineData(BoundaryType.ClosedOpen)]
-        [InlineData(BoundaryType.OpenClosed)]
-        [InlineData(BoundaryType.Open)]
-        public void PairwiseGapOrDefault_ShouldHaveExpectedCount(BoundaryType boundaryType)
+        [InlineData(IntervalType.Closed)]
+        [InlineData(IntervalType.ClosedOpen)]
+        [InlineData(IntervalType.OpenClosed)]
+        [InlineData(IntervalType.Open)]
+        public void PairwiseGapOrDefault_ShouldHaveExpectedCount(IntervalType boundaryType)
         {
             // Arrange
             var list = OverlapList(startingPoint, length, offset, boundaryType);

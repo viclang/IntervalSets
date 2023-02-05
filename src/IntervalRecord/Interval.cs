@@ -17,8 +17,8 @@ namespace IntervalRecord
             get => start;
             init
             {
-                start = new Infinity<T>(value, false);
-                startInclusive = !Start.IsInfinite && startInclusive;
+                start = -value;
+                startInclusive = !Start.IsInfinity && startInclusive;
             }
         }
 
@@ -27,35 +27,38 @@ namespace IntervalRecord
             get => end;
             init
             {
-                end = new Infinity<T>(value, true);
-                endInclusive = !End.IsInfinite && endInclusive;
+                end = +value;
+                endInclusive = !End.IsInfinity && endInclusive;
             }
         }
 
-        public bool StartInclusive { get => startInclusive; init { startInclusive = !Start.IsInfinite && value; } }
+        public bool StartInclusive { get => startInclusive; init { startInclusive = !Start.IsInfinity && value; } }
 
-        public bool EndInclusive { get => endInclusive; init { endInclusive = !End.IsInfinite && value; } }
+        public bool EndInclusive { get => endInclusive; init { endInclusive = !End.IsInfinity && value; } }
 
-        public bool IsValid => Start.IsInfinite || End.IsInfinite || End.CompareTo(Start) >= 0;
+        [Pure]
+        public bool IsValid => Start.IsInfinity || End.IsInfinity || End.CompareTo(Start) >= 0;
 
+        [Pure]
         public Interval()
             : this(Infinity<T>.NegativeInfinity, Infinity<T>.PositiveInfinity, false, false)
         {
         }
 
+        [Pure]
         public Interval(Infinity<T> start, Infinity<T> end, bool startInclusive, bool endInclusive)
         {
             this.start = -start;
             this.end = +end;
-            this.startInclusive = !this.start.IsInfinite && startInclusive;
-            this.endInclusive = !this.end.IsInfinite && endInclusive;
+            this.startInclusive = !this.start.IsInfinity && startInclusive;
+            this.endInclusive = !this.end.IsInfinity && endInclusive;
         }
 
         [Pure]
-        public bool IsEmpty() => !IsValid || (this.GetBoundaryType() != BoundaryType.Closed && Start == End);
+        public bool IsEmpty() => !IsValid || (this.GetIntervalType() != IntervalType.Closed && Start == End);
 
         [Pure]
-        public bool IsSingleton() => this.GetBoundaryType() == BoundaryType.Closed && Start == End;
+        public bool IsSingleton() => this.GetIntervalType() == IntervalType.Closed && Start == End;
 
         [Pure]
         public bool Overlaps(Interval<T> other, bool includeHalfOpen = false)
@@ -86,20 +89,24 @@ namespace IntervalRecord
             return 0;
         }
 
+        [Pure]
         public static bool operator >(Interval<T> left, Interval<T> right)
         {
             var compareEnd = left.CompareEnd(right);
             return compareEnd == 1 || compareEnd == 0 && left.CompareStart(right) == -1;
         }
 
+        [Pure]
         public static bool operator <(Interval<T> left, Interval<T> right)
         {
             var compareEnd = left.CompareEnd(right);
             return compareEnd == -1 || compareEnd == 0 && left.CompareStart(right) == 1;
         }
 
+        [Pure]
         public static bool operator >=(Interval<T> left, Interval<T> right) => left == right || left > right;
 
+        [Pure]
         public static bool operator <=(Interval<T> left, Interval<T> right) => left == right || left < right;
 
         [Pure]

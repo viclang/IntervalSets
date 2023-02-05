@@ -1,4 +1,5 @@
 ﻿using System.Linq;
+using FluentAssertions.Execution;
 using IntervalRecord.Tests.TestData;
 
 namespace IntervalRecord.Tests.Combiners
@@ -26,18 +27,21 @@ namespace IntervalRecord.Tests.Combiners
                 ? a.EndInclusive || b.EndInclusive
                 : maxByEnd.EndInclusive;
 
-            actual.Start.Should().Be(minByStart.Start);
-            actual.End.Should().Be(maxByEnd.End);
-            actual.StartInclusive.Should().Be(!actual.Start.IsInfinite && expectedStartInclusive);
-            actual.EndInclusive.Should().Be(!actual.End.IsInfinite && expectedEndInclusive);
+            using (new AssertionScope())
+            {
+                actual.Start.Should().Be(minByStart.Start);
+                actual.End.Should().Be(maxByEnd.End);
+                actual.StartInclusive.Should().Be(!actual.Start.IsInfinity && expectedStartInclusive);
+                actual.EndInclusive.Should().Be(!actual.End.IsInfinity && expectedEndInclusive);
+            }
         }
 
         [Theory]
-        [InlineData(BoundaryType.Closed)]
-        [InlineData(BoundaryType.ClosedOpen)]
-        [InlineData(BoundaryType.OpenClosed)]
-        [InlineData(BoundaryType.Open)]
-        public void ListHull_ShouldBeExpected(BoundaryType boundaryType)
+        [InlineData(IntervalType.Closed)]
+        [InlineData(IntervalType.ClosedOpen)]
+        [InlineData(IntervalType.OpenClosed)]
+        [InlineData(IntervalType.Open)]
+        public void ListHull_ShouldBeExpected(IntervalType boundaryType)
         {
             // Arrange
             var list = OverlapList(startingPoint, length, offset, boundaryType);

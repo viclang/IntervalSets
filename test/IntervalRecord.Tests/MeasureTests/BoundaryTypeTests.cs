@@ -12,17 +12,17 @@ namespace IntervalRecord.Tests.Calculators
         private const int end = 10;
 
         [Theory]
-        [InlineData(true, true, BoundaryType.Closed)]
-        [InlineData(true, false, BoundaryType.ClosedOpen)]
-        [InlineData(false, true, BoundaryType.OpenClosed)]
-        [InlineData(false, false, BoundaryType.Open)]
-        public void GetBoundaryType_ToTuple_ShouldBeExpected(bool startInclusive, bool endInclusive, BoundaryType expected)
+        [InlineData(true, true, IntervalType.Closed)]
+        [InlineData(true, false, IntervalType.ClosedOpen)]
+        [InlineData(false, true, IntervalType.OpenClosed)]
+        [InlineData(false, false, IntervalType.Open)]
+        public void GetBoundaryType_ToTuple_ShouldBeExpected(bool startInclusive, bool endInclusive, IntervalType expected)
         {
             // Arrange
             var interval = new Interval<int>(start, end, startInclusive, endInclusive);
 
             // Act
-            var actualBoundaryType = interval.GetBoundaryType();
+            var actualBoundaryType = interval.GetIntervalType();
             var (actualStartInclusive, actualEndInclusive) = actualBoundaryType.ToTuple();
 
             // Assert
