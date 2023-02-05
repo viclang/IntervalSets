@@ -16,10 +16,10 @@ namespace IntervalExtensions.Tests.IntervalInclusive
     {
         [Theory]
         [ClassData(typeof(IntervalInclusiveTestData.Overlapping))]
-        public void OverlapsWith_Should_BeTrue(IntervalInclusiveStub value)
+        public void OverlapsWith_Should_BeTrue(IntervalInclusiveStub other)
         {
             //act
-            var actual = value.OverlapsWith(IntervalInclusiveTestData.RelativeInterval, true);
+            var actual = other.OverlapsWith(IntervalInclusiveTestData.RelativeInterval, true);
             var test = new DateOnly(2022, 3, 9);
             test.AddDays(0);
             //assert
@@ -28,10 +28,10 @@ namespace IntervalExtensions.Tests.IntervalInclusive
 
         [Theory]
         [ClassData(typeof(IntervalInclusiveTestData.NonOverlapping))]
-        public void OverlapsWith_Should_BeFalse(IntervalInclusiveStub value)
+        public void OverlapsWith_Should_BeFalse(IntervalInclusiveStub other)
         {
             //act
-            var actual = value.OverlapsWith(IntervalInclusiveTestData.RelativeInterval, true);
+            var actual = other.OverlapsWith(IntervalInclusiveTestData.RelativeInterval, true);
 
             //assert
             actual.Should().BeFalse();

@@ -8,9 +8,9 @@ namespace IntervalExtensions
 {
 
     public interface IInterval<T>
-        where T : struct, IComparable<T>, IComparable
+        where T : struct
     {
-        T Start { get; set; }
+        T? Start { get; set; }
         T? End { get; set; }
     }
 }

@@ -6,11 +6,15 @@ using System.Threading.Tasks;
 
 namespace IntervalExtensions.Interfaces
 {
-    public interface IIntervalComparer<in T> : IComparer<T>
+    internal interface IIntervalStartComparer<T> : IComparer<IInterval<T>>
         where T : struct, IComparable<T>, IComparable
     { }
 
-    public interface IIntervalOverlapComparer<T> : IComparer<IInterval<T>>
+    internal interface IIntervalEndComparer<T> : IComparer<IInterval<T>>
+        where T : struct, IComparable<T>, IComparable
+    { }
+
+    internal interface IIntervalOverlapComparer<T> : IComparer<IInterval<T>>
         where T : struct, IComparable<T>, IComparable
     { }
 }

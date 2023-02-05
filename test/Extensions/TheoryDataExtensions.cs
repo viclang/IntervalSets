@@ -9,9 +9,9 @@ namespace IntervalExtensions.Tests.Extensions
 {
     internal static class TheoryDataExtensions
     {
-        public static IEnumerable<T> AsEnumerable<T>(this IEnumerable<object[]> value)
+        public static IEnumerable<T> AsEnumerable<T>(this IEnumerable<object[]> other)
         {
-            return value.SelectMany(x => x.Cast<T>());
+            return other.SelectMany(x => x.Cast<T>());
         }
     }
 }

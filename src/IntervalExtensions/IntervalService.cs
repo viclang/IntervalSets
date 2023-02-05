@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using IntervalExtensions.Interfaces;
+using IntervalTree;
 
 namespace IntervalExtensions
 {
@@ -21,22 +22,24 @@ namespace IntervalExtensions
             _overlapComparer = overlapComparer;
         }
 
-        public void Add(IInterval<T> value)
+        public void Add(IInterval<T> other)
         {
-            if (!value.IsValidInterval(true))
+            if (!other.IsValidInterval(true))
             {
                 throw new NotSupportedException("End cannot be smaller than start!");
             }
+
+            var tree = new IntervalTree<T, T>();
 
             if (_intervals.Any())
             {
                 var start = _intervals.Min(x => x.Start);
                 var last = _intervals.GetLastInterval();
-                var replaceEnd = value.Start;
+                var replaceEnd = other.Start;
 
-                //if (OverlapsWith(start, last!.End ?? replaceEnd, value.Start, value.End))
+                //if (OverlapsWith(start, last!.End ?? replaceEnd, other.Start, other.End))
                 //{
-                //    throw new NotSupportedException("Collection interval has overlap with value end add!");
+                //    throw new NotSupportedException("Collection interval has overlap with other end add!");
                 //}
 
                 if (last!.End is null)
@@ -44,7 +47,7 @@ namespace IntervalExtensions
                     last.End = (T)replaceEnd;
                 }
             }
-            _intervals.Add(value);
+            _intervals.Add(other);
         }
 
         public void Update(IInterval<T> interval)

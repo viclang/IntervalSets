@@ -9,7 +9,7 @@ namespace IntervalExtensions.Tests.Models
 
     public class IntervalInclusiveStub : IInterval<int>
     {
-        public int Start { get; set; }
+        public int? Start { get; set; }
         public int? End { get; set; }
 
         public IntervalInclusiveStub(int start, int? end)
@@ -21,7 +21,7 @@ namespace IntervalExtensions.Tests.Models
 
     public class IntervalExclusiveStub : IInterval<int>
     {
-        public int Start { get; set; }
+        public int? Start { get; set; }
         public int? End { get; set; }
 
         public IntervalExclusiveStub(int start, int? end)
