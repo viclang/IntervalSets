@@ -8,28 +8,19 @@ namespace IntervalRecord
             => new IntInterval(value).Canonicalize(boundaryType, step);
         public static Interval<int> Closure(this Interval<int> value, int step)
             => new IntInterval(value).Closure(step);
-
         public static Interval<int> Interior(this Interval<int> value, int step)
             => new IntInterval(value).Interior(step);
-
+        
         public static Infinity<int> Length(this Interval<int> value, int closureStep)
             => new IntInterval(value, closureStep).Length();
-
-        public static Infinity<int> Length(this Interval<int> value)
-            => new IntInterval(value).Length();
-
         public static double? Radius(this Interval<int> value, int closureStep)
             => new IntInterval(value, closureStep).Radius();
-
-        public static double? Radius(this Interval<int> value)
-            => new IntInterval(value).Radius();
-
         public static double? Centre(this Interval<int> value, int closureStep)
             => new IntInterval(value, closureStep).Centre();
-
-        public static double? Centre(this Interval<int> value)
-            => new IntInterval(value).Centre();
-
+        
+        public static double? Radius(this Interval<int> value) => new IntInterval(value).Radius();
+        public static Infinity<int> Length(this Interval<int> value) => new IntInterval(value).Length();
+        public static double? Centre(this Interval<int> value) => new IntInterval(value).Centre();
     }
 
     public class IntInterval : AbstractInterval<int>,
@@ -57,7 +48,7 @@ namespace IntervalRecord
             => ToOpen(value, x => x + step, x => x - step);
 
         public Infinity<int> Length()
-            => Length(value, (end, start) => end - start);
+            => CalculateOrInfinity(value, (end, start) => end - start);
 
         public double? Radius()
             => CalculateOrNull(value, (end, start) => (end - start) / 2);

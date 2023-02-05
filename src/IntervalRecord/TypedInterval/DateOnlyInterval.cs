@@ -10,18 +10,17 @@ namespace IntervalRecord
             => new DateOnlyInterval(value).Closure(step);
         public static Interval<DateOnly> Interior(this Interval<DateOnly> value, int step)
             => new DateOnlyInterval(value).Interior(step);
-
+        
         public static Infinity<int> Length(this Interval<DateOnly> value, int closureStep)
             => new DateOnlyInterval(value, closureStep).Length();
-
+        public static double? Radius(this Interval<DateOnly> value, int closureStep)
+            => new DateOnlyInterval(value, closureStep).Radius();
+        public static DateOnly? Centre(this Interval<DateOnly> value, int closureStep)
+            => new DateOnlyInterval(value, closureStep).Centre();
+        
         public static Infinity<int> Length(this Interval<DateOnly> value) => new DateOnlyInterval(value).Length();
-
-        public static double? Radius(this Interval<DateOnly> value, int closureStep) => new DateOnlyInterval(value, closureStep).Radius();
-
         public static double? Radius(this Interval<DateOnly> value) => new DateOnlyInterval(value).Radius();
-        public static DateOnly? Centre(this Interval<DateOnly> value, int closureStep) => new DateOnlyInterval(value, closureStep).Centre();
         public static DateOnly? Centre(this Interval<DateOnly> value) => new DateOnlyInterval(value).Centre();
-
     }
 
     public class DateOnlyInterval : AbstractInterval<DateOnly>,
@@ -50,7 +49,7 @@ namespace IntervalRecord
             => ToOpen(value, x => x.AddDays(step), x => x.AddDays(-step));
 
         public Infinity<int> Length()
-            => Length(value, (end, start) => end.DayNumber - start.DayNumber);
+            => CalculateOrInfinity(value, (end, start) => end.DayNumber - start.DayNumber);
 
         public double? Radius()
             => CalculateOrNull(value, (end, start) => (end.DayNumber - start.DayNumber) / 2);

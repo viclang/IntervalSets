@@ -108,7 +108,7 @@ namespace IntervalRecord
             };
         }
 
-        protected static Infinity<TResult> Length<TResult>(Interval<T> value, Func<T, T, TResult> substract)
+        protected static Infinity<TResult> CalculateOrInfinity<TResult>(Interval<T> value, Func<T, T, TResult> substract)
             where TResult : struct, IEquatable<TResult>, IComparable<TResult>, IComparable
             => value.Start.IsInfinite || value.End.IsInfinite
                 ? Infinity<TResult>.PositiveInfinity
