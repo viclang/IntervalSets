@@ -84,6 +84,10 @@ namespace IntervalRecord.Tests.DataSets
 
         public IntervalDataSet<T> CopyWith(BoundaryType boundaryType)
         {
+            if(Reference.GetBoundaryType() == boundaryType)
+            {
+                return this with { };
+            }
             var (startInclusive, endInclusive) = boundaryType.ToTuple();
             return this with
             {
@@ -104,68 +108,94 @@ namespace IntervalRecord.Tests.DataSets
             };
         }
 
-        public TheoryData<Interval<T>, Interval<T>, OverlappingState> GetOverlappingState => new TheoryData<Interval<T>, Interval<T>, OverlappingState>
+        public TheoryData<Interval<T>, Interval<T>, OverlappingState> GetOverlappingState(bool includeHalfOpen)
         {
-            { Before, Reference, OverlappingState.Before },
-            { Meets, Reference, Reference.GetBoundaryType() == BoundaryType.Closed ? OverlappingState.Meets : OverlappingState.Before },
-            { Overlaps, Reference, OverlappingState.Overlaps },
-            { Starts, Reference, OverlappingState.Starts },
-            { ContainedBy, Reference, OverlappingState.ContainedBy },
-            { Finishes, Reference, OverlappingState.Finishes },
-            { Equal, Reference, OverlappingState.Equal },
-            { FinishedBy, Reference, OverlappingState.FinishedBy },
-            { Contains, Reference, OverlappingState.Contains },
-            { StartedBy, Reference, OverlappingState.StartedBy },
-            { OverlappedBy, Reference, OverlappingState.OverlappedBy },
-            { MetBy, Reference, Reference.GetBoundaryType() == BoundaryType.Closed ? OverlappingState.MetBy : OverlappingState.After },
-            { After, Reference, OverlappingState.After },
-            { Before with { Start = null }, Reference with { End = null }, OverlappingState.Before },
-            { Meets with { Start = null }, Reference with { End = null }, Reference.GetBoundaryType() == BoundaryType.Closed ? OverlappingState.Meets : OverlappingState.Before },
-            { After with { Start = null }, Reference with { End = null }, OverlappingState.Overlaps },
-            { Before with { Start = null }, Reference with { Start = null }, OverlappingState.Starts },
-            { Equal with { Start = null }, Reference with { Start = null, End = null }, OverlappingState.Starts },
-            { Equal, Reference with { Start = null, End = null }, OverlappingState.ContainedBy },
-            { After with { End = null }, Reference with { End = null }, OverlappingState.Finishes },
-            { Equal with { End = null }, Reference with { Start = null, End = null }, OverlappingState.Finishes },
-            { Equal with { Start = null, End = null }, Reference  with { Start = null, End = null }, OverlappingState.Equal },
-            { Before with { End = null }, Reference with { End = null }, OverlappingState.FinishedBy },
-            { Equal with { Start = null, End = null }, Reference, OverlappingState.Contains },
-            { After with { Start = null }, Reference with { Start = null }, OverlappingState.StartedBy },
-            { Before with { End = null }, Reference with { Start = null }, OverlappingState.OverlappedBy },
-            { MetBy with { End = null }, Reference with { Start = null }, Reference.GetBoundaryType() == BoundaryType.Closed ? OverlappingState.MetBy : OverlappingState.After },
-            { After with { End = null }, Reference with { Start = null }, OverlappingState.After },
-        };
+            var expectedMeets = includeHalfOpen
+                ? Reference.GetBoundaryType() is BoundaryType.Closed or BoundaryType.OpenClosed or BoundaryType.ClosedOpen
+                    ? OverlappingState.Meets : OverlappingState.Before
+                : Reference.GetBoundaryType() == BoundaryType.Closed ? OverlappingState.Meets : OverlappingState.Before;
+            
+            var expectedMetBy = includeHalfOpen
+                ? Reference.GetBoundaryType() is BoundaryType.Closed or BoundaryType.OpenClosed or BoundaryType.ClosedOpen
+                    ? OverlappingState.MetBy : OverlappingState.After
+                : Reference.GetBoundaryType() == BoundaryType.Closed ? OverlappingState.MetBy : OverlappingState.After;
 
-        public TheoryData<Interval<T>, Interval<T>, bool> OverlapsWith => new TheoryData<Interval<T>, Interval<T>, bool>
+            return new TheoryData<Interval<T>, Interval<T>, OverlappingState>
+            {
+                { Before, Reference, OverlappingState.Before },
+                { Meets, Reference, expectedMeets},
+                { Overlaps, Reference, OverlappingState.Overlaps },
+                { Starts, Reference, OverlappingState.Starts },
+                { ContainedBy, Reference, OverlappingState.ContainedBy },
+                { Finishes, Reference, OverlappingState.Finishes },
+                { Equal, Reference, OverlappingState.Equal },
+                { FinishedBy, Reference, OverlappingState.FinishedBy },
+                { Contains, Reference, OverlappingState.Contains },
+                { StartedBy, Reference, OverlappingState.StartedBy },
+                { OverlappedBy, Reference, OverlappingState.OverlappedBy },
+                { MetBy, Reference, expectedMetBy },
+                { After, Reference, OverlappingState.After },
+                { Before with { Start = null }, Reference with { End = null }, OverlappingState.Before },
+                { Meets with { Start = null }, Reference with { End = null }, expectedMeets },
+                { After with { Start = null }, Reference with { End = null }, OverlappingState.Overlaps },
+                { Before with { Start = null }, Reference with { Start = null }, OverlappingState.Starts },
+                { Equal with { Start = null }, Reference with { Start = null, End = null }, OverlappingState.Starts },
+                { Equal, Reference with { Start = null, End = null }, OverlappingState.ContainedBy },
+                { After with { End = null }, Reference with { End = null }, OverlappingState.Finishes },
+                { Equal with { End = null }, Reference with { Start = null, End = null }, OverlappingState.Finishes },
+                { Equal with { Start = null, End = null }, Reference  with { Start = null, End = null }, OverlappingState.Equal },
+                { Before with { End = null }, Reference with { End = null }, OverlappingState.FinishedBy },
+                { Equal with { Start = null, End = null }, Reference, OverlappingState.Contains },
+                { After with { Start = null }, Reference with { Start = null }, OverlappingState.StartedBy },
+                { Before with { End = null }, Reference with { Start = null }, OverlappingState.OverlappedBy },
+                { MetBy with { End = null }, Reference with { Start = null }, expectedMetBy },
+                { After with { End = null }, Reference with { Start = null }, OverlappingState.After },
+            };
+        }
+
+        public TheoryData<Interval<T>, Interval<T>, bool> GetOverlapsWithData(bool includeHalfOpen)
         {
-            { Before, Reference, false },
-            { Meets, Reference, Reference.GetBoundaryType() == BoundaryType.Closed },
-            { Overlaps, Reference, true },
-            { Starts, Reference, true },
-            { ContainedBy, Reference, true },
-            { Finishes, Reference, true },
-            { Equal, Reference, true },
-            { FinishedBy, Reference, true },
-            { Contains, Reference, true },
-            { StartedBy, Reference, true },
-            { OverlappedBy, Reference, true },
-            { MetBy, Reference, Reference.GetBoundaryType() == BoundaryType.Closed },
-            { After, Reference, false },
-            { Before with { Start = null }, Reference with { End = null }, false },
-            { Meets with { Start = null }, Reference with { End = null }, Reference.GetBoundaryType() == BoundaryType.Closed },
-            { After with { Start = null }, Reference with { End = null }, true },
-            { Before with { Start = null }, Reference with { Start = null }, true },
-            { Equal with { Start = null }, Reference with { Start = null, End = null }, true },
-            { Equal, Reference with { Start = null, End = null }, true },
-            { After with { End = null }, Reference with { End = null }, true },
-            { Equal with { End = null }, Reference with { Start = null, End = null }, true },
-            { Equal with { Start = null, End = null }, Reference  with { Start = null, End = null }, true },
-            { Before with { End = null }, Reference with { End = null }, true },
-            { Equal with { Start = null, End = null }, Reference, true },
-            { After with { Start = null }, Reference with { Start = null }, true },
-            { Before with { End = null }, Reference with { Start = null }, true },
-            { MetBy with { End = null }, Reference with { Start = null }, Reference.GetBoundaryType() == BoundaryType.Closed },
-            { After with { End = null }, Reference with { Start = null }, false },
-        };
+            var expectedMeets = includeHalfOpen
+                ? Reference.GetBoundaryType() is BoundaryType.Closed or BoundaryType.OpenClosed or BoundaryType.ClosedOpen
+                    ? true : false
+                : Reference.GetBoundaryType() == BoundaryType.Closed ? true : false;
+
+            var expectedMetBy = includeHalfOpen
+                ? Reference.GetBoundaryType() is BoundaryType.Closed or BoundaryType.OpenClosed or BoundaryType.ClosedOpen
+                    ? true : false
+                : Reference.GetBoundaryType() == BoundaryType.Closed ? true : false;
+
+            return new TheoryData<Interval<T>, Interval<T>, bool>
+            {
+                { Before, Reference, false },
+                { Meets, Reference, expectedMeets },
+                { Overlaps, Reference, true },
+                { Starts, Reference, true },
+                { ContainedBy, Reference, true },
+                { Finishes, Reference, true },
+                { Equal, Reference, true },
+                { FinishedBy, Reference, true },
+                { Contains, Reference, true },
+                { StartedBy, Reference, true },
+                { OverlappedBy, Reference, true },
+                { MetBy, Reference, expectedMetBy },
+                { After, Reference, false },
+                { Before with { Start = null }, Reference with { End = null }, false },
+                { Meets with { Start = null }, Reference with { End = null }, expectedMeets },
+                { After with { Start = null }, Reference with { End = null }, true },
+                { Before with { Start = null }, Reference with { Start = null }, true },
+                { Equal with { Start = null }, Reference with { Start = null, End = null }, true },
+                { Equal, Reference with { Start = null, End = null }, true },
+                { After with { End = null }, Reference with { End = null }, true },
+                { Equal with { End = null }, Reference with { Start = null, End = null }, true },
+                { Equal with { Start = null, End = null }, Reference  with { Start = null, End = null }, true },
+                { Before with { End = null }, Reference with { End = null }, true },
+                { Equal with { Start = null, End = null }, Reference, true },
+                { After with { Start = null }, Reference with { Start = null }, true },
+                { Before with { End = null }, Reference with { Start = null }, true },
+                { MetBy with { End = null }, Reference with { Start = null }, expectedMetBy },
+                { After with { End = null }, Reference with { Start = null }, false },
+            };
+        }
     }
 }

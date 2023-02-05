@@ -8,12 +8,12 @@ namespace IntervalRecord.Tests
         [Theory]
         [InlineData(0)]
         [InlineData(1)]
-        [InlineData(-1)]
-        [InlineData(int.MinValue)]
+        [InlineData(2)]
+        [InlineData(3)]
         [InlineData(int.MaxValue)]
         [InlineData(443)]
         [InlineData(80)]
-        public void AnyEqualValueWithAnOpenBound_ShouldBeEmpty(int value)
+        public void EqualValueWithAnOpenBound_ShouldBeEmpty(int value)
         {
             // Arrange
             var open = new Interval<int>(value, value, false, false);
@@ -37,11 +37,35 @@ namespace IntervalRecord.Tests
         }
 
         [Theory]
+        [InlineData(1, 0)]
+        [InlineData(2, 1)]
+        [InlineData(3, 2)]
+        public void EndBeforeStart_ShouldBeEmpty(int start, int end)
+        {
+            // Arrange
+            var open = new Interval<int>(start, end, false, false);
+            var openClosed = new Interval<int>(start, end, false, true);
+            var closedOpen = new Interval<int>(start, end, true, false);
+            var closed = new Interval<int>(start, end, true, true);
+
+            // Act
+            var resultTrue = new bool[]
+            {
+                open.IsEmpty(),
+                openClosed.IsEmpty(),
+                closedOpen.IsEmpty(),
+                closed.IsEmpty()
+            };
+
+            // Assert
+            resultTrue.Should().AllBeEquivalentTo(true);
+        }
+
+        [Theory]
         [InlineData(0, 1)]
+        [InlineData(1, 2)]
         [InlineData(2, 3)]
-        [InlineData(int.MaxValue-1, int.MaxValue)]
-        [InlineData(80, 443)]
-        public void NotEqualValueWithAnOpenBound_ShouldNeverBeEmpty(int start, int end)
+        public void EndAfterStart_ShouldNotBeEmpty(int start, int end)
         {
             // Arrange
             var open = new Interval<int>(start, end, false, false);
