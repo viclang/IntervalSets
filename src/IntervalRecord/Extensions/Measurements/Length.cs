@@ -22,7 +22,7 @@ namespace IntervalRecord
             where T : struct, IComparable<T>, IComparable
             where TResult : struct, IEquatable<TResult>, IComparable<TResult>, IComparable
             => value.Start.IsInfinite || value.End.IsInfinite
-                ? new Infinity<TResult>()
-                : value.IsEmpty() ? default : substract(value.End.Value, value.Start.Value);
+                ? Infinity<TResult>.PositiveInfinity
+                : value.IsEmpty() ? default : substract(value.End.Finite.Value, value.Start.Finite.Value);
     }
 }

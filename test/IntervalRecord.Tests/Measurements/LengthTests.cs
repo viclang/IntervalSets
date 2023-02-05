@@ -74,10 +74,10 @@ namespace IntervalRecord.Tests.Measurements
             // Assert
             actualInteger.Should().Be(integer.End - integer.Start);
             actualDouble.Should().Be(doubles.End - doubles.Start);
-            actualDateOnly.Should().Be(dateOnly.End.Value.DayNumber - dateOnly.Start.Value.DayNumber);
-            actualTimeOnly.Should().Be(timeOnly.End.Value - timeOnly.Start.Value);
-            actualDateTime.Should().Be(dateTime.End.Value - dateTime.Start.Value);
-            actualDateTimeOffset.Should().Be(dateTimeOffset.End.Value - dateTimeOffset.Start.Value);
+            actualDateOnly.Should().Be(dateOnly.End.Finite!.Value.DayNumber - dateOnly.Start.Finite!.Value.DayNumber);
+            actualTimeOnly.Should().Be(timeOnly.End.Finite!.Value - timeOnly.Start.Finite!.Value);
+            actualDateTime.Should().Be(dateTime.End.Finite!.Value - dateTime.Start.Finite!.Value);
+            actualDateTimeOffset.Should().Be(dateTimeOffset.End.Finite!.Value - dateTimeOffset.Start.Finite!.Value);
         }
 
         [Theory]

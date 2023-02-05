@@ -26,6 +26,6 @@ namespace IntervalRecord
             where T : struct, IComparable<T>, IComparable
             => value.Overlaps(other)
                 ? 0
-                : substract(other.Start.Value, value.End.Value);
+                : substract(other.Start.Finite!.Value, value.End.Finite!.Value);
     }
 }

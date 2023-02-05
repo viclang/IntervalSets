@@ -16,12 +16,12 @@ namespace IntervalRecord.Tests.TestData
 
         protected override void Init()
         {
-            var length = Reference.Length().Value;
-            var beforeEnd = Reference.Start.Value - _offset;
+            var length = Reference.Length().Finite!.Value;
+            var beforeEnd = Reference.Start.Finite!.Value - _offset;
             var beforeStart = beforeEnd - length;
-            var containsStart = Reference.Start.Value + _offset;
-            var containsEnd = Reference.End.Value - _offset;
-            var afterStart = Reference.End.Value + _offset;
+            var containsStart = Reference.Start.Finite!.Value + _offset;
+            var containsEnd = Reference.End.Finite!.Value - _offset;
+            var afterStart = Reference.End.Finite!.Value + _offset;
             var afterEnd = afterStart + length;
 
             Before = Reference with { Start = beforeStart, End = beforeEnd };
@@ -44,7 +44,7 @@ namespace IntervalRecord.Tests.TestData
 
         protected override void Init()
         {
-            var length = Reference.Length().Value;
+            var length = Reference.Length().Finite!.Value;
             var beforeEnd = Reference.Start - _offset;
             var beforeStart = beforeEnd - length;
             var containsStart = Reference.Start + _offset;
@@ -72,12 +72,12 @@ namespace IntervalRecord.Tests.TestData
 
         protected override void Init()
         {
-            var length = Reference.Length().Value;
-            var beforeEnd = Reference.Start.Value.AddDays(-_offset);
+            var length = Reference.Length().Finite!.Value;
+            var beforeEnd = Reference.Start.Finite!.Value.AddDays(-_offset);
             var beforeStart = beforeEnd.AddDays(-length);
-            var containsStart = Reference.Start.Value.AddDays(_offset);
-            var containsEnd = Reference.End.Value.AddDays(-_offset);
-            var afterStart = Reference.End.Value.AddDays(_offset);
+            var containsStart = Reference.Start.Finite!.Value.AddDays(_offset);
+            var containsEnd = Reference.End.Finite!.Value.AddDays(-_offset);
+            var afterStart = Reference.End.Finite!.Value.AddDays(_offset);
             var afterEnd = afterStart.AddDays(length);
 
             Before = Reference with { Start = beforeStart, End = beforeEnd };
@@ -100,12 +100,12 @@ namespace IntervalRecord.Tests.TestData
 
         protected override void Init()
         {
-            var length = Reference.Length().Value;
-            var beforeEnd = Reference.Start.Value.Add(-_offset);
+            var length = Reference.Length().Finite!.Value;
+            var beforeEnd = Reference.Start.Finite!.Value.Add(-_offset);
             var beforeStart = beforeEnd.Add(-length);
-            var containsStart = Reference.Start.Value.Add(_offset);
-            var containsEnd = Reference.End.Value.Add(-_offset);
-            var afterStart = Reference.End.Value.Add(_offset);
+            var containsStart = Reference.Start.Finite!.Value.Add(_offset);
+            var containsEnd = Reference.End.Finite!.Value.Add(-_offset);
+            var afterStart = Reference.End.Finite!.Value.Add(_offset);
             var afterEnd = afterStart.Add(length);
 
             Before = Reference with { Start = beforeStart, End = beforeEnd };
@@ -128,12 +128,12 @@ namespace IntervalRecord.Tests.TestData
 
         protected override void Init()
         {
-            var length = Reference.Length().Value;
-            var beforeEnd = Reference.Start.Value.Add(-_offset);
+            var length = Reference.Length().Finite!.Value;
+            var beforeEnd = Reference.Start.Finite!.Value.Add(-_offset);
             var beforeStart = beforeEnd.Add(-length);
-            var containsStart = Reference.Start.Value.Add(_offset);
-            var containsEnd = Reference.End.Value.Add(-_offset);
-            var afterStart = Reference.End.Value.Add(_offset);
+            var containsStart = Reference.Start.Finite!.Value.Add(_offset);
+            var containsEnd = Reference.End.Finite!.Value.Add(-_offset);
+            var afterStart = Reference.End.Finite!.Value.Add(_offset);
             var afterEnd = afterStart.Add(length);
 
             Before = Reference with { Start = beforeStart, End = beforeEnd };
@@ -156,12 +156,12 @@ namespace IntervalRecord.Tests.TestData
 
         protected override void Init()
         {
-            var length = Reference.Length().Value;
-            var beforeEnd = Reference.Start.Value.Add(-_offset);
+            var length = Reference.Length().Finite!.Value;
+            var beforeEnd = Reference.Start.Finite!.Value.Add(-_offset);
             var beforeStart = beforeEnd.Add(-length);
-            var containsStart = Reference.Start.Value.Add(_offset);
-            var containsEnd = Reference.End.Value.Add(-_offset);
-            var afterStart = Reference.End.Value.Add(_offset);
+            var containsStart = Reference.Start.Finite!.Value.Add(_offset);
+            var containsEnd = Reference.End.Finite!.Value.Add(-_offset);
+            var afterStart = Reference.End.Finite.Value.Add(_offset);
             var afterEnd = afterStart.Add(length);
 
             Before = Reference with { Start = beforeStart, End = beforeEnd };

@@ -7,7 +7,7 @@ namespace IntervalRecord
     {
         private static readonly Regex _intervalRegex =
             new Regex(@"(?:\[|\()(?:[^[\](),]*,[^,()[\]]*)(?:\)|\])");
-        private static readonly string[] infinity = { "-inf", "+inf", "inf", "-∞", "+∞", "∞", "null" };
+        private static readonly string[] infinity = { "Infinity", "-Infinity", "-inf", "+inf", "inf", "-∞", "+∞", "∞", "null" };
         private const string intervalNotFound = "Interval not found in string. Please provide an interval string in correct format";
 
         public static Interval<T> Parse<T>(string value, Func<string, T> boundaryParser)

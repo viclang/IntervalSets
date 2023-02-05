@@ -7,7 +7,11 @@ namespace IntervalRecord
         public static IEnumerable<T> Iterate<T>(this Interval<T> value, Func<T, T> AddStep)
             where T : struct, IComparable<T>, IComparable
         {
-            var start = value.StartInclusive ? value.Start.Value : AddStep(value.Start.Value);
+            if (value.Start.IsInfinite)
+            {
+                return Enumerable.Empty<T>();
+            }
+            var start = value.StartInclusive ? value.Start.Finite.Value : AddStep(value.Start.Finite.Value);
             return value.Iterate(start, AddStep);
         }
 

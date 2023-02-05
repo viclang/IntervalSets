@@ -23,6 +23,6 @@ namespace IntervalRecord
             where TResult : struct
             => value.Start.IsInfinite || value.End.IsInfinite || value.IsEmpty()
                 ? null
-                : centre(value.End.Value, value.Start.Value);
+                : centre(value.End.Finite.Value, value.Start.Finite.Value);
     }
 }

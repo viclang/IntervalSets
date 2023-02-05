@@ -76,12 +76,12 @@ namespace IntervalRecord.Tests.Measurements
             var actualDateTimeOffset = dateTimeOffset.Centre();
 
             // Assert
-            actualInteger.Should().Be((integer.End.Value + (double)integer.Start.Value) / 2);
+            actualInteger.Should().Be((integer.End.Finite!.Value + (double)integer.Start.Finite!.Value) / 2);
             actualDouble.Should().Be((doubles.End + doubles.Start) / 2);
-            actualDateOnly.Should().Be(dateOnly.Start.Value.AddDays(dateOnly.Length().Value / 2));
-            actualTimeOnly.Should().Be(timeOnly.Start.Value.Add(timeOnly.Length().Value / 2));
-            actualDateTime.Should().Be(dateTime.Start.Value.Add(dateTime.Length().Value / 2));
-            actualDateTimeOffset.Should().Be(dateTimeOffset.Start.Value.Add(dateTimeOffset.Length().Value / 2));
+            actualDateOnly.Should().Be(dateOnly.Start.Finite!.Value.AddDays(dateOnly.Length().Finite!.Value / 2));
+            actualTimeOnly.Should().Be(timeOnly.Start.Finite!.Value.Add(timeOnly.Length().Finite!.Value / 2));
+            actualDateTime.Should().Be(dateTime.Start.Finite!.Value.Add(dateTime.Length().Finite!.Value / 2));
+            actualDateTimeOffset.Should().Be(dateTimeOffset.Start.Finite!.Value.Add(dateTimeOffset.Length().Finite!.Value / 2));
         }
 
         [Theory]

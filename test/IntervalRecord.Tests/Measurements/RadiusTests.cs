@@ -81,9 +81,9 @@ namespace IntervalRecord.Tests.Measurements
             actualInteger.Should().Be(integer.Length() / 2);
             actualDouble.Should().Be(doubles.Length() / 2);
             actualDateOnly.Should().Be(dateOnly.Length() / 2);
-            actualTimeOnly.Should().Be(timeOnly.Length().Value / 2);
-            actualDateTime.Should().Be(dateTime.Length().Value / 2);
-            actualDateTimeOffset.Should().Be(dateTimeOffset.Length().Value / 2);
+            actualTimeOnly.Should().Be(timeOnly.Length().Finite!.Value / 2);
+            actualDateTime.Should().Be(dateTime.Length().Finite!.Value / 2);
+            actualDateTimeOffset.Should().Be(dateTimeOffset.Length().Finite!.Value / 2);
         }
 
         [Theory]

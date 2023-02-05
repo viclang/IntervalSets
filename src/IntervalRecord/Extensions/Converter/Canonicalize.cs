@@ -36,8 +36,8 @@
             }
             return value with
             {
-                Start = value.StartInclusive || value.Start.IsInfinite ? value.Start : add(value.Start.Value),
-                End = value.EndInclusive || value.End.IsInfinite ? value.End : substract(value.End.Value),
+                Start = value.StartInclusive || value.Start.IsInfinite ? value.Start : add(value.Start.Finite.Value),
+                End = value.EndInclusive || value.End.IsInfinite ? value.End : substract(value.End.Finite.Value),
                 StartInclusive = true,
                 EndInclusive = true
             };
@@ -54,8 +54,8 @@
             }
             return value with
             {
-                Start = value.StartInclusive || value.Start.IsInfinite ? value.Start : add(value.Start.Value),
-                End = value.EndInclusive ? add(value.End.Value) : value.End,
+                Start = value.StartInclusive || value.Start.IsInfinite ? value.Start : add(value.Start.Finite.Value),
+                End = value.EndInclusive && !value.End.IsInfinite ? add(value.End.Finite.Value) : value.End,
                 StartInclusive = true,
                 EndInclusive = false
             };
@@ -72,8 +72,8 @@
             }
             return value with
             {
-                Start = value.StartInclusive ? substract(value.Start.Value) : value.Start,
-                End = value.EndInclusive || value.End.IsInfinite ? value.End : substract(value.End.Value),
+                Start = value.StartInclusive && !value.Start.IsInfinite ? substract(value.Start.Finite.Value) : value.Start,
+                End = value.EndInclusive || value.End.IsInfinite ? value.End : substract(value.End.Finite.Value),
                 StartInclusive = false,
                 EndInclusive = true
             };
@@ -91,8 +91,8 @@
             }
             return value with
             {
-                Start = value.StartInclusive ? substract(value.Start.Value) : value.Start,
-                End = value.EndInclusive ? add(value.End.Value) : value.End,
+                Start = value.StartInclusive && !value.Start.IsInfinite ? substract(value.Start.Finite.Value) : value.Start,
+                End = value.EndInclusive && !value.End.IsInfinite ? add(value.End.Finite.Value) : value.End,
                 StartInclusive = false,
                 EndInclusive = false
             };
