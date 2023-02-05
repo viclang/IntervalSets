@@ -63,7 +63,7 @@ namespace IntervalRecord.Tests
 
             // Assert
             act.Should().Throw<ArgumentException>()
-                .WithMessage($"Interval not found in string . Please provide an interval string in correct format");
+                .WithMessage($"Interval not found in string. Please provide an interval string in correct format");
         }
 
         [Theory]

@@ -4,21 +4,21 @@ namespace IntervalRecord
 {
     public static class BoundaryTypeMapper
     {
-        public static BoundaryType ToType(bool startInclusive, bool endInclusive) => (startInclusive, endInclusive) switch
+        private readonly static Dictionary<ValueTuple<bool, bool>, BoundaryType> TypeLookup = new()
         {
-            (false, false) => BoundaryType.Open,
-            (true, true) => BoundaryType.Closed,
-            (false, true) => BoundaryType.OpenClosed,
-            (true, false) => BoundaryType.ClosedOpen,
+            { (false, false), BoundaryType.Open },
+            { (true, true) , BoundaryType.Closed },
+            { (false, true), BoundaryType.OpenClosed },
+            { (true, false), BoundaryType.ClosedOpen }
         };
 
-        public static (bool, bool) ToTuple(BoundaryType intervalType) => intervalType switch
-        {
-            BoundaryType.Open => (false, false),
-            BoundaryType.Closed => (true, true),
-            BoundaryType.OpenClosed => (false, true),
-            BoundaryType.ClosedOpen => (true, false),
-            _ => throw new NotSupportedException()
-        };
+        private readonly static Dictionary<BoundaryType, ValueTuple<bool, bool>> TupleLookup = 
+            TypeLookup.ToDictionary(x => x.Value, x => x.Key);
+
+        public static BoundaryType ToType(bool startInclusive, bool endInclusive)
+            => TypeLookup[(startInclusive, endInclusive)];
+
+        public static (bool, bool) ToTuple(BoundaryType intervalType)
+            => TupleLookup[intervalType];
     }
 }

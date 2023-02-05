@@ -108,7 +108,7 @@ namespace IntervalRecord.Tests.DataSets
         public TheoryData<Interval<T>, Interval<T>, OverlappingState> GetOverlappingState => new TheoryData<Interval<T>, Interval<T>, OverlappingState>
         {
             { Before, Reference, OverlappingState.Before },
-            { Meets, Reference, OverlappingState.Meets },
+            { Meets, Reference, Reference.GetIntervalType() == BoundaryType.Closed ? OverlappingState.Meets : OverlappingState.Before },
             { Overlaps, Reference, OverlappingState.Overlaps },
             { Starts, Reference, OverlappingState.Starts },
             { ContainedBy, Reference, OverlappingState.ContainedBy },
@@ -118,7 +118,7 @@ namespace IntervalRecord.Tests.DataSets
             { Contains, Reference, OverlappingState.Contains },
             { StartedBy, Reference, OverlappingState.StartedBy },
             { OverlappedBy, Reference, OverlappingState.OverlappedBy },
-            { MetBy, Reference, OverlappingState.MetBy },
+            { MetBy, Reference, Reference.GetIntervalType() == BoundaryType.Closed ? OverlappingState.MetBy : OverlappingState.After },
             { After, Reference, OverlappingState.After }
         };
 

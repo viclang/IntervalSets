@@ -37,6 +37,7 @@ namespace IntervalRecord.Tests
 
         [Theory]
         [MemberData(nameof(ClosedGetOverlappingState))]
+        [MemberData(nameof(OpenGetOverlappingState))]
         public void AllNullStates_ShouldBeInDictionary(Interval<int> a, Interval<int> b, OverlappingState origin)
         {
             var results = new HashSet<OverlappingState>
@@ -56,7 +57,7 @@ namespace IntervalRecord.Tests
                 ( a with { Start = null, End = null }).GetOverlappingState( b with { Start = null } ),
                 ( a with { Start = null, End = null }).GetOverlappingState( b with { End = null } )
             };
-            var count = results.Should().HaveCountLessThanOrEqualTo(9);
+            results.Should().HaveCountLessThanOrEqualTo(9);
         }
 
     }
