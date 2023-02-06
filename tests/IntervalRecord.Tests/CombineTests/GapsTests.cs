@@ -7,13 +7,13 @@ namespace IntervalRecord.Tests.CombineTests
     {
         [Theory]
         [MemberData(nameof(IntervalPairsWithOverlappingState), true)]
-        public void OverlappingIntervalsGap_ShouldBeExpectedOrNull(Interval<int> a, Interval<int> b, OverlappingState overlappingState)
+        public void OverlappingIntervalsGap_ShouldBeExpectedOrNull(Interval<int> a, Interval<int> b, IntervalOverlapping overlappingState)
         {
             // Act
             var actual = a.Gap(b);
 
             // Assert
-            if (overlappingState == OverlappingState.Before)
+            if (overlappingState == IntervalOverlapping.Before)
             {
                 actual.Should()
                 .NotBeNull()
@@ -25,7 +25,7 @@ namespace IntervalRecord.Tests.CombineTests
                         !b.StartInclusive)
                     );
             }
-            else if (overlappingState == OverlappingState.After)
+            else if (overlappingState == IntervalOverlapping.After)
             {
                 actual.Should()
                 .NotBeNull()
@@ -45,13 +45,13 @@ namespace IntervalRecord.Tests.CombineTests
 
         [Theory]
         [MemberData(nameof(IntervalPairsWithOverlappingState), true)]
-        public void OverlappingIntervalsGap_ShouldBeExpectedOrDefault(Interval<int> a, Interval<int> b, OverlappingState overlappingState)
+        public void OverlappingIntervalsGap_ShouldBeExpectedOrDefault(Interval<int> a, Interval<int> b, IntervalOverlapping overlappingState)
         {
             // Act
             var actual = a.GapOrDefault(b, a);
 
             // Assert
-            if (overlappingState == OverlappingState.Before)
+            if (overlappingState == IntervalOverlapping.Before)
             {
                 actual.Should()
                 .NotBeNull()
@@ -63,7 +63,7 @@ namespace IntervalRecord.Tests.CombineTests
                         !b.StartInclusive)
                     );
             }
-            else if (overlappingState == OverlappingState.After)
+            else if (overlappingState == IntervalOverlapping.After)
             {
                 actual.Should()
                 .NotBeNull()

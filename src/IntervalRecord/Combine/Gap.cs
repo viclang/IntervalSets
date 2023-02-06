@@ -7,20 +7,20 @@ namespace IntervalRecord
         [Pure]
         public static Interval<T>? Gap<T>(this Interval<T> first, Interval<T> second)
             where T : struct, IEquatable<T>, IComparable<T>, IComparable
-            => first.GetOverlappingState(second, true) switch
+            => first.GetIntervalOverlapping(second, true) switch
             {
-                OverlappingState.Before => new Interval<T>(first.End, second.Start, !first.EndInclusive, !second.StartInclusive),
-                OverlappingState.After => new Interval<T>(second.End, first.Start, !second.EndInclusive, !first.StartInclusive),
+                IntervalOverlapping.Before => new Interval<T>(first.End, second.Start, !first.EndInclusive, !second.StartInclusive),
+                IntervalOverlapping.After => new Interval<T>(second.End, first.Start, !second.EndInclusive, !first.StartInclusive),
                 _ => null
             };
 
         [Pure]
         public static Interval<T> GapOrDefault<T>(this Interval<T> first, Interval<T> second, Interval<T> defaultValue = default)
             where T : struct, IEquatable<T>, IComparable<T>, IComparable
-            => first.GetOverlappingState(second, true) switch
+            => first.GetIntervalOverlapping(second, true) switch
             {
-                OverlappingState.Before => new Interval<T>(first.End, second.Start, !first.EndInclusive, !second.StartInclusive),
-                OverlappingState.After => new Interval<T>(second.End, first.Start, !second.EndInclusive, !first.StartInclusive),
+                IntervalOverlapping.Before => new Interval<T>(first.End, second.Start, !first.EndInclusive, !second.StartInclusive),
+                IntervalOverlapping.After => new Interval<T>(second.End, first.Start, !second.EndInclusive, !first.StartInclusive),
                 _ => defaultValue
             };
 

@@ -7,7 +7,7 @@ namespace IntervalRecord.Tests.TestData
     public sealed record class IntOverlappingDataSet : BaseOverlappingDataSet<int>
     {
         /// <summary>
-        /// Creates a DataSet with 13 different states <see cref="OverlappingState"/> relative to the reference interval.
+        /// Creates a DataSet with 13 different states <see cref="IntervalOverlapping"/> relative to the reference interval.
         /// </summary>
         /// <param name="startingPoint"></param>
         /// <param name="length"></param>
@@ -61,44 +61,44 @@ namespace IntervalRecord.Tests.TestData
         {
             var expectedMeets = includeHalfOpen
                 ? Reference.GetIntervalType() is IntervalType.Closed or IntervalType.OpenClosed or IntervalType.ClosedOpen
-                    ? OverlappingState.Meets : OverlappingState.Before
-                : Reference.GetIntervalType() == IntervalType.Closed ? OverlappingState.Meets : OverlappingState.Before;
+                    ? IntervalOverlapping.Meets : IntervalOverlapping.Before
+                : Reference.GetIntervalType() == IntervalType.Closed ? IntervalOverlapping.Meets : IntervalOverlapping.Before;
 
             var expectedMetBy = includeHalfOpen
                 ? Reference.GetIntervalType() is IntervalType.Closed or IntervalType.OpenClosed or IntervalType.ClosedOpen
-                    ? OverlappingState.MetBy : OverlappingState.After
-                : Reference.GetIntervalType() == IntervalType.Closed ? OverlappingState.MetBy : OverlappingState.After;
+                    ? IntervalOverlapping.MetBy : IntervalOverlapping.After
+                : Reference.GetIntervalType() == IntervalType.Closed ? IntervalOverlapping.MetBy : IntervalOverlapping.After;
 
             return new List<object[]>
             {
-                new object[] { Before, Reference, OverlappingState.Before },
+                new object[] { Before, Reference, IntervalOverlapping.Before },
                 new object[] { Meets, Reference, expectedMeets },
-                new object[] { Overlaps, Reference, OverlappingState.Overlaps },
-                new object[] { Starts, Reference, OverlappingState.Starts },
-                new object[] { ContainedBy, Reference, OverlappingState.ContainedBy },
-                new object[] { Finishes, Reference, OverlappingState.Finishes },
-                new object[] { Reference, Reference, OverlappingState.Equal },
-                new object[] { FinishedBy, Reference, OverlappingState.FinishedBy },
-                new object[] { Contains, Reference, OverlappingState.Contains },
-                new object[] { StartedBy, Reference, OverlappingState.StartedBy },
-                new object[] { OverlappedBy, Reference, OverlappingState.OverlappedBy },
+                new object[] { Overlaps, Reference, IntervalOverlapping.Overlaps },
+                new object[] { Starts, Reference, IntervalOverlapping.Starts },
+                new object[] { ContainedBy, Reference, IntervalOverlapping.ContainedBy },
+                new object[] { Finishes, Reference, IntervalOverlapping.Finishes },
+                new object[] { Reference, Reference, IntervalOverlapping.Equal },
+                new object[] { FinishedBy, Reference, IntervalOverlapping.FinishedBy },
+                new object[] { Contains, Reference, IntervalOverlapping.Contains },
+                new object[] { StartedBy, Reference, IntervalOverlapping.StartedBy },
+                new object[] { OverlappedBy, Reference, IntervalOverlapping.OverlappedBy },
                 new object[] { MetBy, Reference, expectedMetBy },
-                new object[] { After, Reference, OverlappingState.After },
-                new object[] { Before with { Start = null }, Reference with { End = null }, OverlappingState.Before },
+                new object[] { After, Reference, IntervalOverlapping.After },
+                new object[] { Before with { Start = null }, Reference with { End = null }, IntervalOverlapping.Before },
                 new object[] { Meets with { Start = null }, Reference with { End = null }, expectedMeets },
-                new object[] { After with { Start = null }, Reference with { End = null }, OverlappingState.Overlaps },
-                new object[] { Before with { Start = null }, Reference with { Start = null }, OverlappingState.Starts },
-                new object[] { Reference with { Start = null }, Reference with { Start = null, End = null }, OverlappingState.Starts },
-                new object[] { Reference, Reference with { Start = null, End = null }, OverlappingState.ContainedBy },
-                new object[] { After with { End = null }, Reference with { End = null }, OverlappingState.Finishes },
-                new object[] { Reference with { End = null }, Reference with { Start = null, End = null }, OverlappingState.Finishes },
-                new object[] { Reference with { Start = null, End = null }, Reference  with { Start = null, End = null }, OverlappingState.Equal },
-                new object[] { Before with { End = null }, Reference with { End = null }, OverlappingState.FinishedBy },
-                new object[] { Reference with { Start = null, End = null }, Reference, OverlappingState.Contains },
-                new object[] { After with { Start = null }, Reference with { Start = null }, OverlappingState.StartedBy },
-                new object[] { Before with { End = null }, Reference with { Start = null }, OverlappingState.OverlappedBy },
+                new object[] { After with { Start = null }, Reference with { End = null }, IntervalOverlapping.Overlaps },
+                new object[] { Before with { Start = null }, Reference with { Start = null }, IntervalOverlapping.Starts },
+                new object[] { Reference with { Start = null }, Reference with { Start = null, End = null }, IntervalOverlapping.Starts },
+                new object[] { Reference, Reference with { Start = null, End = null }, IntervalOverlapping.ContainedBy },
+                new object[] { After with { End = null }, Reference with { End = null }, IntervalOverlapping.Finishes },
+                new object[] { Reference with { End = null }, Reference with { Start = null, End = null }, IntervalOverlapping.Finishes },
+                new object[] { Reference with { Start = null, End = null }, Reference  with { Start = null, End = null }, IntervalOverlapping.Equal },
+                new object[] { Before with { End = null }, Reference with { End = null }, IntervalOverlapping.FinishedBy },
+                new object[] { Reference with { Start = null, End = null }, Reference, IntervalOverlapping.Contains },
+                new object[] { After with { Start = null }, Reference with { Start = null }, IntervalOverlapping.StartedBy },
+                new object[] { Before with { End = null }, Reference with { Start = null }, IntervalOverlapping.OverlappedBy },
                 new object[] { MetBy with { End = null }, Reference with { Start = null }, expectedMetBy },
-                new object[] { After with { End = null }, Reference with { Start = null }, OverlappingState.After },
+                new object[] { After with { End = null }, Reference with { Start = null }, IntervalOverlapping.After },
             };
         }
 

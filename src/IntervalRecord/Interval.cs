@@ -11,7 +11,7 @@ namespace IntervalRecord
         private readonly Infinity<T> end;
         private readonly bool startInclusive;
         private readonly bool endInclusive;
-
+        
         public Infinity<T> Start
         {
             get => start;
@@ -62,16 +62,13 @@ namespace IntervalRecord
 
         [Pure]
         public bool Overlaps(Interval<T> other, bool includeHalfOpen = false)
-            => this.GetOverlappingState(other, includeHalfOpen) is not OverlappingState.Before and not OverlappingState.After;
+            => this.GetIntervalOverlapping(other, includeHalfOpen) is not IntervalOverlapping.Before and not IntervalOverlapping.After;
 
         [Pure]
         public bool Contains(T other)
         {
-            return StartInclusive
-                ? Start.CompareTo(other) <= 0
-                : Start.CompareTo(other) == -1 && EndInclusive
-                    ? End.CompareTo(other) >= 0
-                    : End.CompareTo(other) == 1;
+            return (StartInclusive ? Start.CompareTo(other) <= 0 : Start.CompareTo(other) == -1)
+                && (EndInclusive ? End.CompareTo(other) >= 0 : End.CompareTo(other) == 1);
         }
 
 

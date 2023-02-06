@@ -9,7 +9,7 @@ namespace IntervalRecord.Tests.CombineTests
     {
         [Theory]
         [MemberData(nameof(IntervalPairsWithOverlappingState), true)]
-        public void Union_ShouldBeExpectedOrNull(Interval<int> a, Interval<int> b, OverlappingState overlappingState)
+        public void Union_ShouldBeExpectedOrNull(Interval<int> a, Interval<int> b, IntervalOverlapping overlappingState)
         {
             // Act
             var actual = a.Union(b);
@@ -30,7 +30,7 @@ namespace IntervalRecord.Tests.CombineTests
 
             using (new AssertionScope())
             {
-                if (overlappingState != OverlappingState.Before && overlappingState != OverlappingState.After)
+                if (overlappingState != IntervalOverlapping.Before && overlappingState != IntervalOverlapping.After)
                 {
                     actual!.Value.Start.Should().Be(minByStart.Start);
                     actual!.Value.End.Should().Be(maxByEnd.End);
@@ -46,7 +46,7 @@ namespace IntervalRecord.Tests.CombineTests
 
         [Theory]
         [MemberData(nameof(IntervalPairsWithOverlappingState), true)]
-        public void Union_ShouldBeExpectedOrDefault(Interval<int> a, Interval<int> b, OverlappingState overlappingState)
+        public void Union_ShouldBeExpectedOrDefault(Interval<int> a, Interval<int> b, IntervalOverlapping overlappingState)
         {
             // Act
             var actual = a.UnionOrDefault(b, a);
@@ -67,7 +67,7 @@ namespace IntervalRecord.Tests.CombineTests
 
             using (new AssertionScope())
             {
-                if (overlappingState != OverlappingState.Before && overlappingState != OverlappingState.After)
+                if (overlappingState != IntervalOverlapping.Before && overlappingState != IntervalOverlapping.After)
                 {
                     actual!.Start.Should().Be(minByStart.Start);
                     actual!.End.Should().Be(maxByEnd.End);

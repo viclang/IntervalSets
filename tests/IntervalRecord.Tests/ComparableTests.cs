@@ -6,7 +6,7 @@ namespace IntervalRecord.Tests
     {
         [Theory]
         [MemberData(nameof(IntervalPairsWithOverlappingState), false)]
-        public void CompareTo_ShouldBeExpected(Interval<int> a, Interval<int> b, OverlappingState state)
+        public void CompareTo_ShouldBeExpected(Interval<int> a, Interval<int> b, IntervalOverlapping state)
         {
             // Act
             var actual = a.CompareTo(b);
@@ -28,7 +28,7 @@ namespace IntervalRecord.Tests
 
         [Theory]
         [MemberData(nameof(IntervalPairsWithOverlappingState), false)]
-        public void GreaterThan_ShouldBeExpected(Interval<int> a, Interval<int> b, OverlappingState state)
+        public void GreaterThan_ShouldBeExpected(Interval<int> a, Interval<int> b, IntervalOverlapping state)
         {
             // Act
             var actual = a > b;
@@ -46,7 +46,7 @@ namespace IntervalRecord.Tests
 
         [Theory]
         [MemberData(nameof(IntervalPairsWithOverlappingState), false)]
-        public void LessThan_ShouldBeExpected(Interval<int> a, Interval<int> b, OverlappingState state)
+        public void LessThan_ShouldBeExpected(Interval<int> a, Interval<int> b, IntervalOverlapping state)
         {
             // Act
             var actual = a < b;
@@ -64,7 +64,7 @@ namespace IntervalRecord.Tests
 
         [Theory]
         [MemberData(nameof(IntervalPairsWithOverlappingState), false)]
-        public void GreaterOrEqualTo_ShouldBeExpected(Interval<int> a, Interval<int> b, OverlappingState state)
+        public void GreaterOrEqualTo_ShouldBeExpected(Interval<int> a, Interval<int> b, IntervalOverlapping state)
         {
             // Act
             var actual = a >= b;
@@ -82,7 +82,7 @@ namespace IntervalRecord.Tests
 
         [Theory]
         [MemberData(nameof(IntervalPairsWithOverlappingState), false)]
-        public void LessOrEqualTo_ShouldBeExpected(Interval<int> a, Interval<int> b, OverlappingState state)
+        public void LessOrEqualTo_ShouldBeExpected(Interval<int> a, Interval<int> b, IntervalOverlapping state)
         {
             // Act
             var actual = a <= b;
