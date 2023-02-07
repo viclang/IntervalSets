@@ -2,6 +2,9 @@
 
 namespace IntervalRecord
 {
+    /// <summary>
+    /// Specifies the overlapping relation between two intervals.
+    /// </summary>
     public enum IntervalOverlapping : byte
     {
         Before = 0,
@@ -57,6 +60,13 @@ namespace IntervalRecord
                 (_, _) => throw new NotSupportedException()
             };
 
+        /// <summary>
+        /// Compares the start of two intervals.
+        /// </summary>
+        /// <typeparam name="T">The type of the interval endpoints.</typeparam>
+        /// <param name="first">The first interval to compare.</param>
+        /// <param name="second">The second interval to compare.</param>
+        /// <returns>A value indicating the relative order of the start of the two intervals.</returns>
         [Pure]
         public static int CompareStart<T>(this Interval<T> first, Interval<T> second)
             where T : struct, IEquatable<T>, IComparable<T>, IComparable
@@ -65,7 +75,13 @@ namespace IntervalRecord
             return result == 0 ? first.StartInclusive.CompareTo(second.StartInclusive) : result;
         }
 
-
+        /// <summary>
+        /// Compares the end of two intervals.
+        /// </summary>
+        /// <typeparam name="T">The type of the interval endpoints.</typeparam>
+        /// <param name="first">The first interval to compare.</param>
+        /// <param name="second">The second interval to compare.</param>
+        /// <returns>A value indicating the relative order of the end of the two intervals.</returns>
         [Pure]
         public static int CompareEnd<T>(this Interval<T> first, Interval<T> second)
             where T : struct, IEquatable<T>, IComparable<T>, IComparable
@@ -74,6 +90,13 @@ namespace IntervalRecord
             return result == 0 ? first.EndInclusive.CompareTo(second.EndInclusive) : result;
         }
 
+        /// <summary>
+        /// Compares the start of the first interval with the end of the second interval.
+        /// </summary>
+        /// <typeparam name="T">The type of the interval endpoints.</typeparam>
+        /// <param name="first">The first interval to compare.</param>
+        /// <param name="second">The second interval to compare.</param>
+        /// <returns>A value indicating the relative order of the end of the two intervals.</returns>
         [Pure]
         public static int CompareStartToEnd<T>(this Interval<T> first, Interval<T> second, bool includeHalfOpen = false)
             where T : struct, IEquatable<T>, IComparable<T>, IComparable
@@ -86,6 +109,13 @@ namespace IntervalRecord
             return result == 0 && startEndNotTouching ? 1 : result;
         }
 
+        /// <summary>
+        /// Compares the end of the first interval with the start of the second interval.
+        /// </summary>
+        /// <typeparam name="T">The type of the interval endpoints.</typeparam>
+        /// <param name="first">The first interval to compare.</param>
+        /// <param name="second">The second interval to compare.</param>
+        /// <returns>A value indicating the relative order of the end of the two intervals.</returns>
         [Pure]
         public static int CompareEndToStart<T>(this Interval<T> first, Interval<T> second, bool includeHalfOpen = false)
             where T : struct, IEquatable<T>, IComparable<T>, IComparable
