@@ -60,7 +60,7 @@ namespace IntervalRecord
         [Pure]
         public static bool IsHalfOpen<T>(this Interval<T> value)
             where T : struct, IEquatable<T>, IComparable<T>, IComparable
-            => value.StartInclusive && !value.EndInclusive || !value.StartInclusive && value.EndInclusive;
+            => value.GetIntervalType() is IntervalType.ClosedOpen or IntervalType.OpenClosed;
 
     }
 }

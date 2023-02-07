@@ -4,6 +4,10 @@ using System.Text;
 
 namespace IntervalRecord
 {
+    /// <summary>
+    /// Represents an interval of values of type <see cref="T"/>.
+    /// </summary>
+    /// <typeparam name="T">The type of values represented in the interval.</typeparam>
     public readonly record struct Interval<T> : IComparable<Interval<T>>
         where T : struct, IEquatable<T>, IComparable<T>, IComparable
     {
@@ -12,6 +16,9 @@ namespace IntervalRecord
         private readonly bool startInclusive;
         private readonly bool endInclusive;
         
+        /// <summary>
+        /// Represents the start value of the interval.
+        /// </summary>
         public Infinity<T> Start
         {
             get => start;
@@ -22,6 +29,9 @@ namespace IntervalRecord
             }
         }
 
+        /// <summary>
+        /// Represents the end value of the interval.
+        /// </summary>
         public Infinity<T> End
         {
             get => end;
@@ -39,12 +49,22 @@ namespace IntervalRecord
         [Pure]
         public bool IsValid => Start.IsInfinity || End.IsInfinity || End.CompareTo(Start) >= 0;
 
+        /// <summary>
+        /// Creates an unbounded interval equivalent to <see cref="Interval.All{T}"/>"/>
+        /// </summary>
         [Pure]
         public Interval()
             : this(Infinity<T>.NegativeInfinity, Infinity<T>.PositiveInfinity, false, false)
         {
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="start"></param>
+        /// <param name="end"></param>
+        /// <param name="startInclusive"></param>
+        /// <param name="endInclusive"></param>
         [Pure]
         public Interval(Infinity<T> start, Infinity<T> end, bool startInclusive, bool endInclusive)
         {
