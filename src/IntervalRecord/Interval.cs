@@ -42,12 +42,22 @@ namespace IntervalRecord
             }
         }
 
+        /// <summary>
+        /// Gets a value indicating whether the start of the interval is inclusive.
+        /// </summary>
         public bool StartInclusive { get => startInclusive; init { startInclusive = !Start.IsInfinity && value; } }
 
+
+        /// <summary>
+        /// Gets a value indicating whether the end of the interval is inclusive.
+        /// </summary>
         public bool EndInclusive { get => endInclusive; init { endInclusive = !End.IsInfinity && value; } }
 
+        /// <summary>
+        /// Indicates whether the end value of the interval is Greater than or equal to its start value.
+        /// </summary>
         [Pure]
-        public bool IsValid => Start.IsInfinity || End.IsInfinity || End.CompareTo(Start) >= 0;
+        public bool IsValid => End.CompareTo(Start) >= 0;
 
         /// <summary>
         /// Creates an unbounded interval equivalent to <see cref="Interval.All{T}"/>"/>
@@ -59,12 +69,12 @@ namespace IntervalRecord
         }
 
         /// <summary>
-        /// 
+        /// Creates an interval.
         /// </summary>
-        /// <param name="start"></param>
-        /// <param name="end"></param>
-        /// <param name="startInclusive"></param>
-        /// <param name="endInclusive"></param>
+        /// <param name="start">Represents the start value of the interval.</param>
+        /// <param name="end">Represents the end value of the interval.</param>
+        /// <param name="startInclusive">Indicates whether the start is inclusive.</param>
+        /// <param name="endInclusive">Indicates whether the end is inclusive.</param>
         [Pure]
         public Interval(Infinity<T> start, Infinity<T> end, bool startInclusive, bool endInclusive)
         {
@@ -74,24 +84,47 @@ namespace IntervalRecord
             this.endInclusive = !this.end.IsInfinity && endInclusive;
         }
 
+        /// <summary>
+        /// Indicates whether an interval is empty.
+        /// </summary>
+        /// <returns>True if the interval is Invalid or the interval is not <see cref="IntervalType.Closed"/> and <see cref="Start"/> and <see cref="End"/> are equal</returns>
         [Pure]
         public bool IsEmpty() => !IsValid || (this.GetIntervalType() != IntervalType.Closed && Start == End);
 
+        /// <summary>
+        /// Indicates whether an interval is Singleton.
+        /// </summary>
+        /// <returns>True if the interval is <see cref="IntervalType.Closed"/> and <see cref="Start"/> and <see cref="End"/> are equal.</returns>
         [Pure]
         public bool IsSingleton() => this.GetIntervalType() == IntervalType.Closed && Start == End;
-
+        
+        /// <summary>
+        /// Returns a boolean value indicating if the current interval overlaps with the other interval.
+        /// </summary>
+        /// <param name="other">The interval to check for overlapping with the current interval.</param>
+        /// <param name="includeHalfOpen">Indicates how to treat half-open endpoints in <see cref="IntervalOverlapping.Meets"/> or <see cref="IntervalOverlapping.MetBy"/> comparison.</param>
+        /// <returns>True if the current interval and the other interval overlap, False otherwise.</returns>
         [Pure]
         public bool Overlaps(Interval<T> other, bool includeHalfOpen = false)
             => this.GetIntervalOverlapping(other, includeHalfOpen) is not IntervalOverlapping.Before and not IntervalOverlapping.After;
 
+        /// <summary>
+        /// Returns a boolean value indicating if the current interval contains the specified value.
+        /// </summary>
+        /// <param name="value">The value to check if it is contained by the current interval</param>
+        /// <returns></returns>
         [Pure]
-        public bool Contains(T other)
+        public bool Contains(T value)
         {
-            return (StartInclusive ? Start.CompareTo(other) <= 0 : Start.CompareTo(other) == -1)
-                && (EndInclusive ? End.CompareTo(other) >= 0 : End.CompareTo(other) == 1);
+            return (StartInclusive ? Start.CompareTo(value) <= 0 : Start.CompareTo(value) == -1)
+                && (EndInclusive ? End.CompareTo(value) >= 0 : End.CompareTo(value) == 1);
         }
 
-
+        /// <summary>
+        /// This method compares the current interval with another interval and returns an integer value indicating the relative order of the intervals.
+        /// </summary>
+        /// <param name="other">The interval to compare with the current interval.</param>
+        /// <returns>1 if the current interval is greater than the other interval, -1 if the current interval is less than the other interval, and 0 if the intervals are equal.</returns>
         [Pure]
         public int CompareTo(Interval<T> other)
         {
