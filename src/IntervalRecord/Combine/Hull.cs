@@ -4,6 +4,13 @@ namespace IntervalRecord
 {
     public static partial class Interval
     {
+        /// <summary>
+        /// Computes the smallest interval that contains both input intervals.
+        /// </summary>
+        /// <typeparam name="T">The type of the interval bounds. Must be a struct that implements IEquatable<T>, IComparable<T>, and IComparable.</typeparam>
+        /// <param name="first">The first interval to compute the hull of.</param>
+        /// <param name="second">The second interval to compute the hull of.</param>
+        /// <returns>The smallest interval that contains both input intervals.</returns>
         [Pure]
         public static Interval<T> Hull<T>(this Interval<T> first, Interval<T> second)
             where T : struct, IEquatable<T>, IComparable<T>, IComparable
@@ -22,6 +29,12 @@ namespace IntervalRecord
             return new Interval<T>(minByStart.Start, maxByEnd.End, startInclusive, endInclusive);
         }
 
+        /// <summary>
+        /// Computes the smallest interval that contains all input intervals.
+        /// </summary>
+        /// <typeparam name="T">The type of the interval bounds. Must be a struct that implements IEquatable<T>, IComparable<T>, and IComparable.</typeparam>
+        /// <param name="source">The intervals to compute the hull of.</param>
+        /// <returns>The smallest interval that contains all input intervals, or null if the input is empty.</returns>
         [Pure]
         public static Interval<T>? Hull<T>(
             this IEnumerable<Interval<T>> source)

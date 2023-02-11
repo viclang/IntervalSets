@@ -4,6 +4,13 @@ namespace IntervalRecord
 {
     public static partial class Interval
     {
+        /// <summary>
+        /// Calculates the intersect of two intervals
+        /// </summary>
+        /// <typeparam name="T">The type of the interval's endpoints</typeparam>
+        /// <param name="first">The first interval</param>
+        /// <param name="second">The second interval</param>
+        /// <returns>The intersect of the two intervals or null if they don't overlap</returns>
         [Pure]
         public static Interval<T>? Intersect<T>(this Interval<T> first, Interval<T> second)
             where T : struct, IEquatable<T>, IComparable<T>, IComparable
@@ -11,6 +18,14 @@ namespace IntervalRecord
                 ? null
                 : GetIntersectValue(first, second);
 
+        /// <summary>
+        /// Calculates the intersect of two intervals
+        /// </summary>
+        /// <typeparam name="T">The type of the interval's endpoints</typeparam>
+        /// <param name="first">The first interval</param>
+        /// <param name="second">The second interval</param>
+        /// <param name="defaultValue">The default value to return if the two intervals don't overlap</param>
+        /// <returns>The intersect of the two intervals or the default value if they don't overlap</returns>
         [Pure]
         public static Interval<T> IntersectOrDefault<T>(this Interval<T> first, Interval<T> second, Interval<T> defaultValue = default)
             where T : struct, IEquatable<T>, IComparable<T>, IComparable

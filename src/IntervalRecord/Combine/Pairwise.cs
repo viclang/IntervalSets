@@ -4,6 +4,14 @@ namespace IntervalRecord
 {
     public static partial class Interval
     {
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <typeparam name="TResult"></typeparam>
+        /// <param name="source"></param>
+        /// <param name="resultSelector"></param>
+        /// <returns></returns>
         [Pure]
         public static IEnumerable<TResult> Pairwise<T, TResult>(
             this IEnumerable<Interval<T>> source,
@@ -23,6 +31,15 @@ namespace IntervalRecord
             }
         }
 
+        /// <summary>
+        /// Returns an enumerable of results obtained by applying a specified function to the adjacent intervals in the source.
+        /// The result of the function applied to the intervals must be a struct and can be null.
+        /// </summary>
+        /// <typeparam name="T">The type of the interval.</typeparam>
+        /// <typeparam name="TResult">The type of the result of the function applied to the intervals. Must be a struct.</typeparam>
+        /// <param name="source">The source interval enumerable.</param>
+        /// <param name="resultSelector">The function to apply to the adjacent intervals in the source.</param>
+        /// <returns>An enumerable of results obtained by applying a specified function to the adjacent intervals in the source.</returns>
         [Pure]
         public static IEnumerable<TResult> Pairwise<T, TResult>(
             this IEnumerable<Interval<T>> source,
