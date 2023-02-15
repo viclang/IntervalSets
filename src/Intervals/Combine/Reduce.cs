@@ -19,7 +19,7 @@ namespace Intervals
             Func<Interval<T>, Interval<T>, Interval<T>?> resultSelector)
             where T : struct, IEquatable<T>, IComparable<T>, IComparable
         {
-            using var e = source.GetEnumerator();
+            using var e = source.OrderBy(x => x.Start).GetEnumerator();
 
             if (!e.MoveNext())
                 yield break;
@@ -55,7 +55,7 @@ namespace Intervals
             Func<Interval<T>, Interval<T>, Interval<T>> resultSelector)
             where T : struct, IEquatable<T>, IComparable<T>, IComparable
         {
-            using var e = source.GetEnumerator();
+            using var e = source.OrderBy(x => x.Start).GetEnumerator();
 
             if (!e.MoveNext())
                 yield break;

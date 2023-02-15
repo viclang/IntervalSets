@@ -24,17 +24,16 @@ namespace Intervals
         /// <typeparam name="T">The type of the interval's endpoints</typeparam>
         /// <param name="first">The first interval</param>
         /// <param name="second">The second interval</param>
-        /// <param name="defaultValue">The default value to return if the two intervals don't overlap</param>
         /// <returns>The intersect of the two intervals or the default value if they don't overlap</returns>
         [Pure]
-        public static Interval<T> IntersectOrDefault<T>(this Interval<T> first, Interval<T> second, Interval<T> defaultValue = default)
+        public static Interval<T> IntersectOrEmpty<T>(this Interval<T> first, Interval<T> second)
             where T : struct, IEquatable<T>, IComparable<T>, IComparable
             => !first.Overlaps(second, true)
-                ? defaultValue
+                ? Empty<T>()
                 : GetIntersectValue(first, second);
 
         [Pure]
-        public static IEnumerable<Interval<T>> Intersect<T>(
+        public static IEnumerable<Interval<T>> IntersectAll<T>(
             this IEnumerable<Interval<T>> source)
             where T : struct, IEquatable<T>, IComparable<T>, IComparable
             => source.Pairwise((a, b) => a.Intersect(b)).Where(i => !i.IsEmpty());

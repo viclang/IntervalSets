@@ -57,7 +57,7 @@ namespace Intervals
         /// Indicates whether the end value of the interval is Greater than or equal to its start value.
         /// </summary>
         [Pure]
-        public bool IsValid => End.CompareTo(Start) >= 0;
+        public bool IsValid => End.CompareTo(Start) >= 0 || Start.IsNaN || End.IsNaN;
 
         /// <summary>
         /// Creates an unbounded interval equivalent to <see cref="Interval.All{T}"/>"/>

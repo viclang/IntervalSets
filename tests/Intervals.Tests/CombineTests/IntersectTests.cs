@@ -33,8 +33,8 @@ namespace Intervals.Tests.CombineTests
                 {
                     actual!.Value.Start.Should().Be(maxByStart.Start);
                     actual!.Value.End.Should().Be(minByEnd.End);
-                    actual!.Value.StartInclusive.Should().Be(actual!.Value.Start.IsInfinity ? false : expectedStartInclusive);
-                    actual!.Value.EndInclusive.Should().Be(actual!.Value.End.IsInfinity ? false : expectedEndInclusive);
+                    actual!.Value.StartInclusive.Should().Be(!actual!.Value.Start.IsInfinity && expectedStartInclusive);
+                    actual!.Value.EndInclusive.Should().Be(!actual!.Value.End.IsInfinity && expectedEndInclusive);
                 }
                 else
                 {
@@ -45,10 +45,10 @@ namespace Intervals.Tests.CombineTests
 
         [Theory]
         [MemberData(nameof(IntervalPairsWithOverlappingState), true)]
-        public void Intersect_ShouldBeExpectedOrDefault(Interval<int> a, Interval<int> b, IntervalOverlapping overlappingState)
+        public void Intersect_ShouldBeExpectedOrEmpty(Interval<int> a, Interval<int> b, IntervalOverlapping overlappingState)
         {
             // Act
-            var actual = a.IntersectOrDefault(b, a);
+            var actual = a.IntersectOrEmpty(b);
 
             // Assert
             var array = new Interval<int>[] { a, b };
@@ -70,12 +70,12 @@ namespace Intervals.Tests.CombineTests
                 {
                     actual.Start.Should().Be(maxByStart.Start);
                     actual.End.Should().Be(minByEnd.End);
-                    actual.StartInclusive.Should().Be(actual.Start.IsInfinity ? false : expectedStartInclusive);
-                    actual.EndInclusive.Should().Be(actual.End.IsInfinity ? false : expectedEndInclusive);
+                    actual.StartInclusive.Should().Be(!actual.Start.IsInfinity && expectedStartInclusive);
+                    actual.EndInclusive.Should().Be(!actual.End.IsInfinity && expectedEndInclusive);
                 }
                 else
                 {
-                    actual.Should().Be(a);
+                    actual.Should().Be(Interval.Empty<int>());
                 }
             }
         }
@@ -85,13 +85,13 @@ namespace Intervals.Tests.CombineTests
         [InlineData(IntervalType.ClosedOpen, 5)]
         [InlineData(IntervalType.OpenClosed, 5)]
         [InlineData(IntervalType.Open, 5)]
-        public void Intersect_ShouldBeExpected(IntervalType intervalType, int expectedCount)
+        public void IntersectAll_ShouldBeExpected(IntervalType intervalType, int expectedCount)
         {
             // Arrange
             var list = OverlapList(startingPoint, length, offset, intervalType).ToList();
 
             // Act
-            var actual = list.Intersect().ToList();
+            var actual = list.IntersectAll().ToList();
 
             // Assert
             actual.Should().HaveCount(expectedCount);

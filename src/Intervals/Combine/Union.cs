@@ -27,10 +27,10 @@ namespace Intervals
         /// <param name="defaultValue">The default value to be returned if the two intervals don't overlap</param>
         /// <returns>The union of the two intervals if they overlap, otherwise returns the default value</returns>
         [Pure]
-        public static Interval<T> UnionOrDefault<T>(this Interval<T> first, Interval<T> second, Interval<T> defaultValue = default)
+        public static Interval<T> UnionOrEmpty<T>(this Interval<T> first, Interval<T> second)
             where T : struct, IEquatable<T>, IComparable<T>, IComparable
             => !first.Overlaps(second, true)
-                ? defaultValue
+                ? Empty<T>()
                 : Hull(first, second);
 
         /// <summary>
@@ -40,7 +40,7 @@ namespace Intervals
         /// <param name="source">The collection of intervals to be unioned</param>
         /// <returns>The union of the collection of intervals</returns>
         [Pure]
-        public static IEnumerable<Interval<T>> Union<T>(this IEnumerable<Interval<T>> source)
+        public static IEnumerable<Interval<T>> UnionAll<T>(this IEnumerable<Interval<T>> source)
             where T : struct, IEquatable<T>, IComparable<T>, IComparable
             => source.Reduce((a, b) => a.Union(b));
     }

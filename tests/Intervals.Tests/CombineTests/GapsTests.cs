@@ -45,10 +45,10 @@ namespace Intervals.Tests.CombineTests
 
         [Theory]
         [MemberData(nameof(IntervalPairsWithOverlappingState), true)]
-        public void OverlappingIntervalsGap_ShouldBeExpectedOrDefault(Interval<int> a, Interval<int> b, IntervalOverlapping overlappingState)
+        public void OverlappingIntervalsGap_ShouldBeExpectedOrEmpty(Interval<int> a, Interval<int> b, IntervalOverlapping overlappingState)
         {
             // Act
-            var actual = a.GapOrDefault(b, a);
+            var actual = a.GapOrEmpty(b);
 
             // Assert
             if (overlappingState == IntervalOverlapping.Before)
@@ -77,7 +77,7 @@ namespace Intervals.Tests.CombineTests
             }
             else
             {
-                actual.Should().Be(a);
+                actual.Should().Be(Interval.Empty<int>());
             }
         }
 

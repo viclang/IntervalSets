@@ -33,7 +33,7 @@ namespace Intervals.Tests.CombineTests
             var list = OverlapList(startingPoint, length, offset, intervalType);
 
             // Act
-            var actual = list.Reduce((a, b) => a.UnionOrDefault(b, Interval.Empty<int>())).ToList();
+            var actual = list.Reduce((a, b) => a.UnionOrEmpty(b)).ToList();
 
             // Assert
             actual.Should().HaveCount(10);
@@ -47,7 +47,7 @@ namespace Intervals.Tests.CombineTests
 
             // Act
             var actual = list.Reduce((a, b) => a.Union(b))
-                .Concat(list.Reduce((a, b) => a.UnionOrDefault(b, Interval.Empty<int>())));
+                .Concat(list.Reduce((a, b) => a.UnionOrEmpty(b)));
 
             // Assert
             actual.Should().BeEmpty();

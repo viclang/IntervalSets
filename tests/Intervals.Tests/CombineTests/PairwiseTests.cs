@@ -1,4 +1,5 @@
 ﻿using Intervals.Tests.TestData;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace Intervals.Tests.CombineTests
@@ -33,7 +34,7 @@ namespace Intervals.Tests.CombineTests
             var list = OverlapList(startingPoint, length, offset, intervalType);
 
             // Act
-            var actual = list.Pairwise((a, b) => a.GapOrDefault(b, Interval.Empty<int>())).ToList();
+            var actual = list.Pairwise((a, b) => a.GapOrEmpty(b)).ToList();
 
             // Assert
             actual.Should().HaveCount(10);
@@ -46,11 +47,14 @@ namespace Intervals.Tests.CombineTests
             var list = Enumerable.Empty<Interval<int>>();
 
             // Act
-            var actual = list.Pairwise((a, b) => a.Gap(b))
-                .Concat(list.Pairwise((a, b) => a.GapOrDefault(b, Interval.Empty<int>())));
+            var actual = new IEnumerable<Interval<int>>[]
+            {
+                list.Pairwise((a, b) => a.Gap(b)),
+                list.Pairwise((a, b) => a.GapOrEmpty(b))
+            };
 
             // Assert
-            actual.Should().BeEmpty();
+            actual.Should().AllBeEquivalentTo(list);
         }
     }
 }

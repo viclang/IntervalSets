@@ -30,13 +30,13 @@ namespace Intervals
         /// <param name="defaultValue">The default interval to return if the two intervals overlap. The default value is default(Interval&lt;T&gt;).</param>
         /// <returns>The gap between the two intervals, or a default interval if the two intervals overlap.</returns>
         [Pure]
-        public static Interval<T> GapOrDefault<T>(this Interval<T> first, Interval<T> second, Interval<T> defaultValue = default)
+        public static Interval<T> GapOrEmpty<T>(this Interval<T> first, Interval<T> second)
             where T : struct, IEquatable<T>, IComparable<T>, IComparable
             => first.GetIntervalOverlapping(second, true) switch
             {
                 IntervalOverlapping.Before => new Interval<T>(first.End, second.Start, !first.EndInclusive, !second.StartInclusive),
                 IntervalOverlapping.After => new Interval<T>(second.End, first.Start, !second.EndInclusive, !first.StartInclusive),
-                _ => defaultValue
+                _ => Empty<T>()
             };
 
         /// <summary>
