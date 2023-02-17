@@ -1,0 +1,26 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <version>1.0.0</version>
+    <id>IntervalRecord</id>
+    <authors>Victor Langemaire</authors>
+    <PackageProjectUrl>https://github.com/viclang/Intervals</PackageProjectUrl>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <Copyright>Copyright © 2022 Victor Langemaire</Copyright>
+    <RepositoryUrl>https://github.com/viclang/Intervals</RepositoryUrl>
+    <requireLicenseAcceptance>true</requireLicenseAcceptance>
+    <description>An Interval record type with tools to work with Intervals.</description>
+    <RepositoryType>git</RepositoryType>
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <PublishRepositoryUrl>true</PublishRepositoryUrl>
+    <IncludeSymbols>true</IncludeSymbols>
+    <PackageTags>IntervalRecord;Interval;Intervals;Overlap;Range</PackageTags>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="InfinityComparable" Version="1.2.2" />
+  </ItemGroup>
+</Project>
