@@ -2,6 +2,9 @@
 The Interval<T> will make it easy to deal with https://en.wikipedia.org/wiki/Interval_(mathematics).
 
 The interval supports Closed, ClosedOpen, OpenClosed and Open intervalTypes.
+It also supports Bounded, Unbounded, LeftBounded and RightBounded states.
+
+The GetIntervalOverlapping method will calculate the relation between the two intervals https://grouper.ieee.org/groups/1788/PositionPapers/overlapping.pdf
 ```mermaid
 gantt
     Reference :crit, active, a, 2022-01-06, 2022-01-10
