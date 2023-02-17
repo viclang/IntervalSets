@@ -1,7 +1,10 @@
-# Intervals
-The record Interval<T> will make it easy to deal with https://en.wikipedia.org/wiki/Interval_(mathematics). If you have a validity period you no longer need to figure out the exact business logic.
+# IntervalRecords
+The generic Interval record type will make it easy to deal with https://en.wikipedia.org/wiki/Interval_(mathematics).
 
 The interval supports Closed, ClosedOpen, OpenClosed and Open intervalTypes.
+It also supports Bounded, Unbounded, LeftBounded and RightBounded states.
+
+The GetIntervalOverlapping method will calculate the overlapping relation between two intervals https://grouper.ieee.org/groups/1788/PositionPapers/overlapping.pdf
 ```mermaid
 gantt
     Reference :crit, active, a, 2022-01-06, 2022-01-10
