@@ -7,7 +7,7 @@ namespace Intervals
         /// <summary>
         /// Computes the interval representing the portion of the first interval that does not overlap with the second interval.
         /// </summary>
-        /// <typeparam name="T">The type of values to store in the interval.</typeparam>
+        /// <typeparam name="T">The type of the interval bounds.</typeparam>
         /// <param name="first">The first interval</param>
         /// <param name="second">The second interval</param>
         /// <returns>The portion of the first interval that does not overlap with the second interval, or null if the intervals do not overlap</returns>
@@ -19,7 +19,7 @@ namespace Intervals
         /// <summary>
         /// Computes the interval representing the portion of the first interval that does not overlap with the second interval, or an empty interval if they do not overlap.
         /// </summary>
-        /// <typeparam name="T">The type of values to store in the interval.</typeparam>
+        /// <typeparam name="T">The type of the interval bounds.</typeparam>
         /// <param name="first">The first interval.</param>
         /// <param name="second">The second interval.</param>
         /// <returns>The portion of the first interval that does not overlap with the second interval, or an empty interval if they do not overlap.</returns>
