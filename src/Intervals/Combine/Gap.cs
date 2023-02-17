@@ -5,9 +5,9 @@ namespace Intervals
     public static partial class Interval
     {
         /// <summary>
-        /// Returns the gap between two intervals, if any.
+        /// Returns the gap between two intervals, or null if the two intervals overlap.
         /// </summary>
-        /// <typeparam name="T">The type of the interval endpoints, which must be a struct, implement IEquatable, IComparable and IComparable.</typeparam>
+        /// <typeparam name="T">The type of the interval bounds.</typeparam>
         /// <param name="first">The first interval.</param>
         /// <param name="second">The second interval.</param>
         /// <returns>The gap between the two intervals, if any, or null if the two intervals overlap.</returns>
@@ -22,12 +22,11 @@ namespace Intervals
             };
 
         /// <summary>
-        /// Returns the gap between two intervals, or a default interval if the two intervals overlap.
+        /// Returns the gap between two intervals, or an empty interval if the two intervals overlap.
         /// </summary>
-        /// <typeparam name="T">The type of the interval endpoints, which must be a struct, implement IEquatable, IComparable and IComparable.</typeparam>
+        /// <typeparam name="T">The type of the interval bounds.</typeparam>
         /// <param name="first">The first interval.</param>
         /// <param name="second">The second interval.</param>
-        /// <param name="defaultValue">The default interval to return if the two intervals overlap. The default value is default(Interval&lt;T&gt;).</param>
         /// <returns>The gap between the two intervals, or a default interval if the two intervals overlap.</returns>
         [Pure]
         public static Interval<T> GapOrEmpty<T>(this Interval<T> first, Interval<T> second)
@@ -40,11 +39,11 @@ namespace Intervals
             };
 
         /// <summary>
-        /// Returns the complement of a set of intervals.
+        /// Returns the complement (or Gaps) of a collection of intervals.
         /// </summary>
-        /// <typeparam name="T">The type of the interval endpoints, which must be a struct, implement IEquatable, IComparable and IComparable.</typeparam>
-        /// <param name="source">The set of intervals to complement.</param>
-        /// <returns>The complement of the set of intervals, represented as a sequence of intervals.</returns>
+        /// <typeparam name="T">The type of the interval bounds.</typeparam>
+        /// <param name="source">The collection of intervals.</param>
+        /// <returns>The complement of the collection of intervals, represented as a sequence of intervals.</returns>
         [Pure]
         public static IEnumerable<Interval<T>> Complement<T>(
             this IEnumerable<Interval<T>> source)

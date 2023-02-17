@@ -5,14 +5,13 @@ namespace Intervals
     public static partial class Interval
     {
         /// <summary>
-        /// Returns the sequence of intervals resulting from combining adjacent intervals in the source
-        /// using the specified result selector function. If the result selector function returns null,
-        /// the two intervals are considered not to be mergeable, and are returned as separate intervals.
+        /// Returns the sequence of intervals resulting from combining adjacent intervals in the collection of intervals
+        /// using the specified result selector function.
         /// </summary>
-        /// <typeparam name="T">The type of the values in the intervals</typeparam>
-        /// <param name="source">The source sequence of intervals</param>
-        /// <param name="resultSelector">The function used to combine adjacent intervals</param>
-        /// <returns>The reduced sequence of intervals</returns>
+        /// <typeparam name="T">The type of the interval bounds.</typeparam>
+        /// <param name="source">The collection of intervals.</param>
+        /// <param name="resultSelector">The function used to combine adjacent intervals.</param>
+        /// <returns>The reduced sequence of intervals.</returns>
         [Pure]
         public static IEnumerable<Interval<T>> Reduce<T>(
             this IEnumerable<Interval<T>> source,
@@ -45,10 +44,10 @@ namespace Intervals
         /// Returns the sequence of intervals resulting from combining adjacent intervals in the source
         /// using the specified result selector function.
         /// </summary>
-        /// <typeparam name="T">The type of the values in the intervals</typeparam>
-        /// <param name="source">The source sequence of intervals</param>
-        /// <param name="resultSelector">The function used to combine adjacent intervals</param>
-        /// <returns>The reduced sequence of intervals</returns>
+        /// <typeparam name="T">The type of the interval bounds.</typeparam>
+        /// <param name="source">The collection of intervals.</param>
+        /// <param name="resultSelector">The function used to combine adjacent intervals.</param>
+        /// <returns>The reduced sequence of intervals.</returns>
         [Pure]
         public static IEnumerable<Interval<T>> Reduce<T>(
             this IEnumerable<Interval<T>> source,

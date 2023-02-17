@@ -7,7 +7,7 @@ namespace Intervals
         /// <summary>
         /// Computes the smallest interval that contains both input intervals.
         /// </summary>
-        /// <typeparam name="T">The type of the interval bounds. Must be a struct that implements IEquatable<T>, IComparable<T>, and IComparable.</typeparam>
+        /// <typeparam name="T">The type of the interval bounds.</typeparam>
         /// <param name="first">The first interval to compute the hull of.</param>
         /// <param name="second">The second interval to compute the hull of.</param>
         /// <returns>The smallest interval that contains both input intervals.</returns>
@@ -32,8 +32,8 @@ namespace Intervals
         /// <summary>
         /// Computes the smallest interval that contains all input intervals.
         /// </summary>
-        /// <typeparam name="T">The type of the interval bounds. Must be a struct that implements IEquatable<T>, IComparable<T>, and IComparable.</typeparam>
-        /// <param name="source">The intervals to compute the hull of.</param>
+        /// <typeparam name="T">The type of the interval bounds.</typeparam>
+        /// <param name="source">The collection of intervals.</param>
         /// <returns>The smallest interval that contains all input intervals, or null if the input is empty.</returns>
         [Pure]
         public static Interval<T>? Hull<T>(
