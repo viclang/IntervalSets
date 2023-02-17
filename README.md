@@ -1,4 +1,4 @@
-# Intervals
+# IntervalRecords
 The Interval<T> will make it easy to deal with https://en.wikipedia.org/wiki/Interval_(mathematics).
 
 The interval supports Closed, ClosedOpen, OpenClosed and Open intervalTypes.
