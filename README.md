@@ -12,7 +12,7 @@ Install-Package IntervalRecords
 Minimum Requirements: .NET 6.0
 
 ### Supported types
-The following interval types are supported by type specific ExtensionMethods:
+The following interval types are supported by type specific extension methods:
 - `Interval<int>`
 - `Interval<double>`
 - `Interval<DateTime>`
