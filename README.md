@@ -1,10 +1,16 @@
 # IntervalRecords
-The generic Interval record type will make it easy to deal with https://en.wikipedia.org/wiki/Interval_(mathematics).
+An **IntervalRecord** is an immutable record struct named **Interval** which represents an Interval of values of a given type. The record type was introduced in C# 9.0 and the main reason that this type is used is because of the **with** statements that will make it easier to use immutable objects. **IntervalRecords** is using the **InfinityComparable** package for support of Unbounded, LeftBounded and RightBounded intervals.
 
-The interval supports Closed, ClosedOpen, OpenClosed and Open intervalTypes.
-It also supports Bounded, Unbounded, LeftBounded and RightBounded states.
+**IntervalRecords** will help you to create, canonicalize, compare, combine, measure, iterate and parse all the different types of intervals. It implements the interval comparison based on the interval overlapping relation that was described by the [IEEE Interval Standard Working Group](https://grouper.ieee.org/groups/1788/PositionPapers/overlapping.pdf).
 
-The GetIntervalOverlapping method will calculate the overlapping relation between two intervals https://grouper.ieee.org/groups/1788/PositionPapers/overlapping.pdf
+### Download & Install
+**Nuget Package [IntervalRecords](https://www.nuget.org/packages/IntervalRecords/)**
+
+```powershell
+Install-Package IntervalRecords
+```
+
+The GetIntervalOverlapping method will calculate the overlapping relation between two intervals.
 ```mermaid
 gantt
     Reference :crit, active, a, 2022-01-06, 2022-01-10
