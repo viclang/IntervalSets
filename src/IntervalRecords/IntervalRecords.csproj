@@ -5,12 +5,12 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <version>1.0.0</version>
-    <id>IntervalRecord</id>
+    <id>IntervalRecords</id>
     <authors>Victor Langemaire</authors>
-    <PackageProjectUrl>https://github.com/viclang/Intervals</PackageProjectUrl>
+    <PackageProjectUrl>https://github.com/viclang/IntervalRecords</PackageProjectUrl>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <Copyright>Copyright © 2022 Victor Langemaire</Copyright>
-    <RepositoryUrl>https://github.com/viclang/Intervals</RepositoryUrl>
+    <RepositoryUrl>https://github.com/viclang/IntervalRecords</RepositoryUrl>
     <requireLicenseAcceptance>true</requireLicenseAcceptance>
     <description>An Interval record type with tools to work with Intervals.</description>
     <RepositoryType>git</RepositoryType>
