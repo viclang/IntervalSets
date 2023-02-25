@@ -97,7 +97,7 @@ namespace IntervalRecords
         /// <returns>True if the interval is <see cref="IntervalType.Closed"/> and <see cref="Start"/> and <see cref="End"/> are equal.</returns>
         [Pure]
         public bool IsSingleton() => this.GetIntervalType() == IntervalType.Closed && Start == End;
-        
+
         /// <summary>
         /// Returns a boolean value indicating if the current interval overlaps with the other interval.
         /// </summary>
@@ -106,7 +106,11 @@ namespace IntervalRecords
         /// <returns>True if the current interval and the other interval overlap, False otherwise.</returns>
         [Pure]
         public bool Overlaps(Interval<T> other, bool includeHalfOpen = false)
-            => this.GetIntervalOverlapping(other, includeHalfOpen) is not IntervalOverlapping.Before and not IntervalOverlapping.After;
+        {
+            bool notBefore = this.CompareEndToStart(other, includeHalfOpen) != -1;
+            bool notAfter = this.CompareStartToEnd(other, includeHalfOpen) != 1;
+            return notBefore && notAfter;
+        }
 
         /// <summary>
         /// Returns a boolean value indicating if the current interval contains the specified value.
@@ -116,8 +120,11 @@ namespace IntervalRecords
         [Pure]
         public bool Contains(T value)
         {
-            return (StartInclusive ? Start.CompareTo(value) <= 0 : Start.CompareTo(value) == -1)
-                && (EndInclusive ? End.CompareTo(value) >= 0 : End.CompareTo(value) == 1);
+            bool startsBeforeValue = Start.CompareTo(value) == -1;
+            bool startsAtValue = Start.CompareTo(value) == 0 && StartInclusive;
+            bool endsAfterValue = End.CompareTo(value) == 1;
+            bool endsAtValue = End.CompareTo(value) == 0 && EndInclusive;
+            return (startsBeforeValue || startsAtValue) && (endsAfterValue || endsAtValue);
         }
 
         /// <summary>
@@ -142,14 +149,14 @@ namespace IntervalRecords
         [Pure]
         public static bool operator >(Interval<T> left, Interval<T> right)
         {
-            var compareEnd = left.CompareEnd(right);
+            int compareEnd = left.CompareEnd(right);
             return compareEnd == 1 || compareEnd == 0 && left.CompareStart(right) == -1;
         }
 
         [Pure]
         public static bool operator <(Interval<T> left, Interval<T> right)
         {
-            var compareEnd = left.CompareEnd(right);
+            int compareEnd = left.CompareEnd(right);
             return compareEnd == -1 || compareEnd == 0 && left.CompareStart(right) == 1;
         }
 
