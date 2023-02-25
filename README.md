@@ -11,6 +11,15 @@ Install-Package IntervalRecords
 ```
 Minimum Requirements: .NET 6.0
 
+### Supported types
+The following interval types are supported by type specific ExtensionMethods:
+- `Interval<int>`
+- `Interval<double>`
+- `Interval<DateTime>`
+- `Interval<DateTimeOffset>`
+- `Interval<DateOnly>`
+- `Interval<TimeOnly>`
+
 ### Interval Overlapping Relations 
 The **GetIntervalOverlapping** extension method will calculate the overlapping relation between two intervals. This gantt chart will show you all the possible IntervalOverlapping relations compared to the reference interval:
 ```mermaid
