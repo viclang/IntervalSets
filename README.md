@@ -9,8 +9,10 @@ An **IntervalRecord** is an immutable record struct named **Interval** which rep
 ```powershell
 Install-Package IntervalRecords
 ```
+Minimum Requirements: .NET 6.0
 
-The GetIntervalOverlapping method will calculate the overlapping relation between two intervals. This gantt chart will show you all the possible IntervalOverlapping relations:
+### Interval overlapping relation 
+The GetIntervalOverlapping method will calculate the overlapping relation between two intervals. This gantt chart will show you all the possible IntervalOverlapping relations compared to the reference interval:
 ```mermaid
 gantt
     Reference :crit, active, a, 2022-01-06, 2022-01-10
