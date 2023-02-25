@@ -1,5 +1,5 @@
 # IntervalRecords
-An **IntervalRecord** is an immutable record struct named **Interval** which represents an Interval of values of a given type. The record type was introduced in C# 9.0 and the main reason that this type is used is because of the **with** statements that will make it easier to use immutable objects. **IntervalRecords** is using the **InfinityComparable** package for support of Unbounded, LeftBounded and RightBounded intervals.
+An **IntervalRecord** is an immutable record struct named **Interval** which represents an Interval of values of a given type. The record type was introduced in C# 9.0 and the main reason that this type is used is because the **with** statement will make it easy to use immutable objects. **IntervalRecords** is using the **InfinityComparable** package for support of Unbounded, LeftBounded and RightBounded intervals.
 
 **IntervalRecords** will help you to create, canonicalize, compare, combine, measure, iterate and parse all the different types of intervals. It implements the interval comparison based on the interval overlapping relation that was described by the [IEEE Interval Standard Working Group](https://grouper.ieee.org/groups/1788/PositionPapers/overlapping.pdf).
 
@@ -10,7 +10,7 @@ An **IntervalRecord** is an immutable record struct named **Interval** which rep
 Install-Package IntervalRecords
 ```
 
-The GetIntervalOverlapping method will calculate the overlapping relation between two intervals.
+The GetIntervalOverlapping method will calculate the overlapping relation between two intervals. This gantt chart will show you all the possible IntervalOverlapping relations:
 ```mermaid
 gantt
     Reference :crit, active, a, 2022-01-06, 2022-01-10
