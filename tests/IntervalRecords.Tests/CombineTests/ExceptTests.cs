@@ -15,8 +15,8 @@ namespace IntervalRecords.Tests.CombineTests
 
             // Assert
             var array = new Interval<int>[] { a, b };
-            var minByStart = array.MinBy(i => i.Start);
-            var maxByStart = array.MaxBy(i => i.Start);
+            var minByStart = array.MinBy(i => i.Start)!;
+            var maxByStart = array.MaxBy(i => i.Start)!;
 
             var expectedStartInclusive = a.Start == b.Start
                 ? a.StartInclusive || b.StartInclusive
@@ -30,10 +30,10 @@ namespace IntervalRecords.Tests.CombineTests
             {
                 if (overlappingState != IntervalOverlapping.Before && overlappingState != IntervalOverlapping.After)
                 {
-                    actual!.Value.Start.Should().Be(minByStart.Start);
-                    actual!.Value.End.Should().Be(+maxByStart.Start);
-                    actual!.Value.StartInclusive.Should().Be(!actual!.Value.Start.IsInfinity && expectedStartInclusive);
-                    actual!.Value.EndInclusive.Should().Be(!actual!.Value.End.IsInfinity && expectedEndInclusive);
+                    actual!.Start.Should().Be(minByStart.Start);
+                    actual!.End.Should().Be(+maxByStart.Start);
+                    actual!.StartInclusive.Should().Be(!actual!.Start.IsInfinity && expectedStartInclusive);
+                    actual!.EndInclusive.Should().Be(!actual!.End.IsInfinity && expectedEndInclusive);
                 }
                 else
                 {
@@ -51,16 +51,16 @@ namespace IntervalRecords.Tests.CombineTests
 
             // Assert
             var array = new Interval<int>[] { a, b };
-            var minByStart = array.MinBy(i => i.Start);
-            var maxByStart = array.MaxBy(i => i.Start);
+            var minByStart = array.MinBy(i => i.Start)!;
+            var maxByStart = array.MaxBy(i => i.Start)!;
 
             var expectedStartInclusive = a.Start == b.Start
                 ? a.StartInclusive || b.StartInclusive
-                : minByStart.StartInclusive;
+                : minByStart!.StartInclusive;
 
             var expectedEndInclusive = a.End == b.End
                 ? a.EndInclusive || b.EndInclusive
-                : maxByStart.EndInclusive;
+                : maxByStart!.EndInclusive;
 
             using (new AssertionScope())
             {

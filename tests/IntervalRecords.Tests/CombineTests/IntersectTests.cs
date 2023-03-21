@@ -15,8 +15,8 @@ namespace IntervalRecords.Tests.CombineTests
 
             // Assert
             var array = new Interval<int>[] { a, b };
-            var maxByStart = array.MaxBy(i => i.Start);
-            var minByEnd = array.MinBy(i => i.End);
+            var maxByStart = array.MaxBy(i => i.Start)!;
+            var minByEnd = array.MinBy(i => i.End)!;
 
 
             var expectedStartInclusive = a.Start == b.Start
@@ -31,10 +31,10 @@ namespace IntervalRecords.Tests.CombineTests
             {
                 if (overlappingState != IntervalOverlapping.Before && overlappingState != IntervalOverlapping.After)
                 {
-                    actual!.Value.Start.Should().Be(maxByStart.Start);
-                    actual!.Value.End.Should().Be(minByEnd.End);
-                    actual!.Value.StartInclusive.Should().Be(!actual!.Value.Start.IsInfinity && expectedStartInclusive);
-                    actual!.Value.EndInclusive.Should().Be(!actual!.Value.End.IsInfinity && expectedEndInclusive);
+                    actual!.Start.Should().Be(maxByStart.Start);
+                    actual!.End.Should().Be(minByEnd.End);
+                    actual!.StartInclusive.Should().Be(!actual!.Start.IsInfinity && expectedStartInclusive);
+                    actual!.EndInclusive.Should().Be(!actual!.End.IsInfinity && expectedEndInclusive);
                 }
                 else
                 {
@@ -52,8 +52,8 @@ namespace IntervalRecords.Tests.CombineTests
 
             // Assert
             var array = new Interval<int>[] { a, b };
-            var maxByStart = array.MaxBy(i => i.Start);
-            var minByEnd = array.MinBy(i => i.End);
+            var maxByStart = array.MaxBy(i => i.Start)!;
+            var minByEnd = array.MinBy(i => i.End)!;
 
 
             var expectedStartInclusive = a.Start == b.Start

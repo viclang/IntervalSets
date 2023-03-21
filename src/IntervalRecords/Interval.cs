@@ -8,7 +8,7 @@ namespace IntervalRecords
     /// Represents an interval of values of type <see cref="T"/>.
     /// </summary>
     /// <typeparam name="T">The type of values represented in the interval.</typeparam>
-    public readonly record struct Interval<T> : IComparable<Interval<T>>
+    public record class Interval<T> : IComparable<Interval<T>>
         where T : struct, IEquatable<T>, IComparable<T>, IComparable
     {
         private readonly Infinity<T> start;

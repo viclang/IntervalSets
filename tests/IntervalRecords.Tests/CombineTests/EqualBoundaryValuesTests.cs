@@ -30,8 +30,8 @@
             // Act
             var actual = new IntervalType[]
             {
-                leftInterval.Except(rigthInterval)!.Value.GetIntervalType(),
-                leftInterval.Union(rigthInterval)!.Value.GetIntervalType(),
+                leftInterval.Except(rigthInterval)!.GetIntervalType(),
+                leftInterval.Union(rigthInterval)!.GetIntervalType(),
                 leftInterval.Hull(rigthInterval).GetIntervalType()
             };
 
@@ -63,7 +63,7 @@
             var rigthInterval = new Interval<int>(start, end, rightStartInclusive, rigthEndInclusive);
 
             // Act
-            var actual = leftInterval.Intersect(rigthInterval)!.Value.GetIntervalType();
+            var actual = leftInterval.Intersect(rigthInterval)!.GetIntervalType();
 
             // Assert
             actual.Should().Be(expectedIntervalType);

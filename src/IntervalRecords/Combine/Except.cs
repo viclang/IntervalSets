@@ -37,7 +37,7 @@ namespace IntervalRecords
         [Pure]
         public static IEnumerable<Interval<T>> ExcludeOverlap<T>(this IEnumerable<Interval<T>> source)
             where T : struct, IEquatable<T>, IComparable<T>, IComparable
-            => source.Pairwise((a, b) => a.Except(b)).Where(i => !i.IsEmpty());
+            => source.Pairwise((a, b) => a.Except(b)).ToList().Where(i => !i.IsEmpty());
 
         [Pure]
         private static Interval<T> GetExceptValue<T>(Interval<T> first, Interval<T> second)

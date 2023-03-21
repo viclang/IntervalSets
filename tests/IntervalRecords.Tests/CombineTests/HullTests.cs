@@ -15,8 +15,8 @@ namespace IntervalRecords.Tests.CombineTests
 
             // Assert
             var array = new Interval<int>[] { a, b };
-            var minByStart = array.MinBy(i => i.Start);
-            var maxByEnd = array.MaxBy(i => i.End);
+            var minByStart = array.MinBy(i => i.Start)!;
+            var maxByEnd = array.MaxBy(i => i.End)!;
 
 
             var expectedStartInclusive = a.Start == b.Start

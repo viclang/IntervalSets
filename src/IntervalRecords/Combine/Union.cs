@@ -14,9 +14,9 @@ namespace IntervalRecords
         [Pure]
         public static Interval<T>? Union<T>(this Interval<T> first, Interval<T> second)
             where T : struct, IEquatable<T>, IComparable<T>, IComparable
-            => !first.Overlaps(second, true)
-                ? null
-                : Hull(first, second);
+            => first.Overlaps(second, true)
+                ? Hull(first, second)
+                : null;
 
         /// <summary>
         /// Computes the union of two intervals if they overlap, otherwise returns an empty interval.
@@ -28,9 +28,9 @@ namespace IntervalRecords
         [Pure]
         public static Interval<T> UnionOrEmpty<T>(this Interval<T> first, Interval<T> second)
             where T : struct, IEquatable<T>, IComparable<T>, IComparable
-            => !first.Overlaps(second, true)
-                ? Empty<T>()
-                : Hull(first, second);
+            => first.Overlaps(second, true)
+                ? Hull(first, second)
+                : Empty<T>();
 
         /// <summary>
         /// Computes the union of a collection of intervals.

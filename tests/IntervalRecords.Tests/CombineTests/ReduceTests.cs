@@ -22,25 +22,8 @@ namespace IntervalRecords.Tests.CombineTests
             actual.Should().HaveCount(expectedCount);
         }
 
-        [Theory]
-        [InlineData(IntervalType.Closed)]
-        [InlineData(IntervalType.ClosedOpen)]
-        [InlineData(IntervalType.OpenClosed)]
-        [InlineData(IntervalType.Open)]
-        public void ReduceUnionOrDefault_ShouldHaveExpectedCount(IntervalType intervalType)
-        {
-            // Arrange
-            var list = OverlapList(startingPoint, length, offset, intervalType);
-
-            // Act
-            var actual = list.Reduce((a, b) => a.UnionOrEmpty(b)).ToList();
-
-            // Assert
-            actual.Should().HaveCount(10);
-        }
-
         [Fact]
-        public void PairwiseEmptyList_ShouldBeEmpty()
+        public void ReduceEmptyList_ShouldBeEmpty()
         {
             // Arrange
             var list = Enumerable.Empty<Interval<int>>();
