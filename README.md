@@ -24,24 +24,25 @@ The following interval types are supported by type specific extension methods:
 The **GetIntervalOverlapping** extension method will calculate the overlapping relation between two intervals. This gantt chart will show you all the possible IntervalOverlapping relations compared to the reference interval:
 ```mermaid
 gantt
-    Reference :crit, active, a, 2022-01-06, 2022-01-10
+    dateFormat  YYYY-MM-DD
+    Reference       :crit, active, a, 2023-01-06, 2023-01-10
 
     section Before
-    Before :crit, b, 2022-01-03, 2022-01-05
+    Before          :crit, b, 2023-01-03, 2023-01-05
 
     section Overlaps
-    Meets :crit, c, 2022-01-04, 2022-01-06
-    Overlaps :crit, d, 2022-01-05, 2022-01-07
-    Starts :crit, e, 2022-01-06, 2022-01-08
-    ContainedBy :crit, f, 2022-01-07, 2022-01-09
-    Finishes :crit, g, 2022-01-08, 2022-01-10
-    Equal :crit, h, 2022-01-06, 2022-01-10
-    FinishedBy :crit, i, 2022-01-05, 2022-01-10
-    Contains :crit, j, 2022-01-05, 2022-01-11
-    StartedBy :crit, k, 2022-01-06, 2022-01-11
-    OverlappedBy :crit, l, 2022-01-09, 2022-01-11
-    MetBy :crit, m, 2022-01-10, 2022-01-12
+    Meets           :c, 2023-01-04, 2023-01-06
+    Overlaps        :d, 2023-01-05, 2023-01-07
+    Starts          :e, 2023-01-06, 2023-01-08
+    ContainedBy     :f, 2023-01-07, 2023-01-09
+    Finishes        :g, 2023-01-08, 2023-01-10
+    Equal           :h, 2023-01-06, 2023-01-10
+    FinishedBy      :i, 2023-01-05, 2023-01-10
+    Contains        :j, 2023-01-05, 2023-01-11
+    StartedBy       :k, 2023-01-06, 2023-01-11
+    OverlappedBy    :l, 2023-01-09, 2023-01-11
+    MetBy           :m, 2023-01-10, 2023-01-12
 
-    section After
-    After :crit, n, 2022-01-11, 2022-01-13
+    section After
+    After           :crit, n, 2023-01-11, 2023-01-13
 ```
