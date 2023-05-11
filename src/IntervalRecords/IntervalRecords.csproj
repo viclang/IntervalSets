@@ -9,7 +9,7 @@
     <authors>Victor Langemaire</authors>
     <PackageProjectUrl>https://github.com/viclang/IntervalRecords</PackageProjectUrl>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
-    <Copyright>Copyright © 2022 Victor Langemaire</Copyright>
+    <Copyright>Victor Langemaire</Copyright>
     <RepositoryUrl>https://github.com/viclang/IntervalRecords</RepositoryUrl>
     <requireLicenseAcceptance>true</requireLicenseAcceptance>
     <description>An Interval record type with tools to work with Intervals.</description>
@@ -21,6 +21,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Unbounded" Version="1.0.0" />
+    <PackageReference Include="Unbounded" Version="1.0.1" />
   </ItemGroup>
 </Project>

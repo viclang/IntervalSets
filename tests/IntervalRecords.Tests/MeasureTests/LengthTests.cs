@@ -68,19 +68,19 @@ namespace IntervalRecords.Tests.Measure.Length
             var type = typeof(T);
             if (type == typeof(int) || type == typeof(DateOnly))
             {
-                return (Unbounded<TResult>)(object)Unbounded.Unbounded.ToPositiveInfinity(result);
+                return (Unbounded<TResult>)(object)UnboundedExtensions.ToPositiveInfinity(result);
             }
             if (type == typeof(double))
             {
-                return (Unbounded<TResult>)(object)Unbounded.Unbounded.ToPositiveInfinity<double>(result);
+                return (Unbounded<TResult>)(object)UnboundedExtensions.ToPositiveInfinity<double>(result);
             }
             else if (type == typeof(DateTime) || type == typeof(DateTimeOffset))
             {
-                return (Unbounded<TResult>)(object)Unbounded.Unbounded.ToPositiveInfinity<TimeSpan>(result.HasValue ? TimeSpan.FromDays(result.Value) : null);
+                return (Unbounded<TResult>)(object)UnboundedExtensions.ToPositiveInfinity<TimeSpan>(result.HasValue ? TimeSpan.FromDays(result.Value) : null);
             }
             else if (type == typeof(TimeOnly))
             {
-                return (Unbounded<TResult>)(object)Unbounded.Unbounded.ToPositiveInfinity<TimeSpan>(result.HasValue ? TimeSpan.FromHours(result.Value) : null);
+                return (Unbounded<TResult>)(object)UnboundedExtensions.ToPositiveInfinity<TimeSpan>(result.HasValue ? TimeSpan.FromHours(result.Value) : null);
             }
             else
             {

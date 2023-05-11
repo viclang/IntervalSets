@@ -1,4 +1,5 @@
 ﻿using System.Text.RegularExpressions;
+using Unbounded;
 
 namespace IntervalRecords
 {
@@ -66,8 +67,8 @@ namespace IntervalRecords
             var startString = parts[0].Trim();
             var endString = parts[1].Trim();
 
-            var start = Unbounded.Unbounded.Parse<T>(startString[1..]);
-            var end = Unbounded.Unbounded.Parse<T>(endString[..(endString.Length - 1)]);
+            var start = Unbounded<T>.Parse(startString[1..]);
+            var end = Unbounded<T>.Parse(endString[..(endString.Length - 1)]);
 
             return new Interval<T>(
                 start,

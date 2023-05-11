@@ -10,21 +10,21 @@ namespace IntervalRecords
     public record class Interval<T> : IComparable<Interval<T>>
         where T : struct, IEquatable<T>, IComparable<T>, IComparable
     {
-        private readonly Unbounded<T> start;
-        private readonly Unbounded<T> end;
-        private readonly bool startInclusive;
-        private readonly bool endInclusive;
+        private readonly Unbounded<T> _start;
+        private readonly Unbounded<T> _end;
+        private readonly bool _startInclusive;
+        private readonly bool _endInclusive;
 
         /// <summary>
         /// Represents the start value of the interval.
         /// </summary>
         public Unbounded<T> Start
         {
-            get => start;
+            get => _start;
             init
             {
-                start = -value;
-                startInclusive = !Start.IsInfinity && startInclusive;
+                _start = -value;
+                _startInclusive = !Start.IsNegativeInfinity && _startInclusive;
             }
         }
 
@@ -33,29 +33,29 @@ namespace IntervalRecords
         /// </summary>
         public Unbounded<T> End
         {
-            get => end;
+            get => _end;
             init
             {
-                end = +value;
-                endInclusive = !End.IsInfinity && endInclusive;
+                _end = +value;
+                _endInclusive = !End.IsPositiveInfinity && _endInclusive;
             }
         }
 
         /// <summary>
         /// Gets a value indicating whether the start of the interval is inclusive.
         /// </summary>
-        public bool StartInclusive { get => startInclusive; init { startInclusive = !Start.IsInfinity && value; } }
+        public bool StartInclusive { get => _startInclusive; init { _startInclusive = !Start.IsNegativeInfinity && value; } }
 
 
         /// <summary>
         /// Gets a value indicating whether the end of the interval is inclusive.
         /// </summary>
-        public bool EndInclusive { get => endInclusive; init { endInclusive = !End.IsInfinity && value; } }
+        public bool EndInclusive { get => _endInclusive; init { _endInclusive = !End.IsPositiveInfinity && value; } }
 
         /// <summary>
         /// Indicates whether the end value of the interval is Greater than or equal to its start value.
         /// </summary>
-        public bool IsValid => End.CompareTo(Start) >= 0 || Start.IsNaN || End.IsNaN;
+        public bool IsValid => !Start.IsNaN || !End.IsNaN || End.CompareTo(Start) >= 0;
 
         /// <summary>
         /// Creates an unbounded interval equivalent to <see cref="Interval.All{T}"/>"/>
@@ -74,10 +74,10 @@ namespace IntervalRecords
         /// <param name="endInclusive">Indicates whether the end is inclusive.</param>
         public Interval(Unbounded<T> start, Unbounded<T> end, bool startInclusive, bool endInclusive)
         {
-            this.start = -start;
-            this.end = +end;
-            this.startInclusive = !this.start.IsInfinity && startInclusive;
-            this.endInclusive = !this.end.IsInfinity && endInclusive;
+            _start = -start;
+            _end = +end;
+            _startInclusive = !_start.IsNegativeInfinity && startInclusive;
+            _endInclusive = !_end.IsPositiveInfinity && endInclusive;
         }
 
         /// <summary>

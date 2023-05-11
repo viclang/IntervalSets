@@ -1,6 +1,6 @@
 ﻿namespace IntervalRecords.Tests
 {
-    public class BoundedStateTests
+    public class BoundaryStateTests
     {
         [Fact]
         public void Infinity_ShouldBeOpen()

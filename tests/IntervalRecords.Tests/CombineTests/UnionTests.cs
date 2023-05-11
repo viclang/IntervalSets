@@ -33,8 +33,8 @@ namespace IntervalRecords.Tests.CombineTests
                 {
                     actual!.Start.Should().Be(minByStart.Start);
                     actual!.End.Should().Be(maxByEnd.End);
-                    actual!.StartInclusive.Should().Be(!actual!.Start.IsInfinity && expectedStartInclusive);
-                    actual!.EndInclusive.Should().Be(!actual!.End.IsInfinity && expectedEndInclusive);
+                    actual!.StartInclusive.Should().Be(!actual!.Start.IsNegativeInfinity && expectedStartInclusive);
+                    actual!.EndInclusive.Should().Be(!actual!.End.IsPositiveInfinity && expectedEndInclusive);
                 }
                 else
                 {
@@ -70,8 +70,8 @@ namespace IntervalRecords.Tests.CombineTests
                 {
                     actual!.Start.Should().Be(minByStart.Start);
                     actual!.End.Should().Be(maxByEnd.End);
-                    actual!.StartInclusive.Should().Be(!actual!.Start.IsInfinity && expectedStartInclusive);
-                    actual!.EndInclusive.Should().Be(!actual!.End.IsInfinity && expectedEndInclusive);
+                    actual!.StartInclusive.Should().Be(!actual!.Start.IsNegativeInfinity && expectedStartInclusive);
+                    actual!.EndInclusive.Should().Be(!actual!.End.IsPositiveInfinity && expectedEndInclusive);
                 }
                 else
                 {
