@@ -1,6 +1,4 @@
-﻿using System.Diagnostics.Contracts;
-
-namespace IntervalRecords
+﻿namespace IntervalRecords
 {
     public static partial class Interval
     {
@@ -13,7 +11,6 @@ namespace IntervalRecords
         /// <param name="source">The collection of intervals.</param>
         /// <param name="resultSelector">The function used to combine adjacent intervals.</param>
         /// <returns>The pairwise result sequence of intervals.</returns>
-        [Pure]
         public static IEnumerable<TResult> Pairwise<T, TResult>(
             this IEnumerable<Interval<T>> source,
             Func<Interval<T>, Interval<T>, TResult?> resultSelector)

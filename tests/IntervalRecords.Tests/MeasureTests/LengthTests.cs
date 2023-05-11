@@ -1,6 +1,6 @@
-﻿using InfinityComparable;
-using IntervalRecords.Tests.TestHelper;
+﻿using IntervalRecords.Tests.TestHelper;
 using System;
+using Unbounded;
 
 namespace IntervalRecords.Tests.Measure.Length
 {
@@ -47,40 +47,40 @@ namespace IntervalRecords.Tests.Measure.Length
             actual.Should().Be(FiniteOrPositiveInfinity(expected));
         }
 
-        public Infinity<TResult> Length(Interval<T> interval)
+        public Unbounded<TResult> Length(Interval<T> interval)
         {
             var type = typeof(T);
             return Type.GetTypeCode(type) switch
             {
-                TypeCode.Int32 => (Infinity<TResult>)(object)Interval.Length((Interval<int>)(object)interval),
-                TypeCode.Double => (Infinity<TResult>)(object)Interval.Length((Interval<double>)(object)interval),
-                TypeCode.DateTime => (Infinity<TResult>)(object)Interval.Length((Interval<DateTime>)(object)interval),
-                _ when type == typeof(DateTimeOffset) => (Infinity<TResult>)(object)Interval.Length((Interval<DateTimeOffset>)(object)interval),
-                _ when type == typeof(DateOnly) => (Infinity<TResult>)(object)Interval.Length((Interval<DateOnly>)(object)interval),
-                _ when type == typeof(TimeOnly) => (Infinity<TResult>)(object)Interval.Length((Interval<TimeOnly>)(object)interval),
+                TypeCode.Int32 => (Unbounded<TResult>)(object)Interval.Length((Interval<int>)(object)interval),
+                TypeCode.Double => (Unbounded<TResult>)(object)Interval.Length((Interval<double>)(object)interval),
+                TypeCode.DateTime => (Unbounded<TResult>)(object)Interval.Length((Interval<DateTime>)(object)interval),
+                _ when type == typeof(DateTimeOffset) => (Unbounded<TResult>)(object)Interval.Length((Interval<DateTimeOffset>)(object)interval),
+                _ when type == typeof(DateOnly) => (Unbounded<TResult>)(object)Interval.Length((Interval<DateOnly>)(object)interval),
+                _ when type == typeof(TimeOnly) => (Unbounded<TResult>)(object)Interval.Length((Interval<TimeOnly>)(object)interval),
                 _ => throw new NotSupportedException(type.FullName)
             };
         }
 
 
-        public static Infinity<TResult> FiniteOrPositiveInfinity(int? result)
+        public static Unbounded<TResult> FiniteOrPositiveInfinity(int? result)
         {
             var type = typeof(T);
             if (type == typeof(int) || type == typeof(DateOnly))
             {
-                return (Infinity<TResult>)(object)Infinity.ToPositiveInfinity(result);
+                return (Unbounded<TResult>)(object)Unbounded.Unbounded.ToPositiveInfinity(result);
             }
             if (type == typeof(double))
             {
-                return (Infinity<TResult>)(object)Infinity.ToPositiveInfinity<double>(result);
+                return (Unbounded<TResult>)(object)Unbounded.Unbounded.ToPositiveInfinity<double>(result);
             }
             else if (type == typeof(DateTime) || type == typeof(DateTimeOffset))
             {
-                return (Infinity<TResult>)(object)Infinity.ToPositiveInfinity<TimeSpan>(result.HasValue ? TimeSpan.FromDays(result.Value) : null);
+                return (Unbounded<TResult>)(object)Unbounded.Unbounded.ToPositiveInfinity<TimeSpan>(result.HasValue ? TimeSpan.FromDays(result.Value) : null);
             }
             else if (type == typeof(TimeOnly))
             {
-                return (Infinity<TResult>)(object)Infinity.ToPositiveInfinity<TimeSpan>(result.HasValue ? TimeSpan.FromHours(result.Value) : null);
+                return (Unbounded<TResult>)(object)Unbounded.Unbounded.ToPositiveInfinity<TimeSpan>(result.HasValue ? TimeSpan.FromHours(result.Value) : null);
             }
             else
             {

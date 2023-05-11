@@ -1,6 +1,5 @@
-﻿using InfinityComparable;
-using System.Diagnostics.Contracts;
-using System.Text;
+﻿using System.Text;
+using Unbounded;
 
 namespace IntervalRecords
 {
@@ -11,15 +10,15 @@ namespace IntervalRecords
     public record class Interval<T> : IComparable<Interval<T>>
         where T : struct, IEquatable<T>, IComparable<T>, IComparable
     {
-        private readonly Infinity<T> start;
-        private readonly Infinity<T> end;
+        private readonly Unbounded<T> start;
+        private readonly Unbounded<T> end;
         private readonly bool startInclusive;
         private readonly bool endInclusive;
-        
+
         /// <summary>
         /// Represents the start value of the interval.
         /// </summary>
-        public Infinity<T> Start
+        public Unbounded<T> Start
         {
             get => start;
             init
@@ -32,7 +31,7 @@ namespace IntervalRecords
         /// <summary>
         /// Represents the end value of the interval.
         /// </summary>
-        public Infinity<T> End
+        public Unbounded<T> End
         {
             get => end;
             init
@@ -56,15 +55,13 @@ namespace IntervalRecords
         /// <summary>
         /// Indicates whether the end value of the interval is Greater than or equal to its start value.
         /// </summary>
-        [Pure]
         public bool IsValid => End.CompareTo(Start) >= 0 || Start.IsNaN || End.IsNaN;
 
         /// <summary>
         /// Creates an unbounded interval equivalent to <see cref="Interval.All{T}"/>"/>
         /// </summary>
-        [Pure]
         public Interval()
-            : this(Infinity<T>.NegativeInfinity, Infinity<T>.PositiveInfinity, false, false)
+            : this(Unbounded<T>.NegativeInfinity, Unbounded<T>.PositiveInfinity, false, false)
         {
         }
 
@@ -75,8 +72,7 @@ namespace IntervalRecords
         /// <param name="end">Represents the end value of the interval.</param>
         /// <param name="startInclusive">Indicates whether the start is inclusive.</param>
         /// <param name="endInclusive">Indicates whether the end is inclusive.</param>
-        [Pure]
-        public Interval(Infinity<T> start, Infinity<T> end, bool startInclusive, bool endInclusive)
+        public Interval(Unbounded<T> start, Unbounded<T> end, bool startInclusive, bool endInclusive)
         {
             this.start = -start;
             this.end = +end;
@@ -88,14 +84,12 @@ namespace IntervalRecords
         /// Indicates whether an interval is empty.
         /// </summary>
         /// <returns>True if the interval is Invalid or the interval is not <see cref="IntervalType.Closed"/> and <see cref="Start"/> and <see cref="End"/> are equal</returns>
-        [Pure]
         public bool IsEmpty() => !IsValid || (this.GetIntervalType() != IntervalType.Closed && Start == End);
 
         /// <summary>
         /// Indicates whether an interval is Singleton.
         /// </summary>
         /// <returns>True if the interval is <see cref="IntervalType.Closed"/> and <see cref="Start"/> and <see cref="End"/> are equal.</returns>
-        [Pure]
         public bool IsSingleton() => this.GetIntervalType() == IntervalType.Closed && Start == End;
 
         /// <summary>
@@ -104,7 +98,6 @@ namespace IntervalRecords
         /// <param name="other">The interval to check for overlapping with the current interval.</param>
         /// <param name="includeHalfOpen">Indicates how to treat half-open endpoints in <see cref="IntervalOverlapping.Meets"/> or <see cref="IntervalOverlapping.MetBy"/> comparison.</param>
         /// <returns>True if the current interval and the other interval overlap, False otherwise.</returns>
-        [Pure]
         public bool Overlaps(Interval<T> other, bool includeHalfOpen = false)
         {
             bool notBefore = this.CompareEndToStart(other, includeHalfOpen) != -1;
@@ -117,7 +110,6 @@ namespace IntervalRecords
         /// </summary>
         /// <param name="value">The value to check if it is contained by the current interval</param>
         /// <returns></returns>
-        [Pure]
         public bool Contains(T value)
         {
             bool startsBeforeValue = Start.CompareTo(value) == -1;
@@ -132,10 +124,9 @@ namespace IntervalRecords
         /// </summary>
         /// <param name="other">The interval to compare with the current interval.</param>
         /// <returns>1 if the current interval is greater than the other interval, -1 if the current interval is less than the other interval, and 0 if the intervals are equal.</returns>
-        [Pure]
-        public int CompareTo(Interval<T> other)
+        public int CompareTo(Interval<T>? other)
         {
-            if (this > other)
+            if (other == null || this > other)
             {
                 return 1;
             }
@@ -146,27 +137,22 @@ namespace IntervalRecords
             return 0;
         }
 
-        [Pure]
         public static bool operator >(Interval<T> left, Interval<T> right)
         {
             int compareEnd = left.CompareEnd(right);
             return compareEnd == 1 || compareEnd == 0 && left.CompareStart(right) == -1;
         }
 
-        [Pure]
         public static bool operator <(Interval<T> left, Interval<T> right)
         {
             int compareEnd = left.CompareEnd(right);
             return compareEnd == -1 || compareEnd == 0 && left.CompareStart(right) == 1;
         }
 
-        [Pure]
         public static bool operator >=(Interval<T> left, Interval<T> right) => left == right || left > right;
 
-        [Pure]
         public static bool operator <=(Interval<T> left, Interval<T> right) => left == right || left < right;
 
-        [Pure]
         public override string ToString()
         {
             return new StringBuilder()
@@ -178,8 +164,7 @@ namespace IntervalRecords
                 .ToString();
         }
 
-        [Pure]
-        public void Deconstruct(out Infinity<T> start, out Infinity<T> end, out bool startInclusive, out bool endInclusive)
+        public void Deconstruct(out Unbounded<T> start, out Unbounded<T> end, out bool startInclusive, out bool endInclusive)
         {
             start = Start;
             end = End;

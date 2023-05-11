@@ -1,12 +1,11 @@
-﻿using InfinityComparable;
-using System.Diagnostics.Contracts;
+﻿using Unbounded;
 
 namespace IntervalRecords
 {
     /// <summary>
     /// Specifies the bounded state of an interval.
     /// </summary>
-    public enum BoundedState : byte
+    public enum BoundaryState : byte
     {
         /// <summary>
         /// Both endpoints are bounded.
@@ -36,17 +35,18 @@ namespace IntervalRecords
         /// <param name="source">The interval to determine the bounded state of.</param>
         /// <returns>A value indicating whether the interval is bounded, left-bounded, right-bounded, or unbounded.</returns>
         /// <exception cref="NotSupportedException">Thrown when the start or end state of the interval is not finite or infinity.</exception>
-        [Pure]
-        public static BoundedState GetBoundedState<T>(this Interval<T> source)
+        public static BoundaryState GetBoundaryState<T>(this Interval<T> source)
             where T : struct, IEquatable<T>, IComparable<T>, IComparable
-            => (source.Start.State, source.End.State) switch
+        {
+            return (source.Start.State, source.End.State) switch
             {
-                (InfinityState.IsFinite, InfinityState.IsFinite) => BoundedState.Bounded,
-                (InfinityState.IsInfinity, InfinityState.IsInfinity) => BoundedState.Unbounded,
-                (InfinityState.IsInfinity, InfinityState.IsFinite) => BoundedState.RightBounded,
-                (InfinityState.IsFinite, InfinityState.IsInfinity) => BoundedState.LeftBounded,
+                (UnboundedState.Finite, UnboundedState.Finite) => BoundaryState.Bounded,
+                (UnboundedState.NegativeInfinity, UnboundedState.PositiveInfinity) => BoundaryState.Unbounded,
+                (UnboundedState.NegativeInfinity, UnboundedState.Finite) => BoundaryState.RightBounded,
+                (UnboundedState.Finite, UnboundedState.PositiveInfinity) => BoundaryState.LeftBounded,
                 _ => throw new NotSupportedException()
             };
+        }
 
         /// <summary>
         /// Determines if the interval is half-bounded.
@@ -54,9 +54,8 @@ namespace IntervalRecords
         /// <typeparam name="T">The type of the interval endpoints.</typeparam>
         /// <param name="source">The interval to check.</param>
         /// <returns>True if the interval is half-bounded.</returns>
-        [Pure]
         public static bool IsHalfBounded<T>(this Interval<T> source)
             where T : struct, IEquatable<T>, IComparable<T>, IComparable
-            => source.GetBoundedState() is BoundedState.LeftBounded or BoundedState.RightBounded;
+            => source.GetBoundaryState() is BoundaryState.LeftBounded or BoundaryState.RightBounded;
     }
 }

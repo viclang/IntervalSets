@@ -1,6 +1,4 @@
-﻿using System.Diagnostics.Contracts;
-
-namespace IntervalRecords
+﻿namespace IntervalRecords
 {
     public static partial class Interval
     {
@@ -11,7 +9,6 @@ namespace IntervalRecords
         /// <param name="first">The first interval.</param>
         /// <param name="second">The second interval.</param>
         /// <returns>The gap between the two intervals, if any, or null if the two intervals overlap.</returns>
-        [Pure]
         public static Interval<T>? Gap<T>(this Interval<T> first, Interval<T> second)
             where T : struct, IEquatable<T>, IComparable<T>, IComparable
             => first.GetIntervalOverlapping(second, true) switch
@@ -28,7 +25,6 @@ namespace IntervalRecords
         /// <param name="first">The first interval.</param>
         /// <param name="second">The second interval.</param>
         /// <returns>The gap between the two intervals, or a default interval if the two intervals overlap.</returns>
-        [Pure]
         public static Interval<T> GapOrEmpty<T>(this Interval<T> first, Interval<T> second)
             where T : struct, IEquatable<T>, IComparable<T>, IComparable
             => first.GetIntervalOverlapping(second, true) switch
@@ -44,7 +40,6 @@ namespace IntervalRecords
         /// <typeparam name="T">The type of the interval bounds.</typeparam>
         /// <param name="source">The collection of intervals.</param>
         /// <returns>The complement of the collection of intervals, represented as a sequence of intervals.</returns>
-        [Pure]
         public static IEnumerable<Interval<T>> Complement<T>(
             this IEnumerable<Interval<T>> source)
             where T : struct, IEquatable<T>, IComparable<T>, IComparable

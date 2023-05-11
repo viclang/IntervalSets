@@ -1,5 +1,4 @@
-﻿using InfinityComparable;
-using System.Diagnostics.Contracts;
+﻿using Unbounded;
 
 namespace IntervalRecords
 {
@@ -10,7 +9,6 @@ namespace IntervalRecords
         /// </summary>
         /// <param name="source">The interval to be converted.</param>
         /// <returns>A closed interval that is equivalent to `source`.</returns>
-        [Pure]
         public static Interval<int> Closure(this Interval<int> source, int step)
             => ToClosed(source, start => start.Add(step), end => end.Substract(step));
 
@@ -19,7 +17,6 @@ namespace IntervalRecords
         /// </summary>
         /// <param name="source">The interval to be converted.</param>
         /// <returns>A closed interval that is equivalent to `source`.</returns>
-        [Pure]
         public static Interval<double> Closure(this Interval<double> source, double step)
             => ToClosed(source, start => start.Add(step), end => end.Substract(step));
 
@@ -28,7 +25,6 @@ namespace IntervalRecords
         /// </summary>
         /// <param name="source">The interval to be converted.</param>
         /// <returns>A closed interval that is equivalent to `source`.</returns>
-        [Pure]
         public static Interval<DateTime> Closure(this Interval<DateTime> source, TimeSpan step)
             => ToClosed(source, start => start.Add(step), end => end.Add(-step));
 
@@ -37,7 +33,6 @@ namespace IntervalRecords
         /// </summary>
         /// <param name="source">The interval to be converted.</param>
         /// <returns>A closed interval that is equivalent to `source`.</returns>
-        [Pure]
         public static Interval<DateTimeOffset> Closure(this Interval<DateTimeOffset> source, TimeSpan step)
             => ToClosed(source, start => start.Add(step), end => end.Add(-step));
 
@@ -46,7 +41,6 @@ namespace IntervalRecords
         /// </summary>
         /// <param name="source">The interval to be converted.</param>
         /// <returns>A closed interval that is equivalent to `source`.</returns>
-        [Pure]
         public static Interval<DateOnly> Closure(this Interval<DateOnly> source, int step)
             => ToClosed(source, start => start.AddDays(step), end => end.AddDays(-step));
 
@@ -55,14 +49,13 @@ namespace IntervalRecords
         /// </summary>
         /// <param name="source">The interval to be converted.</param>
         /// <returns>A closed interval that is equivalent to `source`.</returns>
-        [Pure]
         public static Interval<TimeOnly> Closure(this Interval<TimeOnly> source, TimeSpan step)
             => ToClosed(source, start => start.Add(step), end => end.Add(-step));
 
         private static Interval<T> ToClosed<T>(
             Interval<T> source,
-            Func<Infinity<T>, Infinity<T>> add,
-            Func<Infinity<T>, Infinity<T>> substract)
+            Func<Unbounded<T>, Unbounded<T>> add,
+            Func<Unbounded<T>, Unbounded<T>> substract)
             where T : struct, IEquatable<T>, IComparable<T>, IComparable
         {
             if (source.IsEmpty() || source.StartInclusive && source.EndInclusive)

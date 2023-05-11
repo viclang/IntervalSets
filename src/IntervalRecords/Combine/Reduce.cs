@@ -1,6 +1,4 @@
-﻿using System.Diagnostics.Contracts;
-
-namespace IntervalRecords
+﻿namespace IntervalRecords
 {
     public static partial class Interval
     {
@@ -12,7 +10,6 @@ namespace IntervalRecords
         /// <param name="source">The collection of intervals.</param>
         /// <param name="resultSelector">The function used to combine adjacent intervals.</param>
         /// <returns>The reduced sequence of intervals.</returns>
-        [Pure]
         public static IEnumerable<Interval<T>> Reduce<T>(
             this IEnumerable<Interval<T>> source,
             Func<Interval<T>, Interval<T>, Interval<T>?> resultSelector)

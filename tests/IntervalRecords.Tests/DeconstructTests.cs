@@ -9,7 +9,7 @@ namespace IntervalRecords.Tests
         public void DeconstructAsTuple_ShouldBeExpected(Interval<int> interval)
         {
             // Act
-            var (actualStart, actualEnd, actualStartInclusive, actualEndInclusive)  = interval;
+            var (actualStart, actualEnd, actualStartInclusive, actualEndInclusive) = interval;
 
             // Assert
             actualStart.Should().Be(interval.Start);

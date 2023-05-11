@@ -1,6 +1,4 @@
-﻿using System.Diagnostics.Contracts;
-
-namespace IntervalRecords
+﻿namespace IntervalRecords
 {
     public static partial class Interval
     {
@@ -11,7 +9,6 @@ namespace IntervalRecords
         /// <param name="first">The first interval to compute the hull of.</param>
         /// <param name="second">The second interval to compute the hull of.</param>
         /// <returns>The smallest interval that contains both input intervals.</returns>
-        [Pure]
         public static Interval<T> Hull<T>(this Interval<T> first, Interval<T> second)
             where T : struct, IEquatable<T>, IComparable<T>, IComparable
         {
@@ -35,7 +32,6 @@ namespace IntervalRecords
         /// <typeparam name="T">The type of the interval bounds.</typeparam>
         /// <param name="source">The collection of intervals.</param>
         /// <returns>The smallest interval that contains all input intervals, or null if the input is empty.</returns>
-        [Pure]
         public static Interval<T>? Hull<T>(
             this IEnumerable<Interval<T>> source)
             where T : struct, IEquatable<T>, IComparable<T>, IComparable
@@ -44,8 +40,8 @@ namespace IntervalRecords
             {
                 return null;
             }
-            var min = source.MinBy(i => i.Start);
-            var max = source.MaxBy(i => i.End);
+            var min = source.MinBy(i => i.Start)!;
+            var max = source.MaxBy(i => i.End)!;
 
             return new Interval<T>(
                 min.Start,

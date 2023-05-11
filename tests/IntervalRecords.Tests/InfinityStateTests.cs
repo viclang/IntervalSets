@@ -12,17 +12,17 @@
         }
 
         [Theory]
-        [InlineData(0, 0, BoundedState.Bounded)]
-        [InlineData(0, null, BoundedState.LeftBounded)]
-        [InlineData(null, 0, BoundedState.RightBounded)]
-        [InlineData(null, null, BoundedState.Unbounded)]
-        public void GetBoundedState_ShouldBeExpected(int? start, int? end, BoundedState expected)
+        [InlineData(0, 0, BoundaryState.Bounded)]
+        [InlineData(0, null, BoundaryState.LeftBounded)]
+        [InlineData(null, 0, BoundaryState.RightBounded)]
+        [InlineData(null, null, BoundaryState.Unbounded)]
+        public void GetBoundedState_ShouldBeExpected(int? start, int? end, BoundaryState expected)
         {
             // Arrange
             var interval = new Interval<int>(start, end, true, true);
 
             // Act
-            var actual = interval.GetBoundedState();
+            var actual = interval.GetBoundaryState();
 
             // Assert
             actual.Should().Be(expected);

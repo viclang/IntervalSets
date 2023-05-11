@@ -1,6 +1,4 @@
-﻿using System.Diagnostics.Contracts;
-
-namespace IntervalRecords
+﻿namespace IntervalRecords
 {
     public static partial class Interval
     {
@@ -11,7 +9,6 @@ namespace IntervalRecords
         /// <param name="first">The first interval to compare.</param>
         /// <param name="second">The second interval to compare.</param>
         /// <returns>The interval that is greater than or equal to the other interval.</returns>
-        [Pure]
         public static Interval<T> Max<T>(Interval<T> first, Interval<T> second)
             where T : struct, IEquatable<T>, IComparable<T>, IComparable
             => first >= second ? first : second;
@@ -25,7 +22,6 @@ namespace IntervalRecords
         /// <param name="second">The second interval to compare.</param>
         /// <param name="selector">The selector function to extract the value to compare from the intervals.</param>
         /// <returns>The interval that is greater than or equal to the other interval based on the comparison of the selected values.</returns>
-        [Pure]
         public static Interval<T> MaxBy<T, TProperty>(Interval<T> first, Interval<T> second, Func<Interval<T>, TProperty> selector)
             where T : struct, IEquatable<T>, IComparable<T>, IComparable
             where TProperty : IComparable<TProperty>
@@ -38,7 +34,6 @@ namespace IntervalRecords
         /// <param name="first">The first interval to compare.</param>
         /// <param name="second">The second interval to compare.</param>
         /// <returns>The interval that is less than or equal to the other interval.</returns>
-        [Pure]
         public static Interval<T> Min<T>(Interval<T> first, Interval<T> second)
             where T : struct, IEquatable<T>, IComparable<T>, IComparable
             => first <= second ? first : second;
@@ -52,7 +47,6 @@ namespace IntervalRecords
         /// <param name="second">The second interval to compare.</param>
         /// <param name="selector">The selector function to extract the value to compare from the intervals.</param>
         /// <returns>The interval that is less than or equal to the other interval based on the comparison of the selected values.</returns>
-        [Pure]
         public static Interval<T> MinBy<T, TProperty>(Interval<T> first, Interval<T> second, Func<Interval<T>, TProperty> selector)
             where T : struct, IEquatable<T>, IComparable<T>, IComparable
             where TProperty : IComparable<TProperty>

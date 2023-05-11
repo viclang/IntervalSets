@@ -1,6 +1,4 @@
-﻿using System.Diagnostics.Contracts;
-
-namespace IntervalRecords
+﻿namespace IntervalRecords
 {
     /// <summary>
     /// Specifies the type of interval, whether it is closed, open-closed, closed-open, or open.
@@ -21,7 +19,6 @@ namespace IntervalRecords
         /// <param name="intervalType">The interval type to be converted.</param>
         /// <returns>A tuple of two booleans representing the interval's endpoints being inclusive or exclusive.</returns>
         /// <exception cref="NotSupportedException">Thrown when the specified interval type is not a recognized value.</exception>
-        [Pure]
         public static (bool, bool) ToTuple(this IntervalType intervalType) => intervalType switch
         {
             IntervalType.Closed => (true, true),
@@ -40,7 +37,6 @@ namespace IntervalRecords
         /// <typeparam name="T">The type of the interval endpoints.</typeparam>
         /// <param name="value">The interval to determine the type of.</param>
         /// <returns>The interval type as an IntervalType enumeration value.</returns>
-        [Pure]
         public static IntervalType GetIntervalType<T>(this Interval<T> value)
             where T : struct, IEquatable<T>, IComparable<T>, IComparable
             => (value.StartInclusive, value.EndInclusive) switch
@@ -57,7 +53,6 @@ namespace IntervalRecords
         /// <typeparam name="T">The type of the interval endpoints.</typeparam>
         /// <param name="value">The interval to determine if it is half-open.</param>
         /// <returns>True if the interval is half-open.</returns>
-        [Pure]
         public static bool IsHalfOpen<T>(this Interval<T> value)
             where T : struct, IEquatable<T>, IComparable<T>, IComparable
             => value.GetIntervalType() is IntervalType.ClosedOpen or IntervalType.OpenClosed;

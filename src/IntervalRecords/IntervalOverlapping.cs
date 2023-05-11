@@ -1,6 +1,4 @@
-﻿using System.Diagnostics.Contracts;
-
-namespace IntervalRecords
+﻿namespace IntervalRecords
 {
     /// <summary>
     /// Specifies the overlapping relation between two intervals.
@@ -70,7 +68,6 @@ namespace IntervalRecords
         /// <param name="first">The first interval to compare.</param>
         /// <param name="second">The second interval to compare.</param>
         /// <param name="includeHalfOpen">Indicates how to treat half-open endpoints in <see cref="IntervalOverlapping.Meets"/> or <see cref="IntervalOverlapping.MetBy"/> comparison.</param>
-        [Pure]
         public static IntervalOverlapping GetIntervalOverlapping<T>(this Interval<T> first, Interval<T> second, bool includeHalfOpen = false)
             where T : struct, IEquatable<T>, IComparable<T>, IComparable
             => (first.CompareStart(second), first.CompareEnd(second)) switch
@@ -106,7 +103,6 @@ namespace IntervalRecords
         /// <param name="first">The first interval to compare.</param>
         /// <param name="second">The second interval to compare.</param>
         /// <returns>A value indicating the relative order of the start of the two intervals.</returns>
-        [Pure]
         public static int CompareStart<T>(this Interval<T> first, Interval<T> second)
             where T : struct, IEquatable<T>, IComparable<T>, IComparable
         {
@@ -121,7 +117,6 @@ namespace IntervalRecords
         /// <param name="first">The first interval to compare.</param>
         /// <param name="second">The second interval to compare.</param>
         /// <returns>A value indicating the relative order of the end of the two intervals.</returns>
-        [Pure]
         public static int CompareEnd<T>(this Interval<T> first, Interval<T> second)
             where T : struct, IEquatable<T>, IComparable<T>, IComparable
         {
@@ -137,7 +132,6 @@ namespace IntervalRecords
         /// <param name="second">The second interval to compare.</param>
         /// <param name="includeHalfOpen">Indicates how to treat half-open endpoints in <see cref="IntervalOverlapping.Meets"/> or <see cref="IntervalOverlapping.MetBy"/> comparison.</param>
         /// <returns>A value indicating the relative order of the end of the two intervals.</returns>
-        [Pure]
         public static int CompareStartToEnd<T>(this Interval<T> first, Interval<T> second, bool includeHalfOpen = false)
             where T : struct, IEquatable<T>, IComparable<T>, IComparable
         {
@@ -157,7 +151,6 @@ namespace IntervalRecords
         /// <param name="second">The second interval to compare.</param>
         /// <param name="includeHalfOpen">Indicates how to treat half-open endpoints in <see cref="IntervalOverlapping.Meets"/> or <see cref="IntervalOverlapping.MetBy"/> comparison.</param>
         /// <returns>A value indicating the relative order of the end of the two intervals.</returns>
-        [Pure]
         public static int CompareEndToStart<T>(this Interval<T> first, Interval<T> second, bool includeHalfOpen = false)
             where T : struct, IEquatable<T>, IComparable<T>, IComparable
         {

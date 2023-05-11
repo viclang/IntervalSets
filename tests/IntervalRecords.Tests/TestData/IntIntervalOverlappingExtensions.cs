@@ -1,4 +1,4 @@
-﻿using InfinityComparable;
+﻿using Unbounded;
 
 namespace IntervalRecords.Tests.TestData
 {

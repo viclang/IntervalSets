@@ -4,7 +4,7 @@
     <TargetFramework>net6.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
-    <version>1.0.0</version>
+    <version>1.0.1</version>
     <id>IntervalRecords</id>
     <authors>Victor Langemaire</authors>
     <PackageProjectUrl>https://github.com/viclang/IntervalRecords</PackageProjectUrl>
@@ -21,6 +21,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="InfinityComparable" Version="1.2.2" />
+    <PackageReference Include="Unbounded" Version="1.0.0" />
   </ItemGroup>
 </Project>

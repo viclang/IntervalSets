@@ -1,6 +1,4 @@
-﻿using System.Diagnostics.Contracts;
-
-namespace IntervalRecords
+﻿namespace IntervalRecords
 {
     public static partial class Interval
     {
@@ -11,7 +9,6 @@ namespace IntervalRecords
         /// <param name="source">The interval to generate values from.</param>
         /// <param name="addStep">The step function to increment the starting value with.</param>
         /// <returns>The sequence of values generated within the interval.</returns>
-        [Pure]
         public static IEnumerable<T> Iterate<T>(this Interval<T> source, Func<T, T> addStep)
             where T : struct, IEquatable<T>, IComparable<T>, IComparable
         {
@@ -19,7 +16,7 @@ namespace IntervalRecords
             {
                 return Enumerable.Empty<T>();
             }
-            var start = source.StartInclusive ? source.Start.GetValueOrDefault() : addStep(source.Start.GetValueOrDefault());
+            var start = source.StartInclusive ? source.Start.GetFiniteOrDefault() : addStep(source.Start.GetFiniteOrDefault());
             return source.Iterate(start, addStep);
         }
 
@@ -31,7 +28,6 @@ namespace IntervalRecords
         /// <param name="start">The starting value of the sequence.</param>
         /// <param name="addStep">The step function to increment the starting value with.</param>
         /// <returns>The sequence of values generated within the interval.</returns>
-        [Pure]
         public static IEnumerable<T> Iterate<T>(this Interval<T> source, T start, Func<T, T> addStep)
             where T : struct, IEquatable<T>, IComparable<T>, IComparable
         {

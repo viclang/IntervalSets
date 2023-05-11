@@ -1,6 +1,6 @@
-﻿using InfinityComparable;
-using System;
+﻿using System;
 using System.Collections.Generic;
+using Unbounded;
 
 namespace IntervalRecords.Tests.TestData
 {
