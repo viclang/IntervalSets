@@ -68,7 +68,7 @@ namespace IntervalRecords.Tests.CombineTests
                 actual.Should()
                 .NotBeNull()
                 .And.BeEquivalentTo(
-                    new Interval<int>(
+                    Interval.CreateInterval<int>(
                         b.End,
                         a.Start,
                         !b.EndInclusive,

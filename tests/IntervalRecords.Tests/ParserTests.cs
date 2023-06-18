@@ -9,14 +9,14 @@ namespace IntervalRecords.Tests
 
         public static TheoryData<string, Interval<int>?> ValidStringToParseWithExpectedResults = new TheoryData<string, Interval<int>?>
         {
-            { "[,]", new Interval<int>() },
-            { "[,)", new Interval<int>() },
-            { "(,]", new Interval<int>() },
-            { "(,)", new Interval<int>() },
-            { "[1,2]", new Interval<int>(1, 2, true, true) },
-            { "[1,2)", new Interval<int>(1, 2, true, false ) },
-            { "(1,2]", new Interval<int>(1, 2, false, true ) },
-            { "(1,2)", new Interval<int>(1, 2, false, false ) },
+            { "[,]", Interval.All<int>() },
+            { "[,)", Interval.All<int>() },
+            { "(,]", Interval.All<int>() },
+            { "(,)", Interval.All<int>() },
+            { "[1,2]", Interval.CreateInterval < int >(1, 2, true, true) },
+            { "[1,2)", Interval.CreateInterval < int >(1, 2, true, false) },
+            { "(1,2]", Interval.CreateInterval < int >(1, 2, false, true) },
+            { "(1,2)", Interval.CreateInterval < int >(1, 2, false, false) },
         };
 
         public static TheoryData<string, Interval<int>?> InvalidStringToParseWithNull = new TheoryData<string, Interval<int>?>

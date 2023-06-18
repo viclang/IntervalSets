@@ -13,7 +13,7 @@
         public void GetIntervalType_ToTuple_ShouldBeExpected(bool startInclusive, bool endInclusive, IntervalType expected)
         {
             // Arrange
-            var interval = new Interval<int>(start, end, startInclusive, endInclusive);
+            var interval = Interval.CreateInterval<int>(start, end, startInclusive, endInclusive);
 
             // Act
             var actualIntervalType = interval.GetIntervalType();
@@ -33,7 +33,7 @@
         public void IsHalfOpen_ShouldBeExpected(bool startInclusive, bool endInclusive, bool expected)
         {
             // Arrange
-            var interval = new Interval<int>(start, end, startInclusive, endInclusive);
+            var interval = Interval.CreateInterval<int>(start, end, startInclusive, endInclusive);
 
             // Act
             var actual = interval.IsHalfOpen();

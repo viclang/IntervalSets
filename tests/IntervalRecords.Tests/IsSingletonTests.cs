@@ -15,7 +15,7 @@
         {
             // Arrange
             var (startInclusive, endInclusive) = intervalType.ToTuple();
-            var interval = new Interval<int>(start, end, startInclusive, endInclusive);
+            var interval = Interval.CreateInterval<int>(start, end, startInclusive, endInclusive);
 
             // Act
             var actual = interval.IsSingleton();

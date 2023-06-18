@@ -21,7 +21,7 @@ namespace IntervalRecords.Tests.TestData
         {
             for (var point = start; point <= end; point++)
             {
-                yield return new Interval<int>(point, point, true, true);
+                yield return Interval.Singleton(point);
             }
         }
 
@@ -63,7 +63,7 @@ namespace IntervalRecords.Tests.TestData
             IntervalType intervalType)
         {
             var (startInclusinve, endInclusive) = intervalType.ToTuple();
-            var lastValue = new Interval<int>(
+            var lastValue = Interval.CreateInterval<int>(
                 startingPoint,
                 startingPoint + length,
                 startInclusinve,

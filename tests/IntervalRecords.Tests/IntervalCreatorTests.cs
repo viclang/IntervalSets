@@ -1,4 +1,7 @@
-﻿namespace IntervalRecords.Tests
+﻿using IntervalRecords.Types;
+using Unbounded;
+
+namespace IntervalRecords.Tests
 {
     public class IntervalCreatorTests
     {
@@ -7,17 +10,17 @@
 
         public static TheoryData<Interval<int>, Interval<int>> AllBuildersWithExpectedResults = new TheoryData<Interval<int>, Interval<int>>
         {
-            { Interval.Empty<int>(), new(0, 0, false, false) },
-            { Interval.All<int>(), new(null, null, false, false) },
-            { Interval.Singleton(end), new(end, end, true, true) },
-            { Interval.Closed(start, end), new(start, end, true, true) },
-            { Interval.ClosedOpen(start, end), new(start, end, true, false) },
-            { Interval.OpenClosed(start, end), new(start, end, false, true) },
-            { Interval.Open(start, end), new(start, end, false, false) },
-            { Interval.GreaterThan(start), new(start, null, false, false) },
-            { Interval.AtLeast(start), new(start, null, true, false) },
-            { Interval.LessThan(end), new(null, end, false, false) },
-            { Interval.AtMost(end), new(null, end, false, true) }
+            { Interval.Empty<int>(), new OpenInterval<int>(0, 0) },
+            { Interval.All<int>(), new OpenInterval<int>(Unbounded<int>.NegativeInfinity, Unbounded<int>.PositiveInfinity) },
+            { Interval.Singleton(end), new ClosedInterval<int>(end, end) },
+            { Interval.Closed(start, end), new ClosedInterval<int>(start, end) },
+            { Interval.ClosedOpen(start, end), new ClosedOpenInterval<int>(start, end) },
+            { Interval.OpenClosed(start, end), new OpenClosedInterval<int>(start, end) },
+            { Interval.Open(start, end), new OpenInterval<int>(start, end) },
+            { Interval.GreaterThan(start), new OpenInterval<int>(start, Unbounded<int>.PositiveInfinity) },
+            { Interval.AtLeast(start), new ClosedOpenInterval<int> (start, Unbounded<int>.PositiveInfinity) },
+            { Interval.LessThan(end), new OpenInterval<int>(Unbounded<int>.NegativeInfinity, end) },
+            { Interval.AtMost(end), new OpenClosedInterval<int>(Unbounded<int>.NegativeInfinity, end) }
         };
 
         [Theory]
@@ -46,7 +49,7 @@
         {
             var actual = Interval.WithIntervalType<int>(start, end, intervalType);
 
-            actual.Should().Be(new(start, end, startInclusive, endInclusive));
+            actual.Should().Be(Interval.CreateInterval<int>(start, end, startInclusive, endInclusive));
         }
     }
 }
