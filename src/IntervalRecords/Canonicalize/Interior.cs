@@ -59,13 +59,9 @@ namespace IntervalRecords
             {
                 return source;
             }
-            return source with
-            {
-                Start = source.StartInclusive ? substract(source.Start) : source.Start,
-                End = source.EndInclusive ? add(source.End) : source.End,
-                StartInclusive = false,
-                EndInclusive = false
-            };
+            return new OpenInterval<T>(
+                source.StartInclusive ? substract(source.Start) : source.Start,
+                source.EndInclusive ? add(source.End) : source.End);
         }
     }
 }

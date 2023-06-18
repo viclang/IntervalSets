@@ -13,8 +13,8 @@
             where T : struct, IEquatable<T>, IComparable<T>, IComparable
             => first.GetIntervalOverlapping(second, true) switch
             {
-                IntervalOverlapping.Before => new Interval<T>(first.End, second.Start, !first.EndInclusive, !second.StartInclusive),
-                IntervalOverlapping.After => new Interval<T>(second.End, first.Start, !second.EndInclusive, !first.StartInclusive),
+                IntervalOverlapping.Before => CreateInterval(first.End, second.Start, !first.EndInclusive, !second.StartInclusive),
+                IntervalOverlapping.After => CreateInterval(second.End, first.Start, !second.EndInclusive, !first.StartInclusive),
                 _ => null
             };
 
@@ -29,8 +29,8 @@
             where T : struct, IEquatable<T>, IComparable<T>, IComparable
             => first.GetIntervalOverlapping(second, true) switch
             {
-                IntervalOverlapping.Before => new Interval<T>(first.End, second.Start, !first.EndInclusive, !second.StartInclusive),
-                IntervalOverlapping.After => new Interval<T>(second.End, first.Start, !second.EndInclusive, !first.StartInclusive),
+                IntervalOverlapping.Before => CreateInterval(first.End, second.Start, !first.EndInclusive, !second.StartInclusive),
+                IntervalOverlapping.After => CreateInterval(second.End, first.Start, !second.EndInclusive, !first.StartInclusive),
                 _ => Empty<T>()
             };
 

@@ -53,7 +53,7 @@
                 ? first.EndInclusive && second.EndInclusive
                 : minByEnd.EndInclusive;
 
-            return first with { Start = maxByStart.Start, End = minByEnd.End, StartInclusive = startInclusive, EndInclusive = endInclusive };
+            return CreateInterval(maxByStart.Start, minByEnd.End, startInclusive, endInclusive);
         }
     }
 }

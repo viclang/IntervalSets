@@ -1,4 +1,5 @@
-﻿using Unbounded;
+﻿using IntervalRecords.Types;
+using Unbounded;
 
 namespace IntervalRecords
 {
@@ -88,13 +89,9 @@ namespace IntervalRecords
             {
                 return source;
             }
-            return source with
-            {
-                Start = source.StartInclusive ? source.Start : add(source.Start),
-                End = source.EndInclusive ? add(source.End) : source.End,
-                StartInclusive = true,
-                EndInclusive = false
-            };
+            return new ClosedOpenInterval<T>(
+                source.StartInclusive ? source.Start : add(source.Start),
+                source.EndInclusive ? add(source.End) : source.End);
         }
 
         private static Interval<T> ToOpenClosed<T>(Interval<T> source, Func<Unbounded<T>, Unbounded<T>> substract)
@@ -104,13 +101,9 @@ namespace IntervalRecords
             {
                 return source;
             }
-            return source with
-            {
-                Start = source.StartInclusive ? substract(source.Start) : source.Start,
-                End = source.EndInclusive ? source.End : substract(source.End),
-                StartInclusive = false,
-                EndInclusive = true
-            };
+            return new ClosedOpenInterval<T>(
+                source.StartInclusive ? substract(source.Start) : source.Start,
+                source.EndInclusive ? source.End : substract(source.End));
         }
     }
 }

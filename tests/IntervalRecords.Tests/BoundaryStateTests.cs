@@ -5,7 +5,7 @@
         [Fact]
         public void Infinity_ShouldBeOpen()
         {
-            var infinity = new Interval<int>(null, null, true, true);
+            var infinity = Interval.All<int>();
 
             infinity.StartInclusive.Should().BeFalse();
             infinity.EndInclusive.Should().BeFalse();
@@ -19,7 +19,7 @@
         public void GetBoundedState_ShouldBeExpected(int? start, int? end, BoundaryState expected)
         {
             // Arrange
-            var interval = new Interval<int>(start, end, true, true);
+            var interval = Interval.CreateInterval<int>(start, end, true, true);
 
             // Act
             var actual = interval.GetBoundaryState();
@@ -36,7 +36,7 @@
         public void IsHalfBounded_ShouldBeExpected(int? start, int? end, bool expected)
         {
             // Arrange
-            var interval = new Interval<int>(start, end, true, true);
+            var interval = Interval.CreateInterval<int>(start, end, true, true);
 
             // Act
             var actual = interval.IsHalfBounded();

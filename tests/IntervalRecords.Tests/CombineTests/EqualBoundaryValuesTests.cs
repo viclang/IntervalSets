@@ -22,10 +22,10 @@
         {
             // Arrange
             var (leftStartInclusive, leftEndInclusive) = leftIntervalType.ToTuple();
-            var leftInterval = new Interval<int>(start, end, leftStartInclusive, leftEndInclusive);
+            var leftInterval = Interval.CreateInterval<int>(start, end, leftStartInclusive, leftEndInclusive);
 
             var (rightStartInclusive, rigthEndInclusive) = rightIntervalType.ToTuple();
-            var rigthInterval = new Interval<int>(start, end, rightStartInclusive, rigthEndInclusive);
+            var rigthInterval = Interval.CreateInterval<int>(start, end, rightStartInclusive, rigthEndInclusive);
 
             // Act
             var actual = new IntervalType[]
@@ -57,10 +57,10 @@
         {
             // Arrange
             var (leftStartInclusive, leftEndInclusive) = leftIntervalType.ToTuple();
-            var leftInterval = new Interval<int>(start, end, leftStartInclusive, leftEndInclusive);
+            var leftInterval =  Interval.CreateInterval<int>(start, end, leftStartInclusive, leftEndInclusive);
 
             var (rightStartInclusive, rigthEndInclusive) = rightIntervalType.ToTuple();
-            var rigthInterval = new Interval<int>(start, end, rightStartInclusive, rigthEndInclusive);
+            var rigthInterval = Interval.CreateInterval<int>(start, end, rightStartInclusive, rigthEndInclusive);
 
             // Act
             var actual = leftInterval.Intersect(rigthInterval)!.GetIntervalType();

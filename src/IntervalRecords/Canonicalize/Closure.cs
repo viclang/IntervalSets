@@ -62,13 +62,10 @@ namespace IntervalRecords
             {
                 return source;
             }
-            return source with
-            {
-                Start = source.StartInclusive ? source.Start : add(source.Start),
-                End = source.EndInclusive ? source.End : substract(source.End),
-                StartInclusive = true,
-                EndInclusive = true
-            };
+
+            return new ClosedInterval<T>(
+                source.StartInclusive ? source.Start : add(source.Start),
+                source.EndInclusive ? source.End : substract(source.End));
         }
     }
 }

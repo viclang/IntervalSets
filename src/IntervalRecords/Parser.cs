@@ -70,7 +70,7 @@ namespace IntervalRecords
             var start = Unbounded<T>.Parse(startString[1..]);
             var end = Unbounded<T>.Parse(endString[..(endString.Length - 1)]);
 
-            return new Interval<T>(
+            return CreateInterval(
                 start,
                 end,
                 !start.IsInfinity && value.StartsWith('['),

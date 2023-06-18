@@ -18,7 +18,7 @@ namespace IntervalRecords.Tests.CombineTests
                 actual.Should()
                 .NotBeNull()
                 .And.BeEquivalentTo(
-                    new Interval<int>(
+                    Interval.CreateInterval<int>(
                         a.End,
                         b.Start,
                         !a.EndInclusive,
@@ -30,7 +30,7 @@ namespace IntervalRecords.Tests.CombineTests
                 actual.Should()
                 .NotBeNull()
                 .And.BeEquivalentTo(
-                    new Interval<int>(
+                    Interval.CreateInterval<int>(
                         b.End,
                         a.Start,
                         !b.EndInclusive,
@@ -56,7 +56,7 @@ namespace IntervalRecords.Tests.CombineTests
                 actual.Should()
                 .NotBeNull()
                 .And.BeEquivalentTo(
-                    new Interval<int>(
+                    Interval.CreateInterval<int>(
                         a.End,
                         b.Start,
                         !a.EndInclusive,

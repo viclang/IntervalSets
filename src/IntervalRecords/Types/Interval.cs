@@ -7,13 +7,11 @@ namespace IntervalRecords
     /// Represents an interval of values of type <see cref="T"/>.
     /// </summary>
     /// <typeparam name="T">The type of values represented in the interval.</typeparam>
-    public record class Interval<T> : IComparable<Interval<T>>
+    public abstract record class Interval<T> : IComparable<Interval<T>>
         where T : struct, IEquatable<T>, IComparable<T>, IComparable
     {
         private readonly Unbounded<T> _start;
         private readonly Unbounded<T> _end;
-        private readonly bool _startInclusive;
-        private readonly bool _endInclusive;
 
         /// <summary>
         /// Represents the start value of the interval.
@@ -24,7 +22,6 @@ namespace IntervalRecords
             init
             {
                 _start = -value;
-                _startInclusive = !Start.IsNegativeInfinity && _startInclusive;
             }
         }
 
@@ -37,33 +34,23 @@ namespace IntervalRecords
             init
             {
                 _end = +value;
-                _endInclusive = !End.IsPositiveInfinity && _endInclusive;
             }
         }
 
         /// <summary>
         /// Gets a value indicating whether the start of the interval is inclusive.
         /// </summary>
-        public bool StartInclusive { get => _startInclusive; init { _startInclusive = !Start.IsNegativeInfinity && value; } }
-
+        public abstract bool StartInclusive { get; }
 
         /// <summary>
         /// Gets a value indicating whether the end of the interval is inclusive.
         /// </summary>
-        public bool EndInclusive { get => _endInclusive; init { _endInclusive = !End.IsPositiveInfinity && value; } }
+        public abstract bool EndInclusive { get; }
 
         /// <summary>
         /// Indicates whether the end value of the interval is Greater than or equal to its start value.
         /// </summary>
         public bool IsValid => End.CompareTo(Start) >= 0 && !Start.IsNaN && !End.IsNaN;
-
-        /// <summary>
-        /// Creates an unbounded interval equivalent to <see cref="Interval.All{T}"/>"/>
-        /// </summary>
-        public Interval()
-            : this(Unbounded<T>.NegativeInfinity, Unbounded<T>.PositiveInfinity, false, false)
-        {
-        }
 
         /// <summary>
         /// Creates an interval.
@@ -72,25 +59,31 @@ namespace IntervalRecords
         /// <param name="end">Represents the end value of the interval.</param>
         /// <param name="startInclusive">Indicates whether the start is inclusive.</param>
         /// <param name="endInclusive">Indicates whether the end is inclusive.</param>
-        public Interval(Unbounded<T> start, Unbounded<T> end, bool startInclusive, bool endInclusive)
+        public Interval(Unbounded<T> start, Unbounded<T> end)
         {
             _start = -start;
             _end = +end;
-            _startInclusive = !_start.IsNegativeInfinity && startInclusive;
-            _endInclusive = !_end.IsPositiveInfinity && endInclusive;
         }
+
+        /// <summary>
+        /// Determines the interval type.
+        /// </summary>
+        /// <typeparam name="T">The type of the interval endpoints.</typeparam>
+        /// <param name="value">The interval to determine the type of.</param>
+        /// <returns>The interval type as an IntervalType enumeration value.</returns>
+        public abstract IntervalType GetIntervalType();
 
         /// <summary>
         /// Indicates whether an interval is empty.
         /// </summary>
         /// <returns>True if the interval is Invalid or the interval is not <see cref="IntervalType.Closed"/> and <see cref="Start"/> and <see cref="End"/> are equal</returns>
-        public bool IsEmpty() => !IsValid || (this.GetIntervalType() != IntervalType.Closed && Start == End);
+        public abstract bool IsEmpty();
 
         /// <summary>
         /// Indicates whether an interval is Singleton.
         /// </summary>
         /// <returns>True if the interval is <see cref="IntervalType.Closed"/> and <see cref="Start"/> and <see cref="End"/> are equal.</returns>
-        public bool IsSingleton() => this.GetIntervalType() == IntervalType.Closed && Start == End;
+        public abstract bool IsSingleton();
 
         /// <summary>
         /// Returns a boolean value indicating if the current interval overlaps with the other interval.
@@ -110,14 +103,7 @@ namespace IntervalRecords
         /// </summary>
         /// <param name="value">The value to check if it is contained by the current interval</param>
         /// <returns></returns>
-        public bool Contains(T value)
-        {
-            bool startsBeforeValue = Start.CompareTo(value) == -1;
-            bool startsAtValue = Start.CompareTo(value) == 0 && StartInclusive;
-            bool endsAfterValue = End.CompareTo(value) == 1;
-            bool endsAtValue = End.CompareTo(value) == 0 && EndInclusive;
-            return (startsBeforeValue || startsAtValue) && (endsAfterValue || endsAtValue);
-        }
+        public abstract bool Contains(Unbounded<T> value);
 
         /// <summary>
         /// This method compares the current interval with another interval and returns an integer value indicating the relative order of the intervals.
@@ -152,17 +138,6 @@ namespace IntervalRecords
         public static bool operator >=(Interval<T> left, Interval<T> right) => left == right || left > right;
 
         public static bool operator <=(Interval<T> left, Interval<T> right) => left == right || left < right;
-
-        public override string ToString()
-        {
-            return new StringBuilder()
-                .Append(StartInclusive ? "[" : "(")
-                .Append(Start)
-                .Append(", ")
-                .Append(End)
-                .Append(EndInclusive ? "]" : ")")
-                .ToString();
-        }
 
         public void Deconstruct(out Unbounded<T> start, out Unbounded<T> end, out bool startInclusive, out bool endInclusive)
         {
