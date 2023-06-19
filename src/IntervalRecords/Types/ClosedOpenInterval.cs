@@ -9,8 +9,7 @@ namespace IntervalRecords.Types;
 public sealed record ClosedOpenInterval<T> : Interval<T>
     where T : struct, IEquatable<T>, IComparable<T>, IComparable
 {
-    
-    public override bool StartInclusive => true;
+    public override bool StartInclusive => !Start.IsNegativeInfinity;
 
     public override bool EndInclusive => false;
 
@@ -18,7 +17,7 @@ public sealed record ClosedOpenInterval<T> : Interval<T>
     {
     }
 
-    public override IntervalType GetIntervalType() => IntervalType.ClosedOpen;
+    public override IntervalType GetIntervalType() => StartInclusive ? IntervalType.ClosedOpen : IntervalType.Open;
 
     public override bool Contains(Unbounded<T> value)
     {
@@ -28,5 +27,4 @@ public sealed record ClosedOpenInterval<T> : Interval<T>
     public override bool IsEmpty() => !IsValid || Start == End;
 
     public override bool IsSingleton() => false;
-
 }

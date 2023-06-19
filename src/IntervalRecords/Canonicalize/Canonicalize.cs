@@ -85,7 +85,7 @@ namespace IntervalRecords
             Func<Unbounded<T>, Unbounded<T>> add)
             where T : struct, IEquatable<T>, IComparable<T>, IComparable
         {
-            if (source.IsEmpty() || source.StartInclusive && !source.EndInclusive)
+            if (source.IsEmpty() || source.GetIntervalType() == IntervalType.ClosedOpen)
             {
                 return source;
             }
@@ -97,11 +97,11 @@ namespace IntervalRecords
         private static Interval<T> ToOpenClosed<T>(Interval<T> source, Func<Unbounded<T>, Unbounded<T>> substract)
             where T : struct, IEquatable<T>, IComparable<T>, IComparable
         {
-            if (source.IsEmpty() || !source.StartInclusive && source.EndInclusive)
+            if (source.IsEmpty() || source.GetIntervalType() == IntervalType.OpenClosed)
             {
                 return source;
             }
-            return new ClosedOpenInterval<T>(
+            return new OpenClosedInterval<T>(
                 source.StartInclusive ? substract(source.Start) : source.Start,
                 source.EndInclusive ? source.End : substract(source.End));
         }

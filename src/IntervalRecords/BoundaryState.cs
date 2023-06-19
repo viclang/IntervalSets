@@ -36,9 +36,7 @@ namespace IntervalRecords
         /// <returns>A value indicating whether the interval is bounded, left-bounded, right-bounded, or unbounded.</returns>
         /// <exception cref="NotSupportedException">Thrown when the start or end state of the interval is not finite or infinity.</exception>
         public static BoundaryState GetBoundaryState<T>(this Interval<T> source)
-            where T : struct, IEquatable<T>, IComparable<T>, IComparable
-        {
-            return (source.Start.State, source.End.State) switch
+            where T : struct, IEquatable<T>, IComparable<T>, IComparable => (source.Start.State, source.End.State) switch
             {
                 (UnboundedState.Finite, UnboundedState.Finite) => BoundaryState.Bounded,
                 (UnboundedState.NegativeInfinity, UnboundedState.PositiveInfinity) => BoundaryState.Unbounded,
@@ -46,7 +44,6 @@ namespace IntervalRecords
                 (UnboundedState.Finite, UnboundedState.PositiveInfinity) => BoundaryState.LeftBounded,
                 _ => throw new NotSupportedException()
             };
-        }
 
         /// <summary>
         /// Determines if the interval is half-bounded.

@@ -71,7 +71,31 @@ namespace IntervalRecords
         /// <typeparam name="T">The type of the interval endpoints.</typeparam>
         /// <param name="value">The interval to determine the type of.</param>
         /// <returns>The interval type as an IntervalType enumeration value.</returns>
-        public abstract IntervalType GetIntervalType();
+        public virtual IntervalType GetIntervalType()
+            => (StartInclusive, EndInclusive) switch
+            {
+                (true, true) => IntervalType.Closed,
+                (true, false) => IntervalType.ClosedOpen,
+                (false, true) => IntervalType.OpenClosed,
+                (false, false) => IntervalType.Open,
+            };
+
+        /// <summary>
+        /// Determines the bounded state of the interval.
+        /// </summary>
+        /// <typeparam name="T">The type of the interval endpoints.</typeparam>
+        /// <param name="source">The interval to determine the bounded state of.</param>
+        /// <returns>A value indicating whether the interval is bounded, left-bounded, right-bounded, or unbounded.</returns>
+        /// <exception cref="NotSupportedException">Thrown when the start or end state of the interval is not finite or infinity.</exception>
+        public BoundaryState GetBoundaryState()
+            => (Start.State, End.State) switch
+            {
+                (UnboundedState.Finite, UnboundedState.Finite) => BoundaryState.Bounded,
+                (UnboundedState.NegativeInfinity, UnboundedState.PositiveInfinity) => BoundaryState.Unbounded,
+                (UnboundedState.NegativeInfinity, UnboundedState.Finite) => BoundaryState.RightBounded,
+                (UnboundedState.Finite, UnboundedState.PositiveInfinity) => BoundaryState.LeftBounded,
+                _ => throw new NotSupportedException()
+            };
 
         /// <summary>
         /// Indicates whether an interval is empty.
@@ -138,6 +162,17 @@ namespace IntervalRecords
         public static bool operator >=(Interval<T> left, Interval<T> right) => left == right || left > right;
 
         public static bool operator <=(Interval<T> left, Interval<T> right) => left == right || left < right;
+
+        public override string ToString()
+        {
+            return new StringBuilder()
+                .Append(StartInclusive ? "[" : "(")
+                .Append(Start)
+                .Append(", ")
+                .Append(End)
+                .Append(EndInclusive ? "]" : ")")
+                .ToString();
+        }
 
         public void Deconstruct(out Unbounded<T> start, out Unbounded<T> end, out bool startInclusive, out bool endInclusive)
         {

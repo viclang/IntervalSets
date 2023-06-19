@@ -70,7 +70,7 @@ namespace IntervalRecords.Tests.CanonicalizeTests
 
             // Assert
             actual.Should()
-                .Be(Interval.WithIntervalType<T>(expectedStart.ToBoundary<T>(), expectedEnd.ToBoundary<T>(), expectedIntervalType));
+                .Be(new ClosedInterval<T>(expectedStart.ToBoundary<T>(), expectedEnd.ToBoundary<T>()));
         }
 
         [Theory]

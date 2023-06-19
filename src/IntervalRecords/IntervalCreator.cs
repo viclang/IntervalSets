@@ -41,7 +41,7 @@ namespace IntervalRecords
         public static Interval<T> WithIntervalType<T>(Unbounded<T> start, Unbounded<T> end, IntervalType intervalType) where T : struct, IEquatable<T>, IComparable<T>, IComparable
             => intervalType switch
         {
-            IntervalType.Closed => new ClosedInterval<T>(start, end),
+            IntervalType.Closed => new ClosedInterval<T>(start.GetFiniteOrDefault(), end.GetFiniteOrDefault()),
             IntervalType.ClosedOpen => new ClosedOpenInterval<T>(start, end),
             IntervalType.OpenClosed => new OpenClosedInterval<T>(start, end),
             IntervalType.Open => new OpenInterval<T>(start, end),
@@ -94,9 +94,9 @@ namespace IntervalRecords
             bool endInclusive) where T : struct, IEquatable<T>, IComparable<T>, IComparable
             => (startInclusive, endInclusive) switch
         {
-            (true, true) => new ClosedInterval<T>(start, end),
+            (true, true) => new ClosedInterval<T>(start.GetFiniteOrDefault(), end.GetFiniteOrDefault()),
             (false, true) => new OpenClosedInterval<T>(start, end),
-            (true, false) => new ClosedInterval<T>(start, end),
+            (true, false) => new ClosedInterval<T>(start.GetFiniteOrDefault(), end.GetFiniteOrDefault()),
             (false, false) => new OpenClosedInterval<T>(start, end)
         };
 

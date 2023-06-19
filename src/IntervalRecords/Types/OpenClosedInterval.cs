@@ -11,7 +11,7 @@ public sealed record OpenClosedInterval<T> : Interval<T>
 {
     public override bool StartInclusive => false;
 
-    public override bool EndInclusive => true;
+    public override bool EndInclusive => !End.IsPositiveInfinity;
 
     public OpenClosedInterval(Unbounded<T> start, Unbounded<T> end) : base(start, end)
     {
@@ -26,5 +26,5 @@ public sealed record OpenClosedInterval<T> : Interval<T>
 
     public override bool IsSingleton() => false;
 
-    public override IntervalType GetIntervalType() => IntervalType.OpenClosed;
+    public override IntervalType GetIntervalType() => EndInclusive ? IntervalType.OpenClosed : IntervalType.Open;
 }

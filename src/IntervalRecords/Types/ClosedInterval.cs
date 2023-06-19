@@ -5,9 +5,18 @@ namespace IntervalRecords;
 public sealed record ClosedInterval<T> : Interval<T>
     where T : struct, IEquatable<T>, IComparable<T>, IComparable
 {
-    public override bool StartInclusive => true;
 
-    public override bool EndInclusive => true;
+    /// <summary>
+    /// Gets a value indicating whether the start of the interval is inclusive.
+    /// The start of a ClosedInterval is inclusive, except when it is Unbounded.
+    /// </summary>
+    public override bool StartInclusive => !Start.IsNegativeInfinity;
+
+    /// <summary>
+    /// Gets a value indicating whether the end of the interval is inclusive.
+    /// The end of a ClosedInterval is inclusive, except when it is Unbounded.
+    /// </summary>
+    public override bool EndInclusive => !End.IsPositiveInfinity;
 
     /// <summary>
     /// Creates a Closed interval.
@@ -17,8 +26,6 @@ public sealed record ClosedInterval<T> : Interval<T>
     public ClosedInterval(Unbounded<T> start, Unbounded<T> end) : base(start, end)
     {
     }
-
-    public override IntervalType GetIntervalType() => IntervalType.Closed;
 
     /// <summary>
     /// Indicates whether an interval is empty.
@@ -47,25 +54,14 @@ public sealed record ClosedInterval<T> : Interval<T>
         return Start <= value && value <= End;
     }
 
-    public override string ToString()
-    {
-        return new StringBuilder()
-            .Append('[')
-            .Append(Start)
-            .Append(", ")
-            .Append(End)
-            .Append(']')
-            .ToString();
-    }
-
     public static bool operator >(ClosedInterval<T> left, ClosedInterval<T> right)
     {
-        return left.End >= right.End && left.Start < right.Start;
+        return left.End >= right.End && right.Start > left.Start;
     }
 
     public static bool operator <(ClosedInterval<T> left, ClosedInterval<T> right)
     {
-        return left.End <= right.End && left.Start > right.Start;
+        return left.End <= right.End && right.Start < left.Start;
     }
 
     public static bool operator >=(ClosedInterval<T> left, ClosedInterval<T> right)

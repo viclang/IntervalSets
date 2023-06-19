@@ -1,4 +1,5 @@
-﻿using Unbounded;
+﻿using IntervalRecords.Types;
+using Unbounded;
 
 namespace IntervalRecords
 {
@@ -58,11 +59,10 @@ namespace IntervalRecords
             Func<Unbounded<T>, Unbounded<T>> substract)
             where T : struct, IEquatable<T>, IComparable<T>, IComparable
         {
-            if (source.IsEmpty() || source.StartInclusive && source.EndInclusive)
+            if (source.IsEmpty() || source.GetIntervalType() == IntervalType.Closed)
             {
                 return source;
             }
-
             return new ClosedInterval<T>(
                 source.StartInclusive ? source.Start : add(source.Start),
                 source.EndInclusive ? source.End : substract(source.End));
