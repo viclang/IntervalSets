@@ -54,7 +54,7 @@ namespace IntervalRecords
             {
                 return Unbounded<TResult>.PositiveInfinity;
             }
-            if (source.IsEmpty())
+            if (source.IsEmpty)
             {
                 return default(TResult);
             }

@@ -1,4 +1,5 @@
-﻿using System.Text;
+﻿using IntervalRecords.Types;
+using System.Text;
 using Unbounded;
 
 namespace IntervalRecords
@@ -37,6 +38,30 @@ namespace IntervalRecords
             }
         }
 
+        public static Interval<T> Create(Unbounded<T> start, Unbounded<T> end, IntervalType intervalType) => intervalType switch
+        {
+            IntervalType.Closed => new ClosedInterval<T>(start, end),
+            IntervalType.ClosedOpen => new ClosedOpenInterval<T>(start, end),
+            IntervalType.OpenClosed => new OpenClosedInterval<T>(start, end),
+            IntervalType.Open => new OpenInterval<T>(end, end),
+        };
+
+        public static Interval<T> Empty(IntervalType intervalType) => intervalType switch
+        {
+            IntervalType.Closed => new ClosedInterval<T>(Unbounded<T>.NaN, Unbounded<T>.NaN),
+            IntervalType.ClosedOpen => new ClosedOpenInterval<T>(Unbounded<T>.NaN, Unbounded<T>.NaN),
+            IntervalType.OpenClosed => new OpenClosedInterval<T>(Unbounded<T>.NaN, Unbounded<T>.NaN),
+            IntervalType.Open => new OpenInterval<T>(Unbounded<T>.NaN, Unbounded<T>.NaN),
+        }; 
+
+        /// <summary>
+        /// Determines the interval type.
+        /// </summary>
+        /// <typeparam name="T">The type of the interval endpoints.</typeparam>
+        /// <param name="value">The interval to determine the type of.</param>
+        /// <returns>The interval type as an IntervalType enumeration value.</returns>
+        public abstract IntervalType IntervalType { get; }
+
         /// <summary>
         /// Gets a value indicating whether the start of the interval is inclusive.
         /// </summary>
@@ -48,9 +73,21 @@ namespace IntervalRecords
         public abstract bool EndInclusive { get; }
 
         /// <summary>
-        /// Indicates whether the end value of the interval is Greater than or equal to its start value.
+        /// Indicates whether the start value of the interval is less than or equal to its end value.
         /// </summary>
-        public bool IsValid => End.CompareTo(Start) >= 0 && !Start.IsNaN && !End.IsNaN;
+        public virtual bool IsValid => Start < End && !Start.IsNaN || Start.IsNaN && End.IsNaN;
+
+        /// <summary>
+        /// Indicates whether an interval is empty.
+        /// </summary>
+        /// <returns>True if the interval is Invalid or the interval is not <see cref="IntervalType.Closed"/> and <see cref="Start"/> and <see cref="End"/> are equal</returns>
+        public virtual bool IsEmpty => !IsValid;
+
+        /// <summary>
+        /// Indicates whether an interval is Singleton.
+        /// </summary>
+        /// <returns>True if the interval is <see cref="IntervalType.Closed"/> and <see cref="Start"/> and <see cref="End"/> are equal.</returns>
+        public virtual bool IsSingleton => false;
 
         /// <summary>
         /// Creates an interval.
@@ -64,21 +101,6 @@ namespace IntervalRecords
             _start = -start;
             _end = +end;
         }
-
-        /// <summary>
-        /// Determines the interval type.
-        /// </summary>
-        /// <typeparam name="T">The type of the interval endpoints.</typeparam>
-        /// <param name="value">The interval to determine the type of.</param>
-        /// <returns>The interval type as an IntervalType enumeration value.</returns>
-        public virtual IntervalType GetIntervalType()
-            => (StartInclusive, EndInclusive) switch
-            {
-                (true, true) => IntervalType.Closed,
-                (true, false) => IntervalType.ClosedOpen,
-                (false, true) => IntervalType.OpenClosed,
-                (false, false) => IntervalType.Open,
-            };
 
         /// <summary>
         /// Determines the bounded state of the interval.
@@ -98,29 +120,14 @@ namespace IntervalRecords
             };
 
         /// <summary>
-        /// Indicates whether an interval is empty.
-        /// </summary>
-        /// <returns>True if the interval is Invalid or the interval is not <see cref="IntervalType.Closed"/> and <see cref="Start"/> and <see cref="End"/> are equal</returns>
-        public abstract bool IsEmpty();
-
-        /// <summary>
-        /// Indicates whether an interval is Singleton.
-        /// </summary>
-        /// <returns>True if the interval is <see cref="IntervalType.Closed"/> and <see cref="Start"/> and <see cref="End"/> are equal.</returns>
-        public abstract bool IsSingleton();
-
-        /// <summary>
         /// Returns a boolean value indicating if the current interval overlaps with the other interval.
         /// </summary>
         /// <param name="other">The interval to check for overlapping with the current interval.</param>
         /// <param name="includeHalfOpen">Indicates how to treat half-open endpoints in <see cref="IntervalOverlapping.Meets"/> or <see cref="IntervalOverlapping.MetBy"/> comparison.</param>
         /// <returns>True if the current interval and the other interval overlap, False otherwise.</returns>
-        public bool Overlaps(Interval<T> other, bool includeHalfOpen = false)
-        {
-            bool notBefore = this.CompareEndToStart(other, includeHalfOpen) != -1;
-            bool notAfter = this.CompareStartToEnd(other, includeHalfOpen) != 1;
-            return notBefore && notAfter;
-        }
+        public abstract bool Overlaps(Interval<T> other);
+
+        public abstract bool IsConnected(Interval<T> other);
 
         /// <summary>
         /// Returns a boolean value indicating if the current interval contains the specified value.

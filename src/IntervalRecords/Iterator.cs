@@ -31,7 +31,7 @@
         public static IEnumerable<T> Iterate<T>(this Interval<T> source, T start, Func<T, T> addStep)
             where T : struct, IEquatable<T>, IComparable<T>, IComparable
         {
-            if (source.Contains(start) && !source.IsEmpty() && !source.End.IsPositiveInfinity)
+            if (source.Contains(start) && !source.IsEmpty && !source.End.IsPositiveInfinity)
             {
                 for (var i = start; source.EndInclusive ? i <= source.End : i < source.End; i = addStep(i))
                 {

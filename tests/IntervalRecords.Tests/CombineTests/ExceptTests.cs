@@ -73,7 +73,7 @@ namespace IntervalRecords.Tests.CombineTests
                 }
                 else
                 {
-                    actual.Should().Be(Interval.Empty<int>());
+                    actual.Should().Be(Interval<int>.Empty(a.IntervalType));
                 }
             }
         }

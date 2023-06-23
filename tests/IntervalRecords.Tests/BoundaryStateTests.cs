@@ -2,15 +2,6 @@
 {
     public class BoundaryStateTests
     {
-        [Fact]
-        public void Infinity_ShouldBeOpen()
-        {
-            var infinity = Interval.All<int>();
-
-            infinity.StartInclusive.Should().BeFalse();
-            infinity.EndInclusive.Should().BeFalse();
-        }
-
         [Theory]
         [InlineData(0, 0, BoundaryState.Bounded)]
         [InlineData(0, null, BoundaryState.LeftBounded)]

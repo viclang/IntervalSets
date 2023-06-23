@@ -31,7 +31,7 @@
             {
                 IntervalOverlapping.Before => CreateInterval(first.End, second.Start, !first.EndInclusive, !second.StartInclusive),
                 IntervalOverlapping.After => CreateInterval(second.End, first.Start, !second.EndInclusive, !first.StartInclusive),
-                _ => Empty<T>()
+                _ => Interval<T>.Empty(first.IntervalType)
             };
 
         /// <summary>

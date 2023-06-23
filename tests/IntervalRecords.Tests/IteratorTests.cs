@@ -45,7 +45,7 @@ namespace IntervalRecords.Tests
         public void IterateEmpty_ShouldBeEmpty()
         {
             // Arrange
-            var interval = Interval.Empty<int>();
+            var interval = ClosedInterval<int>.Empty;
 
             // Act
             var actual = interval.Iterate(x => x + 1).ToList();
@@ -58,7 +58,7 @@ namespace IntervalRecords.Tests
         public void IterateInfinity_ShouldBeEmpty()
         {
             // Arrange
-            var interval = Interval.All<int>();
+            var interval = OpenInterval<int>.Unbounded;
 
             // Act
             var actual = interval.Iterate(x => x + 1).ToList();

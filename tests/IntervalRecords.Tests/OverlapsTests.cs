@@ -29,7 +29,7 @@ namespace IntervalRecords.Tests
                 && overlappingState != IntervalOverlapping.After;
 
             // Act
-            var actual = left.Overlaps(right, true);
+            var actual = left.IsConnected(right);
 
             // Assert
             actual.Should().Be(expectedResult);

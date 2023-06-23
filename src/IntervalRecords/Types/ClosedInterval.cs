@@ -5,18 +5,29 @@ namespace IntervalRecords;
 public sealed record ClosedInterval<T> : Interval<T>
     where T : struct, IEquatable<T>, IComparable<T>, IComparable
 {
+    public static new readonly ClosedInterval<T> Empty = new ClosedInterval<T>(Unbounded<T>.NaN, Unbounded<T>.NaN);
+
+    public static readonly ClosedInterval<T> Unbounded = new ClosedInterval<T>(Unbounded<T>.NegativeInfinity, Unbounded<T>.PositiveInfinity);
+
+    public override IntervalType IntervalType => IntervalType.Closed;
 
     /// <summary>
     /// Gets a value indicating whether the start of the interval is inclusive.
-    /// The start of a ClosedInterval is inclusive, except when it is Unbounded.
+    /// The Start of a ClosedInterval is inclusive, except when it is Unbounded.
     /// </summary>
-    public override bool StartInclusive => !Start.IsNegativeInfinity;
+    public override bool StartInclusive => true;
 
     /// <summary>
     /// Gets a value indicating whether the end of the interval is inclusive.
-    /// The end of a ClosedInterval is inclusive, except when it is Unbounded.
+    /// The End of a ClosedInterval is inclusive, except when it is Unbounded.
     /// </summary>
-    public override bool EndInclusive => !End.IsPositiveInfinity;
+    public override bool EndInclusive => true;
+
+    public override bool IsValid => Start <= End && !Start.IsNaN;
+
+    public override bool IsEmpty => !IsValid;
+
+    public override bool IsSingleton => Start == End;
 
     /// <summary>
     /// Creates a Closed interval.
@@ -27,17 +38,13 @@ public sealed record ClosedInterval<T> : Interval<T>
     {
     }
 
-    /// <summary>
-    /// Indicates whether an interval is empty.
-    /// </summary>
-    /// <returns>True if the interval is Invalid or the interval is not <see cref="IntervalType.Closed"/> and <see cref="Start"/> and <see cref="End"/> are equal</returns>
-    public override bool IsEmpty() => !IsValid;
 
-    /// <summary>
-    /// Indicates whether an interval is Singleton.
-    /// </summary>
-    /// <returns>True if the interval is <see cref="IntervalType.Closed"/> and <see cref="Start"/> and <see cref="End"/> are equal.</returns>
-    public override bool IsSingleton() => Start == End;
+    public static ClosedInterval<T> Singleton(T value) => new ClosedInterval<T>(value, value);
+
+
+    public static ClosedInterval<T> LeftBounded(T start) => new ClosedInterval<T>(start, Unbounded<T>.PositiveInfinity);
+
+    public static ClosedInterval<T> RightBounded(T end) => new ClosedInterval<T>(Unbounded<T>.NegativeInfinity, end);
 
     public bool Overlaps(ClosedInterval<T> other)
     {
@@ -52,6 +59,18 @@ public sealed record ClosedInterval<T> : Interval<T>
     public override bool Contains(Unbounded<T> value)
     {
         return Start <= value && value <= End;
+    }
+
+    public override bool Overlaps(Interval<T> other)
+    {
+        return Start < other.End && other.Start < End
+            || Start == other.End && other.EndInclusive
+            || End == other.Start && other.StartInclusive;
+    }
+
+    public override bool IsConnected(Interval<T> other)
+    {
+        return Start <= other.End && other.Start <= End;
     }
 
     public static bool operator >(ClosedInterval<T> left, ClosedInterval<T> right)

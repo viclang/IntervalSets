@@ -21,7 +21,7 @@ namespace IntervalRecords.Tests.TestData
         {
             for (var point = start; point <= end; point++)
             {
-                yield return Interval.Singleton(point);
+                yield return ClosedInterval<int>.Singleton(point);
             }
         }
 

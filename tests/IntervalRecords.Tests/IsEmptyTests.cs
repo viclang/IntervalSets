@@ -21,12 +21,12 @@
             // Act
             var resultTrue = new bool[]
             {
-                open.IsEmpty(),
-                openClosed.IsEmpty(),
-                closedOpen.IsEmpty(),
+                open.IsEmpty,
+                openClosed.IsEmpty,
+                closedOpen.IsEmpty,
             };
 
-            var resultFalse = closed.IsEmpty();
+            var resultFalse = closed.IsEmpty;
 
             // Assert
             resultTrue.Should().AllBeEquivalentTo(true);
@@ -48,10 +48,10 @@
             // Act
             var resultTrue = new bool[]
             {
-                open.IsEmpty(),
-                openClosed.IsEmpty(),
-                closedOpen.IsEmpty(),
-                closed.IsEmpty()
+                open.IsEmpty,
+                openClosed.IsEmpty,
+                closedOpen.IsEmpty,
+                closed.IsEmpty
             };
 
             // Assert
@@ -73,10 +73,10 @@
             // Act
             var result = new bool[]
             {
-                open.IsEmpty(),
-                openClosed.IsEmpty(),
-                closedOpen.IsEmpty(),
-                closed.IsEmpty()
+                open.IsEmpty,
+                openClosed.IsEmpty,
+                closedOpen.IsEmpty,
+                closed.IsEmpty
             };
 
             // Assert

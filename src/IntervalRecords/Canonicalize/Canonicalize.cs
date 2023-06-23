@@ -80,26 +80,26 @@ namespace IntervalRecords
                 _ => throw new NotImplementedException()
             };
 
-        private static Interval<T> ToClosedOpen<T>(
+        private static ClosedOpenInterval<T> ToClosedOpen<T>(
             Interval<T> source,
             Func<Unbounded<T>, Unbounded<T>> add)
             where T : struct, IEquatable<T>, IComparable<T>, IComparable
         {
-            if (source.IsEmpty() || source.GetIntervalType() == IntervalType.ClosedOpen)
+            if (source.IsEmpty || source.GetIntervalType() == IntervalType.ClosedOpen)
             {
-                return source;
+                return new ClosedOpenInterval<T>(source.Start, source.End);
             }
             return new ClosedOpenInterval<T>(
                 source.StartInclusive ? source.Start : add(source.Start),
                 source.EndInclusive ? add(source.End) : source.End);
         }
 
-        private static Interval<T> ToOpenClosed<T>(Interval<T> source, Func<Unbounded<T>, Unbounded<T>> substract)
+        private static OpenClosedInterval<T> ToOpenClosed<T>(Interval<T> source, Func<Unbounded<T>, Unbounded<T>> substract)
             where T : struct, IEquatable<T>, IComparable<T>, IComparable
         {
-            if (source.IsEmpty() || source.GetIntervalType() == IntervalType.OpenClosed)
+            if (source.IsEmpty || source.GetIntervalType() == IntervalType.OpenClosed)
             {
-                return source;
+                return new OpenClosedInterval<T>(source.Start, source.End);
             }
             return new OpenClosedInterval<T>(
                 source.StartInclusive ? substract(source.Start) : source.Start,

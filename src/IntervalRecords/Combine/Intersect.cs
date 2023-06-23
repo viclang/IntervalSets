@@ -11,7 +11,7 @@
         /// <returns>The intersect of the two intervals if they overlap, otherwise returns null.</returns>
         public static Interval<T>? Intersect<T>(this Interval<T> first, Interval<T> second)
             where T : struct, IEquatable<T>, IComparable<T>, IComparable
-            => !first.Overlaps(second, true)
+            => !first.IsConnected(second)
                 ? null
                 : GetIntersectValue(first, second);
 
@@ -24,8 +24,8 @@
         /// <returns>The intersect of the two intervals if they overlap, otherwise returns an empty interval.</returns>
         public static Interval<T> IntersectOrEmpty<T>(this Interval<T> first, Interval<T> second)
             where T : struct, IEquatable<T>, IComparable<T>, IComparable
-            => !first.Overlaps(second, true)
-                ? Empty<T>()
+            => !first.IsConnected(second)
+                ? Interval<T>.Empty(first.IntervalType)
                 : GetIntersectValue(first, second);
 
         /// <summary>
@@ -37,7 +37,7 @@
         public static IEnumerable<Interval<T>> IntersectAll<T>(
             this IEnumerable<Interval<T>> source)
             where T : struct, IEquatable<T>, IComparable<T>, IComparable
-            => source.Pairwise((a, b) => a.Intersect(b)).Where(i => !i.IsEmpty());
+            => source.Pairwise((a, b) => a.Intersect(b)).Where(i => !i.IsEmpty);
 
         private static Interval<T> GetIntersectValue<T>(Interval<T> first, Interval<T> second)
             where T : struct, IEquatable<T>, IComparable<T>, IComparable

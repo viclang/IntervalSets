@@ -18,7 +18,7 @@
             var interval = Interval.CreateInterval<int>(start, end, startInclusive, endInclusive);
 
             // Act
-            var actual = interval.IsSingleton();
+            var actual = interval.IsSingleton;
 
             // Assert
             actual.Should().Be(expected);

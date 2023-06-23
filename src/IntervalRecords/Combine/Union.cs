@@ -11,7 +11,7 @@
         /// <returns>The union of the two intervals if they overlap, otherwise returns null.</returns>
         public static Interval<T>? Union<T>(this Interval<T> first, Interval<T> second)
             where T : struct, IEquatable<T>, IComparable<T>, IComparable
-            => first.Overlaps(second, true)
+            => first.IsConnected(second)
                 ? Hull(first, second)
                 : null;
 
@@ -24,9 +24,9 @@
         /// <returns>The union of the two intervals if they overlap, otherwise returns an empty interval.</returns>
         public static Interval<T> UnionOrEmpty<T>(this Interval<T> first, Interval<T> second)
             where T : struct, IEquatable<T>, IComparable<T>, IComparable
-            => first.Overlaps(second, true)
+            => first.IsConnected(second)
                 ? Hull(first, second)
-                : Empty<T>();
+                : Interval<T>.Empty(first.IntervalType);
 
         /// <summary>
         /// Computes the union of a collection of intervals.

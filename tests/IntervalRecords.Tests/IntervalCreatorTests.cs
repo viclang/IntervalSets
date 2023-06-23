@@ -10,17 +10,13 @@ namespace IntervalRecords.Tests
 
         public static TheoryData<Interval<int>, Interval<int>> AllBuildersWithExpectedResults = new TheoryData<Interval<int>, Interval<int>>
         {
-            { Interval.Empty<int>(), new OpenInterval<int>(0, 0) },
-            { Interval.All<int>(), new OpenInterval<int>(Unbounded<int>.NegativeInfinity, Unbounded<int>.PositiveInfinity) },
-            { Interval.Singleton(end), new ClosedInterval<int>(end, end) },
-            { Interval.Closed(start, end), new ClosedInterval<int>(start, end) },
-            { Interval.ClosedOpen(start, end), new ClosedOpenInterval<int>(start, end) },
-            { Interval.OpenClosed(start, end), new OpenClosedInterval<int>(start, end) },
-            { Interval.Open(start, end), new OpenInterval<int>(start, end) },
-            { Interval.GreaterThan(start), new OpenInterval<int>(start, Unbounded<int>.PositiveInfinity) },
-            { Interval.AtLeast(start), new ClosedOpenInterval<int> (start, Unbounded<int>.PositiveInfinity) },
-            { Interval.LessThan(end), new OpenInterval<int>(Unbounded<int>.NegativeInfinity, end) },
-            { Interval.AtMost(end), new OpenClosedInterval<int>(Unbounded<int>.NegativeInfinity, end) }
+            { OpenInterval<int>.Empty, new OpenInterval<int>(0, 0) },
+            { OpenInterval<int>.Unbounded, new OpenInterval<int>(Unbounded<int>.NegativeInfinity, Unbounded<int>.PositiveInfinity) },
+            { ClosedInterval<int>.Singleton(end), new ClosedInterval<int>(end, end) },
+            { OpenInterval<int>.LeftBounded(start), new OpenInterval<int>(start, Unbounded<int>.PositiveInfinity) },
+            { ClosedOpenInterval<int>.LeftBounded(start), new ClosedOpenInterval<int> (start, Unbounded<int>.PositiveInfinity) },
+            { OpenInterval<int>.RightBounded(end), new OpenInterval<int>(Unbounded<int>.NegativeInfinity, end) },
+            { OpenClosedInterval<int>.RightBounded(end), new OpenClosedInterval<int>(Unbounded<int>.NegativeInfinity, end) }
         };
 
         [Theory]

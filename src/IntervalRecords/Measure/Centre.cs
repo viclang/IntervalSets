@@ -55,7 +55,7 @@
             where T : struct, IEquatable<T>, IComparable<T>, IComparable
             where TResult : struct
         {
-            if (source.GetBoundaryState() != BoundaryState.Bounded || source.IsEmpty())
+            if (source.GetBoundaryState() != BoundaryState.Bounded || source.IsEmpty)
             {
                 return null;
             }

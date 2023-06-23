@@ -1,4 +1,6 @@
-﻿namespace IntervalRecords
+﻿using Unbounded;
+
+namespace IntervalRecords
 {
     public static partial class Interval
     {
@@ -11,7 +13,7 @@
         /// <returns>The portion of the first interval that does not overlap with the second interval, or null if the intervals do not overlap</returns>
         public static Interval<T>? Except<T>(this Interval<T> first, Interval<T> second)
             where T : struct, IEquatable<T>, IComparable<T>, IComparable
-            => !first.Overlaps(second, true) ? null : GetExceptValue(first, second);
+            => !first.IsConnected(second) ? null : GetExceptValue(first, second);
 
         /// <summary>
         /// Computes the interval representing the portion of the first interval that does not overlap with the second interval, or an empty interval if they do not overlap.
@@ -22,7 +24,7 @@
         /// <returns>The portion of the first interval that does not overlap with the second interval, or an empty interval if they do not overlap.</returns>
         public static Interval<T> ExceptOrEmpty<T>(this Interval<T> first, Interval<T> second)
             where T : struct, IEquatable<T>, IComparable<T>, IComparable
-            => !first.Overlaps(second, true) ? Empty<T>() : GetExceptValue(first, second);
+            => !first.IsConnected(second) ? first with { Start = Unbounded<T>.NaN, End = Unbounded<T>.NaN } : GetExceptValue(first, second);
 
         /// <summary>
         /// Computes the collection of intervals representing the portions of the collection of intervals that do not overlap with each other.
@@ -32,7 +34,7 @@
         /// <returns>The collection of intervals representing the portions of the collection of intervals that do not overlap with each other.</returns>
         public static IEnumerable<Interval<T>> ExcludeOverlap<T>(this IEnumerable<Interval<T>> source)
             where T : struct, IEquatable<T>, IComparable<T>, IComparable
-            => source.Pairwise((a, b) => a.Except(b)).ToList().Where(i => !i.IsEmpty());
+            => source.Pairwise((a, b) => a.Except(b)).ToList().Where(i => !i.IsEmpty);
 
         private static Interval<T> GetExceptValue<T>(Interval<T> first, Interval<T> second)
             where T : struct, IEquatable<T>, IComparable<T>, IComparable
@@ -48,7 +50,7 @@
                 ? first.EndInclusive || second.EndInclusive
                 : maxByStart.EndInclusive;
 
-            return CreateInterval(minByStart.Start, maxByStart.Start, startInclusive, endInclusive);
+            return Interval(minByStart.Start, maxByStart.Start, startInclusive, endInclusive);
         }
     }
 }

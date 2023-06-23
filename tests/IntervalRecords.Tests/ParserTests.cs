@@ -1,4 +1,5 @@
-﻿using System;
+﻿using IntervalRecords.Types;
+using System;
 
 namespace IntervalRecords.Tests
 {
@@ -9,14 +10,14 @@ namespace IntervalRecords.Tests
 
         public static TheoryData<string, Interval<int>?> ValidStringToParseWithExpectedResults = new TheoryData<string, Interval<int>?>
         {
-            { "[,]", Interval.All<int>() },
-            { "[,)", Interval.All<int>() },
-            { "(,]", Interval.All<int>() },
-            { "(,)", Interval.All<int>() },
-            { "[1,2]", Interval.CreateInterval < int >(1, 2, true, true) },
-            { "[1,2)", Interval.CreateInterval < int >(1, 2, true, false) },
-            { "(1,2]", Interval.CreateInterval < int >(1, 2, false, true) },
-            { "(1,2)", Interval.CreateInterval < int >(1, 2, false, false) },
+            { "[,]", ClosedInterval<int>.Unbounded },
+            { "[,)", ClosedOpenInterval<int>.Unbounded },
+            { "(,]", OpenClosedInterval<int>.Unbounded },
+            { "(,)", OpenInterval<int>.Unbounded },
+            { "[1,2]", Interval.CreateInterval<int>(1, 2, true, true) },
+            { "[1,2)", Interval.CreateInterval<int>(1, 2, true, false) },
+            { "(1,2]", Interval.CreateInterval<int>(1, 2, false, true) },
+            { "(1,2)", Interval.CreateInterval<int>(1, 2, false, false) },
         };
 
         public static TheoryData<string, Interval<int>?> InvalidStringToParseWithNull = new TheoryData<string, Interval<int>?>
