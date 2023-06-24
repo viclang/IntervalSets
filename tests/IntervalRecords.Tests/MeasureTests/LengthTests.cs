@@ -38,7 +38,7 @@ namespace IntervalRecords.Tests.Measure.Length
         public void GivenInterval_WhenMeasureLength_ReturnsFiniteOrPositiveInfinity(int? start, int? end, IntervalType intervalType, int? expected)
         {
             // Arrange
-            var interval = Interval.WithIntervalType<T>(start.ToBoundary<T>(), end.ToBoundary<T>(), intervalType);
+            var interval = Interval<T>.Create(start.ToBoundary<T>(), end.ToBoundary<T>(), intervalType);
 
             // Act
             var actual = Length(interval);

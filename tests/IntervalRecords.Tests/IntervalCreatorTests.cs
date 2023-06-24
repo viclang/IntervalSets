@@ -10,7 +10,7 @@ namespace IntervalRecords.Tests
 
         public static TheoryData<Interval<int>, Interval<int>> AllBuildersWithExpectedResults = new TheoryData<Interval<int>, Interval<int>>
         {
-            { OpenInterval<int>.Empty, new OpenInterval<int>(0, 0) },
+            { OpenInterval<int>.Empty, new OpenInterval<int>(Unbounded<int>.NaN, Unbounded<int>.NaN) },
             { OpenInterval<int>.Unbounded, new OpenInterval<int>(Unbounded<int>.NegativeInfinity, Unbounded<int>.PositiveInfinity) },
             { ClosedInterval<int>.Singleton(end), new ClosedInterval<int>(end, end) },
             { OpenInterval<int>.LeftBounded(start), new OpenInterval<int>(start, Unbounded<int>.PositiveInfinity) },
@@ -43,9 +43,9 @@ namespace IntervalRecords.Tests
             bool startInclusive,
             bool endInclusive)
         {
-            var actual = Interval.WithIntervalType<int>(start, end, intervalType);
+            var actual = Interval<int>.Create(start, end, intervalType);
 
-            actual.Should().Be(Interval.CreateInterval<int>(start, end, startInclusive, endInclusive));
+            actual.Should().Be(Interval<int>.Create(start, end, startInclusive, endInclusive));
         }
     }
 }

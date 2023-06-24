@@ -42,16 +42,16 @@ namespace IntervalRecords.Tests.TestData
             var data = new TheoryData<Interval<int>>();
             if (minLength == 0)
             {
-                data.Add(Interval.CreateInterval<int>(start, start, true, true));
+                data.Add(Interval<int>.Create(start, start, true, true));
                 minLength++;
             }
 
             for (int i = minLength; i <= maxLength; i++)
             {
-                data.Add(Interval.CreateInterval<int>(start, start + i, true, true));
-                data.Add(Interval.CreateInterval<int>(start, start + i, true, false));
-                data.Add(Interval.CreateInterval<int>(start, start + i, false, true));
-                data.Add(Interval.CreateInterval<int>(start, start + i, false, false));
+                data.Add(Interval<int>.Create(start, start + i, true, true));
+                data.Add(Interval<int>.Create(start, start + i, true, false));
+                data.Add(Interval<int>.Create(start, start + i, false, true));
+                data.Add(Interval<int>.Create(start, start + i, false, false));
             }
             return data;
         }
@@ -63,7 +63,7 @@ namespace IntervalRecords.Tests.TestData
             IntervalType intervalType)
         {
             var (startInclusinve, endInclusive) = intervalType.ToTuple();
-            var lastValue = Interval.CreateInterval<int>(
+            var lastValue = Interval<int>.Create(
                 startingPoint,
                 startingPoint + length,
                 startInclusinve,

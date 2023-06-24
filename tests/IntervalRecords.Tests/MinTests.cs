@@ -14,8 +14,8 @@ namespace IntervalRecords.Tests
         public void MinBy_ShouldBeEnumerableMinBy(int startA, int endA, int startB, int endB)
         {
             // Arrange
-            var a = Interval.Closed(startA, endA);
-            var b = Interval.Closed(startB, endB);
+            var a = new ClosedInterval<int>(startA, endA);
+            var b = new ClosedInterval<int>(startB, endB);
 
             // Act
             var actualMinByStart = Interval.MinBy(a, b, i => i.Start);
@@ -38,8 +38,8 @@ namespace IntervalRecords.Tests
         public void Min_ShouldBeEnumerableMin(int startA, int endA, int startB, int endB)
         {
             // Arrange
-            var a = Interval.Closed<int>(startA, endA);
-            var b = Interval.Closed<int>(startB, endB);
+            var a = new ClosedInterval<int>(startA, endA);
+            var b = new ClosedInterval<int>(startB, endB);
 
             // Act
             var actualMinByStart = Interval.Min(a, b);

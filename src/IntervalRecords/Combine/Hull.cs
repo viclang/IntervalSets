@@ -23,7 +23,7 @@
                 ? first.EndInclusive || second.EndInclusive
                 : maxByEnd.EndInclusive;
 
-            return CreateInterval(minByStart.Start, maxByEnd.End, startInclusive, endInclusive);
+            return Interval<T>.Create(minByStart.Start, maxByEnd.End, startInclusive, endInclusive);
         }
 
         /// <summary>
@@ -43,7 +43,7 @@
             var min = source.MinBy(i => i.Start)!;
             var max = source.MaxBy(i => i.End)!;
 
-            return CreateInterval(
+            return Interval<T>.Create(
                 min.Start,
                 max.End,
                 min.StartInclusive,

@@ -50,7 +50,7 @@ namespace IntervalRecords
                 ? first.EndInclusive || second.EndInclusive
                 : maxByStart.EndInclusive;
 
-            return Interval(minByStart.Start, maxByStart.Start, startInclusive, endInclusive);
+            return Interval<T>.Create(minByStart.Start, maxByStart.Start, startInclusive, endInclusive);
         }
     }
 }

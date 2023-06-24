@@ -1,4 +1,6 @@
-﻿namespace IntervalRecords.Tests
+﻿using IntervalRecords.Types;
+
+namespace IntervalRecords.Tests
 {
     public class IsEmptyTests
     {
@@ -13,10 +15,10 @@
         public void EqualValueWithAnOpenBound_ShouldBeEmpty(int value)
         {
             // Arrange
-            var open = Interval.Open<int>(value, value);
-            var openClosed = Interval.OpenClosed(value, value);
-            var closedOpen = Interval.ClosedOpen<int>(value, value);
-            var closed = Interval.Closed(value, value);
+            var open = new OpenInterval<int>(value, value);
+            var openClosed = new OpenClosedInterval<int>(value, value);
+            var closedOpen = new ClosedOpenInterval<int>(value, value);
+            var closed = new ClosedInterval<int>(value, value);
 
             // Act
             var resultTrue = new bool[]
@@ -40,10 +42,10 @@
         public void EndBeforeStart_ShouldBeEmpty(int start, int end)
         {
             // Arrange
-            var open = Interval.Open(start, end);
-            var openClosed = Interval.OpenClosed(start, end);
-            var closedOpen = Interval.ClosedOpen(start, end);
-            var closed = Interval.Closed(start, end);
+            var open = new OpenInterval<int>(start, end);
+            var openClosed = new OpenClosedInterval<int>(start, end);
+            var closedOpen = new ClosedOpenInterval<int>(start, end);
+            var closed = new ClosedInterval<int>(start, end);
 
             // Act
             var resultTrue = new bool[]
@@ -65,10 +67,10 @@
         public void EndAfterStart_ShouldNotBeEmpty(int start, int end)
         {
             // Arrange
-            var open = Interval.Open<int>(start, end);
-            var openClosed = Interval.OpenClosed(start, end);
-            var closedOpen = Interval.ClosedOpen<int>(start, end);
-            var closed = Interval.Closed(start, end);
+            var open = new OpenInterval<int>(start, end);
+            var openClosed = new OpenClosedInterval<int>(start, end);
+            var closedOpen = new ClosedOpenInterval<int>(start, end);
+            var closed = new ClosedInterval<int>(start, end);
 
             // Act
             var result = new bool[]

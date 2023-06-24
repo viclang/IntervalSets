@@ -8,7 +8,7 @@ namespace IntervalRecords
     /// Represents an interval of values of type <see cref="T"/>.
     /// </summary>
     /// <typeparam name="T">The type of values represented in the interval.</typeparam>
-    public abstract record class Interval<T> : IComparable<Interval<T>>
+    public abstract record class Interval<T> : IComparable<Interval<T>>, IOverlaps<Interval<T>>
         where T : struct, IEquatable<T>, IComparable<T>, IComparable
     {
         private readonly Unbounded<T> _start;
@@ -38,22 +38,6 @@ namespace IntervalRecords
             }
         }
 
-        public static Interval<T> Create(Unbounded<T> start, Unbounded<T> end, IntervalType intervalType) => intervalType switch
-        {
-            IntervalType.Closed => new ClosedInterval<T>(start, end),
-            IntervalType.ClosedOpen => new ClosedOpenInterval<T>(start, end),
-            IntervalType.OpenClosed => new OpenClosedInterval<T>(start, end),
-            IntervalType.Open => new OpenInterval<T>(end, end),
-        };
-
-        public static Interval<T> Empty(IntervalType intervalType) => intervalType switch
-        {
-            IntervalType.Closed => new ClosedInterval<T>(Unbounded<T>.NaN, Unbounded<T>.NaN),
-            IntervalType.ClosedOpen => new ClosedOpenInterval<T>(Unbounded<T>.NaN, Unbounded<T>.NaN),
-            IntervalType.OpenClosed => new OpenClosedInterval<T>(Unbounded<T>.NaN, Unbounded<T>.NaN),
-            IntervalType.Open => new OpenInterval<T>(Unbounded<T>.NaN, Unbounded<T>.NaN),
-        }; 
-
         /// <summary>
         /// Determines the interval type.
         /// </summary>
@@ -81,13 +65,22 @@ namespace IntervalRecords
         /// Indicates whether an interval is empty.
         /// </summary>
         /// <returns>True if the interval is Invalid or the interval is not <see cref="IntervalType.Closed"/> and <see cref="Start"/> and <see cref="End"/> are equal</returns>
-        public virtual bool IsEmpty => !IsValid;
+        public virtual bool IsEmpty => !IsValid || Start == End;
 
         /// <summary>
         /// Indicates whether an interval is Singleton.
         /// </summary>
         /// <returns>True if the interval is <see cref="IntervalType.Closed"/> and <see cref="Start"/> and <see cref="End"/> are equal.</returns>
         public virtual bool IsSingleton => false;
+
+
+        /// <summary>
+        /// Determines if the interval is half-bounded.
+        /// </summary>
+        /// <typeparam name="T">The type of the interval endpoints.</typeparam>
+        /// <param name="source">The interval to check.</param>
+        /// <returns>True if the interval is half-bounded.</returns>
+        public bool IsHalfBounded() => GetBoundaryState() is BoundaryState.LeftBounded or BoundaryState.RightBounded;
 
         /// <summary>
         /// Creates an interval.
@@ -102,6 +95,47 @@ namespace IntervalRecords
             _end = +end;
         }
 
+        public static Interval<T> Create(
+                Unbounded<T> start,
+                Unbounded<T> end,
+                bool startInclusive,
+                bool endInclusive)
+                => (startInclusive, endInclusive) switch
+                {
+                    (true, true) => new ClosedInterval<T>(start, end),
+                    (false, true) => new OpenClosedInterval<T>(start, end),
+                    (true, false) => new ClosedOpenInterval<T>(start, end),
+                    (false, false) => new OpenInterval<T>(start, end)
+                };
+
+        public static Interval<T> Create(Unbounded<T> start, Unbounded<T> end, IntervalType intervalType) => intervalType switch
+        {
+            IntervalType.Closed => new ClosedInterval<T>(start, end),
+            IntervalType.ClosedOpen => new ClosedOpenInterval<T>(start, end),
+            IntervalType.OpenClosed => new OpenClosedInterval<T>(start, end),
+            IntervalType.Open => new OpenInterval<T>(start, end),
+            _ => throw new NotImplementedException(),
+        };
+
+
+        public static Interval<T> Unbounded(IntervalType intervalType) => intervalType switch
+        {
+            IntervalType.Closed => ClosedInterval<T>.Unbounded,
+            IntervalType.ClosedOpen => ClosedOpenInterval<T>.Unbounded,
+            IntervalType.OpenClosed => OpenClosedInterval<T>.Unbounded,
+            IntervalType.Open => OpenInterval<T>.Unbounded,
+            _ => throw new NotImplementedException(),
+        };
+
+        public static Interval<T> Empty(IntervalType intervalType) => intervalType switch
+        {
+            IntervalType.Closed => ClosedInterval<T>.Empty,
+            IntervalType.ClosedOpen => ClosedOpenInterval<T>.Empty,
+            IntervalType.OpenClosed => OpenClosedInterval<T>.Empty,
+            IntervalType.Open => OpenInterval<T>.Empty,
+            _ => throw new NotImplementedException(),
+        };
+
         /// <summary>
         /// Determines the bounded state of the interval.
         /// </summary>
@@ -112,7 +146,8 @@ namespace IntervalRecords
         public BoundaryState GetBoundaryState()
             => (Start.State, End.State) switch
             {
-                (UnboundedState.Finite, UnboundedState.Finite) => BoundaryState.Bounded,
+                (UnboundedState.Finite, UnboundedState.Finite)
+                or (UnboundedState.NaN, UnboundedState.NaN) => BoundaryState.Bounded,
                 (UnboundedState.NegativeInfinity, UnboundedState.PositiveInfinity) => BoundaryState.Unbounded,
                 (UnboundedState.NegativeInfinity, UnboundedState.Finite) => BoundaryState.RightBounded,
                 (UnboundedState.Finite, UnboundedState.PositiveInfinity) => BoundaryState.LeftBounded,
@@ -127,6 +162,25 @@ namespace IntervalRecords
         /// <returns>True if the current interval and the other interval overlap, False otherwise.</returns>
         public abstract bool Overlaps(Interval<T> other);
 
+        public IntervalOverlapping GetIntervalOverlapping(Interval<T> other) => (CompareStart(other), CompareEnd(other)) switch
+        {
+            (0, 0) => IntervalOverlapping.Equal,
+            (0, -1) => IntervalOverlapping.Starts,
+            (1, -1) => IntervalOverlapping.ContainedBy,
+            (1, 0) => IntervalOverlapping.Finishes,
+            (-1, 0) => IntervalOverlapping.FinishedBy,
+            (-1, 1) => IntervalOverlapping.Contains,
+            (0, 1) => IntervalOverlapping.StartedBy,
+            (-1, -1) => CompareEndStart(other),
+            (1, 1) => CompareStartEnd(other),
+            (_, _) => throw new NotSupportedException()
+        };
+
+        protected abstract int CompareStart(Interval<T> other);
+        protected abstract int CompareEnd(Interval<T> other);
+        protected abstract IntervalOverlapping CompareEndStart(Interval<T> other);
+        protected abstract IntervalOverlapping CompareStartEnd(Interval<T> other);
+
         public abstract bool IsConnected(Interval<T> other);
 
         /// <summary>
@@ -135,6 +189,31 @@ namespace IntervalRecords
         /// <param name="value">The value to check if it is contained by the current interval</param>
         /// <returns></returns>
         public abstract bool Contains(Unbounded<T> value);
+
+
+        /// <summary>
+        /// Returns the gap between two intervals, or null if the two intervals overlap.
+        /// </summary>
+        /// <typeparam name="T">The type of the interval bounds.</typeparam>
+        /// <param name="first">The first interval.</param>
+        /// <param name="other">The second interval.</param>
+        /// <returns>The gap between the two intervals, if any, or null if the two intervals overlap.</returns>
+        public Interval<T>? Gap(Interval<T> other)
+        {
+            if(IsConnected(other))
+            {
+                return null;
+            }
+            if (Start <= other.End)
+            {
+                return Interval<T>.Create(End, other.Start, !EndInclusive, !other.StartInclusive);
+            }
+            if (End >= other.Start)
+            {
+                return Interval<T>.Create(other.End, Start, !other.EndInclusive, !StartInclusive);
+            }
+            return null;
+        }
 
         /// <summary>
         /// This method compares the current interval with another interval and returns an integer value indicating the relative order of the intervals.

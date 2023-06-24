@@ -19,7 +19,7 @@ namespace IntervalRecords.Tests.TestData
             if ((offset * 2) >= length) throw new ArgumentException("Length must be greater than (offset * 2)");
 
             var (startInclusinve, endInclusive) = intervalType.ToTuple();
-            Reference = Interval.CreateInterval<int>(
+            Reference = Interval<int>.Create(
                 startingPoint + length + offset,
                 startingPoint + length + offset + length,
                 startInclusinve,

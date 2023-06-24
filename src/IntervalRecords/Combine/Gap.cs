@@ -11,10 +11,10 @@
         /// <returns>The gap between the two intervals, if any, or null if the two intervals overlap.</returns>
         public static Interval<T>? Gap<T>(this Interval<T> first, Interval<T> second)
             where T : struct, IEquatable<T>, IComparable<T>, IComparable
-            => first.GetIntervalOverlapping(second, true) switch
+            => first.GetIntervalOverlapping(second) switch
             {
-                IntervalOverlapping.Before => CreateInterval(first.End, second.Start, !first.EndInclusive, !second.StartInclusive),
-                IntervalOverlapping.After => CreateInterval(second.End, first.Start, !second.EndInclusive, !first.StartInclusive),
+                IntervalOverlapping.Before => Interval<T>.Create(first.End, second.Start, !first.EndInclusive, !second.StartInclusive),
+                IntervalOverlapping.After => Interval<T>.Create(second.End, first.Start, !second.EndInclusive, !first.StartInclusive),
                 _ => null
             };
 
@@ -27,10 +27,10 @@
         /// <returns>The gap between the two intervals, or a default interval if the two intervals overlap.</returns>
         public static Interval<T> GapOrEmpty<T>(this Interval<T> first, Interval<T> second)
             where T : struct, IEquatable<T>, IComparable<T>, IComparable
-            => first.GetIntervalOverlapping(second, true) switch
+            => first.GetIntervalOverlapping(second) switch
             {
-                IntervalOverlapping.Before => CreateInterval(first.End, second.Start, !first.EndInclusive, !second.StartInclusive),
-                IntervalOverlapping.After => CreateInterval(second.End, first.Start, !second.EndInclusive, !first.StartInclusive),
+                IntervalOverlapping.Before => Interval<T>.Create(first.End, second.Start, !first.EndInclusive, !second.StartInclusive),
+                IntervalOverlapping.After => Interval<T>.Create(second.End, first.Start, !second.EndInclusive, !first.StartInclusive),
                 _ => Interval<T>.Empty(first.IntervalType)
             };
 

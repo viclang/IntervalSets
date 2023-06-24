@@ -8,16 +8,9 @@ namespace IntervalRecords.Tests
         [MemberData(nameof(IntervalPairsWithOverlappingState), false)]
         public void GetOverlappingState_ShouldBeExpected(Interval<int> first, Interval<int> second, IntervalOverlapping expectedResult)
         {
-            var result = first.GetIntervalOverlapping(second, false);
+            var result = first.GetIntervalOverlapping(second);
             result.Should().Be(expectedResult);
         }
 
-        [Theory]
-        [MemberData(nameof(IntervalPairsWithOverlappingState), true)]
-        public void GetOverlappingStateIncludeHalfOpen_ShouldBeExpected(Interval<int> first, Interval<int> second, IntervalOverlapping expectedResult)
-        {
-            var result = first.GetIntervalOverlapping(second, true);
-            result.Should().Be(expectedResult);
-        }
     }
 }

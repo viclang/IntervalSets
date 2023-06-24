@@ -46,7 +46,7 @@ namespace IntervalRecords.Tests.CombineTests
             // Arrange
             var list = OverlapList(startingPoint, length, offset, intervalType);
             var (startInclusive, endInclusive) = intervalType.ToTuple();
-            var expected = Interval.CreateInterval<int>(list.MinBy(i => i.Start)!.Start, list.MaxBy(i => i.End)!.End, startInclusive, endInclusive);
+            var expected = Interval<int>.Create(list.MinBy(i => i.Start)!.Start, list.MaxBy(i => i.End)!.End, startInclusive, endInclusive);
 
             // Act
             var actual = list.Hull();

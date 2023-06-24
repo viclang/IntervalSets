@@ -1,13 +1,15 @@
-﻿using System.Text;
+﻿using IntervalRecords.Types;
+using System;
 using Unbounded;
 
 namespace IntervalRecords;
-public sealed record ClosedInterval<T> : Interval<T>
+public sealed record ClosedInterval<T> : Interval<T>, IOverlaps<ClosedInterval<T>>
     where T : struct, IEquatable<T>, IComparable<T>, IComparable
 {
-    public static new readonly ClosedInterval<T> Empty = new ClosedInterval<T>(Unbounded<T>.NaN, Unbounded<T>.NaN);
 
-    public static readonly ClosedInterval<T> Unbounded = new ClosedInterval<T>(Unbounded<T>.NegativeInfinity, Unbounded<T>.PositiveInfinity);
+    public static new readonly ClosedInterval<T> Empty = new(Unbounded<T>.NaN, Unbounded<T>.NaN);
+
+    public static new readonly ClosedInterval<T> Unbounded = new(Unbounded<T>.NegativeInfinity, Unbounded<T>.PositiveInfinity);
 
     public override IntervalType IntervalType => IntervalType.Closed;
 
@@ -23,9 +25,9 @@ public sealed record ClosedInterval<T> : Interval<T>
     /// </summary>
     public override bool EndInclusive => true;
 
-    public override bool IsValid => Start <= End && !Start.IsNaN;
+    public override bool IsValid => Start <= End && !Start.IsNaN || Start.IsNaN && End.IsNaN;
 
-    public override bool IsEmpty => !IsValid;
+    public override bool IsEmpty => !IsValid || Start.IsNaN && End.IsNaN;
 
     public override bool IsSingleton => Start == End;
 
@@ -46,9 +48,51 @@ public sealed record ClosedInterval<T> : Interval<T>
 
     public static ClosedInterval<T> RightBounded(T end) => new ClosedInterval<T>(Unbounded<T>.NegativeInfinity, end);
 
-    public bool Overlaps(ClosedInterval<T> other)
+    protected override int CompareStart(Interval<T> other)
     {
-        return Start <= other.End && other.Start <= End;
+        var result = Start.CompareTo(other.Start);
+        if (result == 0 && !other.StartInclusive)
+        {
+            return 1;
+        }
+        return result;
+    }
+
+
+    protected override int CompareEnd(Interval<T> other)
+    {
+        var result = End.CompareTo(other.End);
+        if (result == 0 && !other.EndInclusive)
+        {
+            return 1;
+        }
+        return result;
+    }
+
+    protected override IntervalOverlapping CompareEndStart(Interval<T> other)
+    {
+        if (End < other.Start || (End == other.Start && !other.StartInclusive))
+        {
+            return IntervalOverlapping.Before;
+        }
+        if (End == other.Start)
+        {
+            return IntervalOverlapping.Meets;
+        }
+        return IntervalOverlapping.Overlaps;
+    }
+
+    protected override IntervalOverlapping CompareStartEnd(Interval<T> other)
+    {
+        if (Start > other.End || (Start == other.End && !other.EndInclusive))
+        {
+            return IntervalOverlapping.After;
+        }
+        if (Start == other.End)
+        {
+            return IntervalOverlapping.MetBy;
+        }
+        return IntervalOverlapping.OverlappedBy;
     }
 
     /// <summary>
@@ -59,6 +103,11 @@ public sealed record ClosedInterval<T> : Interval<T>
     public override bool Contains(Unbounded<T> value)
     {
         return Start <= value && value <= End;
+    }
+
+    public bool Overlaps(ClosedInterval<T> other)
+    {
+        return IsConnected(other);
     }
 
     public override bool Overlaps(Interval<T> other)

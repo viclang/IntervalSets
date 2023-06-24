@@ -36,14 +36,14 @@ namespace IntervalRecords.Tests.CanonicalizeTests
         public void GivenBoundedInterval_WhenCanonicalize_ReturnsExpected(int? start, int? end, IntervalType intervalType, int? expectedStart, int? expectedEnd, IntervalType expectedIntervalType)
         {
             // Arrange
-            var interval = Interval.WithIntervalType<T>(start.ToBoundary<T>(), end.ToBoundary<T>(), intervalType);
+            var interval = Interval<T>.Create(start.ToBoundary<T>(), end.ToBoundary<T>(), intervalType);
 
             // Act
             var actual = Canonicalize(interval, expectedIntervalType, 1.ToStep<T, TStep>());
 
             // Assert
             actual.Should()
-                .Be(Interval.WithIntervalType<T>(expectedStart.ToBoundary<T>(), expectedEnd.ToBoundary<T>(), expectedIntervalType));
+                .Be(Interval<T>.Create(expectedStart.ToBoundary<T>(), expectedEnd.ToBoundary<T>(), expectedIntervalType));
         }
 
         [Theory]
@@ -63,14 +63,14 @@ namespace IntervalRecords.Tests.CanonicalizeTests
         public void GivenInterval_WhenUsingClosure_ReturnsExpected(int? start, int? end, IntervalType intervalType, int? expectedStart, int? expectedEnd, IntervalType expectedIntervalType)
         {
             // Arrange
-            var interval = Interval.WithIntervalType<T>(start.ToBoundary<T>(), end.ToBoundary<T>(), intervalType);
+            var interval = Interval<T>.Create(start.ToBoundary<T>(), end.ToBoundary<T>(), intervalType);
 
             // Act
             var actual = Closure(interval, 1.ToStep<T, TStep>());
 
             // Assert
             actual.Should()
-                .Be(new ClosedInterval<T>(expectedStart.ToBoundary<T>(), expectedEnd.ToBoundary<T>()));
+                .Be(Interval<T>.Create(expectedStart.ToBoundary<T>(), expectedEnd.ToBoundary<T>(), expectedIntervalType));
         }
 
         [Theory]
@@ -89,15 +89,15 @@ namespace IntervalRecords.Tests.CanonicalizeTests
         public void GivenInterval_WhenUsingInterior_ReturnsExpected(int? start, int? end, IntervalType intervalType, int? expectedStart, int? expectedEnd, IntervalType expectedIntervalType)
         {
             // Arrange
-            var interval = Interval.WithIntervalType<T>(start.ToBoundary<T>(), end.ToBoundary<T>(), intervalType);
+            var interval = Interval<T>.Create(start.ToBoundary<T>(), end.ToBoundary<T>(), intervalType);
 
             // Act
             var actual = Interior(interval, 1.ToStep<T, TStep>());
 
             // Assert
             actual.Should()
-                .Be(Interval.WithIntervalType<T>(expectedStart.ToBoundary<T>(), expectedEnd.ToBoundary<T>(), expectedIntervalType));
-        }
+                .Be(Interval<T>.Create(expectedStart.ToBoundary<T>(), expectedEnd.ToBoundary<T>(), expectedIntervalType));
+        }   
 
         public Interval<T> Canonicalize(Interval<T> interval, IntervalType intervalType, TStep step)
         {

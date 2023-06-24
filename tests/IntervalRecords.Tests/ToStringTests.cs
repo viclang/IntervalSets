@@ -4,7 +4,7 @@
     {
 
         [Theory]
-        [InlineData(null, null, IntervalType.Closed, "(-Infinity, Infinity)")]
+        [InlineData(null, null, IntervalType.Closed, "[-Infinity, Infinity]")]
         [InlineData(1, 2, IntervalType.Closed, "[1, 2]")]
         [InlineData(3, 4, IntervalType.Closed, "[3, 4]")]
         [InlineData(1, 2, IntervalType.ClosedOpen, "[1, 2)")]
@@ -17,7 +17,7 @@
         {
             // Arrange
             var (startInclusive, endInclusive) = intervalType.ToTuple();
-            var interval = Interval.CreateInterval<int>(start, end, startInclusive, endInclusive);
+            var interval = Interval<int>.Create(start, end, startInclusive, endInclusive);
 
             // Act
             var actual = interval.ToString();

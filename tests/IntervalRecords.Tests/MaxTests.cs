@@ -14,8 +14,8 @@ namespace IntervalRecords.Tests
         public void MaxBy_ShouldBeEnumerableMaxBy(int startA, int endA, int startB, int endB)
         {
             // Arrange
-            var a = Interval.Closed(startA, endA);
-            var b = Interval.Closed(startB, endB);
+            var a = new ClosedInterval<int>(startA, endA);
+            var b = new ClosedInterval<int>(startB, endB);
 
             // Act
             var actualMaxByStart = Interval.MaxBy(a, b, i => i.Start);
@@ -38,8 +38,8 @@ namespace IntervalRecords.Tests
         public void Max_ShouldBeEnumerableMax(int startA, int endA, int startB, int endB)
         {
             // Arrange
-            var a = Interval.Closed(startA, endA);
-            var b = Interval.Closed(startB, endB);
+            var a = new ClosedInterval<int>(startA, endA);
+            var b = new ClosedInterval<int>(startB, endB);
 
             // Act
             var actualMaxByStart = Interval.Max(a, b);
