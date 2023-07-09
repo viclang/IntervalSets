@@ -51,12 +51,15 @@ public sealed record OpenClosedInterval<T> : Interval<T>, IOverlaps<OpenClosedIn
 
     protected override int CompareStart(Interval<T> other)
     {
-        var result = Start.CompareTo(other.Start);
-        if (result == 0 && other.StartInclusive)
+        if (Start < other.Start || Start == other.Start && other.StartInclusive)
         {
             return -1;
         }
-        return result;
+        if (Start == other.Start)
+        {
+            return 0;
+        }
+        return 1;
     }
 
     protected override int CompareEnd(Interval<T> other)

@@ -162,7 +162,13 @@ namespace IntervalRecords
         /// <returns>True if the current interval and the other interval overlap, False otherwise.</returns>
         public abstract bool Overlaps(Interval<T> other);
 
-        public IntervalOverlapping GetIntervalOverlapping(Interval<T> other) => (CompareStart(other), CompareEnd(other)) switch
+        /// <summary>
+        /// Determines interval overlapping relation between two intervals.
+        /// </summary>
+        /// <typeparam name="T">The type of the interval endpoints.</typeparam>
+        /// <param name="first">The first interval to compare.</param>
+        /// <param name="second">The second interval to compare.</param>
+        public IntervalOverlapping GetOverlap(Interval<T> other) => (CompareStart(other), CompareEnd(other)) switch
         {
             (0, 0) => IntervalOverlapping.Equal,
             (0, -1) => IntervalOverlapping.Starts,
@@ -200,17 +206,13 @@ namespace IntervalRecords
         /// <returns>The gap between the two intervals, if any, or null if the two intervals overlap.</returns>
         public Interval<T>? Gap(Interval<T> other)
         {
-            if(IsConnected(other))
-            {
-                return null;
-            }
-            if (Start <= other.End)
-            {
-                return Interval<T>.Create(End, other.Start, !EndInclusive, !other.StartInclusive);
-            }
-            if (End >= other.Start)
+            if (Start > other.End || (Start == other.End && !StartInclusive && !other.EndInclusive))
             {
                 return Interval<T>.Create(other.End, Start, !other.EndInclusive, !StartInclusive);
+            }
+            if (End < other.Start || (End == other.Start && !EndInclusive && !other.StartInclusive))
+            {
+                return Interval<T>.Create(End, other.Start, !EndInclusive, !other.StartInclusive);
             }
             return null;
         }

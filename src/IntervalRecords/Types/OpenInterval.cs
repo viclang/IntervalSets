@@ -53,27 +53,33 @@ public sealed record OpenInterval<T> : Interval<T>, IOverlaps<OpenInterval<T>>
 
     protected override int CompareStart(Interval<T> other)
     {
-        var result = Start.CompareTo(other.Start);
-        if (result == 0 && other.StartInclusive)
+        if (Start < other.Start || Start == other.Start && other.StartInclusive)
         {
             return -1;
         }
-        return result;
+        if (Start == other.Start)
+        {
+            return 0;
+        }
+        return 1;
     }
 
     protected override int CompareEnd(Interval<T> other)
     {
-        var result = End.CompareTo(other.End);
-        if (result == 0 && other.EndInclusive)
+        if (End < other.End || End == other.End && other.EndInclusive)
         {
             return -1;
         }
-        return result;
+        if(End == other.End)
+        {
+            return 0;
+        }
+        return 1;
     }
 
     protected override IntervalOverlapping CompareEndStart(Interval<T> other)
     {
-        if (End.CompareTo(other.Start) <= 0)
+        if (End <= other.Start)
         {
             return IntervalOverlapping.Before;
         }
@@ -82,7 +88,7 @@ public sealed record OpenInterval<T> : Interval<T>, IOverlaps<OpenInterval<T>>
 
     protected override IntervalOverlapping CompareStartEnd(Interval<T> other)
     {
-        if (Start.CompareTo(other.End) >= 0)
+        if (Start >= other.End)
         {
             return IntervalOverlapping.After;
         }

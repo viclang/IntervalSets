@@ -6,7 +6,6 @@ namespace IntervalRecords;
 public sealed record ClosedInterval<T> : Interval<T>, IOverlaps<ClosedInterval<T>>
     where T : struct, IEquatable<T>, IComparable<T>, IComparable
 {
-
     public static new readonly ClosedInterval<T> Empty = new(Unbounded<T>.NaN, Unbounded<T>.NaN);
 
     public static new readonly ClosedInterval<T> Unbounded = new(Unbounded<T>.NegativeInfinity, Unbounded<T>.PositiveInfinity);
@@ -40,7 +39,6 @@ public sealed record ClosedInterval<T> : Interval<T>, IOverlaps<ClosedInterval<T
     {
     }
 
-
     public static ClosedInterval<T> Singleton(T value) => new ClosedInterval<T>(value, value);
 
 
@@ -61,12 +59,15 @@ public sealed record ClosedInterval<T> : Interval<T>, IOverlaps<ClosedInterval<T
 
     protected override int CompareEnd(Interval<T> other)
     {
-        var result = End.CompareTo(other.End);
-        if (result == 0 && !other.EndInclusive)
+        if (End > other.End || End == other.End && !other.EndInclusive)
         {
             return 1;
         }
-        return result;
+        if(End == other.End)
+        {
+            return 0;
+        }
+        return -1;
     }
 
     protected override IntervalOverlapping CompareEndStart(Interval<T> other)
@@ -140,5 +141,10 @@ public sealed record ClosedInterval<T> : Interval<T>, IOverlaps<ClosedInterval<T
     public static bool operator <=(ClosedInterval<T> left, ClosedInterval<T> right)
     {
         return left == right || left < right;
+    }
+
+    public override string ToString()
+    {
+        return base.ToString();
     }
 }
