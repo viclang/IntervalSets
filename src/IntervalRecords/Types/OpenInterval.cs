@@ -50,40 +50,24 @@ public sealed record OpenInterval<T> : Interval<T>, IOverlaps<OpenInterval<T>>
             || End == other.Start && other.StartInclusive;
     }
 
-
     protected override int CompareStart(Interval<T> other)
     {
-        if (Start < other.Start || Start == other.Start && other.StartInclusive)
+        var result = Start.CompareTo(other.Start);
+        if (result == 0 && other.StartInclusive)
         {
             return -1;
         }
-        if (Start == other.Start)
-        {
-            return 0;
-        }
-        return 1;
+        return result;
     }
 
     protected override int CompareEnd(Interval<T> other)
     {
-        if (End < other.End || End == other.End && other.EndInclusive)
+        var result = End.CompareTo(other.End);
+        if (result == 0 && other.EndInclusive)
         {
             return -1;
         }
-        if(End == other.End)
-        {
-            return 0;
-        }
-        return 1;
-    }
-
-    protected override IntervalOverlapping CompareEndStart(Interval<T> other)
-    {
-        if (End <= other.Start)
-        {
-            return IntervalOverlapping.Before;
-        }
-        return IntervalOverlapping.Overlaps;
+        return result;
     }
 
     protected override IntervalOverlapping CompareStartEnd(Interval<T> other)
@@ -95,8 +79,23 @@ public sealed record OpenInterval<T> : Interval<T>, IOverlaps<OpenInterval<T>>
         return IntervalOverlapping.OverlappedBy;
     }
 
+    protected override IntervalOverlapping CompareEndStart(Interval<T> other)
+    {
+        if (End <= other.Start)
+        {
+            return IntervalOverlapping.Before;
+        }
+        return IntervalOverlapping.Overlaps;
+    }
+
     public override string ToString()
     {
-        return base.ToString();
+        return new StringBuilder()
+            .Append('(')
+            .Append(Start)
+            .Append(", ")
+            .Append(End)
+            .Append(')')
+            .ToString();
     }
 }

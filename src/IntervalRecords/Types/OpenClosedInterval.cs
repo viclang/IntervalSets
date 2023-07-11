@@ -49,17 +49,25 @@ public sealed record OpenClosedInterval<T> : Interval<T>, IOverlaps<OpenClosedIn
             || Start == other.End && other.EndInclusive;
     }
 
+    public override string ToString()
+    {
+        return new StringBuilder()
+            .Append('(')
+            .Append(Start)
+            .Append(", ")
+            .Append(End)
+            .Append(']')
+            .ToString();
+    }
+
     protected override int CompareStart(Interval<T> other)
     {
-        if (Start < other.Start || Start == other.Start && other.StartInclusive)
+        var result = Start.CompareTo(other.Start);
+        if (result == 0 && other.StartInclusive)
         {
             return -1;
         }
-        if (Start == other.Start)
-        {
-            return 0;
-        }
-        return 1;
+        return result;
     }
 
     protected override int CompareEnd(Interval<T> other)
@@ -72,9 +80,18 @@ public sealed record OpenClosedInterval<T> : Interval<T>, IOverlaps<OpenClosedIn
         return result;
     }
 
+    protected override IntervalOverlapping CompareStartEnd(Interval<T> other)
+    {
+        if (Start >= other.End)
+        {
+            return IntervalOverlapping.After;
+        }
+        return IntervalOverlapping.OverlappedBy;
+    }
+
     protected override IntervalOverlapping CompareEndStart(Interval<T> other)
     {
-        if (End < other.Start || (End == other.Start && !other.StartInclusive))
+        if (End < other.Start || End == other.Start && !other.StartInclusive)
         {
             return IntervalOverlapping.Before;
         }
@@ -83,19 +100,5 @@ public sealed record OpenClosedInterval<T> : Interval<T>, IOverlaps<OpenClosedIn
             return IntervalOverlapping.Meets;
         }
         return IntervalOverlapping.Overlaps;
-    }
-
-    protected override IntervalOverlapping CompareStartEnd(Interval<T> other)
-    {
-        if (Start.CompareTo(other.End) >= 0)
-        {
-            return IntervalOverlapping.After;
-        }
-        return IntervalOverlapping.OverlappedBy;
-    }
-
-    public override string ToString()
-    {
-        return base.ToString();
     }
 }

@@ -27,7 +27,7 @@
         public void IsHalfBounded_ShouldBeExpected(int? start, int? end, bool expected)
         {
             // Arrange
-            var interval = Interval<int>.Create(start, end, true, true);
+            var interval = Interval.Create<int>(start, end, true, true);
 
             // Act
             var actual = interval.IsHalfBounded();

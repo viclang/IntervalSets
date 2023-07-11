@@ -73,7 +73,6 @@ namespace IntervalRecords
         /// <returns>True if the interval is <see cref="IntervalType.Closed"/> and <see cref="Start"/> and <see cref="End"/> are equal.</returns>
         public virtual bool IsSingleton => false;
 
-
         /// <summary>
         /// Determines if the interval is half-bounded.
         /// </summary>
@@ -155,6 +154,13 @@ namespace IntervalRecords
             };
 
         /// <summary>
+        /// Returns a boolean value indicating if the current interval contains the specified value.
+        /// </summary>
+        /// <param name="value">The value to check if it is contained by the current interval</param>
+        /// <returns></returns>
+        public abstract bool Contains(Unbounded<T> value);
+
+        /// <summary>
         /// Returns a boolean value indicating if the current interval overlaps with the other interval.
         /// </summary>
         /// <param name="other">The interval to check for overlapping with the current interval.</param>
@@ -168,7 +174,7 @@ namespace IntervalRecords
         /// <typeparam name="T">The type of the interval endpoints.</typeparam>
         /// <param name="first">The first interval to compare.</param>
         /// <param name="second">The second interval to compare.</param>
-        public IntervalOverlapping GetOverlap(Interval<T> other) => (CompareStart(other), CompareEnd(other)) switch
+        public IntervalOverlapping GetOverlap(Interval<T> other) => new ValueTuple<int, int>(CompareStart(other), CompareEnd(other)) switch
         {
             (0, 0) => IntervalOverlapping.Equal,
             (0, -1) => IntervalOverlapping.Starts,
@@ -182,20 +188,15 @@ namespace IntervalRecords
             (_, _) => throw new NotSupportedException()
         };
 
-        protected abstract int CompareStart(Interval<T> other);
-        protected abstract int CompareEnd(Interval<T> other);
-        protected abstract IntervalOverlapping CompareEndStart(Interval<T> other);
-        protected abstract IntervalOverlapping CompareStartEnd(Interval<T> other);
-
         public abstract bool IsConnected(Interval<T> other);
 
-        /// <summary>
-        /// Returns a boolean value indicating if the current interval contains the specified value.
-        /// </summary>
-        /// <param name="value">The value to check if it is contained by the current interval</param>
-        /// <returns></returns>
-        public abstract bool Contains(Unbounded<T> value);
+        protected abstract int CompareStart(Interval<T> other);
 
+        protected abstract int CompareEnd(Interval<T> other);
+
+        protected abstract IntervalOverlapping CompareStartEnd(Interval<T> other);
+
+        protected abstract IntervalOverlapping CompareEndStart(Interval<T> other);
 
         /// <summary>
         /// Returns the gap between two intervals, or null if the two intervals overlap.
@@ -250,17 +251,6 @@ namespace IntervalRecords
         public static bool operator >=(Interval<T> left, Interval<T> right) => left == right || left > right;
 
         public static bool operator <=(Interval<T> left, Interval<T> right) => left == right || left < right;
-
-        public override string ToString()
-        {
-            return new StringBuilder()
-                .Append(StartInclusive ? "[" : "(")
-                .Append(Start)
-                .Append(", ")
-                .Append(End)
-                .Append(EndInclusive ? "]" : ")")
-                .ToString();
-        }
 
         public void Deconstruct(out Unbounded<T> start, out Unbounded<T> end, out bool startInclusive, out bool endInclusive)
         {

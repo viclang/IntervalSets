@@ -14,10 +14,10 @@ namespace IntervalRecords.Tests
             { "[,)", ClosedOpenInterval<int>.Unbounded },
             { "(,]", OpenClosedInterval<int>.Unbounded },
             { "(,)", OpenInterval<int>.Unbounded },
-            { "[1,2]", Interval<int>.Create(1, 2, true, true) },
-            { "[1,2)", Interval<int>.Create(1, 2, true, false) },
-            { "(1,2]", Interval<int>.Create(1, 2, false, true) },
-            { "(1,2)", Interval<int>.Create(1, 2, false, false) },
+            { "[1,2]", new ClosedInterval<int>(1, 2) },
+            { "[1,2)", new ClosedOpenInterval<int>(1, 2) },
+            { "(1,2]", new OpenClosedInterval<int>(1, 2) },
+            { "(1,2)", new OpenInterval<int>(1, 2) },
         };
 
         public static TheoryData<string, Interval<int>?> InvalidStringToParseWithNull = new TheoryData<string, Interval<int>?>

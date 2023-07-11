@@ -51,6 +51,17 @@ public sealed record ClosedOpenInterval<T> : Interval<T>, IOverlaps<ClosedOpenIn
             || End == other.Start && other.StartInclusive;
     }
 
+    public override string ToString()
+    {
+        return new StringBuilder()
+            .Append('[')
+            .Append(Start)
+            .Append(", ")
+            .Append(End)
+            .Append(')')
+            .ToString();
+    }
+
     protected override int CompareStart(Interval<T> other)
     {
         var result = Start.CompareTo(other.Start);
@@ -71,18 +82,9 @@ public sealed record ClosedOpenInterval<T> : Interval<T>, IOverlaps<ClosedOpenIn
         return result;
     }
 
-    protected override IntervalOverlapping CompareEndStart(Interval<T> other)
-    {
-        if (End <= other.Start)
-        {
-            return IntervalOverlapping.Before;
-        }
-        return IntervalOverlapping.Overlaps;
-    }
-
     protected override IntervalOverlapping CompareStartEnd(Interval<T> other)
     {
-        if (Start > other.End || (Start == other.End && !other.EndInclusive))
+        if (Start > other.End || Start == other.End && !other.EndInclusive)
         {
             return IntervalOverlapping.After;
         }
@@ -93,8 +95,12 @@ public sealed record ClosedOpenInterval<T> : Interval<T>, IOverlaps<ClosedOpenIn
         return IntervalOverlapping.OverlappedBy;
     }
 
-    public override string ToString()
+    protected override IntervalOverlapping CompareEndStart(Interval<T> other)
     {
-        return base.ToString();
+        if (End <= other.Start)
+        {
+            return IntervalOverlapping.Before;
+        }
+        return IntervalOverlapping.Overlaps;
     }
 }

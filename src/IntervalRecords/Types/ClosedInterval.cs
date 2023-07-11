@@ -1,5 +1,6 @@
 ﻿using IntervalRecords.Types;
-using System;
+using System.Collections.Generic;
+using System.Text;
 using Unbounded;
 
 namespace IntervalRecords;
@@ -24,9 +25,9 @@ public sealed record ClosedInterval<T> : Interval<T>, IOverlaps<ClosedInterval<T
     /// </summary>
     public override bool EndInclusive => true;
 
-    public override bool IsValid => Start <= End && !Start.IsNaN || Start.IsNaN && End.IsNaN;
+    public override bool IsValid => Start < End && !Start.IsNaN || Start == End;
 
-    public override bool IsEmpty => !IsValid || Start.IsNaN && End.IsNaN;
+    public override bool IsEmpty => !IsValid;
 
     public override bool IsSingleton => Start == End;
 
@@ -41,60 +42,9 @@ public sealed record ClosedInterval<T> : Interval<T>, IOverlaps<ClosedInterval<T
 
     public static ClosedInterval<T> Singleton(T value) => new ClosedInterval<T>(value, value);
 
-
     public static ClosedInterval<T> LeftBounded(T start) => new ClosedInterval<T>(start, Unbounded<T>.PositiveInfinity);
 
     public static ClosedInterval<T> RightBounded(T end) => new ClosedInterval<T>(Unbounded<T>.NegativeInfinity, end);
-
-    protected override int CompareStart(Interval<T> other)
-    {
-        var result = Start.CompareTo(other.Start);
-        if (result == 0 && !other.StartInclusive)
-        {
-            return 1;
-        }
-        return result;
-    }
-
-
-    protected override int CompareEnd(Interval<T> other)
-    {
-        if (End > other.End || End == other.End && !other.EndInclusive)
-        {
-            return 1;
-        }
-        if(End == other.End)
-        {
-            return 0;
-        }
-        return -1;
-    }
-
-    protected override IntervalOverlapping CompareEndStart(Interval<T> other)
-    {
-        if (End < other.Start || (End == other.Start && !other.StartInclusive))
-        {
-            return IntervalOverlapping.Before;
-        }
-        if (End == other.Start)
-        {
-            return IntervalOverlapping.Meets;
-        }
-        return IntervalOverlapping.Overlaps;
-    }
-
-    protected override IntervalOverlapping CompareStartEnd(Interval<T> other)
-    {
-        if (Start > other.End || (Start == other.End && !other.EndInclusive))
-        {
-            return IntervalOverlapping.After;
-        }
-        if (Start == other.End)
-        {
-            return IntervalOverlapping.MetBy;
-        }
-        return IntervalOverlapping.OverlappedBy;
-    }
 
     /// <summary>
     /// Returns a boolean value indicating if the current interval contains the specified value.
@@ -123,6 +73,52 @@ public sealed record ClosedInterval<T> : Interval<T>, IOverlaps<ClosedInterval<T
         return Start <= other.End && other.Start <= End;
     }
 
+    protected override int CompareStart(Interval<T> other)
+    {
+        var result = Start.CompareTo(other.Start);
+        if (result == 0 && !other.StartInclusive)
+        {
+            return 1;
+        }
+        return result;
+    }
+
+    protected override int CompareEnd(Interval<T> other)
+    {
+        var result = End.CompareTo(other.End);
+        if (result == 0 && !other.EndInclusive)
+        {
+            return 1;
+        }
+        return result;
+    }
+
+    protected override IntervalOverlapping CompareStartEnd(Interval<T> other)
+    {
+        if (Start > other.End || Start == other.End && !other.EndInclusive)
+        {
+            return IntervalOverlapping.After;
+        }
+        if (Start == other.End)
+        {
+            return IntervalOverlapping.MetBy;
+        }
+        return IntervalOverlapping.OverlappedBy;
+    }
+
+    protected override IntervalOverlapping CompareEndStart(Interval<T> other)
+    {
+        if (End < other.Start || End == other.Start && !other.StartInclusive)
+        {
+            return IntervalOverlapping.Before;
+        }
+        if (End == other.Start)
+        {
+            return IntervalOverlapping.Meets;
+        }
+        return IntervalOverlapping.Overlaps;
+    }
+
     public static bool operator >(ClosedInterval<T> left, ClosedInterval<T> right)
     {
         return left.End >= right.End && right.Start > left.Start;
@@ -145,6 +141,12 @@ public sealed record ClosedInterval<T> : Interval<T>, IOverlaps<ClosedInterval<T
 
     public override string ToString()
     {
-        return base.ToString();
+        return new StringBuilder()
+            .Append('[')
+            .Append(Start)
+            .Append(", ")
+            .Append(End)
+            .Append(']')
+            .ToString();
     }
 }
