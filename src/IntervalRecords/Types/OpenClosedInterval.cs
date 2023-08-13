@@ -40,7 +40,7 @@ public sealed record OpenClosedInterval<T> : Interval<T>
 
     public override bool IsConnected(Interval<T> other)
     {
-        return Start <= other.End && other.Start < End
+        return Start < other.End && other.Start <= End
             || (other.EndInclusive && other.End == Start);
     }
 
