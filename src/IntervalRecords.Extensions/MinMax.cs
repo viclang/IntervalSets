@@ -1,6 +1,6 @@
-﻿namespace IntervalRecords
+﻿namespace IntervalRecords.Extensions
 {
-    public static partial class Interval
+    public static partial class IntervalExtensions
     {
         /// <summary>
         /// Returns the maximum interval between two intervals.

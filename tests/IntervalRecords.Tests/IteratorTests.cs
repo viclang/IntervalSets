@@ -14,7 +14,7 @@ namespace IntervalRecords.Tests
         {
             // Arrange
             var (startInclusive, endInclusive) = intervalType.ToTuple();
-            var interval = Interval<int>.Create(1, 10, startInclusive, endInclusive);
+            var interval = Interval.Create<int>(1, 10, startInclusive, endInclusive);
             var list = new List<Interval<int>>();
             // Act
             var actual = interval.Iterate(x => x + 1).ToList();
@@ -32,7 +32,7 @@ namespace IntervalRecords.Tests
         {
             // Arrange
             var (startInclusive, endInclusive) = intervalType.ToTuple();
-            var interval = Interval<int>.Create(1, 10, startInclusive, endInclusive);
+            var interval = Interval.Create<int>(1, 10, startInclusive, endInclusive);
 
             // Act
             var actual = interval.Iterate(5, x => x + 1).ToList();

@@ -39,7 +39,7 @@ namespace IntervalRecords.Tests.Measure.Centre
         public void GivenBoundedInterval_WhenMeasureCentre_ReturnsExpected(int? start, int? end, IntervalType intervalType, double? expected)
         {
             // Arrange
-            var interval = Interval<T>.Create(start.ToBoundary<T>(), end.ToBoundary<T>(), intervalType);
+            var interval = Interval.Create<T>(start.ToBoundary<T>(), end.ToBoundary<T>(), intervalType);
 
             // Act
             var actual = Centre(interval);

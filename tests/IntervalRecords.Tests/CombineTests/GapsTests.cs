@@ -4,7 +4,7 @@ using System.Linq;
 
 namespace IntervalRecords.Tests.CombineTests
 {
-    public class GapsTests : DataSetTestsBase
+    public class GapsTests
     {
         public static TheoryData<Interval<int>, Interval<int>> NoGapBetweenTwoIntervals = new TheoryData<Interval<int>, Interval<int>>
         {

@@ -2,10 +2,10 @@
 
 namespace IntervalRecords.Tests
 {
-    public class IntervalOverlappingTests : DataSetTestsBase
+    public class IntervalOverlappingTests
     {
         [Theory]
-        [ClassData(typeof(OverlapInt32ClassData))]
+        [ClassData(typeof(Int32OverlapClassData))]
         public void GetOverlappingState_ShouldBeExpected(OverlapTestData<int> testData)
         {
             var result = testData.First.GetOverlap(testData.Second);

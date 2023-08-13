@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using Unbounded;
 
 namespace IntervalRecords.Types;
-public sealed record OpenClosedInterval<T> : Interval<T>, IOverlaps<OpenClosedInterval<T>>
+public sealed record OpenClosedInterval<T> : Interval<T>
     where T : struct, IEquatable<T>, IComparable<T>, IComparable
 {
     public static new readonly OpenClosedInterval<T> Empty = new(Unbounded<T>.NaN, Unbounded<T>.NaN);
@@ -27,78 +27,57 @@ public sealed record OpenClosedInterval<T> : Interval<T>, IOverlaps<OpenClosedIn
 
     public static OpenClosedInterval<T> LeftBounded(T start) => new OpenClosedInterval<T>(start, Unbounded<T>.PositiveInfinity);
 
-    public override bool Contains(Unbounded<T> value)
+    public override bool Contains(T value)
     {
         return Start < value && value <= End;
-    }
-
-    public bool Overlaps(OpenClosedInterval<T> other)
-    {
-        return Start < other.End && other.Start < End;
     }
 
     public override bool Overlaps(Interval<T> other)
     {
         return Start < other.End && other.Start < End
-            || End == other.Start && other.StartInclusive;
+            || (other.StartInclusive && other.Start == End);
     }
 
     public override bool IsConnected(Interval<T> other)
     {
-        return Start < other.End && other.Start <= End
-            || Start == other.End && other.EndInclusive;
-    }
-
-    public override string ToString()
-    {
-        return new StringBuilder()
-            .Append('(')
-            .Append(Start)
-            .Append(", ")
-            .Append(End)
-            .Append(']')
-            .ToString();
+        return Start <= other.End && other.Start < End
+            || (other.EndInclusive && other.End == Start);
     }
 
     protected override int CompareStart(Interval<T> other)
     {
-        var result = Start.CompareTo(other.Start);
-        if (result == 0 && other.StartInclusive)
+        if (other.StartInclusive && Start == other.Start)
         {
             return -1;
         }
-        return result;
+        return Start.CompareTo(other.Start);
     }
 
     protected override int CompareEnd(Interval<T> other)
     {
-        var result = End.CompareTo(other.End);
-        if (result == 0 && !other.EndInclusive)
+        if (!other.EndInclusive && End == other.End)
         {
             return 1;
         }
-        return result;
+        return End.CompareTo(other.End);
     }
 
-    protected override IntervalOverlapping CompareStartEnd(Interval<T> other)
+    public override IntervalOverlapping CompareStartToEnd(Interval<T> other)
     {
-        if (Start >= other.End)
-        {
-            return IntervalOverlapping.After;
-        }
-        return IntervalOverlapping.OverlappedBy;
+        return Start >= other.End ? IntervalOverlapping.After : IntervalOverlapping.OverlappedBy;
     }
 
-    protected override IntervalOverlapping CompareEndStart(Interval<T> other)
+    public override IntervalOverlapping CompareEndToStart(Interval<T> other)
     {
-        if (End < other.Start || End == other.Start && !other.StartInclusive)
+        if (!other.StartInclusive && End == other.Start)
         {
             return IntervalOverlapping.Before;
         }
-        if (End == other.Start)
-        {
-            return IntervalOverlapping.Meets;
-        }
-        return IntervalOverlapping.Overlaps;
+        return (IntervalOverlapping)End.CompareTo(other.Start) + (int)IntervalOverlapping.Meets;
+    }
+
+    public override string ToString()
+    {
+        return $"({Start}, {End}]";
     }
 }

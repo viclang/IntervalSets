@@ -1,6 +1,6 @@
-﻿namespace IntervalRecords
+﻿namespace IntervalRecords.Extensions
 {
-    public static partial class Interval
+    public static partial class IntervalExtensions
     {
         /// <summary>
         /// Calculates the intersect of two intervals if they overlap.
@@ -11,9 +11,9 @@
         /// <returns>The intersect of the two intervals if they overlap, otherwise returns null.</returns>
         public static Interval<T>? Intersect<T>(this Interval<T> first, Interval<T> second)
             where T : struct, IEquatable<T>, IComparable<T>, IComparable
-            => !first.IsConnected(second)
-                ? null
-                : GetIntersectValue(first, second);
+            => first.IsConnected(second)
+                ? GetIntersectValue(first, second)
+                : null;
 
         /// <summary>
         /// Calculates the intersect of two intervals if they overlap, otherwise returns an empty interval.
@@ -24,9 +24,9 @@
         /// <returns>The intersect of the two intervals if they overlap, otherwise returns an empty interval.</returns>
         public static Interval<T> IntersectOrEmpty<T>(this Interval<T> first, Interval<T> second)
             where T : struct, IEquatable<T>, IComparable<T>, IComparable
-            => !first.IsConnected(second)
-                ? Interval<T>.Empty(first.IntervalType)
-                : GetIntersectValue(first, second);
+            => first.IsConnected(second)
+                ? GetIntersectValue(first, second)
+                : Interval<T>.Empty(first.IntervalType);
 
         /// <summary>
         /// Returns an enumeration of intervals that represent the intersection of all overlapping intervals in the input sequence.
@@ -53,7 +53,7 @@
                 ? first.EndInclusive && second.EndInclusive
                 : minByEnd.EndInclusive;
 
-            return Interval<T>.Create(maxByStart.Start, minByEnd.End, startInclusive, endInclusive);
+            return Interval.Create(maxByStart.Start, minByEnd.End, startInclusive, endInclusive);
         }
     }
 }

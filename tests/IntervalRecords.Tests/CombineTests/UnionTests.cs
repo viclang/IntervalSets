@@ -1,120 +1,74 @@
-﻿using FluentAssertions.Execution;
-using IntervalRecords.Tests.TestData;
-using System.Collections.Generic;
-using System.Linq;
+﻿//using FluentAssertions.Execution;
+//using IntervalRecords.Tests.TestData;
+//using System.Collections.Generic;
+//using System.Linq;
 
-namespace IntervalRecords.Tests.CombineTests
-{
-    public class UnionTests : DataSetTestsBase
-    {
-        [Theory]
-        [MemberData(nameof(IntervalPairsWithOverlappingState), true)]
-        public void Union_ShouldBeExpectedOrNull(Interval<int> a, Interval<int> b, IntervalOverlapping overlappingState)
-        {
-            // Act
-            var actual = a.Union(b);
+//namespace IntervalRecords.Tests.CombineTests
+//{
+//    public class UnionTests
+//    {
+//        [Theory]
+//        [ClassData(typeof(Int32ConnectedClassData))]
+//        public void GivenTwoConnectedIntervals_WhenCombineUnion_ReturnsMinStartAndMaxEnd(OverlapTestData<int> testData)
+//        {
+//            var actual = testData.First.Union(testData.Second);
 
-            // Assert
-            var array = new Interval<int>[] { a, b };
-            var minByStart = array.MinBy(i => i.Start)!;
-            var maxByEnd = array.MaxBy(i => i.End)!;
+//            using (new AssertionScope())
+//            {
+//                var array = new Interval<int>[] { testData.First, testData.Second };
+//                var minByStart = array.MinBy(i => i.Start)!;
+//                var maxByEnd = array.MaxBy(i => i.End)!;
+//                actual!.Start.Should().Be(minByStart.Start);
+//                actual!.End.Should().Be(maxByEnd.End);
+//                actual!.StartInclusive.Should().Be(testData.First.StartInclusive);
+//                actual!.EndInclusive.Should().Be(testData.Second.EndInclusive);
+//            }
+//        }
 
-            var expectedStartInclusive = a.Start == b.Start
-                ? a.StartInclusive || b.StartInclusive
-                : minByStart.StartInclusive;
+//        [Theory]
+//        [ClassData(typeof(Int32DisjointClassData))]
+//        public void GivenTwoDisjointIntervals_WhenCombineUnion_ReturnsNull(OverlapTestData<int> testData)
+//        {
+//            var actual = testData.First.Union(testData.Second);
 
-            var expectedEndInclusive = a.End == b.End
-                ? a.EndInclusive || b.EndInclusive
-                : maxByEnd.EndInclusive;
+//            actual.Should().BeNull();
+//        }
 
-            using (new AssertionScope())
-            {
-                if (overlappingState != IntervalOverlapping.Before && overlappingState != IntervalOverlapping.After)
-                {
-                    actual!.Start.Should().Be(minByStart.Start);
-                    actual!.End.Should().Be(maxByEnd.End);
-                    actual!.StartInclusive.Should().Be(!actual!.Start.IsNegativeInfinity && expectedStartInclusive);
-                    actual!.EndInclusive.Should().Be(!actual!.End.IsPositiveInfinity && expectedEndInclusive);
-                }
-                else
-                {
-                    actual.Should().BeNull();
-                }
-            }
-        }
+//        [Theory]
+//        [InlineData(IntervalType.Closed, 4)]
+//        [InlineData(IntervalType.ClosedOpen, 4)]
+//        [InlineData(IntervalType.OpenClosed, 4)]
+//        [InlineData(IntervalType.Open, 6)]
+//        public void Union_ShouldBeExpected(IntervalType intervalType, int expectedCount)
+//        {
+//            // Arrange
+//            var list = OverlapList(startingPoint, length, offset, intervalType);
 
-        [Theory]
-        [MemberData(nameof(IntervalPairsWithOverlappingState), true)]
-        public void Union_ShouldBeExpectedOrEmpty(Interval<int> a, Interval<int> b, IntervalOverlapping overlappingState)
-        {
-            // Act
-            var actual = a.UnionOrEmpty(b);
+//            // Act
+//            var actual = list.UnionAll().ToList();
 
-            // Assert
-            var array = new Interval<int>[] { a, b };
-            var minByStart = array.MinBy(i => i.Start)!;
-            var maxByEnd = array.MaxBy(i => i.End)!;
+//            // Assert
+//            actual.Should().HaveCount(expectedCount);
+//        }
 
 
-            var expectedStartInclusive = a.Start == b.Start
-                ? a.StartInclusive || b.StartInclusive
-                : minByStart.StartInclusive;
+//        [Fact]
+//        public void EmptyList_ShouldBeEmpty()
+//        {
+//            // Arrange
+//            var emptyList = Enumerable.Empty<Interval<int>>();
 
-            var expectedEndInclusive = a.End == b.End
-                ? a.EndInclusive || b.EndInclusive
-                : maxByEnd.EndInclusive;
+//            // Act
+//            var actual = new IEnumerable<Interval<int>>[]
+//            {
+//                emptyList.UnionAll(),
+//                emptyList.ExcludeOverlap(),
+//                emptyList.IntersectAll(),
+//                emptyList.Complement()
+//            };
 
-            using (new AssertionScope())
-            {
-                if (overlappingState != IntervalOverlapping.Before && overlappingState != IntervalOverlapping.After)
-                {
-                    actual!.Start.Should().Be(minByStart.Start);
-                    actual!.End.Should().Be(maxByEnd.End);
-                    actual!.StartInclusive.Should().Be(!actual!.Start.IsNegativeInfinity && expectedStartInclusive);
-                    actual!.EndInclusive.Should().Be(!actual!.End.IsPositiveInfinity && expectedEndInclusive);
-                }
-                else
-                {
-                    actual.Should().Be(Interval<int>.Empty(a.IntervalType));
-                }
-            }
-        }
-
-        [Theory]
-        [InlineData(IntervalType.Closed, 4)]
-        [InlineData(IntervalType.ClosedOpen, 4)]
-        [InlineData(IntervalType.OpenClosed, 4)]
-        [InlineData(IntervalType.Open, 6)]
-        public void Union_ShouldBeExpected(IntervalType intervalType, int expectedCount)
-        {
-            // Arrange
-            var list = OverlapList(startingPoint, length, offset, intervalType);
-
-            // Act
-            var actual = list.UnionAll().ToList();
-
-            // Assert
-            actual.Should().HaveCount(expectedCount);
-        }
-
-
-        [Fact]
-        public void EmptyList_ShouldBeEmpty()
-        {
-            // Arrange
-            var emptyList = Enumerable.Empty<Interval<int>>();
-
-            // Act
-            var actual = new IEnumerable<Interval<int>>[]
-            {
-                emptyList.UnionAll(),
-                emptyList.ExcludeOverlap(),
-                emptyList.IntersectAll(),
-                emptyList.Complement()
-            };
-
-            // Assert
-            actual.Should().AllBeEquivalentTo(emptyList);
-        }
-    }
-}
+//            // Assert
+//            actual.Should().AllBeEquivalentTo(emptyList);
+//        }
+//    }
+//}

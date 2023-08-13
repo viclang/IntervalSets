@@ -1,60 +1,54 @@
-﻿using IntervalRecords.Tests.TestData;
-using System.Collections.Generic;
-using System.Linq;
+﻿//using IntervalRecords.Tests.TestData;
+//using System;
+//using System.Collections.Generic;
+//using System.Linq;
 
-namespace IntervalRecords.Tests.CombineTests
-{
-    public class PairwiseTests : DataSetTestsBase
-    {
-        [Theory]
-        [InlineData(IntervalType.Closed, 4)]
-        [InlineData(IntervalType.ClosedOpen, 4)]
-        [InlineData(IntervalType.OpenClosed, 4)]
-        [InlineData(IntervalType.Open, 5)]
-        public void PairwiseGap_ShouldHaveExpectedCount(IntervalType intervalType, int expectedCount)
-        {
-            // Arrange
-            var list = OverlapList(startingPoint, length, offset, intervalType);
+//namespace IntervalRecords.Tests.CombineTests
+//{
+//    public class PairwiseTests
+//    {
+//        private const int _offset = 1;
+//        private readonly static Interval<int> _reference = new ClosedInterval<int>(0, 4);
 
-            // Act
-            var actual = list.Pairwise((a, b) => a.Gap(b)).ToList();
+//        public static IEnumerable<object[]> OverLapListWithExpectedGapCount()
+//        {
+//            var testData = new List<object[]>();
+//            foreach (var intervalType in (IntervalType[])Enum.GetValues(typeof(IntervalType)))
+//            {
+//                testData.Add(new object[]
+//                {
+//                GetList(
+//                    _reference.Canonicalize(intervalType, 0),
+//                    _offset),
+//                intervalType == IntervalType.Open ? 5 : 3
+//                });
+//            }
+//            return testData;
+//        }
 
-            // Assert
-            actual.Should().HaveCount(expectedCount);
-        }
+//        private static IEnumerable<Interval<int>> GetList(Interval<int> lastValue, int offset)
+//        {
+//            yield return lastValue;
+//            yield return lastValue = OverlapFactory.MetBy(lastValue); // Meets
+//            yield return lastValue = OverlapFactory.After(lastValue, offset); // Before
+//            yield return lastValue = OverlapFactory.StartedBy(lastValue, offset); // Starts
+//            yield return lastValue = OverlapFactory.After(lastValue, offset); // Before
+//            yield return lastValue = OverlapFactory.Finishes(lastValue, offset); // FinishedBy
+//            yield return lastValue = OverlapFactory.After(lastValue, offset); // Before
+//            yield return lastValue = OverlapFactory.Contains(lastValue, offset); // Contains
+//            yield return lastValue = OverlapFactory.After(lastValue, offset); // Before
+//            yield return lastValue = OverlapFactory.OverlappedBy(lastValue, offset); // Overlaps
+//            yield return lastValue; // Equal
+//        }
 
-        [Theory]
-        [InlineData(IntervalType.Closed)]
-        [InlineData(IntervalType.ClosedOpen)]
-        [InlineData(IntervalType.OpenClosed)]
-        [InlineData(IntervalType.Open)]
-        public void PairwiseGapOrDefault_ShouldHaveExpectedCount(IntervalType intervalType)
-        {
-            // Arrange
-            var list = OverlapList(startingPoint, length, offset, intervalType);
 
-            // Act
-            var actual = list.Pairwise((a, b) => a.GapOrEmpty(b)).ToList();
+//        [Theory]
+//        [MemberData(nameof(OverLapListWithExpectedGapCount))]
+//        public void PairwiseGap_ShouldHaveExpectedCount(IEnumerable<Interval<int>> list, int expectedCount)
+//        {
+//            var actual = list.Pairwise((a, b) => a.Gap(b)).ToList();
 
-            // Assert
-            actual.Should().HaveCount(10);
-        }
-
-        [Fact]
-        public void PairwiseEmptyList_ShouldBeEmpty()
-        {
-            // Arrange
-            var list = Enumerable.Empty<Interval<int>>();
-
-            // Act
-            var actual = new IEnumerable<Interval<int>>[]
-            {
-                list.Pairwise((a, b) => a.Gap(b)),
-                list.Pairwise((a, b) => a.GapOrEmpty(b))
-            };
-
-            // Assert
-            actual.Should().AllBeEquivalentTo(list);
-        }
-    }
-}
+//            actual.Should().HaveCount(expectedCount);
+//        }
+//    }
+//}

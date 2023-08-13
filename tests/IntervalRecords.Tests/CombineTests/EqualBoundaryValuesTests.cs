@@ -1,4 +1,6 @@
-﻿namespace IntervalRecords.Tests.CombineTests
+﻿using IntervalRecords.Extensions;
+
+namespace IntervalRecords.Tests.CombineTests
 {
     public class EqualBoundaryValuesTests
     {
@@ -22,17 +24,17 @@
         {
             // Arrange
             var (leftStartInclusive, leftEndInclusive) = leftIntervalType.ToTuple();
-            var leftInterval = Interval<int>.Create(start, end, leftStartInclusive, leftEndInclusive);
+            var leftInterval = Interval.Create<int>(start, end, leftStartInclusive, leftEndInclusive);
 
             var (rightStartInclusive, rigthEndInclusive) = rightIntervalType.ToTuple();
-            var rigthInterval = Interval<int>.Create(start, end, rightStartInclusive, rigthEndInclusive);
+            var rigthInterval = Interval.Create<int>(start, end, rightStartInclusive, rigthEndInclusive);
 
             // Act
             var actual = new IntervalType[]
             {
-                leftInterval.Except(rigthInterval)!.GetIntervalType(),
-                leftInterval.Union(rigthInterval)!.GetIntervalType(),
-                leftInterval.Hull(rigthInterval).GetIntervalType()
+                leftInterval.Except(rigthInterval)!.IntervalType,
+                leftInterval.Union(rigthInterval)!.IntervalType,
+                leftInterval.Hull(rigthInterval).IntervalType
             };
 
             // Assert
@@ -57,13 +59,13 @@
         {
             // Arrange
             var (leftStartInclusive, leftEndInclusive) = leftIntervalType.ToTuple();
-            var leftInterval =  Interval<int>.Create(start, end, leftStartInclusive, leftEndInclusive);
+            var leftInterval =  Interval.Create<int>(start, end, leftStartInclusive, leftEndInclusive);
 
             var (rightStartInclusive, rigthEndInclusive) = rightIntervalType.ToTuple();
-            var rigthInterval = Interval<int>.Create(start, end, rightStartInclusive, rigthEndInclusive);
+            var rigthInterval = Interval.Create<int>(start, end, rightStartInclusive, rigthEndInclusive);
 
             // Act
-            var actual = leftInterval.Intersect(rigthInterval)!.GetIntervalType();
+            var actual = leftInterval.Intersect(rigthInterval)!.IntervalType;
 
             // Assert
             actual.Should().Be(expectedIntervalType);

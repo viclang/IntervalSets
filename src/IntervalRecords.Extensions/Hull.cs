@@ -1,6 +1,6 @@
-﻿namespace IntervalRecords
+﻿namespace IntervalRecords.Extensions
 {
-    public static partial class Interval
+    public static partial class IntervalExtensions
     {
         /// <summary>
         /// Computes the smallest interval that contains both input intervals.
@@ -23,7 +23,7 @@
                 ? first.EndInclusive || second.EndInclusive
                 : maxByEnd.EndInclusive;
 
-            return Interval<T>.Create(minByStart.Start, maxByEnd.End, startInclusive, endInclusive);
+            return Interval.Create(minByStart.Start, maxByEnd.End, startInclusive, endInclusive);
         }
 
         /// <summary>
@@ -43,7 +43,7 @@
             var min = source.MinBy(i => i.Start)!;
             var max = source.MaxBy(i => i.End)!;
 
-            return Interval<T>.Create(
+            return Interval.Create(
                 min.Start,
                 max.End,
                 min.StartInclusive,

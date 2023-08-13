@@ -1,5 +1,4 @@
 ﻿using IntervalRecords.Types;
-using System.Text;
 using Unbounded;
 
 namespace IntervalRecords
@@ -8,7 +7,7 @@ namespace IntervalRecords
     /// Represents an interval of values of type <see cref="T"/>.
     /// </summary>
     /// <typeparam name="T">The type of values represented in the interval.</typeparam>
-    public abstract record class Interval<T> : IComparable<Interval<T>>, IOverlaps<Interval<T>>
+    public abstract record class Interval<T> : IComparable<Interval<T>>
         where T : struct, IEquatable<T>, IComparable<T>, IComparable
     {
         private readonly Unbounded<T> _start;
@@ -82,6 +81,28 @@ namespace IntervalRecords
         public bool IsHalfBounded() => GetBoundaryState() is BoundaryState.LeftBounded or BoundaryState.RightBounded;
 
         /// <summary>
+        /// Determines if the interval is half-open.
+        /// </summary>
+        /// <typeparam name="T">The type of the interval endpoints.</typeparam>
+        /// <param name="value">The interval to determine if it is half-open.</param>
+        /// <returns>True if the interval is half-open.</returns>
+        public bool IsHalfOpen()
+            => IntervalType is IntervalType.ClosedOpen or IntervalType.OpenClosed;
+
+        /// <summary>
+        /// Creates an interval.
+        /// </summary>
+        /// <param name="start">Represents the start value of the interval.</param>
+        /// <param name="end">Represents the end value of the interval.</param>
+        /// <param name="startInclusive">Indicates whether the start is inclusive.</param>
+        /// <param name="endInclusive">Indicates whether the end is inclusive.</param>
+        public Interval(T? start, T? end)
+        {
+            _start = start.ToNegativeInfinity();
+            _end = end.ToPositiveInfinity();
+        }
+
+        /// <summary>
         /// Creates an interval.
         /// </summary>
         /// <param name="start">Represents the start value of the interval.</param>
@@ -93,29 +114,6 @@ namespace IntervalRecords
             _start = -start;
             _end = +end;
         }
-
-        public static Interval<T> Create(
-                Unbounded<T> start,
-                Unbounded<T> end,
-                bool startInclusive,
-                bool endInclusive)
-                => (startInclusive, endInclusive) switch
-                {
-                    (true, true) => new ClosedInterval<T>(start, end),
-                    (false, true) => new OpenClosedInterval<T>(start, end),
-                    (true, false) => new ClosedOpenInterval<T>(start, end),
-                    (false, false) => new OpenInterval<T>(start, end)
-                };
-
-        public static Interval<T> Create(Unbounded<T> start, Unbounded<T> end, IntervalType intervalType) => intervalType switch
-        {
-            IntervalType.Closed => new ClosedInterval<T>(start, end),
-            IntervalType.ClosedOpen => new ClosedOpenInterval<T>(start, end),
-            IntervalType.OpenClosed => new OpenClosedInterval<T>(start, end),
-            IntervalType.Open => new OpenInterval<T>(start, end),
-            _ => throw new NotImplementedException(),
-        };
-
 
         public static Interval<T> Unbounded(IntervalType intervalType) => intervalType switch
         {
@@ -152,21 +150,21 @@ namespace IntervalRecords
                 (UnboundedState.Finite, UnboundedState.PositiveInfinity) => BoundaryState.LeftBounded,
                 _ => throw new NotSupportedException()
             };
-
         /// <summary>
         /// Returns a boolean value indicating if the current interval contains the specified value.
         /// </summary>
         /// <param name="value">The value to check if it is contained by the current interval</param>
         /// <returns></returns>
-        public abstract bool Contains(Unbounded<T> value);
+        public abstract bool Contains(T value);
 
         /// <summary>
         /// Returns a boolean value indicating if the current interval overlaps with the other interval.
         /// </summary>
         /// <param name="other">The interval to check for overlapping with the current interval.</param>
-        /// <param name="includeHalfOpen">Indicates how to treat half-open endpoints in <see cref="IntervalOverlapping.Meets"/> or <see cref="IntervalOverlapping.MetBy"/> comparison.</param>
         /// <returns>True if the current interval and the other interval overlap, False otherwise.</returns>
         public abstract bool Overlaps(Interval<T> other);
+
+        public abstract bool IsConnected(Interval<T> other);
 
         /// <summary>
         /// Determines interval overlapping relation between two intervals.
@@ -183,39 +181,54 @@ namespace IntervalRecords
             (-1, 0) => IntervalOverlapping.FinishedBy,
             (-1, 1) => IntervalOverlapping.Contains,
             (0, 1) => IntervalOverlapping.StartedBy,
-            (-1, -1) => CompareEndStart(other),
-            (1, 1) => CompareStartEnd(other),
+            (-1, -1) => CompareEndToStart(other),
+            (1, 1) => CompareStartToEnd(other),
             (_, _) => throw new NotSupportedException()
         };
 
-        public abstract bool IsConnected(Interval<T> other);
-
-        protected abstract int CompareStart(Interval<T> other);
-
-        protected abstract int CompareEnd(Interval<T> other);
-
-        protected abstract IntervalOverlapping CompareStartEnd(Interval<T> other);
-
-        protected abstract IntervalOverlapping CompareEndStart(Interval<T> other);
+        /// <summary>
+        /// Compares the start of two intervals.
+        /// </summary>
+        /// <param name="other">The other interval to compare.</param>
+        /// <returns>A value indicating the relative order of the start of the two intervals.</returns>
+        protected virtual int CompareStart(Interval<T> other)
+        {
+            return Start == other.Start ? StartInclusive.CompareTo(other.StartInclusive) : Start.CompareTo(other.Start);
+        }
 
         /// <summary>
-        /// Returns the gap between two intervals, or null if the two intervals overlap.
+        /// Compares the end of two intervals.
         /// </summary>
-        /// <typeparam name="T">The type of the interval bounds.</typeparam>
-        /// <param name="first">The first interval.</param>
-        /// <param name="other">The second interval.</param>
-        /// <returns>The gap between the two intervals, if any, or null if the two intervals overlap.</returns>
-        public Interval<T>? Gap(Interval<T> other)
+        /// <param name="other">The other interval to compare.</param>
+        /// <returns>A value indicating the relative order of the end of the two intervals.</returns>
+        protected virtual int CompareEnd(Interval<T> other)
         {
-            if (Start > other.End || (Start == other.End && !StartInclusive && !other.EndInclusive))
-            {
-                return Interval<T>.Create(other.End, Start, !other.EndInclusive, !StartInclusive);
-            }
-            if (End < other.Start || (End == other.Start && !EndInclusive && !other.StartInclusive))
-            {
-                return Interval<T>.Create(End, other.Start, !EndInclusive, !other.StartInclusive);
-            }
-            return null;
+            return End == other.End ? EndInclusive.CompareTo(other.EndInclusive) : End.CompareTo(other.End);
+        }
+
+        /// <summary>
+        /// Compares the start of the first interval with the end of the second interval.
+        /// </summary>
+        /// <param name="other">The other interval to compare.</param>
+        /// <returns>A value indicating the relative order of the end of the two intervals.</returns>
+        public virtual IntervalOverlapping CompareStartToEnd(Interval<T> other)
+        {
+            return Start == other.End && (!StartInclusive || !other.EndInclusive)
+                ? IntervalOverlapping.After
+                : (IntervalOverlapping)Start.CompareTo(other.End) + (int)IntervalOverlapping.MetBy;
+        }
+
+        /// <summary>
+        /// Compares the end of the first interval with the start of the second interval.
+        /// </summary>
+        /// <param name="other">The other interval to compare.</param>
+        /// <returns>A value indicating the relative order of the end of the two intervals.</returns>
+        public virtual IntervalOverlapping CompareEndToStart(Interval<T> other)
+        {
+            var result = End.CompareTo(other.Start);
+            return result == 0 && (!EndInclusive || !other.StartInclusive)
+                ? IntervalOverlapping.Before
+                : (IntervalOverlapping)result + (int)IntervalOverlapping.Meets;
         }
 
         /// <summary>
@@ -258,6 +271,80 @@ namespace IntervalRecords
             end = End;
             startInclusive = StartInclusive;
             endInclusive = EndInclusive;
+        }
+
+        /// <summary>
+        /// Computes the union of two intervals if they overlap.
+        /// </summary>
+        /// <typeparam name="T">The type of the interval bounds.</typeparam>
+        /// <param name="first">The first interval to be unioned.</param>
+        /// <param name="other">The second interval to be unioned.</param>
+        /// <returns>The union of the two intervals if they overlap, otherwise returns null.</returns>
+        public Interval<T>? Union(Interval<T> other)
+            => IsConnected(other)
+                ? Hull(other)
+                : null;
+
+        /// <summary>
+        /// Computes the smallest interval that contains both input intervals.
+        /// </summary>
+        /// <typeparam name="T">The type of the interval bounds.</typeparam>
+        /// <param name="other">The second interval to compute the hull of.</param>
+        /// <returns>The smallest interval that contains both input intervals.</returns>
+        public Interval<T> Hull(Interval<T> other)
+        {
+            var minByStart = MinBy(other, i => i.Start);
+            var maxByEnd = MaxBy(other, i => i.End);
+
+            var startInclusive = Start == other.Start
+                ? StartInclusive || other.StartInclusive
+                : minByStart.StartInclusive;
+
+            var endInclusive = End == other.End
+                ? EndInclusive || other.EndInclusive
+                : maxByEnd.EndInclusive;
+
+            return Interval.Create(minByStart.Start, maxByEnd.End, startInclusive, endInclusive);
+        }
+
+        /// <summary>
+        /// Returns the interval that is greater than or equal to the other interval, using a specific selector function to extract the value to compare.
+        /// </summary>
+        /// <typeparam name="TProperty">The type of the property to compare.</typeparam>
+        /// <param name="other">The second interval to compare.</param>
+        /// <param name="selector">The selector function to extract the value to compare from the intervals.</param>
+        /// <returns>The interval that is greater than or equal to the other interval based on the comparison of the selected values.</returns>
+        public Interval<T> MaxBy<TProperty>(Interval<T> other, Func<Interval<T>, TProperty> selector)
+            where TProperty : IComparable<TProperty>
+            => selector(this).CompareTo(selector(other)) >= 0 ? this : other;
+
+        /// <summary>
+        /// Returns the minimum interval between two intervals, using a specific selector function to extract the value to compare.
+        /// </summary>
+        /// <typeparam name="TProperty">The type of the property to compare.</typeparam>
+        /// <param name="other">The second interval to compare.</param>
+        /// <param name="selector">The selector function to extract the value to compare from the intervals.</param>
+        /// <returns>The interval that is less than or equal to the other interval based on the comparison of the selected values.</returns>
+        public Interval<T> MinBy<TProperty>(Interval<T> other, Func<Interval<T>, TProperty> selector)
+            where TProperty : IComparable<TProperty>
+            => selector(this).CompareTo(selector(other)) <= 0 ? this : other;
+
+        /// <summary>
+        /// Returns the gap between two intervals, or null if the two intervals overlap.
+        /// </summary>
+        /// <param name="other">The second interval.</param>
+        /// <returns>The gap between the two intervals, if any, or null if the two intervals overlap.</returns>
+        public Interval<T>? Gap(Interval<T> other)
+        {
+            if (Start > other.End || (Start == other.End && !StartInclusive && !other.EndInclusive))
+            {
+                return Interval.Create(other.End, Start, !other.EndInclusive, !StartInclusive);
+            }
+            if (End < other.Start || (End == other.Start && !EndInclusive && !other.StartInclusive))
+            {
+                return Interval.Create(End, other.Start, !EndInclusive, !other.StartInclusive);
+            }
+            return null;
         }
     }
 }

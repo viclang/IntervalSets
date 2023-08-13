@@ -2,34 +2,18 @@
 
 namespace IntervalRecords.Tests
 {
-    public class OverlapsTests : DataSetTestsBase
+    public class OverlapsTests
     {
         [Theory]
-        [MemberData(nameof(IntervalPairsWithOverlappingState), false)]
-        public void Overlaps(Interval<int> left, Interval<int> right, IntervalOverlapping overlappingState)
+        [ClassData(typeof(Int32OverlapClassData))]
+        public void Overlaps(OverlapTestData<int> testData)
         {
             // Arrange
-            var expectedResult = overlappingState != IntervalOverlapping.Before
-                && overlappingState != IntervalOverlapping.After;
+            var expectedResult = testData.Overlap is not IntervalOverlapping.Before
+                and not IntervalOverlapping.After;
 
             // Act
-            var actual = left.Overlaps(right);
-
-            // Assert
-            actual.Should().Be(expectedResult);
-        }
-
-
-        [Theory]
-        [MemberData(nameof(IntervalPairsWithOverlappingState), true)]
-        public void Overlaps_IncludeHalfOpen(Interval<int> left, Interval<int> right, IntervalOverlapping overlappingState)
-        {
-            // Arrange
-            var expectedResult = overlappingState != IntervalOverlapping.Before
-                && overlappingState != IntervalOverlapping.After;
-
-            // Act
-            var actual = left.IsConnected(right);
+            var actual = testData.First.Overlaps(testData.Second);
 
             // Assert
             actual.Should().Be(expectedResult);

@@ -1,8 +1,7 @@
 ﻿using Unbounded;
-
-namespace IntervalRecords
+namespace IntervalRecords.Extensions
 {
-    public static partial class Interval
+    public static partial class IntervalExtensions
     {
         /// <summary>
         /// Computes the interval representing the portion of the first interval that does not overlap with the second interval.
@@ -13,7 +12,9 @@ namespace IntervalRecords
         /// <returns>The portion of the first interval that does not overlap with the second interval, or null if the intervals do not overlap</returns>
         public static Interval<T>? Except<T>(this Interval<T> first, Interval<T> second)
             where T : struct, IEquatable<T>, IComparable<T>, IComparable
-            => !first.IsConnected(second) ? null : GetExceptValue(first, second);
+        {
+            return first.IsConnected(second) ? GetExceptValue(first, second) : null;
+        }
 
         /// <summary>
         /// Computes the interval representing the portion of the first interval that does not overlap with the second interval, or an empty interval if they do not overlap.
@@ -24,7 +25,7 @@ namespace IntervalRecords
         /// <returns>The portion of the first interval that does not overlap with the second interval, or an empty interval if they do not overlap.</returns>
         public static Interval<T> ExceptOrEmpty<T>(this Interval<T> first, Interval<T> second)
             where T : struct, IEquatable<T>, IComparable<T>, IComparable
-            => !first.IsConnected(second) ? first with { Start = Unbounded<T>.NaN, End = Unbounded<T>.NaN } : GetExceptValue(first, second);
+            => first.IsConnected(second) ? GetExceptValue(first, second) : first with { Start = Unbounded<T>.NaN, End = Unbounded<T>.NaN };
 
         /// <summary>
         /// Computes the collection of intervals representing the portions of the collection of intervals that do not overlap with each other.
@@ -50,7 +51,7 @@ namespace IntervalRecords
                 ? first.EndInclusive || second.EndInclusive
                 : maxByStart.EndInclusive;
 
-            return Interval<T>.Create(minByStart.Start, maxByStart.Start, startInclusive, endInclusive);
+            return Interval.Create(minByStart.Start, maxByStart.Start, startInclusive, endInclusive);
         }
     }
 }

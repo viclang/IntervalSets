@@ -17,7 +17,7 @@
         {
             // Arrange
             var (startInclusive, endInclusive) = intervalType.ToTuple();
-            var interval = Interval<int>.Create(start, end, startInclusive, endInclusive);
+            var interval = Interval.Create<int>(start, end, startInclusive, endInclusive);
 
             // Act
             var actual = interval.ToString();

@@ -1,6 +1,6 @@
-﻿namespace IntervalRecords
+﻿namespace IntervalRecords.Extensions
 {
-    public static partial class Interval
+    public static partial class IntervalExtensions
     {
         /// <summary>
         /// Returns an enumerable of results obtained by applying a specified function to the adjacent intervals in the source.
@@ -14,6 +14,28 @@
         public static IEnumerable<TResult> Pairwise<T, TResult>(
             this IEnumerable<Interval<T>> source,
             Func<Interval<T>, Interval<T>, TResult?> resultSelector)
+            where T : struct, IEquatable<T>, IComparable<T>, IComparable
+        {
+            using var e = source.OrderBy(x => x.Start).GetEnumerator();
+
+            if (!e.MoveNext())
+                yield break;
+
+            var previous = e.Current;
+            while (e.MoveNext())
+            {
+                var result = resultSelector(previous, e.Current);
+                if (result != null)
+                    yield return result;
+
+                previous = e.Current;
+            }
+        }
+
+        public static IEnumerable<TResult> PairwiseWhere<T, TResult>(
+            this IEnumerable<Interval<T>> source,
+            Func<Interval<T>, Interval<T>, TResult?> resultSelector,
+            Func<TResult> predicate)
             where T : struct, IEquatable<T>, IComparable<T>, IComparable
         {
             using var e = source.OrderBy(x => x.Start).GetEnumerator();

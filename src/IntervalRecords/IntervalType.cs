@@ -28,34 +28,4 @@
             _ => throw new NotSupportedException()
         };
     }
-
-    public static partial class Interval
-    {
-        /// <summary>
-        /// Determines the interval type.
-        /// </summary>
-        /// <typeparam name="T">The type of the interval endpoints.</typeparam>
-        /// <param name="value">The interval to determine the type of.</param>
-        /// <returns>The interval type as an IntervalType enumeration value.</returns>
-        public static IntervalType GetIntervalType<T>(this Interval<T> value)
-            where T : struct, IEquatable<T>, IComparable<T>, IComparable
-            => (value.StartInclusive, value.EndInclusive) switch
-            {
-                (true, true) => IntervalType.Closed,
-                (true, false) => IntervalType.ClosedOpen,
-                (false, true) => IntervalType.OpenClosed,
-                (false, false) => IntervalType.Open,
-            };
-
-        /// <summary>
-        /// Determines if the interval is half-open.
-        /// </summary>
-        /// <typeparam name="T">The type of the interval endpoints.</typeparam>
-        /// <param name="value">The interval to determine if it is half-open.</param>
-        /// <returns>True if the interval is half-open.</returns>
-        public static bool IsHalfOpen<T>(this Interval<T> value)
-            where T : struct, IEquatable<T>, IComparable<T>, IComparable
-            => value.GetIntervalType() is IntervalType.ClosedOpen or IntervalType.OpenClosed;
-
-    }
 }

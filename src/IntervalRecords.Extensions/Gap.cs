@@ -1,6 +1,6 @@
-﻿namespace IntervalRecords
+﻿namespace IntervalRecords.Extensions
 {
-    public static partial class Interval
+    public static partial class IntervalExtensions
     {
         /// <summary>
         /// Returns the gap between two intervals, or null if the two intervals overlap.
@@ -13,8 +13,8 @@
             where T : struct, IEquatable<T>, IComparable<T>, IComparable
             => first.GetOverlap(second) switch
             {
-                IntervalOverlapping.Before => Interval<T>.Create(first.End, second.Start, !first.EndInclusive, !second.StartInclusive),
-                IntervalOverlapping.After => Interval<T>.Create(second.End, first.Start, !second.EndInclusive, !first.StartInclusive),
+                IntervalOverlapping.Before => Interval.Create(first.End, second.Start, !first.EndInclusive, !second.StartInclusive),
+                IntervalOverlapping.After => Interval.Create(second.End, first.Start, !second.EndInclusive, !first.StartInclusive),
                 _ => null
             };
 
@@ -29,8 +29,8 @@
             where T : struct, IEquatable<T>, IComparable<T>, IComparable
             => first.GetOverlap(second) switch
             {
-                IntervalOverlapping.Before => Interval<T>.Create(first.End, second.Start, !first.EndInclusive, !second.StartInclusive),
-                IntervalOverlapping.After => Interval<T>.Create(second.End, first.Start, !second.EndInclusive, !first.StartInclusive),
+                IntervalOverlapping.Before => Interval.Create(first.End, second.Start, !first.EndInclusive, !second.StartInclusive),
+                IntervalOverlapping.After => Interval.Create(second.End, first.Start, !second.EndInclusive, !first.StartInclusive),
                 _ => Interval<T>.Empty(first.IntervalType)
             };
 

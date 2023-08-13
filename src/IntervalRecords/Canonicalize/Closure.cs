@@ -61,9 +61,9 @@ namespace IntervalRecords
         {
             if (source.IsEmpty)
             {
-                return new ClosedInterval<T>(Unbounded<T>.NaN, Unbounded<T>.NaN);
+                return ClosedInterval<T>.Empty;
             }
-            if (source.GetIntervalType() == IntervalType.Closed)
+            if (source.IntervalType == IntervalType.Closed)
             {
                 return (ClosedInterval<T>)source;
             }
