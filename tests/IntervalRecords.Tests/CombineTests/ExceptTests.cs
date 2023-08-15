@@ -29,17 +29,10 @@ namespace IntervalRecords.Tests.CombineTests
 
             using (new AssertionScope())
             {
-                if (testData.Overlap is not IntervalOverlapping.Before and not IntervalOverlapping.After || testData.First.IsHalfBounded())
-                {
-                    actual!.Start.Should().Be(minByStart.Start);
-                    actual!.End.Should().Be(+maxByStart.Start);
-                    actual!.StartInclusive.Should().Be(expectedStartInclusive);
-                    actual!.EndInclusive.Should().Be(expectedEndInclusive);
-                }
-                else
-                {
-                    actual.Should().BeNull();
-                }
+                actual!.Start.Should().Be(minByStart.Start);
+                actual!.End.Should().Be(+maxByStart.Start);
+                actual!.StartInclusive.Should().Be(expectedStartInclusive);
+                actual!.EndInclusive.Should().Be(expectedEndInclusive);
             }
         }
 

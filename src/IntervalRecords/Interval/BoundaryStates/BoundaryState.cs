@@ -1,6 +1,4 @@
-﻿using Unbounded;
-
-namespace IntervalRecords
+﻿namespace IntervalRecords
 {
     /// <summary>
     /// Specifies the bounded state of an interval.

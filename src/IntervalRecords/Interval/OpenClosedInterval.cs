@@ -1,11 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Unbounded;
+﻿using Unbounded;
 
-namespace IntervalRecords.Types;
+namespace IntervalRecords;
 public sealed record OpenClosedInterval<T> : Interval<T>
     where T : struct, IEquatable<T>, IComparable<T>, IComparable
 {

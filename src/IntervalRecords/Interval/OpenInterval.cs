@@ -1,10 +1,4 @@
-﻿using IntervalRecords.Types;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Unbounded;
+﻿using Unbounded;
 
 namespace IntervalRecords;
 public sealed record OpenInterval<T> : Interval<T>

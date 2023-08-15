@@ -1,7 +1,4 @@
-﻿using IntervalRecords.Types;
-using System.Collections.Generic;
-using System.Text;
-using Unbounded;
+﻿using Unbounded;
 
 namespace IntervalRecords;
 public sealed record ClosedInterval<T> : Interval<T>
@@ -70,7 +67,7 @@ public sealed record ClosedInterval<T> : Interval<T>
 
     protected override int CompareStart(Interval<T> other)
     {
-        if(!other.StartInclusive && Start == other.Start)
+        if (!other.StartInclusive && Start == other.Start)
         {
             return 1;
         }
@@ -88,7 +85,7 @@ public sealed record ClosedInterval<T> : Interval<T>
 
     public override IntervalOverlapping CompareStartToEnd(Interval<T> other)
     {
-        if(!other.EndInclusive && Start == other.End)
+        if (!other.EndInclusive && Start == other.End)
         {
             return IntervalOverlapping.After;
         }

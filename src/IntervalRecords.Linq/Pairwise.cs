@@ -1,4 +1,4 @@
-﻿namespace IntervalRecords.Extensions
+﻿namespace IntervalRecords.Linq
 {
     public static partial class IntervalExtensions
     {
@@ -25,7 +25,7 @@
             while (e.MoveNext())
             {
                 var result = resultSelector(previous, e.Current);
-                if (result != null)
+                if (result is not null)
                     yield return result;
 
                 previous = e.Current;
@@ -35,7 +35,7 @@
         public static IEnumerable<TResult> PairwiseWhere<T, TResult>(
             this IEnumerable<Interval<T>> source,
             Func<Interval<T>, Interval<T>, TResult?> resultSelector,
-            Func<TResult> predicate)
+            Func<TResult, bool> predicate)
             where T : struct, IEquatable<T>, IComparable<T>, IComparable
         {
             using var e = source.OrderBy(x => x.Start).GetEnumerator();
@@ -47,7 +47,7 @@
             while (e.MoveNext())
             {
                 var result = resultSelector(previous, e.Current);
-                if (result != null)
+                if (result is not null && predicate(result))
                     yield return result;
 
                 previous = e.Current;

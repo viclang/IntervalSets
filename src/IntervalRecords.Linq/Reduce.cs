@@ -1,4 +1,4 @@
-﻿namespace IntervalRecords.Extensions
+﻿namespace IntervalRecords.Linq
 {
     public static partial class IntervalExtensions
     {

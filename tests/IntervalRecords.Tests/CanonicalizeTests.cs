@@ -64,7 +64,7 @@ namespace IntervalRecords.Tests.CanonicalizeTests
         {
             // Arrange
             var interval = Interval.Create<T>(start.ToBoundary<T>(), end.ToBoundary<T>(), intervalType);
-
+            
             // Act
             var actual = Closure(interval, 1.ToStep<T, TStep>());
 

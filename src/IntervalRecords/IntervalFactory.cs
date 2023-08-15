@@ -1,5 +1,4 @@
-﻿using IntervalRecords.Types;
-using Unbounded;
+﻿using Unbounded;
 
 namespace IntervalRecords;
 public static partial class Interval
