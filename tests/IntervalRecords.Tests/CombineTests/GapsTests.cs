@@ -1,6 +1,4 @@
-﻿using IntervalRecords.Tests.TestData;
-using IntervalRecords.Types;
-using System.Linq;
+﻿using IntervalRecords.Extensions;
 
 namespace IntervalRecords.Tests.CombineTests
 {

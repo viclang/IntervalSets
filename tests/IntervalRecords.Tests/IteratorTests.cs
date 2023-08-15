@@ -1,5 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using IntervalRecords.Extensions;
+using IntervalRecords.Types;
 
 namespace IntervalRecords.Tests
 {

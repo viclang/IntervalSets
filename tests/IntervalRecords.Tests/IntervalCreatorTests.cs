@@ -1,4 +1,4 @@
-﻿using IntervalRecords.Types;
+﻿using IntervalRecords.Extensions;
 using Unbounded;
 
 namespace IntervalRecords.Tests
@@ -43,9 +43,9 @@ namespace IntervalRecords.Tests
             bool startInclusive,
             bool endInclusive)
         {
-            var actual = Interval.Create<int>(start, end, intervalType);
+            var actual = IntervalFactory.Create<int>(start, end, intervalType);
 
-            actual.Should().Be(Interval.Create<int>(start, end, startInclusive, endInclusive));
+            actual.Should().Be(IntervalFactory.Create<int>(start, end, startInclusive, endInclusive));
         }
     }
 }

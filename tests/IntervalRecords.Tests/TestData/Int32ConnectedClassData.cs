@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using IntervalRecords.Types;
 
 namespace IntervalRecords.Tests.TestData;
 public class Int32ConnectedClassData : IEnumerable<object[]>

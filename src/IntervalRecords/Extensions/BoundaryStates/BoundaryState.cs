@@ -1,4 +1,4 @@
-﻿namespace IntervalRecords
+﻿namespace IntervalRecords.Extensions
 {
     /// <summary>
     /// Specifies the bounded state of an interval.

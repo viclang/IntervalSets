@@ -1,7 +1,6 @@
-﻿using IntervalRecords.Types;
+﻿using IntervalRecords.Extensions;
 using System.Collections.Generic;
 using System.Linq;
-using Unbounded;
 
 namespace IntervalRecords.Tests.TestData;
 public sealed class Int32OverlapTestDataBuilder : OverlapBuilderBase<int>

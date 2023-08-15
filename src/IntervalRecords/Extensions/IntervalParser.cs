@@ -1,9 +1,9 @@
 ﻿using System.Text.RegularExpressions;
 using Unbounded;
 
-namespace IntervalRecords
+namespace IntervalRecords.Extensions
 {
-    public abstract partial record Interval<T>
+    public static class IntervalParser
     {
         private static readonly Regex intervalRegex = new(@"(?:\[|\()(?:[^[\](),]*,[^,()[\]]*)(?:\)|\])");
         private const string intervalNotFound = "Interval not found in string. Please provide an interval string in correct format";
@@ -13,14 +13,15 @@ namespace IntervalRecords
         /// </summary>
         /// <param name="value">The string representation of the interval to parse.</param>
         /// <returns>A new interval object representing the interval described by the input string.</returns>
-        public static Interval<T> Parse(string value)
+        public static Interval<T> Parse<T>(string value)
+            where T : struct, IEquatable<T>, IComparable<T>, IComparable
         {
             var match = intervalRegex.Match(value);
             if (!match.Success)
             {
                 throw new ArgumentException(intervalNotFound);
             }
-            return ParseInterval(match.Value);
+            return ParseInterval<T>(match.Value);
         }
 
         /// <summary>
@@ -30,11 +31,12 @@ namespace IntervalRecords
         /// <param name="value">The string representation of the interval to parse.</param>
         /// <param name="result">The resulting interval object if the parse was successful, or null if the parse was not successful.</param>
         /// <returns>True if the parse was successful, False otherwise.</returns>
-        public static bool TryParse(string value, out Interval<T>? result)
+        public static bool TryParse<T>(string value, out Interval<T>? result)
+            where T : struct, IEquatable<T>, IComparable<T>, IComparable
         {
             try
             {
-                result = Parse(value);
+                result = Parse<T>(value);
                 return true;
             }
             catch
@@ -50,13 +52,15 @@ namespace IntervalRecords
         /// <typeparam name="T">The type of values represented in the interval.</typeparam>
         /// <param name="value">The string representation of the intervals to parse.</param>
         /// <returns>An enumerable collection of interval objects representing the intervals described by the input string.</returns>
-        public static IEnumerable<Interval<T>> ParseAll(string value)
+        public static IEnumerable<Interval<T>> ParseAll<T>(string value)
+            where T : struct, IEquatable<T>, IComparable<T>, IComparable
         {
             var matches = intervalRegex.Matches(value);
-            return matches.Select(match => ParseInterval(match.Value));
+            return matches.Select(match => ParseInterval<T>(match.Value));
         }
 
-        private static Interval<T> ParseInterval(string value)
+        private static Interval<T> ParseInterval<T>(string value)
+            where T : struct, IEquatable<T>, IComparable<T>, IComparable
         {
             var parts = value.Split(',');
             var startString = parts[0].Trim();
@@ -65,7 +69,7 @@ namespace IntervalRecords
             var start = Unbounded<T>.Parse(startString[1..]);
             var end = Unbounded<T>.Parse(endString[..(endString.Length - 1)]);
 
-            return Interval.Create(
+            return IntervalFactory.Create(
                 start,
                 end,
                 value.StartsWith('['),

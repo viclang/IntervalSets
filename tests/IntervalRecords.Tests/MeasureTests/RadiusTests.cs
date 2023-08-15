@@ -1,4 +1,6 @@
-﻿using IntervalRecords.Tests.TestHelper;
+﻿using IntervalRecords.Extensions;
+using IntervalRecords.Tests.TestHelper;
+using IntervalRecords.Types;
 using System;
 
 namespace IntervalRecords.Tests.Measure.Radius

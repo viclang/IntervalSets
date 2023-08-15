@@ -115,7 +115,7 @@ namespace IntervalRecords
             _ => throw new NotImplementedException(),
         };
 
-        
+
         /// <summary>
         /// Returns a boolean value indicating if the current interval contains the specified value.
         /// </summary>
@@ -132,56 +132,34 @@ namespace IntervalRecords
 
         public abstract bool IsConnected(Interval<T> other);
 
-        /// <summary>
-        /// Determines interval overlapping relation between two intervals.
-        /// </summary>
-        /// <typeparam name="T">The type of the interval endpoints.</typeparam>
-        /// <param name="first">The first interval to compare.</param>
-        /// <param name="second">The second interval to compare.</param>
-        public IntervalOverlapping GetOverlap(Interval<T> other) => new ValueTuple<int, int>(CompareStart(other), CompareEnd(other)) switch
-        {
-            (0, 0) => IntervalOverlapping.Equal,
-            (0, -1) => IntervalOverlapping.Starts,
-            (1, -1) => IntervalOverlapping.ContainedBy,
-            (1, 0) => IntervalOverlapping.Finishes,
-            (-1, 0) => IntervalOverlapping.FinishedBy,
-            (-1, 1) => IntervalOverlapping.Contains,
-            (0, 1) => IntervalOverlapping.StartedBy,
-            (-1, -1) => CompareEndToStart(other),
-            (1, 1) => CompareStartToEnd(other),
-            (_, _) => throw new NotSupportedException()
-        };
 
         /// <summary>
         /// Compares the start of two intervals.
         /// </summary>
         /// <param name="other">The other interval to compare.</param>
         /// <returns>A value indicating the relative order of the start of the two intervals.</returns>
-        protected virtual int CompareStart(Interval<T> other)
-        {
-            return Start == other.Start ? StartInclusive.CompareTo(other.StartInclusive) : Start.CompareTo(other.Start);
-        }
+        public abstract int CompareStart(Interval<T> other);
 
         /// <summary>
         /// Compares the end of two intervals.
         /// </summary>
         /// <param name="other">The other interval to compare.</param>
         /// <returns>A value indicating the relative order of the end of the two intervals.</returns>
-        protected abstract int CompareEnd(Interval<T> other);
+        public abstract int CompareEnd(Interval<T> other);
 
         /// <summary>
         /// Compares the start of the first interval with the end of the second interval.
         /// </summary>
         /// <param name="other">The other interval to compare.</param>
         /// <returns>A value indicating the relative order of the end of the two intervals.</returns>
-        public abstract IntervalOverlapping CompareStartToEnd(Interval<T> other);
+        public abstract int CompareStartToEnd(Interval<T> other);
 
         /// <summary>
         /// Compares the end of the first interval with the start of the second interval.
         /// </summary>
         /// <param name="other">The other interval to compare.</param>
         /// <returns>A value indicating the relative order of the end of the two intervals.</returns>
-        public abstract IntervalOverlapping CompareEndToStart(Interval<T> other);
+        public abstract int CompareEndToStart(Interval<T> other);
 
         /// <summary>
         /// This method compares the current interval with another interval and returns an integer value indicating the relative order of the intervals.

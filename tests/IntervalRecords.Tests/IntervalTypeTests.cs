@@ -1,4 +1,7 @@
-﻿namespace IntervalRecords.Tests
+﻿using IntervalRecords.Extensions;
+using IntervalRecords.Types;
+
+namespace IntervalRecords.Tests
 {
     public class IntervalTypeTests
     {

@@ -1,4 +1,5 @@
 ﻿using IntervalRecords.Tests.TestData;
+using IntervalRecords.Extensions;
 
 namespace IntervalRecords.Tests
 {

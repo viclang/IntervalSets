@@ -41,7 +41,7 @@ public sealed record ClosedOpenInterval<T> : Interval<T>
             || (other.StartInclusive && other.Start == End);
     }
 
-    protected override int CompareStart(Interval<T> other)
+    public override int CompareStart(Interval<T> other)
     {
         if (!other.StartInclusive && Start == other.Start)
         {
@@ -50,7 +50,7 @@ public sealed record ClosedOpenInterval<T> : Interval<T>
         return Start.CompareTo(other.Start);
     }
 
-    protected override int CompareEnd(Interval<T> other)
+    public override int CompareEnd(Interval<T> other)
     {
         if (other.EndInclusive && End == other.End)
         {
@@ -59,18 +59,18 @@ public sealed record ClosedOpenInterval<T> : Interval<T>
         return End.CompareTo(other.End);
     }
 
-    public override IntervalOverlapping CompareStartToEnd(Interval<T> other)
+    public override int CompareStartToEnd(Interval<T> other)
     {
         if (!other.EndInclusive && Start == other.End)
         {
-            return IntervalOverlapping.After;
+            return 1;
         }
-        return (IntervalOverlapping)Start.CompareTo(other.End) + (int)IntervalOverlapping.MetBy;
+        return Start.CompareTo(other.End);
     }
 
-    public override IntervalOverlapping CompareEndToStart(Interval<T> other)
+    public override int CompareEndToStart(Interval<T> other)
     {
-        return End <= other.Start ? IntervalOverlapping.Before : IntervalOverlapping.Overlaps;
+        return End > other.Start ? 1 : -1;
     }
 
     public override string ToString()

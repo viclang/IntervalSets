@@ -1,5 +1,5 @@
-﻿using IntervalRecords.Types;
-using System;
+﻿using System;
+using IntervalRecords.Extensions;
 
 namespace IntervalRecords.Tests
 {
@@ -53,7 +53,7 @@ namespace IntervalRecords.Tests
         public void Parse_ShouldThrowArgumentException(string stringToParse)
         {
             // Act
-            var act = () => Interval.Parse<int>(stringToParse);
+            var act = () => IntervalParser.Parse<int>(stringToParse);
 
             // Assert
             act.Should()
@@ -68,7 +68,7 @@ namespace IntervalRecords.Tests
         public void Parse_ShouldThrowFormatException(string stringToParse)
         {
             // Act
-            var act = () => Interval.Parse<int>(stringToParse);
+            var act = () => IntervalParser.Parse<int>(stringToParse);
 
             // Assert
             act.Should()
@@ -81,7 +81,7 @@ namespace IntervalRecords.Tests
         public void Parse_ShouldBeExpectedResult(string stringToParse, Interval<int> expectedResult)
         {
             // Act
-            var result = Interval.Parse<int>(stringToParse);
+            var result = IntervalParser.Parse<int>(stringToParse);
 
             // Assert
             result.Should().Be(expectedResult);
@@ -94,7 +94,7 @@ namespace IntervalRecords.Tests
         public void TryParse_ShouldBeExpectedResult(string stringToParse, Interval<int>? expectedResult)
         {
             // Act
-            var isValid = Interval.TryParse<int>(stringToParse, out var result);
+            var isValid = IntervalParser.TryParse<int>(stringToParse, out var result);
 
             // Assert
             isValid.Should().Be(expectedResult is not null);
@@ -105,7 +105,7 @@ namespace IntervalRecords.Tests
         public void ParseAll_ShouldBeEmpty()
         {
             // Act
-            var result = Interval.ParseAll<int>(InvalidString);
+            var result = IntervalParser.ParseAll<int>(InvalidString);
 
             // Assert
             result.Should().BeEmpty();
@@ -115,7 +115,7 @@ namespace IntervalRecords.Tests
         public void ParseAll_ShouldHaveCount()
         {
             // Act
-            var result = Interval.ParseAll<int>(validString);
+            var result = IntervalParser.ParseAll<int>(validString);
 
             // Assert
             result.Should().HaveCount(8);

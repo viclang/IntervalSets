@@ -1,4 +1,5 @@
-﻿using IntervalRecords.Tests.TestData;
+﻿using IntervalRecords.Extensions.Overlapping;
+using IntervalRecords.Tests.TestData;
 
 namespace IntervalRecords.Tests
 {

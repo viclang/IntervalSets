@@ -1,4 +1,6 @@
-﻿namespace IntervalRecords.Linq;
+﻿using IntervalRecords.Extensions;
+
+namespace IntervalRecords.Linq;
 public static partial class IntervalExtensions
 {
     /// <summary>
@@ -30,7 +32,7 @@ public static partial class IntervalExtensions
         var min = source.MinBy(i => i.Start)!;
         var max = source.MaxBy(i => i.End)!;
 
-        return Interval.Create(
+        return IntervalFactory.Create(
             min.Start,
             max.End,
             min.StartInclusive,

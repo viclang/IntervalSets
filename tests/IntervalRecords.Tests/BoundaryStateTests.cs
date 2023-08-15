@@ -1,4 +1,8 @@
-﻿namespace IntervalRecords.Tests
+﻿using IntervalRecords.BoundaryStates;
+using IntervalRecords.Extensions;
+using IntervalRecords.Extensions.BoundaryStates;
+
+namespace IntervalRecords.Tests
 {
     public class BoundaryStateTests
     {

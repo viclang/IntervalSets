@@ -1,4 +1,7 @@
-﻿namespace IntervalRecords.Tests.CombineTests
+﻿using IntervalRecords.Extensions;
+using IntervalRecords.Types;
+
+namespace IntervalRecords.Tests.CombineTests
 {
     public class EqualBoundaryValuesTests
     {
