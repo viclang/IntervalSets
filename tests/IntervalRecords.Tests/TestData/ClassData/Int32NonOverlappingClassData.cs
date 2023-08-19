@@ -15,7 +15,7 @@ public class Int32NonOverlappingClassData : IEnumerable<object[]>
         var testData = new List<object[]>();
         foreach (var intervalType in (IntervalType[])Enum.GetValues(typeof(IntervalType)))
         {
-            var builder = new IntervalTestDataBuilder<int, int>(_reference.Canonicalize(intervalType, 0), _offset);
+            var builder = new IntervalRelationTestDataBuilder<int, int>(_reference.Canonicalize(intervalType, 0), _offset);
 
             IntervalTestDataDirector.WithNonOverlapping(builder, intervalType);
 

@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 
 namespace IntervalRecords.Tests.TestData;
-public sealed class IntervalTestDataBuilder<T, TOffset> : IIntervalTestDataBuilder
+public sealed class IntervalRelationTestDataBuilder<T, TOffset> : IIntervalTestDataBuilder
     where T : struct, IEquatable<T>, IComparable<T>, IComparable
     where TOffset : struct, IEquatable<TOffset>, IComparable<TOffset>, IComparable
 {
@@ -14,7 +14,7 @@ public sealed class IntervalTestDataBuilder<T, TOffset> : IIntervalTestDataBuild
 
     private readonly List<IntervalRelationTestData<T>> _testData;
 
-    public IntervalTestDataBuilder(Interval<T> reference, TOffset offset)
+    public IntervalRelationTestDataBuilder(Interval<T> reference, TOffset offset)
     {
         _reference = reference;
         _offset = offset;
@@ -214,9 +214,9 @@ public sealed class IntervalTestDataBuilder<T, TOffset> : IIntervalTestDataBuild
         return this;
     }
 
-    public static implicit operator List<IntervalRelationTestData<T>>(IntervalTestDataBuilder<T, TOffset> builder)
+    public static implicit operator List<IntervalRelationTestData<T>>(IntervalRelationTestDataBuilder<T, TOffset> builder)
         => builder._testData;
 
-    public static implicit operator List<object[]>(IntervalTestDataBuilder<T, TOffset> builder)
+    public static implicit operator List<object[]>(IntervalRelationTestDataBuilder<T, TOffset> builder)
         => builder._testData.Select(data => new object[] { data }).ToList();
 }
