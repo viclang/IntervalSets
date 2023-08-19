@@ -1,6 +1,6 @@
 ﻿using IntervalRecords.Extensions;
 
-namespace IntervalRecords.Tests
+namespace IntervalRecords.Tests.ExtensionsTests
 {
     public class BoundaryStateTests
     {
