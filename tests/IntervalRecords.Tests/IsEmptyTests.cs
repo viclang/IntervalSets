@@ -1,6 +1,4 @@
-﻿using IntervalRecords.Extensions;
-
-namespace IntervalRecords.Tests
+﻿namespace IntervalRecords.Tests
 {
     public class IsEmptyTests
     {
@@ -19,6 +17,7 @@ namespace IntervalRecords.Tests
             var openClosed = new OpenClosedInterval<int>(value, value);
             var closedOpen = new ClosedOpenInterval<int>(value, value);
             var closed = new ClosedInterval<int>(value, value);
+            
             // Act
             var resultTrue = new bool[]
             {

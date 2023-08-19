@@ -1,6 +1,5 @@
 ﻿using IntervalRecords.Extensions;
 using IntervalRecords.Tests.TestHelper;
-using IntervalRecords.Types;
 using System;
 
 namespace IntervalRecords.Tests.Measure.Centre
@@ -41,7 +40,7 @@ namespace IntervalRecords.Tests.Measure.Centre
         public void GivenBoundedInterval_WhenMeasureCentre_ReturnsExpected(int? start, int? end, IntervalType intervalType, double? expected)
         {
             // Arrange
-            var interval = Interval.Create<T>(start.ToBoundary<T>(), end.ToBoundary<T>(), intervalType);
+            var interval = IntervalFactory.Create<T>(start.ToBoundary<T>(), end.ToBoundary<T>(), intervalType);
 
             // Act
             var actual = Centre(interval);
@@ -55,12 +54,12 @@ namespace IntervalRecords.Tests.Measure.Centre
             var type = typeof(T);
             return Type.GetTypeCode(type) switch
             {
-                TypeCode.Int32 => (TResult?)(object?)Interval.Centre((Interval<int>)(object)interval),
-                TypeCode.Double => (TResult?)(object?)Interval.Centre((Interval<double>)(object)interval),
-                TypeCode.DateTime => (TResult?)(object?)Interval.Centre((Interval<DateTime>)(object)interval),
-                _ when type == typeof(DateTimeOffset) => (TResult?)(object?)Interval.Centre((Interval<DateTimeOffset>)(object)interval),
-                _ when type == typeof(DateOnly) => (TResult?)(object?)Interval.Centre((Interval<DateOnly>)(object)interval),
-                _ when type == typeof(TimeOnly) => (TResult?)(object?)Interval.Centre((Interval<TimeOnly>)(object)interval),
+                TypeCode.Int32 => (TResult?)(object?)IntervalCalculator.Centre((Interval<int>)(object)interval),
+                TypeCode.Double => (TResult?)(object?)IntervalCalculator.Centre((Interval<double>)(object)interval),
+                TypeCode.DateTime => (TResult?)(object?)IntervalCalculator.Centre((Interval<DateTime>)(object)interval),
+                _ when type == typeof(DateTimeOffset) => (TResult?)(object?)IntervalCalculator.Centre((Interval<DateTimeOffset>)(object)interval),
+                _ when type == typeof(DateOnly) => (TResult?)(object?)IntervalCalculator.Centre((Interval<DateOnly>)(object)interval),
+                _ when type == typeof(TimeOnly) => (TResult?)(object?)IntervalCalculator.Centre((Interval<TimeOnly>)(object)interval),
                 _ => throw new NotSupportedException(type.FullName)
             };
         }

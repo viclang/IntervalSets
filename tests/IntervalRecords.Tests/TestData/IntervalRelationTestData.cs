@@ -3,5 +3,5 @@ using IntervalRecords.Extensions;
 using Unbounded;
 
 namespace IntervalRecords.Tests.TestData;
-public record OverlapTestData<T>(Interval<T> First, Interval<T> Second, IntervalOverlapping Overlap)
+public record IntervalRelationTestData<T>(Interval<T> First, Interval<T> Second, IntervalRelation Relation)
     where T : struct, IEquatable<T>, IComparable<T>, IComparable;

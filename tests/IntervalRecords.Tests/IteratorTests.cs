@@ -1,7 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using IntervalRecords.Extensions;
+using System.Collections.Generic;
 using System.Linq;
-using IntervalRecords.Extensions;
-using IntervalRecords.Types;
 
 namespace IntervalRecords.Tests
 {
@@ -16,7 +15,7 @@ namespace IntervalRecords.Tests
         {
             // Arrange
             var (startInclusive, endInclusive) = intervalType.ToTuple();
-            var interval = Interval.Create<int>(1, 10, startInclusive, endInclusive);
+            var interval = IntervalFactory.Create<int>(1, 10, startInclusive, endInclusive);
             var list = new List<Interval<int>>();
             // Act
             var actual = interval.Iterate(x => x + 1).ToList();
@@ -34,7 +33,7 @@ namespace IntervalRecords.Tests
         {
             // Arrange
             var (startInclusive, endInclusive) = intervalType.ToTuple();
-            var interval = Interval.Create<int>(1, 10, startInclusive, endInclusive);
+            var interval = IntervalFactory.Create<int>(1, 10, startInclusive, endInclusive);
 
             // Act
             var actual = interval.Iterate(5, x => x + 1).ToList();

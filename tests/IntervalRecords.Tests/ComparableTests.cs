@@ -1,101 +1,84 @@
-﻿//using IntervalRecords.Tests.TestData;
+﻿using IntervalRecords.Extensions;
+using IntervalRecords.Tests.TestData;
+using IntervalRecords.Tests.TestData.ClassData;
 
-//namespace IntervalRecords.Tests
-//{
-//    public class ComparableTests
-//    {
-//        [Theory]
-//        [MemberData(nameof(IntervalPairsWithOverlappingState), false)]
-//        public void CompareTo_ShouldBeExpected(Interval<int> a, Interval<int> b, IntervalOverlapping state)
-//        {
-//            // Act
-//            var actual = a.CompareTo(b);
+namespace IntervalRecords.Tests
+{
+    public class ComparableTests
+    {
+        [Theory]
+        [ClassData(typeof(Int32IntervalRelationClassData))]
+        public void CompareTo_ShouldBeExpected(IntervalRelationTestData<int> testData)
+        {
+            // Arrange
+            var expected = ExpectedCompareResult(testData.Relation);
 
-//            // Assert
-//            if ((int)state < 6)
-//            {
-//                actual.Should().Be(-1);
-//            }
-//            else if ((int)state == 6)
-//            {
-//                actual.Should().Be(0);
-//            }
-//            else if ((int)state > 6)
-//            {
-//                actual.Should().Be(1);
-//            }
-//        }
+            // Act
+            var actual = testData.First.CompareTo(testData.Second);
 
-//        [Theory]
-//        [MemberData(nameof(IntervalPairsWithOverlappingState), false)]
-//        public void GreaterThan_ShouldBeExpected(Interval<int> a, Interval<int> b, IntervalOverlapping state)
-//        {
-//            // Act
-//            var actual = a > b;
+            // Assert
+            actual.Should().Be(expected);
+        }
 
-//            // Assert
-//            if ((int)state <= 6)
-//            {
-//                actual.Should().BeFalse();
-//            }
-//            else if ((int)state > 6)
-//            {
-//                actual.Should().BeTrue();
-//            }
-//        }
+        [Theory]
+        [ClassData(typeof(Int32IntervalRelationClassData))]
+        public void GreaterThan_ShouldBeExpected(IntervalRelationTestData<int> testData)
+        {
+            // Arrange
+            var expected = ExpectedCompareResult(testData.Relation) > 0;
 
-//        [Theory]
-//        [MemberData(nameof(IntervalPairsWithOverlappingState), false)]
-//        public void LessThan_ShouldBeExpected(Interval<int> a, Interval<int> b, IntervalOverlapping state)
-//        {
-//            // Act
-//            var actual = a < b;
+            // Act
+            var actual = testData.First > testData.Second;
 
-//            // Assert
-//            if ((int)state < 6)
-//            {
-//                actual.Should().BeTrue();
-//            }
-//            else if ((int)state >= 6)
-//            {
-//                actual.Should().BeFalse();
-//            }
-//        }
+            // Assert
+            actual.Should().Be(expected);
+        }
 
-//        [Theory]
-//        [MemberData(nameof(IntervalPairsWithOverlappingState), false)]
-//        public void GreaterOrEqualTo_ShouldBeExpected(Interval<int> a, Interval<int> b, IntervalOverlapping state)
-//        {
-//            // Act
-//            var actual = a >= b;
+        [Theory]
+        [ClassData(typeof(Int32IntervalRelationClassData))]
+        public void LessThan_ShouldBeExpected(IntervalRelationTestData<int> testData)
+        {
+            // Arrange
+            var expected = ExpectedCompareResult(testData.Relation) < 0;
 
-//            // Assert
-//            if ((int)state < 6)
-//            {
-//                actual.Should().BeFalse();
-//            }
-//            else if ((int)state >= 6)
-//            {
-//                actual.Should().BeTrue();
-//            }
-//        }
+            // Act
+            var actual = testData.First < testData.Second;
 
-//        [Theory]
-//        [MemberData(nameof(IntervalPairsWithOverlappingState), false)]
-//        public void LessOrEqualTo_ShouldBeExpected(Interval<int> a, Interval<int> b, IntervalOverlapping state)
-//        {
-//            // Act
-//            var actual = a <= b;
+            // Assert
+            actual.Should().Be(expected);
+        }
 
-//            // Assert
-//            if ((int)state <= 6)
-//            {
-//                actual.Should().BeTrue();
-//            }
-//            else if ((int)state > 6)
-//            {
-//                actual.Should().BeFalse();
-//            }
-//        }
-//    }
-//}
+        [Theory]
+        [ClassData(typeof(Int32IntervalRelationClassData))]
+        public void GreaterOrEqualTo_ShouldBeExpected(IntervalRelationTestData<int> testData)
+        {
+            // Arrange
+            var expected = ExpectedCompareResult(testData.Relation) >= 0;
+
+            // Act
+            var actual = testData.First >= testData.Second;
+
+            // Assert
+            actual.Should().Be(expected);
+        }
+
+        [Theory]
+        [ClassData(typeof(Int32IntervalRelationClassData))]
+        public void LessOrEqualTo_ShouldBeExpected(IntervalRelationTestData<int> testData)
+        {
+            // Arrange
+            var expected = ExpectedCompareResult(testData.Relation) <= 0;
+
+            // Act
+            var actual = testData.First <= testData.Second;
+
+            // Assert
+            actual.Should().Be(expected);
+        }
+
+        private static int ExpectedCompareResult(IntervalRelation relation)
+        {
+            return ((int)relation).CompareTo((int)IntervalRelation.Equal);
+        }
+    }
+}

@@ -1,6 +1,5 @@
 ﻿using IntervalRecords.Extensions;
 using IntervalRecords.Tests.TestHelper;
-using IntervalRecords.Types;
 using System;
 using Unbounded;
 
@@ -40,7 +39,7 @@ namespace IntervalRecords.Tests.Measure.Length
         public void GivenInterval_WhenMeasureLength_ReturnsFiniteOrPositiveInfinity(int? start, int? end, IntervalType intervalType, int? expected)
         {
             // Arrange
-            var interval = Interval.Create<T>(start.ToBoundary<T>(), end.ToBoundary<T>(), intervalType);
+            var interval = IntervalFactory.Create<T>(start.ToBoundary<T>(), end.ToBoundary<T>(), intervalType);
 
             // Act
             var actual = Length(interval);
@@ -54,12 +53,12 @@ namespace IntervalRecords.Tests.Measure.Length
             var type = typeof(T);
             return Type.GetTypeCode(type) switch
             {
-                TypeCode.Int32 => (Unbounded<TResult>)(object)Interval.Length((Interval<int>)(object)interval),
-                TypeCode.Double => (Unbounded<TResult>)(object)Interval.Length((Interval<double>)(object)interval),
-                TypeCode.DateTime => (Unbounded<TResult>)(object)Interval.Length((Interval<DateTime>)(object)interval),
-                _ when type == typeof(DateTimeOffset) => (Unbounded<TResult>)(object)Interval.Length((Interval<DateTimeOffset>)(object)interval),
-                _ when type == typeof(DateOnly) => (Unbounded<TResult>)(object)Interval.Length((Interval<DateOnly>)(object)interval),
-                _ when type == typeof(TimeOnly) => (Unbounded<TResult>)(object)Interval.Length((Interval<TimeOnly>)(object)interval),
+                TypeCode.Int32 => (Unbounded<TResult>)(object)IntervalCalculator.Length((Interval<int>)(object)interval),
+                TypeCode.Double => (Unbounded<TResult>)(object)IntervalCalculator.Length((Interval<double>)(object)interval),
+                TypeCode.DateTime => (Unbounded<TResult>)(object)IntervalCalculator.Length((Interval<DateTime>)(object)interval),
+                _ when type == typeof(DateTimeOffset) => (Unbounded<TResult>)(object)IntervalCalculator.Length((Interval<DateTimeOffset>)(object)interval),
+                _ when type == typeof(DateOnly) => (Unbounded<TResult>)(object)IntervalCalculator.Length((Interval<DateOnly>)(object)interval),
+                _ when type == typeof(TimeOnly) => (Unbounded<TResult>)(object)IntervalCalculator.Length((Interval<TimeOnly>)(object)interval),
                 _ => throw new NotSupportedException(type.FullName)
             };
         }

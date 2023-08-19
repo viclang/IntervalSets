@@ -3,7 +3,7 @@
     /// <summary>
     /// Specifies the overlapping relation between two intervals.
     /// </summary>
-    public enum IntervalOverlapping : byte
+    public enum IntervalRelation : byte
     {
         /// <summary>
         /// Indicates that the first interval occurs before the second interval.

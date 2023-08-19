@@ -1,5 +1,4 @@
 ﻿using IntervalRecords.Extensions;
-using IntervalRecords.Types;
 
 namespace IntervalRecords.Tests
 {
@@ -20,7 +19,7 @@ namespace IntervalRecords.Tests
         {
             // Arrange
             var (startInclusive, endInclusive) = intervalType.ToTuple();
-            var interval = Interval.Create<int>(start, end, startInclusive, endInclusive);
+            var interval = IntervalFactory.Create<int>(start, end, startInclusive, endInclusive);
 
             // Act
             var actual = interval.ToString();

@@ -1,5 +1,4 @@
 ﻿using IntervalRecords.Extensions;
-using IntervalRecords.Types;
 
 namespace IntervalRecords.Tests
 {
@@ -16,7 +15,7 @@ namespace IntervalRecords.Tests
         public void GetIntervalType_ToTuple_ShouldBeExpected(bool startInclusive, bool endInclusive, IntervalType expected)
         {
             // Arrange
-            var interval = Interval.Create<int>(start, end, startInclusive, endInclusive);
+            var interval = IntervalFactory.Create<int>(start, end, startInclusive, endInclusive);
 
             // Act
             var actualIntervalType = interval.IntervalType;
@@ -36,7 +35,7 @@ namespace IntervalRecords.Tests
         public void IsHalfOpen_ShouldBeExpected(bool startInclusive, bool endInclusive, bool expected)
         {
             // Arrange
-            var interval = Interval.Create<int>(start, end, startInclusive, endInclusive);
+            var interval = IntervalFactory.Create<int>(start, end, startInclusive, endInclusive);
 
             // Act
             var actual = interval.IsHalfOpen();

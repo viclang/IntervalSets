@@ -1,12 +1,11 @@
-﻿using System;
+﻿using IntervalRecords.Extensions;
+using IntervalRecords.Tests.TestData.Builders;
+using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
-using IntervalRecords.Types;
 
 namespace IntervalRecords.Tests.TestData;
-
-public class Int32OverlapClassData : IEnumerable<object[]>
+public class Int32ConnectedClassData : IEnumerable<object[]>
 {
     private const int _offset = 1;
     private readonly static Interval<int> _reference = new ClosedInterval<int>(5, 9);
@@ -16,13 +15,17 @@ public class Int32OverlapClassData : IEnumerable<object[]>
         var testData = new List<object[]>();
         foreach (var intervalType in (IntervalType[])Enum.GetValues(typeof(IntervalType)))
         {
-            var builder = new Int32OverlapTestDataBuilder(_reference.Canonicalize(intervalType, 0), _offset);
-            UnboundedSetDirector<int>.WithUnBoundedSet(builder);
-            BoundedSetDirector<int>.WithBoundedSet(builder);
+            var builder = new IntervalTestDataBuilder<int, int>(_reference.Canonicalize(intervalType, 0), _offset);
+
+            IntervalTestDataDirector.WithConnected(builder, intervalType);
+
             testData.AddRange((List<object[]>)builder);
         }
         return testData.GetEnumerator();
     }
 
-    IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
+    IEnumerator IEnumerable.GetEnumerator()
+    {
+        return GetEnumerator();
+    }
 }

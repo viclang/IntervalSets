@@ -44,12 +44,13 @@ public static class IntervalCombiner
     /// <param name="other">The other interval</param>
     /// <returns>The portion of the first interval that does not overlap with the other interval, or null if the intervals do not overlap</returns>
     public static Interval<T>? Except<T>(this Interval<T> first, Interval<T> second)
-        where T : struct, IEquatable<T>, IComparable<T>, IComparable
+    where T : struct, IEquatable<T>, IComparable<T>, IComparable
     {
         if (!first.IsConnected(second))
         {
             return null;
         }
+
         var minByStart = first.MinBy(second, i => i.Start);
         var maxByStart = first.MaxBy(second, i => i.Start);
 
@@ -61,8 +62,9 @@ public static class IntervalCombiner
             ? first.EndInclusive || second.EndInclusive
             : maxByStart.EndInclusive;
 
-        return IntervalFactory.Create(minByStart.Start, maxByStart.Start, startInclusive, endInclusive);
+        return IntervalFactory.Create(minByStart.Start, maxByStart.End, startInclusive, endInclusive);
     }
+
 
     /// <summary>
     /// Calculates the intersect of two intervals if they overlap.
@@ -100,11 +102,13 @@ public static class IntervalCombiner
     {
         if (first.CompareStartToEnd(second) == 1)
         {
-            return IntervalFactory.Create(second.End, first.Start, !second.EndInclusive, !first.StartInclusive);
+            var gap = IntervalFactory.Create(second.End, first.Start, !second.EndInclusive, !first.StartInclusive);
+            return gap.IsEmpty ? null : gap;
         }
         if (first.CompareEndToStart(second) == -1)
         {
-            return IntervalFactory.Create(first.End, second.Start, !first.EndInclusive, !second.StartInclusive);
+            var gap = IntervalFactory.Create(first.End, second.Start, !first.EndInclusive, !second.StartInclusive);
+            return gap.IsEmpty ? null : gap;
         }
         return null;
     }

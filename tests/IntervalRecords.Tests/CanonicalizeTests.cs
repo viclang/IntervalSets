@@ -1,6 +1,5 @@
 ﻿using IntervalRecords.Extensions;
 using IntervalRecords.Tests.TestHelper;
-using IntervalRecords.Types;
 using System;
 
 namespace IntervalRecords.Tests.CanonicalizeTests
@@ -22,7 +21,6 @@ namespace IntervalRecords.Tests.CanonicalizeTests
         where TStep : struct
     {
         [Theory]
-        [Trait("Canonicalize", "Canonicalize")]
         [InlineData(2, 4, IntervalType.ClosedOpen, 2, 3, IntervalType.Closed)]
         [InlineData(2, 4, IntervalType.OpenClosed, 3, 4, IntervalType.Closed)]
         [InlineData(2, 4, IntervalType.Open, 3, 3, IntervalType.Closed)]
@@ -38,18 +36,17 @@ namespace IntervalRecords.Tests.CanonicalizeTests
         public void GivenBoundedInterval_WhenCanonicalize_ReturnsExpected(int? start, int? end, IntervalType intervalType, int? expectedStart, int? expectedEnd, IntervalType expectedIntervalType)
         {
             // Arrange
-            var interval = Interval.Create<T>(start.ToBoundary<T>(), end.ToBoundary<T>(), intervalType);
+            var interval = IntervalFactory.Create<T>(start.ToBoundary<T>(), end.ToBoundary<T>(), intervalType);
 
             // Act
             var actual = Canonicalize(interval, expectedIntervalType, 1.ToStep<T, TStep>());
 
             // Assert
             actual.Should()
-                .Be(Interval.Create<T>(expectedStart.ToBoundary<T>(), expectedEnd.ToBoundary<T>(), expectedIntervalType));
+                .Be(IntervalFactory.Create<T>(expectedStart.ToBoundary<T>(), expectedEnd.ToBoundary<T>(), expectedIntervalType));
         }
 
         [Theory]
-        [Trait("Canonicalize", "Closure")]
         // Bounded
         [InlineData(2, 4, IntervalType.ClosedOpen, 2, 3)]
         [InlineData(2, 4, IntervalType.OpenClosed, 3, 4)]
@@ -65,18 +62,17 @@ namespace IntervalRecords.Tests.CanonicalizeTests
         public void GivenInterval_WhenUsingClosure_ReturnsExpected(int? start, int? end, IntervalType intervalType, int? expectedStart, int? expectedEnd)
         {
             // Arrange
-            var interval = Interval.Create<T>(start.ToBoundary<T>(), end.ToBoundary<T>(), intervalType);
-            
+            var interval = IntervalFactory.Create<T>(start.ToBoundary<T>(), end.ToBoundary<T>(), intervalType);
+
             // Act
             var actual = Closure(interval, 1.ToStep<T, TStep>());
 
             // Assert
             actual.Should()
-                .Be(Interval.Create<T>(expectedStart.ToBoundary<T>(), expectedEnd.ToBoundary<T>(), IntervalType.Closed));
+                .Be(IntervalFactory.Create<T>(expectedStart.ToBoundary<T>(), expectedEnd.ToBoundary<T>(), IntervalType.Closed));
         }
 
         [Theory]
-        [Trait("Canonicalize", "Interior")]
         // Bounded
         [InlineData(2, 4, IntervalType.Closed, 1, 5, IntervalType.Open)]
         [InlineData(2, 4, IntervalType.ClosedOpen, 1, 4, IntervalType.Open)]
@@ -91,15 +87,15 @@ namespace IntervalRecords.Tests.CanonicalizeTests
         public void GivenInterval_WhenUsingInterior_ReturnsExpected(int? start, int? end, IntervalType intervalType, int? expectedStart, int? expectedEnd, IntervalType expectedIntervalType)
         {
             // Arrange
-            var interval = Interval.Create<T>(start.ToBoundary<T>(), end.ToBoundary<T>(), intervalType);
+            var interval = IntervalFactory.Create<T>(start.ToBoundary<T>(), end.ToBoundary<T>(), intervalType);
 
             // Act
             var actual = Interior(interval, 1.ToStep<T, TStep>());
 
             // Assert
             actual.Should()
-                .Be(Interval.Create<T>(expectedStart.ToBoundary<T>(), expectedEnd.ToBoundary<T>(), IntervalType.Open));
-        }   
+                .Be(IntervalFactory.Create<T>(expectedStart.ToBoundary<T>(), expectedEnd.ToBoundary<T>(), IntervalType.Open));
+        }
 
         public Interval<T> Canonicalize(Interval<T> interval, IntervalType intervalType, TStep step)
         {

@@ -1,23 +1,27 @@
-﻿using IntervalRecords.Extensions.Overlapping;
+﻿using IntervalRecords.Extensions;
 using IntervalRecords.Tests.TestData;
+using IntervalRecords.Tests.TestData.ClassData;
 
 namespace IntervalRecords.Tests
 {
     public class OverlapsTests
     {
         [Theory]
-        [ClassData(typeof(Int32OverlapClassData))]
-        public void Overlaps(OverlapTestData<int> testData)
+        [ClassData(typeof(Int32OverlappingClassData))]
+        public void GivenTwoOverlappingIntervals_WhenComparing_ReturnsTrue(IntervalRelationTestData<int> testData)
         {
-            // Arrange
-            var expectedResult = testData.Overlap is not IntervalOverlapping.Before
-                and not IntervalOverlapping.After;
-
-            // Act
             var actual = testData.First.Overlaps(testData.Second);
 
-            // Assert
-            actual.Should().Be(expectedResult);
+            actual.Should().BeTrue();
+        }
+
+        [Theory]
+        [ClassData(typeof(Int32NonOverlappingClassData))]
+        public void GivenTwoNonOverlappingIntervals_WhenComparing_ReturnsFalse(IntervalRelationTestData<int> testData)
+        {
+            var actual = testData.First.Overlaps(testData.Second);
+
+            actual.Should().BeFalse();
         }
     }
 }

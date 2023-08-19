@@ -1,6 +1,4 @@
-﻿using IntervalRecords.BoundaryStates;
-using IntervalRecords.Extensions;
-using IntervalRecords.Extensions.BoundaryStates;
+﻿using IntervalRecords.Extensions;
 
 namespace IntervalRecords.Tests
 {
@@ -14,7 +12,7 @@ namespace IntervalRecords.Tests
         public void GetBoundedState_ShouldBeExpected(int? start, int? end, BoundaryState expected)
         {
             // Arrange
-            var interval = Interval.Create<int>(start, end, true, true);
+            var interval = IntervalFactory.Create<int>(start, end, true, true);
 
             // Act
             var actual = interval.GetBoundaryState();
@@ -24,14 +22,14 @@ namespace IntervalRecords.Tests
         }
 
         [Theory]
-        [InlineData(0, 0, false)]
         [InlineData(0, null, true)]
         [InlineData(null, 0, true)]
+        [InlineData(0, 0, false)]
         [InlineData(null, null, false)]
         public void IsHalfBounded_ShouldBeExpected(int? start, int? end, bool expected)
         {
             // Arrange
-            var interval = Interval.Create<int>(start, end, true, true);
+            var interval = IntervalFactory.Create<int>(start, end, true, true);
 
             // Act
             var actual = interval.IsHalfBounded();

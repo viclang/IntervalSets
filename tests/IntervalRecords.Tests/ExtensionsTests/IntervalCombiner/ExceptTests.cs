@@ -2,14 +2,20 @@
 using IntervalRecords.Tests.TestData;
 using IntervalRecords.Extensions;
 using System.Linq;
+using System.Collections.Generic;
 
-namespace IntervalRecords.Tests.CombineTests
+namespace IntervalRecords.Tests.ExtensionsTests.IntervalCombiner
 {
     public class ExceptTests
     {
+        //public static IEnumerable<object[]> Excepts()
+        //{
+
+        //}
+
         [Theory]
-        [ClassData(typeof(Int32OverlapClassData))]
-        public void Except_ShouldBeExpectedOrNull(OverlapTestData<int> testData)
+        [ClassData(typeof(Int32OverlappingClassData))]
+        public void Except_ShouldBeExpectedOrNull(IntervalRelationTestData<int> testData)
         {
             // Act
             var actual = testData.First.Except(testData.Second);

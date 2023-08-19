@@ -1,7 +1,6 @@
 ﻿using IntervalRecords.Extensions;
-using IntervalRecords.Types;
 
-namespace IntervalRecords.Tests.CombineTests
+namespace IntervalRecords.Tests.ExtensionsTests.IntervalCombiner
 {
     public class EqualBoundaryValuesTests
     {
@@ -25,10 +24,10 @@ namespace IntervalRecords.Tests.CombineTests
         {
             // Arrange
             var (leftStartInclusive, leftEndInclusive) = leftIntervalType.ToTuple();
-            var leftInterval = Interval.Create<int>(start, end, leftStartInclusive, leftEndInclusive);
+            var leftInterval = IntervalFactory.Create<int>(start, end, leftStartInclusive, leftEndInclusive);
 
             var (rightStartInclusive, rigthEndInclusive) = rightIntervalType.ToTuple();
-            var rigthInterval = Interval.Create<int>(start, end, rightStartInclusive, rigthEndInclusive);
+            var rigthInterval = IntervalFactory.Create<int>(start, end, rightStartInclusive, rigthEndInclusive);
 
             // Act
             var actual = new IntervalType[]
@@ -60,10 +59,10 @@ namespace IntervalRecords.Tests.CombineTests
         {
             // Arrange
             var (leftStartInclusive, leftEndInclusive) = leftIntervalType.ToTuple();
-            var leftInterval =  Interval.Create<int>(start, end, leftStartInclusive, leftEndInclusive);
+            var leftInterval = IntervalFactory.Create<int>(start, end, leftStartInclusive, leftEndInclusive);
 
             var (rightStartInclusive, rigthEndInclusive) = rightIntervalType.ToTuple();
-            var rigthInterval = Interval.Create<int>(start, end, rightStartInclusive, rigthEndInclusive);
+            var rigthInterval = IntervalFactory.Create<int>(start, end, rightStartInclusive, rigthEndInclusive);
 
             // Act
             var actual = leftInterval.Intersect(rigthInterval)!.IntervalType;
