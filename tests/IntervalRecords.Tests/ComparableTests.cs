@@ -14,7 +14,7 @@ namespace IntervalRecords.Tests
             var expected = ExpectedCompareResult(testData.Relation);
 
             // Act
-            var actual = testData.First.CompareTo(testData.Second);
+            var actual = testData.Left.CompareTo(testData.Right);
 
             // Assert
             actual.Should().Be(expected);
@@ -28,7 +28,7 @@ namespace IntervalRecords.Tests
             var expected = ExpectedCompareResult(testData.Relation) > 0;
 
             // Act
-            var actual = testData.First > testData.Second;
+            var actual = testData.Left > testData.Right;
 
             // Assert
             actual.Should().Be(expected);
@@ -42,7 +42,7 @@ namespace IntervalRecords.Tests
             var expected = ExpectedCompareResult(testData.Relation) < 0;
 
             // Act
-            var actual = testData.First < testData.Second;
+            var actual = testData.Left < testData.Right;
 
             // Assert
             actual.Should().Be(expected);
@@ -56,7 +56,7 @@ namespace IntervalRecords.Tests
             var expected = ExpectedCompareResult(testData.Relation) >= 0;
 
             // Act
-            var actual = testData.First >= testData.Second;
+            var actual = testData.Left >= testData.Right;
 
             // Assert
             actual.Should().Be(expected);
@@ -70,7 +70,7 @@ namespace IntervalRecords.Tests
             var expected = ExpectedCompareResult(testData.Relation) <= 0;
 
             // Act
-            var actual = testData.First <= testData.Second;
+            var actual = testData.Left <= testData.Right;
 
             // Assert
             actual.Should().Be(expected);

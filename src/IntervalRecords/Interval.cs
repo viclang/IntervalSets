@@ -1,4 +1,5 @@
-﻿using Unbounded;
+﻿using IntervalRecords.Extensions;
+using Unbounded;
 
 namespace IntervalRecords
 {
@@ -194,7 +195,7 @@ namespace IntervalRecords
         public static bool operator >=(Interval<T> left, Interval<T> right) => left == right || left > right;
 
         public static bool operator <=(Interval<T> left, Interval<T> right) => left == right || left < right;
-
+        
         public void Deconstruct(out Unbounded<T> start, out Unbounded<T> end, out bool startInclusive, out bool endInclusive)
         {
             start = Start;

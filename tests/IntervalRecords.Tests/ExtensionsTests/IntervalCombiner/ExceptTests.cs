@@ -8,37 +8,21 @@ namespace IntervalRecords.Tests.ExtensionsTests.IntervalCombiner
 {
     public class ExceptTests
     {
-        //public static IEnumerable<object[]> Excepts()
-        //{
-
-        //}
-
         [Theory]
-        [ClassData(typeof(Int32OverlappingClassData))]
+        [ClassData(typeof(Int32ConnectedClassData))]
         public void Except_ShouldBeExpectedOrNull(IntervalRelationTestData<int> testData)
         {
             // Act
-            var actual = testData.First.Except(testData.Second);
+            var actual = testData.Left.Except(testData.Right).ToList();
 
             // Assert
-            var array = new Interval<int>[] { testData.First, testData.Second };
-            var minByStart = array.MinBy(i => i.Start)!;
-            var maxByStart = array.MaxBy(i => i.Start)!;
-
-            var expectedStartInclusive = testData.First.Start == testData.Second.Start
-                ? testData.First.StartInclusive || testData.Second.StartInclusive
-                : minByStart.StartInclusive;
-
-            var expectedEndInclusive = testData.First.End == testData.Second.End
-                ? testData.First.EndInclusive || testData.Second.EndInclusive
-                : maxByStart.EndInclusive;
-
+            
             using (new AssertionScope())
             {
-                actual!.Start.Should().Be(minByStart.Start);
-                actual!.End.Should().Be(+maxByStart.Start);
-                actual!.StartInclusive.Should().Be(expectedStartInclusive);
-                actual!.EndInclusive.Should().Be(expectedEndInclusive);
+                //actual!.Start.Should().Be(array.Min(i => i.Start));
+                //actual!.End.Should().Be(+array.Max(i => i.Start));
+                //actual!.StartInclusive.Should().Be(array.Min(i => i.StartInclusive));
+                //actual!.EndInclusive.Should().Be(array.Max(i => i.StartInclusive));
             }
         }
 

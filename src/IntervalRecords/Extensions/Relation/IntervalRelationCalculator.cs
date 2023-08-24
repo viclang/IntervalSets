@@ -14,7 +14,7 @@ public static class IntervalRelationCalculator
             (0, 0) => IntervalRelation.Equal,
             (0, -1) => IntervalRelation.Starts,
             (1, -1) => IntervalRelation.ContainedBy,
-            (1, 0) => IntervalRelation.Finishes,
+            (1, 0) => IntervalRelation.Finishes,            
             (-1, 0) => IntervalRelation.FinishedBy,
             (-1, 1) => IntervalRelation.Contains,
             (0, 1) => IntervalRelation.StartedBy,

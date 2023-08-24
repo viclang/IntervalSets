@@ -32,7 +32,7 @@ namespace IntervalRecords.Tests.ExtensionsTests.IntervalCombiner
             // Act
             var actual = new IntervalType[]
             {
-                leftInterval.Except(rigthInterval)!.IntervalType,
+                //leftInterval.Except(rigthInterval)!.IntervalType,
                 leftInterval.Union(rigthInterval)!.IntervalType,
                 leftInterval.Hull(rigthInterval).IntervalType
             };

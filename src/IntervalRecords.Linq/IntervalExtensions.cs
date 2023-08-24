@@ -45,11 +45,11 @@ public static partial class IntervalExtensions
     /// <typeparam name="T">The type of the interval bounds.</typeparam>
     /// <param name="source">The collection of intervals.</param>
     /// <returns>The collection of intervals representing the portions of the collection of intervals that do not overlap with each other.</returns>
-    public static IEnumerable<Interval<T>> ExcludeOverlap<T>(this IEnumerable<Interval<T>> source)
-        where T : struct, IEquatable<T>, IComparable<T>, IComparable
-    {
-        return source.Pairwise((a, b) => a.Except(b)).ToList().Where(i => !i.IsEmpty);
-    }
+    //public static IEnumerable<Interval<T>> ExcludeOverlap<T>(this IEnumerable<Interval<T>> source)
+    //    where T : struct, IEquatable<T>, IComparable<T>, IComparable
+    //{
+    //    return source.Pairwise((a, b) => a.Except(b)).ToList().Where(i => !i.IsEmpty);
+    //}
 
     /// <summary>
     /// Returns an enumeration of intervals that represent the intersection of all overlapping intervals in the input sequence.

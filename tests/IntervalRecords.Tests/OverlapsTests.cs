@@ -10,7 +10,7 @@ namespace IntervalRecords.Tests
         [ClassData(typeof(Int32OverlappingClassData))]
         public void GivenTwoOverlappingIntervals_WhenComparing_ReturnsTrue(IntervalRelationTestData<int> testData)
         {
-            var actual = testData.First.Overlaps(testData.Second);
+            var actual = testData.Left.Overlaps(testData.Right);
 
             actual.Should().BeTrue();
         }
@@ -19,7 +19,7 @@ namespace IntervalRecords.Tests
         [ClassData(typeof(Int32NonOverlappingClassData))]
         public void GivenTwoNonOverlappingIntervals_WhenComparing_ReturnsFalse(IntervalRelationTestData<int> testData)
         {
-            var actual = testData.First.Overlaps(testData.Second);
+            var actual = testData.Left.Overlaps(testData.Right);
 
             actual.Should().BeFalse();
         }
