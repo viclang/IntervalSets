@@ -8,8 +8,6 @@ public sealed record ClosedInterval<T> : Interval<T>
 
     public static new readonly ClosedInterval<T> Unbounded = new(Unbounded<T>.NegativeInfinity, Unbounded<T>.PositiveInfinity);
 
-    public override IntervalType IntervalType => IntervalType.Closed;
-
     /// <summary>
     /// Gets a value indicating whether the start of the interval is inclusive.
     /// The Start of a ClosedInterval is inclusive, except when it is Unbounded.

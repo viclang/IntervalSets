@@ -60,7 +60,7 @@ public sealed class IntervalRelationTestDataBuilder<T, TOffset> : IIntervalTestD
 
     public IIntervalTestDataBuilder WithMeets()
     {
-        var overlap = _reference.IntervalType == IntervalType.Closed
+        var overlap = _reference.GetIntervalType() == IntervalType.Closed
                 ? IntervalRelation.Meets
                 : IntervalRelation.Before;
 
@@ -196,7 +196,7 @@ public sealed class IntervalRelationTestDataBuilder<T, TOffset> : IIntervalTestD
 
     public IIntervalTestDataBuilder WithMetBy()
     {
-        var overlap = _reference.IntervalType == IntervalType.Closed
+        var overlap = _reference.GetIntervalType() == IntervalType.Closed
             ? IntervalRelation.MetBy
             : IntervalRelation.After;
 

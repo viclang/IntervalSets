@@ -7,7 +7,7 @@ namespace IntervalRecords
     /// Represents an interval of values of type <see cref="T"/>.
     /// </summary>
     /// <typeparam name="T">The type of values represented in the interval.</typeparam>
-    public abstract partial record Interval<T> : IComparable<Interval<T>>
+    public abstract record Interval<T> : IComparable<Interval<T>>
         where T : struct, IEquatable<T>, IComparable<T>, IComparable
     {
         private readonly Unbounded<T> _start;
@@ -38,14 +38,6 @@ namespace IntervalRecords
         }
 
         /// <summary>
-        /// Determines the interval type.
-        /// </summary>
-        /// <typeparam name="T">The type of the interval endpoints.</typeparam>
-        /// <param name="value">The interval to determine the type of.</param>
-        /// <returns>The interval type as an IntervalType enumeration value.</returns>
-        public abstract IntervalType IntervalType { get; }
-
-        /// <summary>
         /// Gets a value indicating whether the start of the interval is inclusive.
         /// </summary>
         public abstract bool StartInclusive { get; }
@@ -54,6 +46,14 @@ namespace IntervalRecords
         /// Gets a value indicating whether the end of the interval is inclusive.
         /// </summary>
         public abstract bool EndInclusive { get; }
+
+        /// <summary>
+        /// Determines the interval type.
+        /// </summary>
+        /// <typeparam name="T">The type of the interval endpoints.</typeparam>
+        /// <param name="value">The interval to determine the type of.</param>
+        /// <returns>The interval type as an IntervalType enumeration value.</returns>
+        public IntervalType GetIntervalType() => (IntervalType)((StartInclusive ? 1 : 0) | (EndInclusive ? 2 : 0));
 
         /// <summary>
         /// Indicates whether the start value of the interval is less than or equal to its end value.
@@ -179,6 +179,12 @@ namespace IntervalRecords
             }
             return 0;
         }
+
+        public static Interval<T> operator !(Interval<T> value) => IntervalFactory.Create(
+            value.Start,
+            value.End,
+            !value.StartInclusive,
+            !value.EndInclusive);
 
         public static bool operator >(Interval<T> left, Interval<T> right)
         {

@@ -83,7 +83,7 @@ public static partial class IntervalCanonicalizer
         Func<Unbounded<T>, Unbounded<T>> add)
         where T : struct, IEquatable<T>, IComparable<T>, IComparable
     {
-        if (source.IsEmpty || source.IntervalType == IntervalType.ClosedOpen)
+        if (source.IsEmpty || source.GetIntervalType() == IntervalType.ClosedOpen)
         {
             return new ClosedOpenInterval<T>(source.Start, source.End);
         }
@@ -95,7 +95,7 @@ public static partial class IntervalCanonicalizer
     private static OpenClosedInterval<T> ToOpenClosed<T>(Interval<T> source, Func<Unbounded<T>, Unbounded<T>> substract)
         where T : struct, IEquatable<T>, IComparable<T>, IComparable
     {
-        if (source.IsEmpty || source.IntervalType == IntervalType.OpenClosed)
+        if (source.IsEmpty || source.GetIntervalType() == IntervalType.OpenClosed)
         {
             return new OpenClosedInterval<T>(source.Start, source.End);
         }

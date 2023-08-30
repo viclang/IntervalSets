@@ -11,7 +11,6 @@ namespace IntervalRecords.Tests
         public void GetOverlappingState_ShouldBeExpected(IntervalRelationTestData<int> testData)
         {
             var result = testData.Left.GetRelation(testData.Right);
-
             result.Should().Be(testData.Relation);
         }
 

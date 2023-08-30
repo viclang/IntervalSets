@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using Unbounded;
 
 namespace IntervalRecords.Extensions;
 public static class IntervalCombiner
@@ -59,34 +60,31 @@ public static class IntervalCombiner
         {
             yield break;
         }
-        var intersect = left.Intersect(right);
-        if (intersect == null)
+        if (!left.Overlaps(right))
         {
             yield return left;
             yield return right;
             yield break;
         }
-
-        if (left.CompareStart(intersect) < 0)
+        var compareStart = left.CompareStart(right);
+        if (compareStart == -1)
         {
-            yield return IntervalFactory.Create(left.Start, intersect.Start, left.StartInclusive, !intersect.StartInclusive);
+            yield return IntervalFactory.Create(left.Start, right.Start, left.StartInclusive, !right.StartInclusive);
         }
-        if (left.CompareEnd(intersect) > 0)
+        else if (compareStart == 1)
         {
-            yield return IntervalFactory.Create(intersect.End, left.End, !intersect.EndInclusive, left.EndInclusive);
+            yield return IntervalFactory.Create(right.Start, left.Start, right.StartInclusive, !left.StartInclusive);
         }
-
-        if (right.CompareStart(intersect) < 0)
+        var compareEnd = left.CompareEnd(right);        
+        if (compareEnd == -1)
         {
-            yield return IntervalFactory.Create(right.Start, intersect.Start, right.StartInclusive, !intersect.StartInclusive);
+            yield return IntervalFactory.Create(left.End, right.End, !left.EndInclusive, right.EndInclusive);
         }
-        if (right.CompareEnd(intersect) > 0)
+        else if (compareEnd == 1)
         {
-            yield return IntervalFactory.Create(intersect.End, right.End, !intersect.EndInclusive, right.EndInclusive);
+            yield return IntervalFactory.Create(right.End, left.End, !right.EndInclusive, left.EndInclusive);
         }
-        
     }
-
 
     /// <summary>
     /// Calculates the intersect of two intervals if they overlap.
@@ -143,78 +141,27 @@ public static class IntervalCombiner
         return null;
     }
 
-    /// <summary>
-    /// Returns the minimum interval between two intervals, using a specific selector function to extract the value to compare.
-    /// </summary>
-    /// <typeparam name="T">The type of the interval bounds.</typeparam>
-    /// <typeparam name="TProperty">The type of the property to compare.</typeparam>
-    /// <param name="left">The left interval.</param>
-    /// <param name="right">The right interval.</param>
-    /// <param name="selector">The selector function to extract the value to compare from the intervals.</param>
-    /// <returns>The interval that is less than or equal to the other interval based on the comparison of the selected values.</returns>
-    public static Interval<T> MinBy<T, TProperty>(this Interval<T> left, Interval<T> right, Func<Interval<T>, TProperty> selector)
-        where T : struct, IEquatable<T>, IComparable<T>, IComparable
-        where TProperty : IComparable<TProperty>
-    {
-        return selector(left).CompareTo(selector(right)) < 0 ? left : right;
-    }
-
-    /// <summary>
-    /// Returns the minimum interval between two intervals.
-    /// </summary>
-    /// <param name="left">The left interval.</param>
-    /// <param name="right">The right interval.</param>
-    /// <returns>The interval that is less than or equal to the other interval.</returns>
-    public static Interval<T> Min<T>(this Interval<T> left, Interval<T> right)
+    public static Unbounded<T> MinStart<T>(this Interval<T> left, Interval<T> right)
         where T : struct, IEquatable<T>, IComparable<T>, IComparable
     {
-        return left <= right ? left : right;
+        return left.CompareStart(right) == -1 ? left.Start : right.Start;
     }
 
-    public static TProperty Min<T, TProperty>(this Interval<T> left, Interval<T> right, Func<Interval<T>, TProperty> selector)
-        where T : struct, IEquatable<T>, IComparable<T>, IComparable
-        where TProperty : IComparable<TProperty>
-    {
-        TProperty firstValue = selector(left);
-        TProperty secondValue = selector(right);
-        return firstValue.CompareTo(secondValue) < 0 ? firstValue : secondValue;
-    }
-
-    /// <summary>
-    /// Returns the interval that is greater than or equal to the other interval, using a specific selector function to extract the value to compare.
-    /// </summary>
-    /// <typeparam name="T">The type of the interval bounds.</typeparam>
-    /// <typeparam name="TProperty">The type of the property to compare.</typeparam>
-    /// <param name="left">The left interval.</param>
-    /// <param name="right">The right interval.</param>
-    /// <param name="selector">The selector function to extract the value to compare from the intervals.</param>
-    /// <returns>The interval that is greater than or equal to the other interval based on the comparison of the selected values.</returns>
-    public static Interval<T> MaxBy<T, TProperty>(this Interval<T> left, Interval<T> right, Func<Interval<T>, TProperty> selector)
-        where T : struct, IEquatable<T>, IComparable<T>, IComparable
-        where TProperty : IComparable<TProperty>
-    {
-        return selector(left).CompareTo(selector(right)) > 0 ? left : right;
-    }
-
-    /// <summary>
-    /// Returns the maximum interval between two intervals.
-    /// </summary>
-    /// <typeparam name="T">The type of the interval bounds.</typeparam>
-    /// <param name="left">The first interval to compare.</param>
-    /// <param name="right">The second interval to compare.</param>
-    /// <returns>The interval that is greater than or equal to the other interval.</returns>
-    public static Interval<T> Max<T>(this Interval<T> left, Interval<T> right)
+    public static Unbounded<T> MaxStart<T>(this Interval<T> left, Interval<T> right)
         where T : struct, IEquatable<T>, IComparable<T>, IComparable
     {
-        return left >= right ? left : right;
+        return left.CompareStart(right) == 1 ? left.Start : right.Start;
     }
 
-    public static TProperty Max<T, TProperty>(this Interval<T> first, Interval<T> second, Func<Interval<T>, TProperty> selector)
-    where T : struct, IEquatable<T>, IComparable<T>, IComparable
-    where TProperty : IComparable<TProperty>
+    public static Unbounded<T> MinEnd<T>(this Interval<T> left, Interval<T> right)
+        where T : struct, IEquatable<T>, IComparable<T>, IComparable
     {
-        TProperty firstValue = selector(first);
-        TProperty secondValue = selector(second);
-        return firstValue.CompareTo(secondValue) > 0 ? firstValue : secondValue;
+        return left.CompareEnd(right) == -1 ? left.Start : right.Start;
+    }
+
+    public static Unbounded<T> MaxEnd<T>(this Interval<T> left, Interval<T> right)
+        where T : struct, IEquatable<T>, IComparable<T>, IComparable
+    {
+        return left.CompareEnd(right) == 1 ? left.Start : right.Start;
     }
 }

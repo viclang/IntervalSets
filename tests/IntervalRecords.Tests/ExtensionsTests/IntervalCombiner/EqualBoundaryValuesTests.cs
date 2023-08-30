@@ -33,8 +33,8 @@ namespace IntervalRecords.Tests.ExtensionsTests.IntervalCombiner
             var actual = new IntervalType[]
             {
                 //leftInterval.Except(rigthInterval)!.IntervalType,
-                leftInterval.Union(rigthInterval)!.IntervalType,
-                leftInterval.Hull(rigthInterval).IntervalType
+                leftInterval.Union(rigthInterval)!.GetIntervalType(),
+                leftInterval.Hull(rigthInterval).GetIntervalType()
             };
 
             // Assert
@@ -65,7 +65,7 @@ namespace IntervalRecords.Tests.ExtensionsTests.IntervalCombiner
             var rigthInterval = IntervalFactory.Create<int>(start, end, rightStartInclusive, rigthEndInclusive);
 
             // Act
-            var actual = leftInterval.Intersect(rigthInterval)!.IntervalType;
+            var actual = leftInterval.Intersect(rigthInterval)!.GetIntervalType();
 
             // Assert
             actual.Should().Be(expectedIntervalType);

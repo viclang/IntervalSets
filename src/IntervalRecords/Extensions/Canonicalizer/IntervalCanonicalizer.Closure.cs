@@ -61,7 +61,7 @@ public static partial class IntervalCanonicalizer
         {
             return ClosedInterval<T>.Empty;
         }
-        if (source.IntervalType == IntervalType.Closed)
+        if (source.GetIntervalType() == IntervalType.Closed)
         {
             return (ClosedInterval<T>)source;
         }

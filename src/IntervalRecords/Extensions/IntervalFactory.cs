@@ -2,7 +2,7 @@
 using Unbounded;
 
 namespace IntervalRecords.Extensions;
-public static partial class IntervalFactory
+public static class IntervalFactory
 {
     public static Interval<T> Create<T>(Unbounded<T> start, Unbounded<T> end, bool startInclusive, bool endInclusive)
         where T : struct, IEquatable<T>, IComparable<T>, IComparable

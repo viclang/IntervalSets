@@ -18,7 +18,7 @@ namespace IntervalRecords.Tests
             var interval = IntervalFactory.Create<int>(start, end, startInclusive, endInclusive);
 
             // Act
-            var actualIntervalType = interval.IntervalType;
+            var actualIntervalType = interval.GetIntervalType();
             var (actualStartInclusive, actualEndInclusive) = actualIntervalType.ToTuple();
 
             // Assert

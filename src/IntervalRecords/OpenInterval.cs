@@ -8,8 +8,6 @@ public sealed record OpenInterval<T> : Interval<T>
 
     public static new readonly OpenInterval<T> Unbounded = new(Unbounded<T>.NegativeInfinity, Unbounded<T>.PositiveInfinity);
 
-    public override IntervalType IntervalType => IntervalType.Open;
-
     public override bool StartInclusive => false;
 
     public override bool EndInclusive => false;
