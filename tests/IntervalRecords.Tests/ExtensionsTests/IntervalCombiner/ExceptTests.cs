@@ -33,11 +33,17 @@ namespace IntervalRecords.Tests.ExtensionsTests.IntervalCombiner
         }
 
         [Theory]
+        // Start is different
         [InlineData("( 1, 4 ]", "( 2, 4 ]", "( 1, 2 ]")]
         [InlineData("( 2, 4 ]", "( 1, 4 ]", "( 1, 2 ]")]
         [InlineData("[ 1, 4 )", "[ 2, 4 )", "[ 1, 2 )")]
         [InlineData("[ 2, 4 )", "[ 1, 4 )", "[ 1, 2 )")]
-        public void Start_difference_if_start_not_equal(string leftInterval, string rightInterval, string expectedInterval)
+        // End is different
+        [InlineData("( 1, 4 ]", "( 1, 5 ]", "( 4, 5 ]")]
+        [InlineData("( 1, 5 ]", "( 1, 4 ]", "( 4, 5 ]")]
+        [InlineData("[ 1, 4 )", "[ 1, 5 )", "[ 4, 5 )")]
+        [InlineData("[ 1, 5 )", "[ 1, 4 )", "[ 4, 5 )")]
+        public void One_differential_endpoint_returns_difference(string leftInterval, string rightInterval, string expectedInterval)
         {
             var left = IntervalParser.Parse<int>(leftInterval);
             var right = IntervalParser.Parse<int>(rightInterval);
@@ -52,13 +58,25 @@ namespace IntervalRecords.Tests.ExtensionsTests.IntervalCombiner
             }
         }
 
-        public void End_difference_if_end_not_equal()
+        [Theory]
+        [InlineData("( 1, 4 ]", "( 2, 5 ]", "( 1, 2 ], ( 4, 5 ]")]
+        [InlineData("( 2, 5 ]", "( 1, 4 ]", "( 1, 2 ], ( 4, 5 ]")]
+        [InlineData("[ 1, 4 )", "[ 2, 5 )", "[ 1, 2 ), [ 4, 5 )")]
+        [InlineData("[ 2, 5 )", "[ 1, 4 )", "[ 1, 2 ), [ 4, 5 )")]
+        [InlineData("[ 1, 4 )", "[ 3, 5 )", "[ 1, 3 ), [ 4, 5 )")]
+        public void Two_differential_endpoints_returns_two_disconnected_intervals(string leftInterval, string rightInterval, string expectedInterval)
         {
+            var left = IntervalParser.Parse<int>(leftInterval);
+            var right = IntervalParser.Parse<int>(rightInterval);
+            var expected = IntervalParser.ParseAll<int>(expectedInterval);
 
-        }
+            var actual = left.Except(right);
 
-        public void Start_end_difference_if_start_end_not_equal()
-        {
+            using (new AssertionScope())
+            {
+                actual.Count().Should().Be(2);
+                actual.Should().BeEquivalentTo(expected);
+            }
 
         }
     }
