@@ -8,7 +8,7 @@ public static class IntervalRelationCalculator
     /// <param name="first">The first interval to compare.</param>
     /// <param name="second">The second interval to compare.</param>
     public static IntervalRelation GetRelation<T>(this Interval<T> first, Interval<T> second)
-        where T : struct, IEquatable<T>, IComparable<T>, IComparable
+        where T : struct, IEquatable<T>, IComparable<T>, ISpanParsable<T>
         => new ValueTuple<int, int>(first.CompareStart(second), first.CompareEnd(second)) switch
         {
             (0, 0) => IntervalRelation.Equal,

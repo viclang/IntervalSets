@@ -13,8 +13,8 @@ namespace IntervalRecords.Tests.Measure.Length
     public class LengthTimeOnlyTests : LengthTests<TimeOnly, TimeSpan> { }
 
     public abstract class LengthTests<T, TResult>
-        where T : struct, IEquatable<T>, IComparable<T>, IComparable
-        where TResult : struct, IEquatable<TResult>, IComparable<TResult>, IComparable
+        where T : struct, IEquatable<T>, IComparable<T>, ISpanParsable<T>
+        where TResult : struct, IEquatable<TResult>, IComparable<TResult>, ISpanParsable<TResult>
     {
         [Theory]
         [Trait("Measure", "Length")]
@@ -69,19 +69,19 @@ namespace IntervalRecords.Tests.Measure.Length
             var type = typeof(T);
             if (type == typeof(int) || type == typeof(DateOnly))
             {
-                return (Unbounded<TResult>)(object)UnboundedExtensions.ToPositiveInfinity(result);
+                return (Unbounded<TResult>)(object)UnboundedCreator.ToPositiveInfinity(result);
             }
             if (type == typeof(double))
             {
-                return (Unbounded<TResult>)(object)UnboundedExtensions.ToPositiveInfinity<double>(result);
+                return (Unbounded<TResult>)(object)UnboundedCreator.ToPositiveInfinity<double>(result);
             }
             else if (type == typeof(DateTime) || type == typeof(DateTimeOffset))
             {
-                return (Unbounded<TResult>)(object)UnboundedExtensions.ToPositiveInfinity<TimeSpan>(result.HasValue ? TimeSpan.FromDays(result.Value) : null);
+                return (Unbounded<TResult>)(object)UnboundedCreator.ToPositiveInfinity<TimeSpan>(result.HasValue ? TimeSpan.FromDays(result.Value) : null);
             }
             else if (type == typeof(TimeOnly))
             {
-                return (Unbounded<TResult>)(object)UnboundedExtensions.ToPositiveInfinity<TimeSpan>(result.HasValue ? TimeSpan.FromHours(result.Value) : null);
+                return (Unbounded<TResult>)(object)UnboundedCreator.ToPositiveInfinity<TimeSpan>(result.HasValue ? TimeSpan.FromHours(result.Value) : null);
             }
             else
             {

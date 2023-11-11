@@ -3,7 +3,7 @@
 namespace IntervalRecords.Extensions.PeriodBuilder.Dutch;
 
 public class Periode<T>
-    where T : struct, IEquatable<T>, IComparable<T>, IComparable
+    where T : struct, IEquatable<T>, IComparable<T>, ISpanParsable<T>
 {
     public static PeriodeBuilder Van(T start) => PeriodeBuilder.Van(start);
 

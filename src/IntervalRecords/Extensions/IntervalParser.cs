@@ -14,7 +14,7 @@ namespace IntervalRecords.Extensions
         /// <param name="value">The string representation of the interval to parse.</param>
         /// <returns>A new interval object representing the interval described by the input string.</returns>
         public static Interval<T> Parse<T>(string value)
-            where T : struct, IEquatable<T>, IComparable<T>, IComparable
+            where T : struct, IEquatable<T>, IComparable<T>, ISpanParsable<T>
         {
             var match = intervalRegex.Match(value);
             if (!match.Success)
@@ -32,7 +32,7 @@ namespace IntervalRecords.Extensions
         /// <param name="result">The resulting interval object if the parse was successful, or null if the parse was not successful.</param>
         /// <returns>True if the parse was successful, False otherwise.</returns>
         public static bool TryParse<T>(string value, out Interval<T>? result)
-            where T : struct, IEquatable<T>, IComparable<T>, IComparable
+            where T : struct, IEquatable<T>, IComparable<T>, ISpanParsable<T>
         {
             try
             {
@@ -53,14 +53,14 @@ namespace IntervalRecords.Extensions
         /// <param name="value">The string representation of the intervals to parse.</param>
         /// <returns>An enumerable collection of interval objects representing the intervals described by the input string.</returns>
         public static IEnumerable<Interval<T>> ParseAll<T>(string value)
-            where T : struct, IEquatable<T>, IComparable<T>, IComparable
+            where T : struct, IEquatable<T>, IComparable<T>, ISpanParsable<T>
         {
             var matches = intervalRegex.Matches(value);
             return matches.Select(match => ParseInterval<T>(match.Value));
         }
 
         private static Interval<T> ParseInterval<T>(string value)
-            where T : struct, IEquatable<T>, IComparable<T>, IComparable
+            where T : struct, IEquatable<T>, IComparable<T>, ISpanParsable<T>
         {
             var parts = value.Split(',');
             var startString = parts[0].Trim();
@@ -70,8 +70,8 @@ namespace IntervalRecords.Extensions
             var end = Unbounded<T>.Parse(endString[..(endString.Length - 1)]);
 
             return IntervalFactory.Create(
-                start,
-                end,
+                start.IsNone ? Unbounded<T>.NegativeInfinity : start,
+                end.IsNone ? Unbounded<T>.PositiveInfinity : end,
                 value.StartsWith('['),
                 value.EndsWith(']'));
         }

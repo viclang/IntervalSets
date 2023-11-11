@@ -10,7 +10,7 @@ namespace IntervalRecords.Tests
 
         public static TheoryData<Interval<int>, Interval<int>> AllBuildersWithExpectedResults = new TheoryData<Interval<int>, Interval<int>>
         {
-            { OpenInterval<int>.Empty, new OpenInterval<int>(Unbounded<int>.NaN, Unbounded<int>.NaN) },
+            { OpenInterval<int>.Empty, new OpenInterval<int>(Unbounded<int>.None, Unbounded<int>.None) },
             { OpenInterval<int>.Unbounded, new OpenInterval<int>(Unbounded<int>.NegativeInfinity, Unbounded<int>.PositiveInfinity) },
             { ClosedInterval<int>.Singleton(end), new ClosedInterval<int>(end, end) },
             { OpenInterval<int>.LeftBounded(start), new OpenInterval<int>(start, Unbounded<int>.PositiveInfinity) },

@@ -1,4 +1,5 @@
 ﻿//using FluentAssertions.Execution;
+//using IntervalRecords.Extensions;
 //using IntervalRecords.Tests.TestData;
 //using System.Linq;
 
@@ -7,33 +8,16 @@
 //    public sealed class HullTests
 //    {
 //        [Theory]
-//        [MemberData(nameof(IntervalPairs))]
-//        public void Hull_ShouldBeExpected(Interval<int> a, Interval<int> b)
+//        [InlineData("[1, 2]", "[3, 4]", "[1, 4]")]
+//        public void Hull_ShouldBeExpected(string leftInterval, string rightInterval, string expectedInterval)
 //        {
-//            // Act
-//            var actual = a.Hull(b);
+//            var left = IntervalParser.Parse<int>(leftInterval);
+//            var right = IntervalParser.Parse<int>(rightInterval);
+//            var expected = IntervalParser.Parse<int>(expectedInterval);
 
-//            // Assert
-//            var array = new Interval<int>[] { a, b };
-//            var minByStart = array.MinBy(i => i.Start)!;
-//            var maxByEnd = array.MaxBy(i => i.End)!;
+//            var actual = left.Hull(right);
 
-
-//            var expectedStartInclusive = a.Start == b.Start
-//                ? a.StartInclusive || b.StartInclusive
-//                : minByStart.StartInclusive;
-
-//            var expectedEndInclusive = a.End == b.End
-//                ? a.EndInclusive || b.EndInclusive
-//                : maxByEnd.EndInclusive;
-
-//            using (new AssertionScope())
-//            {
-//                actual.Start.Should().Be(minByStart.Start);
-//                actual.End.Should().Be(maxByEnd.End);
-//                actual.StartInclusive.Should().Be(!actual.Start.IsNegativeInfinity && expectedStartInclusive);
-//                actual.EndInclusive.Should().Be(!actual.End.IsPositiveInfinity && expectedEndInclusive);
-//            }
+//            actual.Should().Be(expected);
 //        }
 
 //        [Theory]
@@ -55,17 +39,17 @@
 //            actual.Should().Be(expected);
 //        }
 
-//        [Fact]
-//        public void Hull_EmptyList_ShouldBeNull()
-//        {
-//            // Arrange
-//            var list = Enumerable.Empty<Interval<int>>();
+//        //[Fact]
+//        //public void Hull_EmptyList_ShouldBeNull()
+//        //{
+//        //    // Arrange
+//        //    var list = Enumerable.Empty<Interval<int>>();
 
-//            // Act
-//            var actual = list.Hull();
+//        //    // Act
+//        //    var actual = list.Hull();
 
-//            // Assert
-//            actual.Should().BeNull();
-//        }
+//        //    // Assert
+//        //    actual.Should().BeNull();
+//        //}
 //    }
 //}

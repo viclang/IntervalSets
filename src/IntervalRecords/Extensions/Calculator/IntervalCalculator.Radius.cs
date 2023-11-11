@@ -52,7 +52,7 @@ public static partial class IntervalCalculator
         => Radius(source, (end, start) => (end - start) / 2);
 
     private static TResult? Radius<T, TResult>(Interval<T> source, Func<T, T, TResult> radius)
-        where T : struct, IEquatable<T>, IComparable<T>, IComparable
+        where T : struct, IEquatable<T>, IComparable<T>, ISpanParsable<T>
         where TResult : struct
     {
         if (source.GetBoundaryState() != BoundaryState.Bounded || source.IsEmpty)

@@ -2,9 +2,9 @@
 
 namespace IntervalRecords;
 public sealed record OpenInterval<T> : Interval<T>
-    where T : struct, IEquatable<T>, IComparable<T>, IComparable
+    where T : struct, IEquatable<T>, IComparable<T>, ISpanParsable<T>
 {
-    public static new readonly OpenInterval<T> Empty = new(Unbounded<T>.NaN, Unbounded<T>.NaN);
+    public static new readonly OpenInterval<T> Empty = new(Unbounded<T>.None, Unbounded<T>.None);
 
     public static new readonly OpenInterval<T> Unbounded = new(Unbounded<T>.NegativeInfinity, Unbounded<T>.PositiveInfinity);
 
@@ -25,44 +25,14 @@ public sealed record OpenInterval<T> : Interval<T>
         return Start < value && value < End;
     }
 
-    public override bool Overlaps(Interval<T> other)
+    public bool Overlaps(OpenInterval<T> other)
+    {
+        return IsConnected(other);
+    }
+
+    public bool IsConnected(OpenInterval<T> other)
     {
         return Start < other.End && other.Start < End;
-    }
-
-    public override bool IsConnected(Interval<T> other)
-    {
-        return Start < other.End && other.Start < End
-            || (other.EndInclusive && other.End == Start)
-            || (other.StartInclusive && other.Start == End);
-    }
-
-    public override int CompareStart(Interval<T> other)
-    {
-        if (other.StartInclusive && Start == other.Start)
-        {
-            return -1;
-        }
-        return Start.CompareTo(other.Start);
-    }
-
-    public override int CompareEnd(Interval<T> other)
-    {
-        if (other.EndInclusive && End == other.End)
-        {
-            return -1;
-        }
-        return End.CompareTo(other.End);
-    }
-
-    public override int CompareStartToEnd(Interval<T> other)
-    {
-        return Start < other.End ? -1 : 1;
-    }
-
-    public override int CompareEndToStart(Interval<T> other)
-    {
-        return other.Start < End ? 1 : -1;
     }
 
     public override string ToString()

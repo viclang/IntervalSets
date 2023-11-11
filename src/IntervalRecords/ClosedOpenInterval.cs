@@ -2,9 +2,9 @@
 
 namespace IntervalRecords;
 public sealed record ClosedOpenInterval<T> : Interval<T>
-    where T : struct, IEquatable<T>, IComparable<T>, IComparable
+    where T : struct, IEquatable<T>, IComparable<T>, ISpanParsable<T>
 {
-    public static new readonly ClosedOpenInterval<T> Empty = new(Unbounded<T>.NaN, Unbounded<T>.NaN);
+    public static new readonly ClosedOpenInterval<T> Empty = new(Unbounded<T>.None, Unbounded<T>.None);
 
     public static new readonly ClosedOpenInterval<T> Unbounded = new(Unbounded<T>.NegativeInfinity, Unbounded<T>.PositiveInfinity);
 
@@ -27,48 +27,14 @@ public sealed record ClosedOpenInterval<T> : Interval<T>
         return Start <= value && value < End;
     }
 
-    public override bool Overlaps(Interval<T> other)
+    public bool Overlaps(ClosedOpenInterval<T> other)
     {
-        return Start < other.End && other.Start < End
-            || (other.EndInclusive && other.End == Start);
+        return Start < other.End && other.Start < End;
     }
 
-    public override bool IsConnected(Interval<T> other)
+    public bool IsConnected(ClosedOpenInterval<T> other)
     {
-        return Start <= other.End && other.Start < End
-            || (other.StartInclusive && other.Start == End);
-    }
-
-    public override int CompareStart(Interval<T> other)
-    {
-        if (!other.StartInclusive && Start == other.Start)
-        {
-            return 1;
-        }
-        return Start.CompareTo(other.Start);
-    }
-
-    public override int CompareEnd(Interval<T> other)
-    {
-        if (other.EndInclusive && End == other.End)
-        {
-            return -1;
-        }
-        return End.CompareTo(other.End);
-    }
-
-    public override int CompareStartToEnd(Interval<T> other)
-    {
-        if (!other.EndInclusive && Start == other.End)
-        {
-            return 1;
-        }
-        return Start.CompareTo(other.End);
-    }
-
-    public override int CompareEndToStart(Interval<T> other)
-    {
-        return End > other.Start ? 1 : -1;
+        return Start <= other.End && other.Start <= End;
     }
 
     public override string ToString()

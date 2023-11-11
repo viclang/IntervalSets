@@ -53,7 +53,7 @@ public static partial class IntervalCalculator
 
 
     private static TResult? Centre<T, TResult>(Interval<T> source, Func<T, T, TResult> centre)
-        where T : struct, IEquatable<T>, IComparable<T>, IComparable
+        where T : struct, IEquatable<T>, IComparable<T>, ISpanParsable<T>
         where TResult : struct
     {
         if (source.GetBoundaryState() != BoundaryState.Bounded || source.IsEmpty)

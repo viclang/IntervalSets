@@ -5,8 +5,8 @@ using System;
 namespace IntervalRecords.Tests.TestData
 {
     public static class IntervalRelationFactory<T, TOffset>
-        where T : struct, IEquatable<T>, IComparable<T>, IComparable
-        where TOffset : struct, IEquatable<TOffset>, IComparable<TOffset>, IComparable
+        where T : struct, IEquatable<T>, IComparable<T>, ISpanParsable<T>
+        where TOffset : struct, IEquatable<TOffset>, IComparable<TOffset>, ISpanParsable<TOffset>
     {
         public static Interval<T> Before(Interval<T> value, Unbounded<TOffset> offset)
         {

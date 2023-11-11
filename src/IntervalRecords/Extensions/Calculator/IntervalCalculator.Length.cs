@@ -47,8 +47,8 @@ public static partial class IntervalCalculator
     public static Unbounded<TimeSpan> Length(this Interval<TimeOnly> source) => Length(source, (left, right) => left - right);
 
     private static Unbounded<TResult> Length<T, TResult>(Interval<T> source, Func<T, T, TResult> length)
-        where T : struct, IEquatable<T>, IComparable<T>, IComparable
-        where TResult : struct, IEquatable<TResult>, IComparable<TResult>, IComparable
+        where T : struct, IEquatable<T>, IComparable<T>, ISpanParsable<T>
+        where TResult : struct, IEquatable<TResult>, IComparable<TResult>, ISpanParsable<TResult>
     {
         if (source.GetBoundaryState() != BoundaryState.Bounded)
         {

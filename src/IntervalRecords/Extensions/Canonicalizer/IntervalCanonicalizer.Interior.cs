@@ -52,7 +52,7 @@ public static partial class IntervalCanonicalizer
         => ToOpen(source, end => end.Add(step), start => start.Add(-step));
 
     private static OpenInterval<T> ToOpen<T>(Interval<T> source, Func<Unbounded<T>, Unbounded<T>> add, Func<Unbounded<T>, Unbounded<T>> substract)
-        where T : struct, IEquatable<T>, IComparable<T>, IComparable
+        where T : struct, IEquatable<T>, IComparable<T>, ISpanParsable<T>
     {
         if (source.IsEmpty || !source.StartInclusive && !source.EndInclusive)
         {

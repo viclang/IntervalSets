@@ -12,7 +12,7 @@ public static class IntervalCombiner
     /// <param name="right">The right interval.</param>
     /// <returns>The union of the two intervals if they overlap, otherwise returns null.</returns>
     public static Interval<T>? Union<T>(this Interval<T> left, Interval<T> right)
-        where T : struct, IEquatable<T>, IComparable<T>, IComparable
+        where T : struct, IEquatable<T>, IComparable<T>, ISpanParsable<T>
     {
         if (!left.IsConnected(right))
         {
@@ -27,7 +27,7 @@ public static class IntervalCombiner
     /// <param name="other">The other interval to compute the hull of.</param>
     /// <returns>The smallest interval that contains both input intervals.</returns>
     public static Interval<T> Hull<T>(this Interval<T> left, Interval<T> right)
-        where T : struct, IEquatable<T>, IComparable<T>, IComparable
+        where T : struct, IEquatable<T>, IComparable<T>, ISpanParsable<T>
     {
         if (left == right)
         {
@@ -54,7 +54,7 @@ public static class IntervalCombiner
     /// <param name="right">The right interval.</param>
     /// <returns>The portion of the first interval that does not overlap with the other interval, or null if the intervals do not overlap</returns>
     public static IEnumerable<Interval<T>> Except<T>(this Interval<T> left, Interval<T> right)
-    where T : struct, IEquatable<T>, IComparable<T>, IComparable
+    where T : struct, IEquatable<T>, IComparable<T>, ISpanParsable<T>
     {
         if (left == right)
         {
@@ -93,7 +93,7 @@ public static class IntervalCombiner
     /// <param name="right">The right interval.</param>
     /// <returns>The intersect of the two intervals if they overlap, otherwise returns null.</returns>
     public static Interval<T>? Intersect<T>(this Interval<T> left, Interval<T> right)
-        where T : struct, IEquatable<T>, IComparable<T>, IComparable
+        where T : struct, IEquatable<T>, IComparable<T>, ISpanParsable<T>
     {
         if (!left.Overlaps(right))
         {
@@ -124,7 +124,7 @@ public static class IntervalCombiner
     /// <param name="right">The right interval.</param>
     /// <returns>The gap between the two intervals, if any, or null if the two intervals overlap.</returns>
     public static Interval<T>? Gap<T>(this Interval<T> left, Interval<T> right)
-        where T : struct, IEquatable<T>, IComparable<T>, IComparable
+        where T : struct, IEquatable<T>, IComparable<T>, ISpanParsable<T>
     {
         if (left.IsConnected(right))
         {
@@ -142,25 +142,25 @@ public static class IntervalCombiner
     }
 
     public static Unbounded<T> MinStart<T>(this Interval<T> left, Interval<T> right)
-        where T : struct, IEquatable<T>, IComparable<T>, IComparable
+        where T : struct, IEquatable<T>, IComparable<T>, ISpanParsable<T>
     {
         return left.CompareStart(right) == -1 ? left.Start : right.Start;
     }
 
     public static Unbounded<T> MaxStart<T>(this Interval<T> left, Interval<T> right)
-        where T : struct, IEquatable<T>, IComparable<T>, IComparable
+        where T : struct, IEquatable<T>, IComparable<T>, ISpanParsable<T>
     {
         return left.CompareStart(right) == 1 ? left.Start : right.Start;
     }
 
     public static Unbounded<T> MinEnd<T>(this Interval<T> left, Interval<T> right)
-        where T : struct, IEquatable<T>, IComparable<T>, IComparable
+        where T : struct, IEquatable<T>, IComparable<T>, ISpanParsable<T>
     {
         return left.CompareEnd(right) == -1 ? left.Start : right.Start;
     }
 
     public static Unbounded<T> MaxEnd<T>(this Interval<T> left, Interval<T> right)
-        where T : struct, IEquatable<T>, IComparable<T>, IComparable
+        where T : struct, IEquatable<T>, IComparable<T>, ISpanParsable<T>
     {
         return left.CompareEnd(right) == 1 ? left.Start : right.Start;
     }

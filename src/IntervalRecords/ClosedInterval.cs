@@ -2,9 +2,9 @@
 
 namespace IntervalRecords;
 public sealed record ClosedInterval<T> : Interval<T>
-    where T : struct, IEquatable<T>, IComparable<T>, IComparable
+    where T : struct, IEquatable<T>, IComparable<T>, ISpanParsable<T>
 {
-    public static new readonly ClosedInterval<T> Empty = new(Unbounded<T>.NaN, Unbounded<T>.NaN);
+    public static new readonly ClosedInterval<T> Empty = new(Unbounded<T>.None, Unbounded<T>.None);
 
     public static new readonly ClosedInterval<T> Unbounded = new(Unbounded<T>.NegativeInfinity, Unbounded<T>.PositiveInfinity);
 
@@ -20,7 +20,7 @@ public sealed record ClosedInterval<T> : Interval<T>
     /// </summary>
     public override bool EndInclusive => true;
 
-    public override bool IsValid => Start < End && !Start.IsNaN || Start == End;
+    public override bool IsValid => Start < End && !Start.IsNone || Start == End;
 
     public override bool IsEmpty => !IsValid;
 
@@ -51,52 +51,14 @@ public sealed record ClosedInterval<T> : Interval<T>
         return Start <= value && value <= End;
     }
 
-    public override bool Overlaps(Interval<T> other)
+    public bool Overlaps(ClosedInterval<T> other)
     {
-        return Start < other.End && other.Start < End
-            || (other.EndInclusive && Start == other.End)
-            || (other.StartInclusive && End == other.Start);
+        return IsConnected(other);
     }
 
-    public override bool IsConnected(Interval<T> other)
+    public bool IsConnected(ClosedInterval<T> other)
     {
         return Start <= other.End && other.Start <= End;
-    }
-
-    public override int CompareStart(Interval<T> other)
-    {
-        if (!other.StartInclusive && Start == other.Start)
-        {
-            return 1;
-        }
-        return Start.CompareTo(other.Start);
-    }
-
-    public override int CompareEnd(Interval<T> other)
-    {
-        if (!other.EndInclusive && End == other.End)
-        {
-            return 1;
-        }
-        return End.CompareTo(other.End);
-    }
-
-    public override int CompareStartToEnd(Interval<T> other)
-    {
-        if (!other.EndInclusive && Start == other.End)
-        {
-            return 1;
-        }
-        return Start.CompareTo(other.End);
-    }
-
-    public override int CompareEndToStart(Interval<T> other)
-    {
-        if (!other.StartInclusive && End == other.Start)
-        {
-            return -1;
-        }
-        return End.CompareTo(other.Start);
     }
 
     public static bool operator >(ClosedInterval<T> left, ClosedInterval<T> right)
@@ -107,16 +69,6 @@ public sealed record ClosedInterval<T> : Interval<T>
     public static bool operator <(ClosedInterval<T> left, ClosedInterval<T> right)
     {
         return left.End <= right.End && right.Start < left.Start;
-    }
-
-    public static bool operator >=(ClosedInterval<T> left, ClosedInterval<T> right)
-    {
-        return left == right || left > right;
-    }
-
-    public static bool operator <=(ClosedInterval<T> left, ClosedInterval<T> right)
-    {
-        return left == right || left < right;
     }
 
     public override string ToString()

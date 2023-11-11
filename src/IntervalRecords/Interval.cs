@@ -1,5 +1,5 @@
-﻿using IntervalRecords.Extensions;
-using Unbounded;
+﻿using Unbounded;
+using IntervalRecords.Extensions;
 
 namespace IntervalRecords
 {
@@ -8,7 +8,7 @@ namespace IntervalRecords
     /// </summary>
     /// <typeparam name="T">The type of values represented in the interval.</typeparam>
     public abstract record Interval<T> : IComparable<Interval<T>>
-        where T : struct, IEquatable<T>, IComparable<T>, IComparable
+        where T : struct, IEquatable<T>, IComparable<T>, ISpanParsable<T>
     {
         private readonly Unbounded<T> _start;
         private readonly Unbounded<T> _end;
@@ -58,7 +58,7 @@ namespace IntervalRecords
         /// <summary>
         /// Indicates whether the start value of the interval is less than or equal to its end value.
         /// </summary>
-        public virtual bool IsValid => Start < End && !Start.IsNaN || Start.IsNaN && End.IsNaN;
+        public virtual bool IsValid => Start < End && !Start.IsNone || Start.IsNone && End.IsNone;
 
         /// <summary>
         /// Indicates whether an interval is empty.
@@ -129,9 +129,19 @@ namespace IntervalRecords
         /// </summary>
         /// <param name="other">The interval to check for overlapping with the current interval.</param>
         /// <returns>True if the current interval and the other interval overlap, False otherwise.</returns>
-        public abstract bool Overlaps(Interval<T> other);
+        public bool Overlaps(Interval<T> other)
+        {
+            return Start < other.End && other.Start < End
+                || Start == other.End && (StartInclusive && other.EndInclusive)
+                || End == other.Start && (EndInclusive && other.StartInclusive);
+        }
 
-        public abstract bool IsConnected(Interval<T> other);
+        public bool IsConnected(Interval<T> other)
+        {
+            return Start < other.End && other.Start < End
+                || Start == other.End && (StartInclusive || other.EndInclusive)
+                || End == other.Start && (EndInclusive || other.StartInclusive);
+        }
 
 
         /// <summary>
@@ -139,28 +149,56 @@ namespace IntervalRecords
         /// </summary>
         /// <param name="other">The other interval to compare.</param>
         /// <returns>A value indicating the relative order of the start of the two intervals.</returns>
-        public abstract int CompareStart(Interval<T> other);
+        public int CompareStart(Interval<T> other)
+        {
+            if (Start == other.Start)
+            {
+                return StartInclusive.CompareTo(other.StartInclusive);
+            }
+            return Start.CompareTo(other.Start);
+        }
 
         /// <summary>
         /// Compares the end of two intervals.
         /// </summary>
         /// <param name="other">The other interval to compare.</param>
         /// <returns>A value indicating the relative order of the end of the two intervals.</returns>
-        public abstract int CompareEnd(Interval<T> other);
+        public int CompareEnd(Interval<T> other)
+        {
+            if (End == other.End)
+            {
+                return EndInclusive.CompareTo(other.EndInclusive);
+            }
+            return End.CompareTo(other.End);
+        }
 
         /// <summary>
         /// Compares the start of the first interval with the end of the second interval.
         /// </summary>
         /// <param name="other">The other interval to compare.</param>
         /// <returns>A value indicating the relative order of the end of the two intervals.</returns>
-        public abstract int CompareStartToEnd(Interval<T> other);
+        public int CompareStartToEnd(Interval<T> other)
+        {
+            if (Start == other.End && (!StartInclusive || !other.EndInclusive))
+            {
+                return 1;
+            }
+            return Start.CompareTo(other.End);
+        }
 
         /// <summary>
         /// Compares the end of the first interval with the start of the second interval.
         /// </summary>
         /// <param name="other">The other interval to compare.</param>
         /// <returns>A value indicating the relative order of the end of the two intervals.</returns>
-        public abstract int CompareEndToStart(Interval<T> other);
+        public int CompareEndToStart(Interval<T> other)
+        {
+            if (End == other.Start && (!EndInclusive || !other.StartInclusive))
+            {
+                return -1;
+            }
+            return End.CompareTo(other.Start);
+        }
 
         /// <summary>
         /// This method compares the current interval with another interval and returns an integer value indicating the relative order of the intervals.

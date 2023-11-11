@@ -12,8 +12,8 @@ namespace IntervalRecords.Tests.Measure.Radius
     public class RadiusTimeOnlyTests : RadiusTests<TimeOnly, TimeSpan> { }
 
     public abstract class RadiusTests<T, TResult>
-        where T : struct, IEquatable<T>, IComparable<T>, IComparable
-        where TResult : struct, IEquatable<TResult>, IComparable<TResult>, IComparable
+        where T : struct, IEquatable<T>, IComparable<T>, ISpanParsable<T>
+        where TResult : struct, IEquatable<TResult>, IComparable<TResult>, ISpanParsable<TResult>
     {
         [Theory]
         [Trait("Measure", "Radius")]

@@ -55,7 +55,7 @@ public static partial class IntervalCanonicalizer
         Interval<T> source,
         Func<Unbounded<T>, Unbounded<T>> add,
         Func<Unbounded<T>, Unbounded<T>> substract)
-        where T : struct, IEquatable<T>, IComparable<T>, IComparable
+        where T : struct, IEquatable<T>, IComparable<T>, ISpanParsable<T>
     {
         if (source.IsEmpty)
         {

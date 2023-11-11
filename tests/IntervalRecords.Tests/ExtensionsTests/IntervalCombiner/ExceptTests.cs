@@ -9,10 +9,10 @@ namespace IntervalRecords.Tests.ExtensionsTests.IntervalCombiner
     public class ExceptTests
     {
         [Theory]
-        [InlineData("( 1, 2 )")]
-        [InlineData("[ 3, 4 )")]
-        [InlineData("( 5, 6 ]")]
-        [InlineData("[ 7, 8 ]")]
+        [InlineData("(1, 2)")]
+        [InlineData("[3, 4)")]
+        [InlineData("(5, 6]")]
+        [InlineData("[7, 8]")]
         public void Empty_if_intervals_are_equal(string interval)
         {
             var left = IntervalParser.Parse<int>(interval);
@@ -32,17 +32,15 @@ namespace IntervalRecords.Tests.ExtensionsTests.IntervalCombiner
             actual.Should().BeEquivalentTo(new[] { testData.Left, testData.Right });
         }
 
-        [Theory]
-        // Start is different
-        [InlineData("( 1, 4 ]", "( 2, 4 ]", "( 1, 2 ]")]
-        [InlineData("( 2, 4 ]", "( 1, 4 ]", "( 1, 2 ]")]
-        [InlineData("[ 1, 4 )", "[ 2, 4 )", "[ 1, 2 )")]
-        [InlineData("[ 2, 4 )", "[ 1, 4 )", "[ 1, 2 )")]
-        // End is different
-        [InlineData("( 1, 4 ]", "( 1, 5 ]", "( 4, 5 ]")]
-        [InlineData("( 1, 5 ]", "( 1, 4 ]", "( 4, 5 ]")]
-        [InlineData("[ 1, 4 )", "[ 1, 5 )", "[ 4, 5 )")]
-        [InlineData("[ 1, 5 )", "[ 1, 4 )", "[ 4, 5 )")]
+        [Theory]        
+        [InlineData("(1, 4]", "(2, 4]", "(1, 2]")] // Start is different
+        [InlineData("(2, 4]", "(1, 4]", "(1, 2]")]
+        [InlineData("[1, 4)", "[2, 4)", "[1, 2)")]
+        [InlineData("[2, 4)", "[1, 4)", "[1, 2)")]        
+        [InlineData("(1, 4]", "(1, 5]", "(4, 5]")] // End is different
+        [InlineData("(1, 5]", "(1, 4]", "(4, 5]")]
+        [InlineData("[1, 4)", "[1, 5)", "[4, 5)")]
+        [InlineData("[1, 5)", "[1, 4)", "[4, 5)")]
         public void One_differential_endpoint_returns_difference(string leftInterval, string rightInterval, string expectedInterval)
         {
             var left = IntervalParser.Parse<int>(leftInterval);
@@ -59,11 +57,11 @@ namespace IntervalRecords.Tests.ExtensionsTests.IntervalCombiner
         }
 
         [Theory]
-        [InlineData("( 1, 4 ]", "( 2, 5 ]", "( 1, 2 ], ( 4, 5 ]")]
-        [InlineData("( 2, 5 ]", "( 1, 4 ]", "( 1, 2 ], ( 4, 5 ]")]
-        [InlineData("[ 1, 4 )", "[ 2, 5 )", "[ 1, 2 ), [ 4, 5 )")]
-        [InlineData("[ 2, 5 )", "[ 1, 4 )", "[ 1, 2 ), [ 4, 5 )")]
-        [InlineData("[ 1, 4 )", "[ 3, 5 )", "[ 1, 3 ), [ 4, 5 )")]
+        [InlineData("(1, 4]", "(2, 5]", "(1, 2], (4, 5]")]
+        [InlineData("(2, 5]", "(1, 4]", "(1, 2], (4, 5]")]
+        [InlineData("[1, 4)", "[2, 5)", "[1, 2), [4, 5)")]
+        [InlineData("[2, 5)", "[1, 4)", "[1, 2), [4, 5)")]
+        [InlineData("[1, 4)", "[3, 5)", "[1, 3), [4, 5)")]
         public void Two_differential_endpoints_returns_two_disconnected_intervals(string leftInterval, string rightInterval, string expectedInterval)
         {
             var left = IntervalParser.Parse<int>(leftInterval);

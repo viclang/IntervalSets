@@ -12,8 +12,8 @@ namespace IntervalRecords.Tests.Measure.Centre
     public class CentreTimeOnlyTests : CentreTests<TimeOnly, TimeOnly> { }
 
     public abstract class CentreTests<T, TResult>
-        where T : struct, IEquatable<T>, IComparable<T>, IComparable
-        where TResult : struct, IEquatable<TResult>, IComparable<TResult>, IComparable
+        where T : struct, IEquatable<T>, IComparable<T>, ISpanParsable<T>
+        where TResult : struct, IEquatable<TResult>, IComparable<TResult>, ISpanParsable<TResult>
     {
         private static readonly DateTimeOffset _referenceDate = new DateTimeOffset(2022, 1, 1, 0, 0, 0, TimeSpan.Zero);
 

@@ -50,8 +50,8 @@ namespace IntervalRecords.Tests.TestHelper
 
 
         public static TResult? ToRadiusResult<T, TResult>(this double? result)
-            where T : struct, IEquatable<T>, IComparable<T>, IComparable
-            where TResult : struct, IEquatable<TResult>, IComparable<TResult>, IComparable
+            where T : struct, IEquatable<T>, IComparable<T>, ISpanParsable<T>
+            where TResult : struct, IEquatable<TResult>, IComparable<TResult>, ISpanParsable<TResult>
         {
             var type = typeof(T);
             if (type == typeof(int) || type == typeof(double))

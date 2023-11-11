@@ -21,6 +21,6 @@ public static class IntervalTypeExtensions
     /// <param name="value">The interval to determine if it is half-open.</param>
     /// <returns>True if the interval is half-open.</returns>
     public static bool IsHalfOpen<T>(this Interval<T> value)
-        where T : struct, IEquatable<T>, IComparable<T>, IComparable
+        where T : struct, IEquatable<T>, IComparable<T>, ISpanParsable<T>
         => value.GetIntervalType() is IntervalType.ClosedOpen or IntervalType.OpenClosed;
 }

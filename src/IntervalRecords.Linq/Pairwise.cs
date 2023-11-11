@@ -14,7 +14,7 @@
         public static IEnumerable<TResult> Pairwise<T, TResult>(
             this IEnumerable<Interval<T>> source,
             Func<Interval<T>, Interval<T>, TResult?> resultSelector)
-            where T : struct, IEquatable<T>, IComparable<T>, IComparable
+            where T : struct, IEquatable<T>, IComparable<T>, ISpanParsable<T>
         {
             using var e = source.OrderBy(x => x.Start).GetEnumerator();
 
@@ -36,7 +36,7 @@
             this IEnumerable<Interval<T>> source,
             Func<Interval<T>, Interval<T>, TResult?> resultSelector,
             Func<TResult, bool> predicate)
-            where T : struct, IEquatable<T>, IComparable<T>, IComparable
+            where T : struct, IEquatable<T>, IComparable<T>, ISpanParsable<T>
         {
             using var e = source.OrderBy(x => x.Start).GetEnumerator();
 

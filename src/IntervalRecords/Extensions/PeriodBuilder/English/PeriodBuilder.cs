@@ -3,7 +3,7 @@
 namespace IntervalRecords.Extensions.PeriodBuilder.English;
 
 public class Period<T>
-    where T : struct, IEquatable<T>, IComparable<T>, IComparable
+    where T : struct, IEquatable<T>, IComparable<T>, ISpanParsable<T>
 {
     public static PeriodBuilder From(T start) => PeriodBuilder.From(start);
 

@@ -17,7 +17,7 @@ namespace IntervalRecords.Tests.CanonicalizeTests
     public class CanonicalizeTimeOnlyTests : CanonicalizeTestsBase<TimeOnly, TimeSpan> { }
 
     public abstract class CanonicalizeTestsBase<T, TStep>
-        where T : struct, IEquatable<T>, IComparable<T>, IComparable
+        where T : struct, IEquatable<T>, IComparable<T>, ISpanParsable<T>
         where TStep : struct
     {
         [Theory]

@@ -72,8 +72,7 @@ namespace IntervalRecords.Tests
 
             // Assert
             act.Should()
-                .Throw<FormatException>()
-                .WithMessage("Input string was not in a correct format.");
+                .Throw<FormatException>();
         }
 
         [Theory]

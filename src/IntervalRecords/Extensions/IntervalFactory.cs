@@ -4,8 +4,16 @@ using Unbounded;
 namespace IntervalRecords.Extensions;
 public static class IntervalFactory
 {
+    public static Interval<T> Create<T>(T? start, T? end, bool startInclusive, bool endInclusive)
+        where T : struct, IEquatable<T>, IComparable<T>, ISpanParsable<T>
+    {
+        var unboundedStart = start.ToNegativeInfinity();
+        var unboundedEnd = end.ToPositiveInfinity();
+        return Create(unboundedStart, unboundedEnd, startInclusive, endInclusive);
+    }
+
     public static Interval<T> Create<T>(Unbounded<T> start, Unbounded<T> end, bool startInclusive, bool endInclusive)
-        where T : struct, IEquatable<T>, IComparable<T>, IComparable
+        where T : struct, IEquatable<T>, IComparable<T>, ISpanParsable<T>
     {
         return (startInclusive, endInclusive) switch
         {
@@ -17,7 +25,7 @@ public static class IntervalFactory
     }
 
     public static Interval<T> Create<T>(Unbounded<T> start, Unbounded<T> end, IntervalType intervalType)
-        where T : struct, IEquatable<T>, IComparable<T>, IComparable
+        where T : struct, IEquatable<T>, IComparable<T>, ISpanParsable<T>
     {
         return intervalType switch
         {

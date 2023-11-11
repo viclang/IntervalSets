@@ -6,8 +6,8 @@ using System.Linq;
 
 namespace IntervalRecords.Tests.TestData;
 public sealed class IntervalRelationTestDataBuilder<T, TOffset> : IIntervalTestDataBuilder
-    where T : struct, IEquatable<T>, IComparable<T>, IComparable
-    where TOffset : struct, IEquatable<TOffset>, IComparable<TOffset>, IComparable
+    where T : struct, IEquatable<T>, IComparable<T>, ISpanParsable<T>
+    where TOffset : struct, IEquatable<TOffset>, IComparable<TOffset>, ISpanParsable<TOffset>
 {
     private readonly Interval<T> _reference;
     private readonly TOffset _offset;

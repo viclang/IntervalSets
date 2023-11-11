@@ -4,88 +4,46 @@ namespace IntervalRecords.Tests.CombineTests
 {
     public class GapsTests
     {
-        public static TheoryData<Interval<int>, Interval<int>> NoGapBetweenTwoIntervals = new TheoryData<Interval<int>, Interval<int>>
-        {
-            { new ClosedInterval<int>(1, 3), new ClosedInterval<int>(3, 4) },
-            { new ClosedInterval<int>(1, 3), new ClosedOpenInterval<int>(3, 4) },
-            { new ClosedInterval<int>(1, 3), new OpenClosedInterval<int>(3, 4) },
-            { new ClosedInterval<int>(1, 3), new OpenInterval<int>(3, 4) },
-            { new ClosedOpenInterval<int>(1, 3), new ClosedInterval<int>(3, 4) },
-            { new ClosedOpenInterval<int>(1, 3), new ClosedOpenInterval<int>(3, 4) },
-            { new ClosedOpenInterval<int>(1, 4), new OpenClosedInterval<int>(3, 4) },
-            { new ClosedOpenInterval<int>(1, 4), new OpenInterval<int>(3, 4) },
-            { new OpenClosedInterval<int>(1, 3), new ClosedInterval<int>(3, 4) },
-            { new OpenClosedInterval<int>(1, 3), new ClosedOpenInterval<int>(3, 4) },
-            { new OpenClosedInterval<int>(1, 3), new OpenClosedInterval<int>(3, 4) },
-            { new OpenClosedInterval<int>(1, 3), new OpenInterval<int>(3, 4) },
-            { new OpenInterval<int>(1, 3), new ClosedInterval<int>(3, 4) },
-            { new OpenInterval<int>(1, 3), new ClosedOpenInterval<int>(3, 4) },
-            { new OpenInterval<int>(1, 4), new OpenClosedInterval<int>(3, 4) },
-            { new OpenInterval<int>(1, 4), new OpenInterval<int>(3, 4) },
-        };
-
         [Theory]
-        [MemberData(nameof(NoGapBetweenTwoIntervals))]
-        public void GivenNoGapBetweenTwoAscendingIntervals_WhenGapCalculated_ReturnsNull(Interval<int> before, Interval<int> after)
+        [InlineData("[1, 3]", "[3, 4]")] // Ascending
+        [InlineData("[1, 3)", "[3, 4)")]
+        [InlineData("(1, 3]", "(3, 4]")]
+        [InlineData("(1, 4)", "(3, 4)")]
+        [InlineData("[3, 4]", "[1, 3]")] // Descending
+        [InlineData("[3, 4)", "[1, 3)")]
+        [InlineData("(3, 4]", "(1, 3]")]
+        [InlineData("(3, 4)", "(1, 4)")]
+        public void Connected_intervals_should_return_null(string leftInterval, string rightInterval)
         {
-            var actual = before.Gap(after);
+            var left = IntervalParser.Parse<int>(leftInterval);
+            var right = IntervalParser.Parse<int>(rightInterval);
+
+            var actual = left.Gap(right);
 
             actual.Should().BeNull();
         }
 
-
-        [Theory]
-        [MemberData(nameof(NoGapBetweenTwoIntervals))]
-        public void GivenNoGapBetweenTwoDescendingIntervals_WhenGapCalculated_ReturnsNull(Interval<int> before, Interval<int> after)
+        [Theory]        
+        [InlineData("[1, 2]", "[3, 4]", "(2, 3)")] // Ascending
+        [InlineData("[1, 2)", "[3, 4)", "[2, 3)")]
+        [InlineData("(1, 2]", "(3, 4]", "(2, 3]")]
+        [InlineData("(1, 3)", "(3, 4)", "[3, 3]")]        
+        [InlineData("[3, 4]", "[1, 2]", "(2, 3)")] // Descending
+        [InlineData("[3, 4)", "[1, 2)", "[2, 3)")]
+        [InlineData("(3, 4]", "(1, 2]", "(2, 3]")]
+        [InlineData("(3, 4)", "(1, 3)", "[3, 3]")]
+        public void Disjoint_intervals_should_return_expected_gap(string leftInterval, string rightInterval, string expectedInterval)
         {
-            var actual = after.Gap(before);
+            var left = IntervalParser.Parse<int>(leftInterval);
+            var right = IntervalParser.Parse<int>(rightInterval);
+            var expected = IntervalParser.Parse<int>(expectedInterval);
 
-            actual.Should().BeNull();
-        }
-
-
-        public static TheoryData<Interval<int>, Interval<int>, Interval<int>> GapBetweenTwoIntervals = new()
-        {
-            //{ new ClosedInterval<int>(1, 2), new ClosedInterval<int>(3, 4), new OpenInterval<int>(2, 3) },
-            //{ new ClosedInterval<int>(1, 2), new ClosedOpenInterval<int>(3, 4), new OpenInterval<int>(2, 3) },
-            //{ new ClosedInterval<int>(1, 2), new OpenClosedInterval<int>(3, 4), new OpenClosedInterval<int>(2, 3) },
-            //{ new ClosedInterval<int>(1, 2), new OpenInterval<int>(3, 4), new OpenClosedInterval<int>(2, 3) },
-            //{ new ClosedOpenInterval<int>(1, 2), new ClosedInterval<int>(3, 4), new ClosedOpenInterval<int>(2, 3) },
-            //{ new ClosedOpenInterval<int>(1, 2), new ClosedOpenInterval<int>(3, 4), new ClosedOpenInterval<int>(2, 3) },
-            //{ new ClosedOpenInterval<int>(1, 3), new OpenClosedInterval<int>(3, 4), new ClosedInterval<int>(3, 3) },
-            //{ new ClosedOpenInterval<int>(1, 3), new OpenInterval<int>(3, 4), new ClosedInterval<int>(3, 3) },
-            //{ new OpenClosedInterval<int>(1, 2), new ClosedInterval<int>(3, 4), new OpenInterval<int>(2, 3) },
-            //{ new OpenClosedInterval<int>(1, 2), new ClosedOpenInterval<int>(3, 4), new OpenInterval<int>(2, 3) },
-            //{ new OpenClosedInterval<int>(1, 2), new OpenClosedInterval<int>(3, 4), new OpenClosedInterval<int>(2, 3) },
-            //{ new OpenClosedInterval<int>(1, 2), new OpenInterval<int>(3, 4), new OpenClosedInterval<int>(2, 3) },
-            //{ new OpenInterval<int>(1, 2), new ClosedInterval<int>(3, 4), new ClosedOpenInterval<int>(2, 3) },
-            //{ new OpenInterval<int>(1, 2), new ClosedOpenInterval<int>(3, 4), new ClosedOpenInterval<int>(2, 3) },
-            //{ new OpenInterval<int>(1, 3), new OpenClosedInterval<int>(3, 4), new ClosedInterval<int>(3, 3) },
-            { new OpenInterval<int>(1, 3), new OpenInterval<int>(3, 4), new ClosedInterval<int>(3, 3) },
-        };
-
-        [Theory]
-        [MemberData(nameof(GapBetweenTwoIntervals))]
-        public void GivenGapBetweenTwoAscendingIntervals_WhenGapCalculated_ReturnsGapInterval(Interval<int> before, Interval<int> after, Interval<int> expectedGap)
-        {
-            var actual = before.Gap(after);
+            var actual = left.Gap(right);
 
             actual.Should()
                 .NotBeNull()
                 .And
-                .Be(expectedGap);
-        }
-
-        [Theory]
-        [MemberData(nameof(GapBetweenTwoIntervals))]
-        public void GivenGapBetweenTwoDescendingIntervals_WhenGapCalculated_ReturnsGapInterval(Interval<int> before, Interval<int> after, Interval<int> expectedGap)
-        {
-            var actual = after.Gap(before);
-
-            actual.Should()
-                .NotBeNull()
-                .And
-                .Be(expectedGap);
+                .Be(expected);
         }
     }
 }

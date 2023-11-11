@@ -11,11 +11,11 @@ public static class BoundaryStateExtensions
     /// <returns>A value indicating whether the interval is bounded, left-bounded, right-bounded, or unbounded.</returns>
     /// <exception cref="NotSupportedException">Thrown when the start or end state of the interval is not finite or infinity.</exception>
     public static BoundaryState GetBoundaryState<T>(this Interval<T> value)
-        where T : struct, IEquatable<T>, IComparable<T>, IComparable
+        where T : struct, IEquatable<T>, IComparable<T>, ISpanParsable<T>
         => (value.Start.State, value.End.State) switch
         {
             (UnboundedState.Finite, UnboundedState.Finite)
-            or (UnboundedState.NaN, UnboundedState.NaN) => BoundaryState.Bounded,
+            or (UnboundedState.None, UnboundedState.None) => BoundaryState.Bounded,
             (UnboundedState.NegativeInfinity, UnboundedState.PositiveInfinity) => BoundaryState.Unbounded,
             (UnboundedState.NegativeInfinity, UnboundedState.Finite) => BoundaryState.RightBounded,
             (UnboundedState.Finite, UnboundedState.PositiveInfinity) => BoundaryState.LeftBounded,
@@ -29,6 +29,6 @@ public static class BoundaryStateExtensions
     /// <param name="source">The interval to check.</param>
     /// <returns>True if the interval is half-bounded.</returns>
     public static bool IsHalfBounded<T>(this Interval<T> value)
-        where T : struct, IEquatable<T>, IComparable<T>, IComparable
+        where T : struct, IEquatable<T>, IComparable<T>, ISpanParsable<T>
         => value.GetBoundaryState() is BoundaryState.LeftBounded or BoundaryState.RightBounded;
 }
