@@ -1,5 +1,6 @@
 ﻿using Unbounded;
 using IntervalRecords.Extensions;
+using System.Diagnostics.CodeAnalysis;
 
 namespace IntervalRecords
 {
@@ -7,7 +8,7 @@ namespace IntervalRecords
     /// Represents an interval of values of type <see cref="T"/>.
     /// </summary>
     /// <typeparam name="T">The type of values represented in the interval.</typeparam>
-    public abstract record Interval<T> : IComparable<Interval<T>>
+    public abstract record Interval<T> : IComparable<Interval<T>>, IParsable<Interval<T>>, ISpanParsable<Interval<T>>
         where T : struct, IEquatable<T>, IComparable<T>, ISpanParsable<T>
     {
         private readonly Unbounded<T> _start;
@@ -136,6 +137,11 @@ namespace IntervalRecords
                 || End == other.Start && (EndInclusive && other.StartInclusive);
         }
 
+        /// <summary>
+        /// Returns a boolean value indicating if the current interval is connected to the other interval.
+        /// </summary>
+        /// <param name="other">The interval to check if it is connected to current interval.</param>
+        /// <returns>True if the current interval and the other interval are connected, False otherwise.</returns>
         public bool IsConnected(Interval<T> other)
         {
             return Start < other.End && other.Start < End
@@ -179,11 +185,14 @@ namespace IntervalRecords
         /// <returns>A value indicating the relative order of the end of the two intervals.</returns>
         public int CompareStartToEnd(Interval<T> other)
         {
-            if (Start == other.End && (!StartInclusive || !other.EndInclusive))
+            var startEndComparison = Start.CompareTo(other.End);
+
+            // Start is greater than end if they are equal and at least one is exclusive.
+            if (startEndComparison == 0 && (!StartInclusive || !other.EndInclusive))
             {
                 return 1;
             }
-            return Start.CompareTo(other.End);
+            return startEndComparison;
         }
 
         /// <summary>
@@ -193,11 +202,14 @@ namespace IntervalRecords
         /// <returns>A value indicating the relative order of the end of the two intervals.</returns>
         public int CompareEndToStart(Interval<T> other)
         {
-            if (End == other.Start && (!EndInclusive || !other.StartInclusive))
+            var endStartComparison = End.CompareTo(other.Start);
+
+            // End is less than start if they are equal and at least one is exclusive.
+            if (endStartComparison == 0 && (!EndInclusive || !other.StartInclusive))
             {
                 return -1;
             }
-            return End.CompareTo(other.Start);
+            return endStartComparison;
         }
 
         /// <summary>
@@ -246,6 +258,31 @@ namespace IntervalRecords
             end = End;
             startInclusive = StartInclusive;
             endInclusive = EndInclusive;
+        }
+
+        public static Interval<T> Parse(string s, IFormatProvider? provider)
+        {
+            return IntervalParser.Parse<T>(s);
+        }
+
+        public static bool TryParse([NotNullWhen(true)] string? s, IFormatProvider? provider, [MaybeNullWhen(false)] out Interval<T> result)
+        {
+            if (s is null)
+            {
+                result = null;
+                return false;
+            }
+            return IntervalParser.TryParse(s, out result);
+        }
+
+        public static Interval<T> Parse(ReadOnlySpan<char> s, IFormatProvider? provider)
+        {
+            throw new NotImplementedException();
+        }
+
+        public static bool TryParse(ReadOnlySpan<char> s, IFormatProvider? provider, [MaybeNullWhen(false)] out Interval<T> result)
+        {
+            throw new NotImplementedException();
         }
     }
 }

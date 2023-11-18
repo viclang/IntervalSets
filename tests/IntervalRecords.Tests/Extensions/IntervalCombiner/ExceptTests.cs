@@ -4,7 +4,7 @@ using IntervalRecords.Tests.TestData;
 using IntervalRecords.Tests.TestData.ClassData;
 using System.Diagnostics;
 
-namespace IntervalRecords.Tests.ExtensionsTests.IntervalCombiner
+namespace IntervalRecords.Tests.Extensions
 {
     public class ExceptTests
     {
@@ -24,19 +24,22 @@ namespace IntervalRecords.Tests.ExtensionsTests.IntervalCombiner
         }
 
         [Theory]
-        [ClassData(typeof(Int32NonOverlappingClassData))]
-        public void List_of_inputs_if_not_overlapping(IntervalRelationTestData<int> testData)
+        [ClassData(typeof(Int32DisjointClassData))]
+        public void List_of_inputs_if_not_overlapping(string left, string right, IntervalRelation _)
         {
-            var actual = testData.Left.Except(testData.Right);
+            var leftInterval = IntervalParser.Parse<int>(left);
+            var rightInterval = IntervalParser.Parse<int>(right);
 
-            actual.Should().BeEquivalentTo(new[] { testData.Left, testData.Right });
+            var actual = leftInterval.Except(rightInterval);
+
+            actual.Should().BeEquivalentTo(new[] { leftInterval, rightInterval });
         }
 
-        [Theory]        
+        [Theory]
         [InlineData("(1, 4]", "(2, 4]", "(1, 2]")] // Start is different
         [InlineData("(2, 4]", "(1, 4]", "(1, 2]")]
         [InlineData("[1, 4)", "[2, 4)", "[1, 2)")]
-        [InlineData("[2, 4)", "[1, 4)", "[1, 2)")]        
+        [InlineData("[2, 4)", "[1, 4)", "[1, 2)")]
         [InlineData("(1, 4]", "(1, 5]", "(4, 5]")] // End is different
         [InlineData("(1, 5]", "(1, 4]", "(4, 5]")]
         [InlineData("[1, 4)", "[1, 5)", "[4, 5)")]

@@ -12,7 +12,7 @@ public static partial class IntervalExtensions
     public static IEnumerable<Interval<T>> UnionAll<T>(this IEnumerable<Interval<T>> source)
         where T : struct, IEquatable<T>, IComparable<T>, ISpanParsable<T>
     {
-        return source.Reduce((a, b) => a.Union(b));
+        return source.OrderBy(x => x.Start).Reduce((a, b) => a.Union(b));
     }
 
     /// <summary>
@@ -29,8 +29,8 @@ public static partial class IntervalExtensions
         {
             return null;
         }
-        var min = source.MinBy(i => i.Start)!;
-        var max = source.MaxBy(i => i.End)!;
+        var min = source.MinBy(i => (i.Start, i.StartInclusive))!;
+        var max = source.MaxBy(i => (i.End, i.EndInclusive))!;
 
         return IntervalFactory.Create(
             min.Start,
@@ -61,7 +61,7 @@ public static partial class IntervalExtensions
         this IEnumerable<Interval<T>> source)
         where T : struct, IEquatable<T>, IComparable<T>, ISpanParsable<T>
     {
-        return source.Pairwise((a, b) => a.Intersect(b)).Where(i => !i.IsEmpty);
+        return source.OrderBy(x => x.Start).Pairwise((a, b) => a.Intersect(b));
     }
 
     /// <summary>
@@ -74,6 +74,6 @@ public static partial class IntervalExtensions
         this IEnumerable<Interval<T>> source)
         where T : struct, IEquatable<T>, IComparable<T>, ISpanParsable<T>
     {
-        return source.Pairwise((a, b) => a.Gap(b));
+        return source.OrderBy(x => x.Start).Pairwise((a, b) => a.Gap(b));
     }
 }

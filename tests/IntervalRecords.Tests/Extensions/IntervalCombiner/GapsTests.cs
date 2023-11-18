@@ -1,6 +1,6 @@
 ﻿using IntervalRecords.Extensions;
 
-namespace IntervalRecords.Tests.CombineTests
+namespace IntervalRecords.Tests.Extensions
 {
     public class GapsTests
     {

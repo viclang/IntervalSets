@@ -1,9 +1,4 @@
 ﻿using IntervalRecords.Extensions;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Unbounded;
 
 namespace IntervalRecords.Tests;
@@ -19,8 +14,8 @@ public static class UnboundedHelper
             (Unbounded<double> a, Unbounded<double> b) => (Unbounded<T>)(object)UnboundedMathHelper.Substract(a, b),
             (Unbounded<DateTime> a, Unbounded<TimeSpan> b) => (Unbounded<T>)(object)UnboundedDateTime.Substract(a, b),
             (Unbounded<DateTimeOffset> a, Unbounded<TimeSpan> b) => (Unbounded<T>)(object)UnboundedDateTimeOffset.Substract(a, b),
-            (Unbounded<DateOnly> a, Unbounded<int> b) => (Unbounded<T>)(object)UnboundedDateOnly.AddDays(a, -b.GetFiniteOrDefault()),
-            (Unbounded<TimeOnly> a, Unbounded<double> b) => (Unbounded<T>)(object)UnboundedTimeOnly.AddHours(a, -b.GetFiniteOrDefault()),
+            (Unbounded<DateOnly> a, Unbounded<int> b) => (Unbounded<T>)(object)UnboundedDateOnly.AddDays(a, -b.GetValueOrDefault()),
+            (Unbounded<TimeOnly> a, Unbounded<double> b) => (Unbounded<T>)(object)UnboundedTimeOnly.AddHours(a, -b.GetValueOrDefault()),
             _ => throw new NotImplementedException(),
         };
     }
@@ -35,8 +30,8 @@ public static class UnboundedHelper
             (Unbounded<double> a, Unbounded<double> b) => (Unbounded<T>)(object)UnboundedMathHelper.Add(a, b),
             (Unbounded<DateTime> a, Unbounded<TimeSpan> b) => (Unbounded<T>)(object)UnboundedDateTime.Add(a, b),
             (Unbounded<DateTimeOffset> a, Unbounded<TimeSpan> b) => (Unbounded<T>)(object)UnboundedDateTimeOffset.Add(a, b),
-            (Unbounded<DateOnly> a, Unbounded<int> b) => (Unbounded<T>)(object)UnboundedDateOnly.AddDays(a, b.GetFiniteOrDefault()),
-            (Unbounded<TimeOnly> a, Unbounded<double> b) => (Unbounded<T>)(object)UnboundedTimeOnly.AddHours(a, b.GetFiniteOrDefault()),
+            (Unbounded<DateOnly> a, Unbounded<int> b) => (Unbounded<T>)(object)UnboundedDateOnly.AddDays(a, b.GetValueOrDefault()),
+            (Unbounded<TimeOnly> a, Unbounded<double> b) => (Unbounded<T>)(object)UnboundedTimeOnly.AddHours(a, b.GetValueOrDefault()),
             _ => throw new NotImplementedException(),
         };
     }

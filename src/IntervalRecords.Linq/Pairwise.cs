@@ -12,11 +12,10 @@
         /// <param name="resultSelector">The function used to combine adjacent intervals.</param>
         /// <returns>The pairwise result sequence of intervals.</returns>
         public static IEnumerable<TResult> Pairwise<T, TResult>(
-            this IEnumerable<Interval<T>> source,
-            Func<Interval<T>, Interval<T>, TResult?> resultSelector)
-            where T : struct, IEquatable<T>, IComparable<T>, ISpanParsable<T>
+            this IOrderedEnumerable<T> source,
+            Func<T, T, TResult?> resultSelector)
         {
-            using var e = source.OrderBy(x => x.Start).GetEnumerator();
+            using var e = source.GetEnumerator();
 
             if (!e.MoveNext())
                 yield break;
@@ -26,28 +25,6 @@
             {
                 var result = resultSelector(previous, e.Current);
                 if (result is not null)
-                    yield return result;
-
-                previous = e.Current;
-            }
-        }
-
-        public static IEnumerable<TResult> PairwiseWhere<T, TResult>(
-            this IEnumerable<Interval<T>> source,
-            Func<Interval<T>, Interval<T>, TResult?> resultSelector,
-            Func<TResult, bool> predicate)
-            where T : struct, IEquatable<T>, IComparable<T>, ISpanParsable<T>
-        {
-            using var e = source.OrderBy(x => x.Start).GetEnumerator();
-
-            if (!e.MoveNext())
-                yield break;
-
-            var previous = e.Current;
-            while (e.MoveNext())
-            {
-                var result = resultSelector(previous, e.Current);
-                if (result is not null && predicate(result))
                     yield return result;
 
                 previous = e.Current;

@@ -15,7 +15,7 @@ public static partial class Interval
         {
             return Enumerable.Empty<T>();
         }
-        var start = source.StartInclusive ? source.Start.GetFiniteOrDefault() : addStep(source.Start.GetFiniteOrDefault());
+        var start = source.StartInclusive ? source.Start.GetValueOrDefault() : addStep(source.Start.GetValueOrDefault());
         return source.Iterate(start, addStep);
     }
 

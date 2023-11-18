@@ -67,7 +67,7 @@ namespace IntervalRecords.Extensions
             var endString = parts[1].Trim();
 
             var start = Unbounded<T>.Parse(startString[1..]);
-            var end = Unbounded<T>.Parse(endString[..(endString.Length - 1)]);
+            var end = Unbounded<T>.Parse(endString[..^1]);
 
             return IntervalFactory.Create(
                 start.IsNone ? Unbounded<T>.NegativeInfinity : start,

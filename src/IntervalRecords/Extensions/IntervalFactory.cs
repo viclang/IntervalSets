@@ -1,5 +1,4 @@
-﻿using IntervalRecords.Extensions.PeriodBuilder.Dutch;
-using Unbounded;
+﻿using Unbounded;
 
 namespace IntervalRecords.Extensions;
 public static class IntervalFactory
@@ -22,6 +21,13 @@ public static class IntervalFactory
             (true, false) => new ClosedOpenInterval<T>(start, end),
             (false, false) => new OpenInterval<T>(start, end)
         };
+    }
+
+
+    public static Interval<T> Create<T>(T? start, T? end, IntervalType intervalType)
+        where T : struct, IEquatable<T>, IComparable<T>, ISpanParsable<T>
+    {
+        return Create(start.ToNegativeInfinity(), end.ToPositiveInfinity(), intervalType);
     }
 
     public static Interval<T> Create<T>(Unbounded<T> start, Unbounded<T> end, IntervalType intervalType)

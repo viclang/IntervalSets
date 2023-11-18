@@ -20,7 +20,7 @@ public sealed record ClosedInterval<T> : Interval<T>
     /// </summary>
     public override bool EndInclusive => true;
 
-    public override bool IsValid => Start < End && !Start.IsNone || Start == End;
+    public override bool IsValid => Start < End && !Start.IsNone || IsSingleton;
 
     public override bool IsEmpty => !IsValid;
 

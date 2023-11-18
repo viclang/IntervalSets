@@ -1,6 +1,6 @@
 ﻿using IntervalRecords.Extensions;
 
-namespace IntervalRecords.Tests.ExtensionsTests.IntervalCombiner
+namespace IntervalRecords.Tests.IntervalCombiner
 {
     public class EqualBoundaryValuesTests
     {

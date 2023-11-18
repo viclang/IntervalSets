@@ -9,23 +9,25 @@ namespace IntervalRecords.Tests.ExtensionsTests.IntervalCombiner
     {
         [Theory]
         [ClassData(typeof(Int32OverlappingClassData))]
-        public void Intersect_ShouldBeExpectedOrNull(IntervalRelationTestData<int> testData)
+        public void Intersect_ShouldBeExpectedOrNull(string left, string right, IntervalRelation _)
         {
-            // Act
-            var actual = testData.Right.Intersect(testData.Left);
+            var leftInterval = IntervalParser.Parse<int>(left);
+            var rightInterval = IntervalParser.Parse<int>(right);
+
+            var actual = rightInterval.Intersect(leftInterval);
 
             // Assert
-            var array = new Interval<int>[] { testData.Left, testData.Right };
+            var array = new Interval<int>[] { leftInterval, rightInterval };
             var maxByStart = array.MaxBy(i => i.Start)!;
             var minByEnd = array.MinBy(i => i.End)!;
 
 
-            var expectedStartInclusive = testData.Left.Start == testData.Right.Start
-                ? testData.Left.StartInclusive && testData.Right.StartInclusive
+            var expectedStartInclusive = leftInterval.Start == rightInterval.Start
+                ? leftInterval.StartInclusive && rightInterval.StartInclusive
                 : maxByStart.StartInclusive;
 
-            var expectedEndInclusive = testData.Left.End == testData.Right.End
-                ? testData.Left.EndInclusive && testData.Right.EndInclusive
+            var expectedEndInclusive = leftInterval.End == rightInterval.End
+                ? leftInterval.EndInclusive && rightInterval.EndInclusive
                 : minByEnd.EndInclusive;
 
             using (new AssertionScope())

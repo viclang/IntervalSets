@@ -50,7 +50,7 @@ public static partial class IntervalCalculator
         where T : struct, IEquatable<T>, IComparable<T>, ISpanParsable<T>
         where TResult : struct, IEquatable<TResult>, IComparable<TResult>, ISpanParsable<TResult>
     {
-        if (source.GetBoundaryState() != BoundaryState.Bounded)
+        if (source.GetBoundaryState() is not BoundaryState.Bounded)
         {
             return Unbounded<TResult>.PositiveInfinity;
         }
@@ -58,6 +58,6 @@ public static partial class IntervalCalculator
         {
             return default(TResult);
         }
-        return length(source.End.GetFiniteOrDefault(), source.Start.GetFiniteOrDefault());
+        return length(source.End.GetValueOrDefault(), source.Start.GetValueOrDefault());
     }
 }

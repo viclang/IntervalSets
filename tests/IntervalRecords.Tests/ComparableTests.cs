@@ -1,5 +1,4 @@
 ﻿using IntervalRecords.Extensions;
-using IntervalRecords.Tests.TestData;
 using IntervalRecords.Tests.TestData.ClassData;
 
 namespace IntervalRecords.Tests
@@ -8,13 +7,13 @@ namespace IntervalRecords.Tests
     {
         [Theory]
         [ClassData(typeof(Int32IntervalRelationClassData))]
-        public void CompareTo_ShouldBeExpected(IntervalRelationTestData<int> testData)
+        public void CompareTo_ShouldBeExpected(string left, string right, IntervalRelation relation)
         {
-            // Arrange
-            var expected = ExpectedCompareResult(testData.Relation);
+            var leftInterval = IntervalParser.Parse<int>(left);
+            var rightInterval = IntervalParser.Parse<int>(right);
+            var expected = ExpectedCompareResult(relation);
 
-            // Act
-            var actual = testData.Left.CompareTo(testData.Right);
+            var actual = leftInterval.CompareTo(rightInterval);
 
             // Assert
             actual.Should().Be(expected);
@@ -22,57 +21,53 @@ namespace IntervalRecords.Tests
 
         [Theory]
         [ClassData(typeof(Int32IntervalRelationClassData))]
-        public void GreaterThan_ShouldBeExpected(IntervalRelationTestData<int> testData)
+        public void GreaterThan_ShouldBeExpected(string left, string right, IntervalRelation relation)
         {
-            // Arrange
-            var expected = ExpectedCompareResult(testData.Relation) > 0;
+            var leftInterval = IntervalParser.Parse<int>(left);
+            var rightInterval = IntervalParser.Parse<int>(right);
+            var expected = ExpectedCompareResult(relation) > 0;
 
-            // Act
-            var actual = testData.Left > testData.Right;
+            var actual = leftInterval > rightInterval;
 
-            // Assert
             actual.Should().Be(expected);
         }
 
         [Theory]
         [ClassData(typeof(Int32IntervalRelationClassData))]
-        public void LessThan_ShouldBeExpected(IntervalRelationTestData<int> testData)
+        public void LessThan_ShouldBeExpected(string left, string right, IntervalRelation relation)
         {
-            // Arrange
-            var expected = ExpectedCompareResult(testData.Relation) < 0;
+            var leftInterval = IntervalParser.Parse<int>(left);
+            var rightInterval = IntervalParser.Parse<int>(right);
+            var expected = ExpectedCompareResult(relation) < 0;
 
-            // Act
-            var actual = testData.Left < testData.Right;
+            var actual = leftInterval < rightInterval;
 
-            // Assert
             actual.Should().Be(expected);
         }
 
         [Theory]
         [ClassData(typeof(Int32IntervalRelationClassData))]
-        public void GreaterOrEqualTo_ShouldBeExpected(IntervalRelationTestData<int> testData)
+        public void GreaterOrEqualTo_ShouldBeExpected(string left, string right, IntervalRelation relation)
         {
-            // Arrange
-            var expected = ExpectedCompareResult(testData.Relation) >= 0;
+            var leftInterval = IntervalParser.Parse<int>(left);
+            var rightInterval = IntervalParser.Parse<int>(right);
+            var expected = ExpectedCompareResult(relation) >= 0;
 
-            // Act
-            var actual = testData.Left >= testData.Right;
+            var actual = leftInterval >= rightInterval;
 
-            // Assert
             actual.Should().Be(expected);
         }
 
         [Theory]
         [ClassData(typeof(Int32IntervalRelationClassData))]
-        public void LessOrEqualTo_ShouldBeExpected(IntervalRelationTestData<int> testData)
+        public void LessOrEqualTo_ShouldBeExpected(string left, string right, IntervalRelation relation)
         {
-            // Arrange
-            var expected = ExpectedCompareResult(testData.Relation) <= 0;
+            var leftInterval = IntervalParser.Parse<int>(left);
+            var rightInterval = IntervalParser.Parse<int>(right);
+            var expected = ExpectedCompareResult(relation) <= 0;
 
-            // Act
-            var actual = testData.Left <= testData.Right;
+            var actual = leftInterval <= rightInterval;
 
-            // Assert
             actual.Should().Be(expected);
         }
 

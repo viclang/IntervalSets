@@ -10,12 +10,12 @@
         /// <param name="source">The collection of intervals.</param>
         /// <param name="resultSelector">The function used to combine adjacent intervals.</param>
         /// <returns>The reduced sequence of intervals.</returns>
-        public static IEnumerable<Interval<T>> Reduce<T>(
-            this IEnumerable<Interval<T>> source,
-            Func<Interval<T>, Interval<T>, Interval<T>?> resultSelector)
-            where T : struct, IEquatable<T>, IComparable<T>, ISpanParsable<T>
+        public static IEnumerable<T> Reduce<T>(
+            this IOrderedEnumerable<T> source,
+            Func<T, T, T?> resultSelector)
+           
         {
-            using var e = source.OrderBy(x => x.Start).GetEnumerator();
+            using var e = source.GetEnumerator();
 
             if (!e.MoveNext())
                 yield break;
@@ -24,7 +24,7 @@
             while (e.MoveNext())
             {
                 var result = resultSelector(previous, e.Current);
-                if (result == null)
+                if (result is null)
                 {
                     yield return previous;
                     previous = e.Current;

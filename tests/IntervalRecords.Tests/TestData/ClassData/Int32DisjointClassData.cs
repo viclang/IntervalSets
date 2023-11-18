@@ -4,28 +4,30 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 
-namespace IntervalRecords.Tests.TestData;
+namespace IntervalRecords.Tests.TestData.ClassData;
 public class Int32DisjointClassData : IEnumerable<object[]>
 {
-    private const int _offset = 1;
-    private readonly static Interval<int> _reference = new ClosedInterval<int>(5, 9);
-
     public IEnumerator<object[]> GetEnumerator()
     {
-        var testData = new List<object[]>();
-        foreach (var intervalType in (IntervalType[])Enum.GetValues(typeof(IntervalType)))
-        {
-            var builder = new IntervalRelationTestDataBuilder<int, int>(_reference.Canonicalize(intervalType, 0), _offset);
-
-            IntervalTestDataDirector.WithDisjoint(builder, intervalType);
-
-            testData.AddRange((List<object[]>)builder);
-        }
-        return testData.GetEnumerator();
+        /// <see cref="OpenInterval{int}"/>
+        yield return new object[] { "(1, 5)", "(5, 9)", IntervalRelation.Before };
+        yield return new object[] { "(9, 13)", "(5, 9)", IntervalRelation.After };
+        yield return new object[] { "(2, 4)", "(5, 9)", IntervalRelation.Before };
+        yield return new object[] { "(10, 14)", "(5, 9)", IntervalRelation.After };
+        /// <see cref="ClosedOpenInterval{int}"/>
+        yield return new object[] { "[1, 5)", "[5, 9)", IntervalRelation.Before };
+        yield return new object[] { "[9, 13)", "[5, 9)", IntervalRelation.After };
+        yield return new object[] { "[2, 4)", "[5, 9)", IntervalRelation.Before };
+        yield return new object[] { "[10, 14)", "[5, 9)", IntervalRelation.After };
+        /// <see cref="OpenClosedInterval{int}"/>
+        yield return new object[] { "(1, 5]", "(5, 9]", IntervalRelation.Before };
+        yield return new object[] { "(9, 13]", "(5, 9]", IntervalRelation.After };
+        yield return new object[] { "(2, 4]", "(5, 9]", IntervalRelation.Before };
+        yield return new object[] { "(10, 14]", "(5, 9]", IntervalRelation.After };
+        /// <see cref="ClosedInterval{int}"/>
+        yield return new object[] { "[2, 4]", "[5, 9]", IntervalRelation.Before };
+        yield return new object[] { "[10, 14]", "[5, 9]", IntervalRelation.After };
     }
 
-    IEnumerator IEnumerable.GetEnumerator()
-    {
-        return GetEnumerator();
-    }
+    IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 }
