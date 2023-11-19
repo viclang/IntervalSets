@@ -1,4 +1,5 @@
-﻿using Unbounded;
+﻿using System.Numerics;
+using Unbounded;
 
 namespace IntervalRecords.Extensions;
 public static partial class IntervalCanonicalizer
@@ -8,15 +9,8 @@ public static partial class IntervalCanonicalizer
     /// </summary>
     /// <param name="source">The interval to be converted.</param>
     /// <returns>A closed interval that is equivalent to `source`.</returns>
-    public static ClosedInterval<int> Closure(this Interval<int> source, int step)
-        => ToClosed(source, start => start.Add(step), end => end.Substract(step));
-
-    /// <summary>
-    /// Converts an interval to a closed interval.
-    /// </summary>
-    /// <param name="source">The interval to be converted.</param>
-    /// <returns>A closed interval that is equivalent to `source`.</returns>
-    public static ClosedInterval<double> Closure(this Interval<double> source, double step)
+    public static ClosedInterval<T> Closure<T>(this Interval<T> source, T step)
+        where T : struct, IEquatable<T>, IComparable<T>, ISpanParsable<T>, IAdditionOperators<T, T, T>, ISubtractionOperators<T, T, T>
         => ToClosed(source, start => start.Add(step), end => end.Substract(step));
 
     /// <summary>

@@ -1,4 +1,5 @@
 ﻿using IntervalRecords.Extensions;
+using System.Numerics;
 using Unbounded;
 
 namespace IntervalRecords.Extensions;
@@ -9,14 +10,9 @@ public static partial class IntervalCalculator
     /// </summary>
     /// <param name="source">The interval to calculate the length of</param>
     /// <returns>The length of the interval</returns>
-    public static Unbounded<int> Length(this Interval<int> source) => Length(source, (left, right) => left - right);
-
-    /// <summary>
-    /// Calculates the length of the interval
-    /// </summary>
-    /// <param name="source">The interval to calculate the length of</param>
-    /// <returns>The length of the interval</returns>
-    public static Unbounded<double> Length(this Interval<double> source) => Length(source, (left, right) => left - right);
+    public static Unbounded<T> Length<T>(this Interval<T> source)
+        where T : struct, IEquatable<T>, IComparable<T>, ISpanParsable<T>, ISubtractionOperators<T, T, T>
+        => Length(source, (left, right) => left - right);
 
     /// <summary>
     /// Calculates the length of the interval

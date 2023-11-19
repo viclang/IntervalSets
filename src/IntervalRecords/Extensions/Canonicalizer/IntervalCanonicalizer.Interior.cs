@@ -1,4 +1,5 @@
-﻿using Unbounded;
+﻿using System.Numerics;
+using Unbounded;
 
 namespace IntervalRecords.Extensions;
 public static partial class IntervalCanonicalizer
@@ -8,15 +9,8 @@ public static partial class IntervalCanonicalizer
     /// </summary>
     /// <param name="source">The interval to be converted.</param>
     /// <returns>A open interval that is equivalent to `source`.</returns>
-    public static OpenInterval<int> Interior(this Interval<int> source, int step)
-        => ToOpen(source, end => end.Add(step), start => start.Substract(step));
-
-    /// <summary>
-    /// Converts an interval to an open interval.
-    /// </summary>
-    /// <param name="source">The interval to be converted.</param>
-    /// <returns>A open interval that is equivalent to `source`.</returns>
-    public static OpenInterval<double> Interior(this Interval<double> source, double step)
+    public static OpenInterval<T> Interior<T>(this Interval<T> source, T step)
+        where T : struct, IEquatable<T>, IComparable<T>, ISpanParsable<T>, IAdditionOperators<T, T, T>, ISubtractionOperators<T, T, T>
         => ToOpen(source, end => end.Add(step), start => start.Substract(step));
 
     /// <summary>

@@ -1,4 +1,5 @@
-﻿using Unbounded;
+﻿using System.Numerics;
+using Unbounded;
 
 namespace IntervalRecords.Extensions;
 public static partial class IntervalCanonicalizer
@@ -10,17 +11,8 @@ public static partial class IntervalCanonicalizer
     /// <param name="intervalType">The desired interval type to transform the source interval into.</param>
     /// <param name="step">The step value used to increment or decrement the interval bounds.</param>
     /// <returns>The canonicalized interval in the desired interval type.</returns>
-    public static Interval<int> Canonicalize(this Interval<int> source, IntervalType intervalType, int step)
-        => Canonicalize(source, intervalType, b => b.Add(step), b => b.Substract(step));
-
-    /// <summary>
-    /// Canonicalizes the given interval by transforming it into the given interval type.
-    /// </summary>
-    /// <param name="source">The source interval to be canonicalized.</param>
-    /// <param name="intervalType">The desired interval type to transform the source interval into.</param>
-    /// <param name="step">The step value used to increment or decrement the interval bounds.</param>
-    /// <returns>The canonicalized interval in the desired interval type.</returns>
-    public static Interval<double> Canonicalize(this Interval<double> source, IntervalType intervalType, double step)
+    public static Interval<T> Canonicalize<T>(this Interval<T> source, IntervalType intervalType, T step)
+        where T : struct, IEquatable<T>, IComparable<T>, ISpanParsable<T>, IAdditionOperators<T, T, T>, ISubtractionOperators<T, T, T>
         => Canonicalize(source, intervalType, b => b.Add(step), b => b.Substract(step));
 
     /// <summary>

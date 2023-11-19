@@ -1,4 +1,5 @@
 ﻿using IntervalRecords.Extensions;
+using System.Numerics;
 
 namespace IntervalRecords.Extensions;
 public static partial class IntervalCalculator
@@ -8,16 +9,9 @@ public static partial class IntervalCalculator
     /// </summary>
     /// <param name="source">The interval to calculate the centre of</param>
     /// <returns>The centre of the interval</returns>
-    public static double? Centre(this Interval<int> source)
-        => Centre(source, (end, start) => ((double)end + start) / 2);
-
-    /// <summary>
-    /// Calculates the centre of the interval
-    /// </summary>
-    /// <param name="source">The interval to calculate the centre of</param>
-    /// <returns>The centre of the interval</returns>
-    public static double? Centre(this Interval<double> source)
-        => Centre(source, (end, start) => (end + start) / 2);
+    public static T? Centre<T>(this Interval<T> source)
+        where T : struct, INumber<T>
+        => Centre(source, (end, start) => (end + start) / (T.One + T.One));
 
     /// <summary>
     /// Calculates the centre of the interval

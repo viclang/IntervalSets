@@ -1,4 +1,5 @@
 ﻿using IntervalRecords.Extensions;
+using System.Numerics;
 
 namespace IntervalRecords.Extensions;
 public static partial class IntervalCalculator
@@ -8,16 +9,9 @@ public static partial class IntervalCalculator
     /// </summary>
     /// <param name="source">The interval to calculate the radius of</param>
     /// <returns>The radius of the interval</returns>
-    public static double? Radius(this Interval<int> source)
-    => Radius(source, (end, start) => ((double)end - start) / 2);
-
-    /// <summary>
-    /// Calculates the radius of the interval
-    /// </summary>
-    /// <param name="source">The interval to calculate the radius of</param>
-    /// <returns>The radius of the interval</returns>
-    public static double? Radius(this Interval<double> source)
-        => Radius(source, (end, start) => (end - start) / 2);
+    public static T? Radius<T>(this Interval<T> source)
+        where T : struct, INumber<T>
+        => Radius(source, (end, start) => (end - start) / (T.One + T.One));
 
     /// <summary>
     /// Calculates the radius of the interval
