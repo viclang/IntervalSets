@@ -1,6 +1,6 @@
-﻿using Unbounded;
-using IntervalRecords.Extensions;
+﻿using IntervalRecords.Extensions;
 using System.Diagnostics.CodeAnalysis;
+using Unbounded;
 
 namespace IntervalRecords
 {
@@ -22,7 +22,7 @@ namespace IntervalRecords
             get => _start;
             init
             {
-                _start = -value;
+                _start = value;
             }
         }
 
@@ -34,7 +34,7 @@ namespace IntervalRecords
             get => _end;
             init
             {
-                _end = +value;
+                _end = value;
             }
         }
 
@@ -251,7 +251,7 @@ namespace IntervalRecords
         public static bool operator >=(Interval<T> left, Interval<T> right) => left == right || left > right;
 
         public static bool operator <=(Interval<T> left, Interval<T> right) => left == right || left < right;
-        
+
         public void Deconstruct(out Unbounded<T> start, out Unbounded<T> end, out bool startInclusive, out bool endInclusive)
         {
             start = Start;

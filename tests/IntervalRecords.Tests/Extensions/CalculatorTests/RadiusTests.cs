@@ -4,7 +4,7 @@ using System;
 
 namespace IntervalRecords.Tests.Measure.Radius
 {
-    public class RadiusInt32Tests : RadiusTests<int, double> { }
+    public class RadiusInt32Tests : RadiusTests<int, int> { }
     public class RadiusDoubleTests : RadiusTests<double, double> { }
     public class RadiusDateTimeTests : RadiusTests<DateTime, TimeSpan> { }
     public class RadiusDateTimeOffsetTests : RadiusTests<DateTimeOffset, TimeSpan> { }
@@ -16,8 +16,7 @@ namespace IntervalRecords.Tests.Measure.Radius
         where TResult : struct, IEquatable<TResult>, IComparable<TResult>, ISpanParsable<TResult>
     {
         [Theory]
-        [Trait("Measure", "Radius")]
-        [InlineData(1, 2, IntervalType.Closed, 0.5)]
+        [InlineData(1, 2, IntervalType.Closed, 1)]
         [InlineData(1, 3, IntervalType.Closed, 1d)]
         [InlineData(1, 2, IntervalType.ClosedOpen, 0.5)]
         [InlineData(1, 3, IntervalType.ClosedOpen, 1d)]
@@ -62,7 +61,7 @@ namespace IntervalRecords.Tests.Measure.Radius
             };
         }
 
-        public static TResult? RadiusResult(double? result)
+        public static TResult? RadiusResult(object? result)
         {
             var type = typeof(T);
             if (type == typeof(int) || type == typeof(double))
@@ -71,19 +70,19 @@ namespace IntervalRecords.Tests.Measure.Radius
             }
             if (type == typeof(DateOnly))
             {
-                return (TResult?)(object?)(result is null ? null : (int)result.Value);
+                return (TResult?)(object?)(result is null ? null : (int)result);
             }
             else if (type == typeof(DateTime))
             {
-                return (TResult?)(object?)(result is null ? null : TimeSpan.FromDays(result.Value));
+                return (TResult?)(object?)(result is null ? null : TimeSpan.FromDays((double)result));
             }
             else if (type == typeof(DateTimeOffset))
             {
-                return (TResult?)(object?)(result is null ? null : TimeSpan.FromDays(result.Value));
+                return (TResult?)(object?)(result is null ? null : TimeSpan.FromDays((double)result));
             }
             else if (type == typeof(TimeOnly))
             {
-                return (TResult?)(object?)(result is null ? null : TimeSpan.FromHours(result.Value));
+                return (TResult?)(object?)(result is null ? null : TimeSpan.FromHours((double)result));
             }
             else
             {

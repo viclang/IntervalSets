@@ -5,19 +5,11 @@ using Unbounded;
 
 namespace IntervalRecords.Tests.Measure.Length
 {
-    public class LengthInt32Tests : LengthTests<int, int> { }
-    public class LengthDoubleTests : LengthTests<double, double> { }
-    public class LengthDateTimeTests : LengthTests<DateTime, TimeSpan> { }
-    public class LengthDateTimeOffsetTests : LengthTests<DateTimeOffset, TimeSpan> { }
-    public class LengthDateOnlyTests : LengthTests<DateOnly, int> { }
-    public class LengthTimeOnlyTests : LengthTests<TimeOnly, TimeSpan> { }
-
     public abstract class LengthTests<T, TResult>
         where T : struct, IEquatable<T>, IComparable<T>, ISpanParsable<T>
         where TResult : struct, IEquatable<TResult>, IComparable<TResult>, ISpanParsable<TResult>
     {
         [Theory]
-        [Trait("Measure", "Length")]
         [InlineData(1, 2, IntervalType.Closed, 1)]
         [InlineData(1, 3, IntervalType.Closed, 2)]
         [InlineData(1, 2, IntervalType.ClosedOpen, 1)]
@@ -48,20 +40,20 @@ namespace IntervalRecords.Tests.Measure.Length
             actual.Should().Be(FiniteOrPositiveInfinity(expected));
         }
 
-        public Unbounded<TResult> Length(Interval<T> interval)
-        {
-            var type = typeof(T);
-            return Type.GetTypeCode(type) switch
-            {
-                TypeCode.Int32 => (Unbounded<TResult>)(object)IntervalCalculator.Length((Interval<int>)(object)interval),
-                TypeCode.Double => (Unbounded<TResult>)(object)IntervalCalculator.Length((Interval<double>)(object)interval),
-                TypeCode.DateTime => (Unbounded<TResult>)(object)IntervalCalculator.Length((Interval<DateTime>)(object)interval),
-                _ when type == typeof(DateTimeOffset) => (Unbounded<TResult>)(object)IntervalCalculator.Length((Interval<DateTimeOffset>)(object)interval),
-                _ when type == typeof(DateOnly) => (Unbounded<TResult>)(object)IntervalCalculator.Length((Interval<DateOnly>)(object)interval),
-                _ when type == typeof(TimeOnly) => (Unbounded<TResult>)(object)IntervalCalculator.Length((Interval<TimeOnly>)(object)interval),
-                _ => throw new NotSupportedException(type.FullName)
-            };
-        }
+        public abstract Unbounded<TResult> Length(Interval<T> interval);
+        //{
+        //    var type = typeof(T);
+        //    return Type.GetTypeCode(type) switch
+        //    {
+        //        TypeCode.Int32 => (Unbounded<TResult>)(object)IntervalCalculator.Length((Interval<int>)(object)interval),
+        //        TypeCode.Double => (Unbounded<TResult>)(object)IntervalCalculator.Length((Interval<double>)(object)interval),
+        //        TypeCode.DateTime => (Unbounded<TResult>)(object)IntervalCalculator.Length((Interval<DateTime>)(object)interval),
+        //        _ when type == typeof(DateTimeOffset) => (Unbounded<TResult>)(object)IntervalCalculator.Length((Interval<DateTimeOffset>)(object)interval),
+        //        _ when type == typeof(DateOnly) => (Unbounded<TResult>)(object)IntervalCalculator.Length((Interval<DateOnly>)(object)interval),
+        //        _ when type == typeof(TimeOnly) => (Unbounded<TResult>)(object)IntervalCalculator.Length((Interval<TimeOnly>)(object)interval),
+        //        _ => throw new NotSupportedException(type.FullName)
+        //    };
+        //}
 
 
         public static Unbounded<TResult> FiniteOrPositiveInfinity(int? result)
@@ -87,6 +79,49 @@ namespace IntervalRecords.Tests.Measure.Length
             {
                 throw new NotSupportedException(type.FullName);
             }
+        }
+    }
+
+    public class LengthInt32Tests : LengthTests<int, int>
+    {
+        public override Unbounded<int> Length(Interval<int> interval)
+        {
+            throw new NotImplementedException();
+        }
+    }
+    public class LengthDoubleTests : LengthTests<double, double>
+    {
+        public override Unbounded<double> Length(Interval<double> interval)
+        {
+            throw new NotImplementedException();
+        }
+    }
+    public class LengthDateTimeTests : LengthTests<DateTime, TimeSpan>
+    {
+        public override Unbounded<TimeSpan> Length(Interval<DateTime> interval)
+        {
+            throw new NotImplementedException();
+        }
+    }
+    public class LengthDateTimeOffsetTests : LengthTests<DateTimeOffset, TimeSpan>
+    {
+        public override Unbounded<TimeSpan> Length(Interval<DateTimeOffset> interval)
+        {
+            throw new NotImplementedException();
+        }
+    }
+    public class LengthDateOnlyTests : LengthTests<DateOnly, int>
+    {
+        public override Unbounded<int> Length(Interval<DateOnly> interval)
+        {
+            throw new NotImplementedException();
+        }
+    }
+    public class LengthTimeOnlyTests : LengthTests<TimeOnly, TimeSpan>
+    {
+        public override Unbounded<TimeSpan> Length(Interval<TimeOnly> interval)
+        {
+            throw new NotImplementedException();
         }
     }
 }

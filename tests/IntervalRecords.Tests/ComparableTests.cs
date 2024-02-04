@@ -9,6 +9,10 @@ namespace IntervalRecords.Tests
         [ClassData(typeof(Int32IntervalRelationClassData))]
         public void CompareTo_ShouldBeExpected(string left, string right, IntervalRelation relation)
         {
+            byte a = 1;
+            byte b = 0;
+            var c = a.CompareTo(b);
+
             var leftInterval = IntervalParser.Parse<int>(left);
             var rightInterval = IntervalParser.Parse<int>(right);
             var expected = ExpectedCompareResult(relation);

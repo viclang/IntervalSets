@@ -18,7 +18,6 @@ namespace IntervalRecords.Tests.Measure.Centre
         private static readonly DateTimeOffset _referenceDate = new DateTimeOffset(2022, 1, 1, 0, 0, 0, TimeSpan.Zero);
 
         [Theory]
-        [Trait("Measure", "Centre")]
         [InlineData(1, 2, IntervalType.Closed, 1.5)]
         [InlineData(1, 3, IntervalType.Closed, 2d)]
         [InlineData(1, 2, IntervalType.ClosedOpen, 1.5)]
