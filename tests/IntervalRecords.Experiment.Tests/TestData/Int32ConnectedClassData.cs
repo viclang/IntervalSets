@@ -1,16 +1,8 @@
-﻿using IntervalRecords.Extensions;
-using IntervalRecords.Tests.TestData.Builders;
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Collections;
 
-namespace IntervalRecords.Tests.TestData;
+namespace IntervalRecords.Experiment.Tests.TestData;
 public class Int32ConnectedClassData : IEnumerable<object[]>
 {
-    private const int _offset = 1;
-    private readonly static Interval<int> _reference = new ClosedInterval<int>(5, 9);
-
     public IEnumerator<object[]> GetEnumerator()
     {
         /// <see cref="OpenInterval{int}"/>

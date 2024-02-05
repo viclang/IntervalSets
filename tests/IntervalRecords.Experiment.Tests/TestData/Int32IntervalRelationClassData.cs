@@ -1,16 +1,8 @@
-﻿using IntervalRecords.Extensions;
-using IntervalRecords.Tests.TestData.Builders;
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Collections;
 
-namespace IntervalRecords.Tests.TestData;
-public class Int32ConnectedClassData : IEnumerable<object[]>
+namespace IntervalRecords.Experiment.Tests.TestData;
+public class Int32IntervalRelationClassData : IEnumerable<object[]>
 {
-    private const int _offset = 1;
-    private readonly static Interval<int> _reference = new ClosedInterval<int>(5, 9);
-
     public IEnumerator<object[]> GetEnumerator()
     {
         /// <see cref="OpenInterval{int}"/>
@@ -21,6 +13,8 @@ public class Int32ConnectedClassData : IEnumerable<object[]>
         yield return new object[] { "(-Infinity, 9)", "(-Infinity, 9)", IntervalRelation.Equal };
         yield return new object[] { "(-Infinity, 10)", "(-Infinity, 9)", IntervalRelation.StartedBy };
         yield return new object[] { "(-Infinity, Infinity)", "(-Infinity, Infinity)", IntervalRelation.Equal };
+        yield return new object[] { "(2, 4)", "(5, 9)", IntervalRelation.Before };
+        yield return new object[] { "(1, 5)", "(5, 9)", IntervalRelation.Before };
         yield return new object[] { "(4, 6)", "(5, 9)", IntervalRelation.Overlaps };
         yield return new object[] { "(5, 8)", "(5, 9)", IntervalRelation.Starts };
         yield return new object[] { "(6, 8)", "(5, 9)", IntervalRelation.ContainedBy };
@@ -30,6 +24,8 @@ public class Int32ConnectedClassData : IEnumerable<object[]>
         yield return new object[] { "(4, 10)", "(5, 9)", IntervalRelation.Contains };
         yield return new object[] { "(5, 10)", "(5, 9)", IntervalRelation.StartedBy };
         yield return new object[] { "(8, 10)", "(5, 9)", IntervalRelation.OverlappedBy };
+        yield return new object[] { "(9, 13)", "(5, 9)", IntervalRelation.After };
+        yield return new object[] { "(10, 14)", "(5, 9)", IntervalRelation.After };
         /// <see cref="ClosedOpenInterval{int}"/>
         yield return new object[] { "[6, Infinity)", "[5, Infinity)", IntervalRelation.Finishes };
         yield return new object[] { "[5, Infinity)", "[5, Infinity)", IntervalRelation.Equal };
@@ -38,6 +34,7 @@ public class Int32ConnectedClassData : IEnumerable<object[]>
         yield return new object[] { "[-Infinity, 9)", "[-Infinity, 9)", IntervalRelation.Equal };
         yield return new object[] { "[-Infinity, 10)", "[-Infinity, 9)", IntervalRelation.StartedBy };
         yield return new object[] { "[-Infinity, Infinity)", "[-Infinity, Infinity)", IntervalRelation.Equal };
+        yield return new object[] { "[2, 4)", "[5, 9)", IntervalRelation.Before };
         yield return new object[] { "[1, 5)", "[5, 9)", IntervalRelation.Before };
         yield return new object[] { "[4, 6)", "[5, 9)", IntervalRelation.Overlaps };
         yield return new object[] { "[5, 8)", "[5, 9)", IntervalRelation.Starts };
@@ -49,6 +46,7 @@ public class Int32ConnectedClassData : IEnumerable<object[]>
         yield return new object[] { "[5, 10)", "[5, 9)", IntervalRelation.StartedBy };
         yield return new object[] { "[8, 10)", "[5, 9)", IntervalRelation.OverlappedBy };
         yield return new object[] { "[9, 13)", "[5, 9)", IntervalRelation.After };
+        yield return new object[] { "[10, 14)", "[5, 9)", IntervalRelation.After };
         /// <see cref="OpenClosedInterval{int}"/>
         yield return new object[] { "(6, Infinity]", "(5, Infinity]", IntervalRelation.Finishes };
         yield return new object[] { "(5, Infinity]", "(5, Infinity]", IntervalRelation.Equal };
@@ -57,6 +55,7 @@ public class Int32ConnectedClassData : IEnumerable<object[]>
         yield return new object[] { "(-Infinity, 9]", "(-Infinity, 9]", IntervalRelation.Equal };
         yield return new object[] { "(-Infinity, 10]", "(-Infinity, 9]", IntervalRelation.StartedBy };
         yield return new object[] { "(-Infinity, Infinity]", "(-Infinity, Infinity]", IntervalRelation.Equal };
+        yield return new object[] { "(2, 4]", "(5, 9]", IntervalRelation.Before };
         yield return new object[] { "(1, 5]", "(5, 9]", IntervalRelation.Before };
         yield return new object[] { "(4, 6]", "(5, 9]", IntervalRelation.Overlaps };
         yield return new object[] { "(5, 8]", "(5, 9]", IntervalRelation.Starts };
@@ -68,6 +67,7 @@ public class Int32ConnectedClassData : IEnumerable<object[]>
         yield return new object[] { "(5, 10]", "(5, 9]", IntervalRelation.StartedBy };
         yield return new object[] { "(8, 10]", "(5, 9]", IntervalRelation.OverlappedBy };
         yield return new object[] { "(9, 13]", "(5, 9]", IntervalRelation.After };
+        yield return new object[] { "(10, 14]", "(5, 9]", IntervalRelation.After };
         /// <see cref="ClosedInterval{int}"/>
         yield return new object[] { "[6, Infinity]", "[5, Infinity]", IntervalRelation.Finishes };
         yield return new object[] { "[5, Infinity]", "[5, Infinity]", IntervalRelation.Equal };
@@ -76,6 +76,7 @@ public class Int32ConnectedClassData : IEnumerable<object[]>
         yield return new object[] { "[-Infinity, 9]", "[-Infinity, 9]", IntervalRelation.Equal };
         yield return new object[] { "[-Infinity, 10]", "[-Infinity, 9]", IntervalRelation.StartedBy };
         yield return new object[] { "[-Infinity, Infinity]", "[-Infinity, Infinity]", IntervalRelation.Equal };
+        yield return new object[] { "[2, 4]", "[5, 9]", IntervalRelation.Before };
         yield return new object[] { "[1, 5]", "[5, 9]", IntervalRelation.Meets };
         yield return new object[] { "[4, 6]", "[5, 9]", IntervalRelation.Overlaps };
         yield return new object[] { "[5, 8]", "[5, 9]", IntervalRelation.Starts };
@@ -87,10 +88,8 @@ public class Int32ConnectedClassData : IEnumerable<object[]>
         yield return new object[] { "[5, 10]", "[5, 9]", IntervalRelation.StartedBy };
         yield return new object[] { "[8, 10]", "[5, 9]", IntervalRelation.OverlappedBy };
         yield return new object[] { "[9, 13]", "[5, 9]", IntervalRelation.MetBy };
+        yield return new object[] { "[10, 14]", "[5, 9]", IntervalRelation.After };
     }
 
-    IEnumerator IEnumerable.GetEnumerator()
-    {
-        return GetEnumerator();
-    }
+    IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 }

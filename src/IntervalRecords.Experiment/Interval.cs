@@ -1,4 +1,4 @@
-﻿using IntervalRecords.Endpoints;
+﻿using IntervalRecords.Experiment.Endpoints;
 using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Text.RegularExpressions;
@@ -36,15 +36,19 @@ public record class Interval<T>
     }
 
     public static readonly Interval<T> Empty = new(
-        new Endpoint<T>(default(T), false, BoundaryType.Lower),
-        new Endpoint<T>(default(T), false, BoundaryType.Upper));
+        new Endpoint<T>(default(T), false, EndpointType.Lower),
+        new Endpoint<T>(default(T), false, EndpointType.Upper));
 
     public static readonly Interval<T> Unbounded = new(Endpoint<T>.NegativeInfinity, Endpoint<T>.PositiveInfinity);
 
+    public virtual bool IsValid => Start < End;
+    public virtual bool IsEmpty => !IsValid || ( Start.PointEquals(End));
+    public bool IsSingleton => Start.PointEquals(End) && Start.Inclusive && End.Inclusive;
+
     public Interval(T? start, T? end, bool startInclusive, bool endInclusive)
     {
-        _start = new Endpoint<T>(start, startInclusive, BoundaryType.Lower);
-        _end = new Endpoint<T>(end, endInclusive, BoundaryType.Upper);
+        _start = new Endpoint<T>(start, startInclusive, EndpointType.Lower);
+        _end = new Endpoint<T>(end, endInclusive, EndpointType.Upper);
     }
 
     public Interval(Endpoint<T> start, Endpoint<T> end)
@@ -52,6 +56,8 @@ public record class Interval<T>
         _start = -start;
         _end = +end;
     }
+
+    public static Interval<T> Singleton(T value) => new Interval<T>(value, value, true, true);
 
     /// <summary>
     /// Returns a boolean value indicating if the current interval contains the specified value.
@@ -82,15 +88,17 @@ public record class Interval<T>
     public bool IsConnected(Interval<T> other)
     {
         return Start < other.End && other.Start < End
-            || Start == other.End && (Start.Inclusive || other.End.Inclusive)
-            || End == other.Start && (End.Inclusive || other.Start.Inclusive);
+            || Start.Point.Equals(other.End.Point) && (Start.Inclusive || other.End.Inclusive) // touches start
+            || End.Point.Equals(other.Start.Point) && (End.Inclusive || other.Start.Inclusive); // touches end
     }
-
-    public static Interval<T> Singleton(T value) => new Interval<T>(value, value, true, true);
-
 
     private static readonly Regex _intervalRegex = new(@"(?:\[|\()(?:[^[\](),]*,[^,()[\]]*)(?:\)|\])");
     private const string _notFoundMessage = "Interval not found in string. Please provide an interval string in correct format";
+
+    public static Interval<T> Parse(ReadOnlySpan<char> s, IFormatProvider? provider = null)
+    {
+        return Parse(s.ToString(), provider);
+    }
 
     public static Interval<T> Parse(string s, IFormatProvider? provider)
     {
@@ -105,9 +113,9 @@ public record class Interval<T>
             ParseEnd(parts[1], provider));
     }
 
-    public static Interval<T> Parse(ReadOnlySpan<char> s, IFormatProvider? provider = null)
+    public static bool TryParse(ReadOnlySpan<char> s, IFormatProvider? provider, [MaybeNullWhen(false)] out Interval<T> result)
     {
-        return Parse(s.ToString(), provider);
+        return TryParse(s.ToString(), provider, out result);
     }
 
     public static bool TryParse([NotNullWhen(true)] string? s, IFormatProvider? provider, [MaybeNullWhen(false)] out Interval<T> result)
@@ -134,11 +142,6 @@ public record class Interval<T>
         return false;
     }
 
-    public static bool TryParse(ReadOnlySpan<char> s, IFormatProvider? provider, [MaybeNullWhen(false)] out Interval<T> result)
-    {
-        throw new NotImplementedException();
-    }
-
     public static IEnumerable<Interval<T>> ParseAll(string value, IFormatProvider? provider = null)
     {
         var matches = _intervalRegex.Matches(value);
@@ -147,27 +150,31 @@ public record class Interval<T>
 
     private static Endpoint<T> ParseStart(ReadOnlySpan<char> s, IFormatProvider? provider)
     {
-        if (s.Equals("NegativeInfinity", StringComparison.OrdinalIgnoreCase)
-            || s.Equals("-Infinity", StringComparison.OrdinalIgnoreCase)
-            || s.Equals("-∞", StringComparison.CurrentCulture))
+        var inclusive = s[0];
+        var value = s[1..].Trim();
+        if (value.Equals("NegativeInfinity", StringComparison.OrdinalIgnoreCase)
+            || value.Equals("-Infinity", StringComparison.OrdinalIgnoreCase)
+            || value.Equals("-∞", StringComparison.CurrentCulture))
         {
             return Endpoint<T>.NegativeInfinity;
         }
-        return new Endpoint<T>(T.Parse(s[1..], provider), s[0] == '[', BoundaryType.Lower);
+        return new Endpoint<T>(T.Parse(value, provider), inclusive == '[', EndpointType.Lower);
     }
 
     private static bool TryParseStart(ReadOnlySpan<char> s, IFormatProvider? provider, [MaybeNullWhen(false)] out Endpoint<T> result)
     {
-        if (s.Equals("NegativeInfinity", StringComparison.OrdinalIgnoreCase)
-            || s.Equals("-Infinity", StringComparison.OrdinalIgnoreCase)
-            || s.Equals("-∞", StringComparison.CurrentCulture))
+        var inclusive = s[0];
+        var value = s[1..].Trim();
+        if (value.Equals("NegativeInfinity", StringComparison.OrdinalIgnoreCase)
+            || value.Equals("-Infinity", StringComparison.OrdinalIgnoreCase)
+            || value.Equals("-∞", StringComparison.CurrentCulture))
         {
             result = Endpoint<T>.NegativeInfinity;
             return true;
         }
-        if (T.TryParse(s[1..], provider, out var point))
+        if (T.TryParse(value, provider, out var point))
         {
-            result = new Endpoint<T>(point, s[0] == '[', BoundaryType.Lower);
+            result = new Endpoint<T>(point, inclusive == '[', EndpointType.Lower);
             return true;
         }
         result = default;
@@ -176,29 +183,35 @@ public record class Interval<T>
 
     private static Endpoint<T> ParseEnd(ReadOnlySpan<char> s, IFormatProvider? provider)
     {
-        if (s.Equals("PositiveInfinity", StringComparison.OrdinalIgnoreCase)
-            || s.Equals("+Infinity", StringComparison.OrdinalIgnoreCase)
-            || s.Equals("+∞", StringComparison.CurrentCulture)
-            || s.Equals("∞", StringComparison.CurrentCulture))
+        var inclusive = s[^1];
+        var value = s[..^1].Trim();
+        if (value.Equals("PositiveInfinity", StringComparison.OrdinalIgnoreCase)
+            || value.Equals("Infinity", StringComparison.OrdinalIgnoreCase)
+            || value.Equals("+Infinity", StringComparison.OrdinalIgnoreCase)
+            || value.Equals("+∞", StringComparison.CurrentCulture)
+            || value.Equals("∞", StringComparison.CurrentCulture))
         {
             return Endpoint<T>.PositiveInfinity;
         }
-        return new Endpoint<T>(T.Parse(s[..^1], provider), s[^1]  == ']', BoundaryType.Upper);
+        return new Endpoint<T>(T.Parse(value, provider), inclusive == ']', EndpointType.Upper);
     }
 
     private static bool TryParseEnd(ReadOnlySpan<char> s, IFormatProvider? provider, [MaybeNullWhen(false)] out Endpoint<T> result)
     {
-        if (s.Equals("PositiveInfinity", StringComparison.OrdinalIgnoreCase)
-            || s.Equals("+Infinity", StringComparison.OrdinalIgnoreCase)
-            || s.Equals("+∞", StringComparison.CurrentCulture)
-            || s.Equals("∞", StringComparison.CurrentCulture))
+        var inclusive = s[^1];
+        var value = s[..^1].Trim();
+        if (value.Equals("PositiveInfinity", StringComparison.OrdinalIgnoreCase)
+            || value.Equals("Infinity", StringComparison.OrdinalIgnoreCase)
+            || value.Equals("+Infinity", StringComparison.OrdinalIgnoreCase)
+            || value.Equals("+∞", StringComparison.CurrentCulture)
+            || value.Equals("∞", StringComparison.CurrentCulture))
         {
             result = Endpoint<T>.PositiveInfinity;
             return true;
         }
-        if (T.TryParse(s[..^1], provider, out var point))
+        if (T.TryParse(value, provider, out var point))
         {
-            result = new Endpoint<T>(point, s[^1] == ']', BoundaryType.Upper);
+            result = new Endpoint<T>(point, inclusive == ']', EndpointType.Upper);
             return true;
         }
         result = default;

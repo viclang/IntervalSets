@@ -1,11 +1,8 @@
-﻿using IntervalRecords.Extensions;
-using IntervalRecords.Tests.TestData.Builders;
-using System;
+﻿using IntervalRecords.Experiment;
 using System.Collections;
-using System.Collections.Generic;
 using System.Text;
 
-namespace IntervalRecords.Tests.TestData;
+namespace IntervalRecords.Experiment.Tests.TestData;
 
 /// <summary>
 /// Two overlapping intervals for

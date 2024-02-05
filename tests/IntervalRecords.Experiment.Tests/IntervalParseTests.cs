@@ -1,4 +1,5 @@
-﻿using System;
+﻿using IntervalRecords.Experiment.Endpoints;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -9,17 +10,17 @@ public class IntervalParseTests
 {
 
     [Fact]
-    public void Given_When_Then()
+    public void Parsed_interval_equals_original_string()
     {
-        // Arrange
-        var intervalString = "[1, 2]";
 
-        // Act
-        var actual = Interval<int>.Parse(intervalString);
+        var test = Endpoint<int>.NegativeInfinity.CompareTo(Endpoint<int>.PositiveInfinity);
+        var test2 = Endpoint<int>.PositiveInfinity.CompareTo(Endpoint<int>.NegativeInfinity);
+        var intervalToParse = "[1, 2]";
 
-        // Assert
-        actual.ToString().Should()
-            .Be(intervalString);
+        var parsedInterval = Interval<int>.Parse(intervalToParse);
+
+        parsedInterval.ToString()
+            .Should()
+            .Be(intervalToParse);
     }
-
 }

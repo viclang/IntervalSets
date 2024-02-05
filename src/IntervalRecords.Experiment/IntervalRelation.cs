@@ -1,4 +1,4 @@
-﻿namespace IntervalRecords.Extensions
+﻿namespace IntervalRecords.Experiment
 {
     /// <summary>
     /// Specifies the overlapping relation between two intervals.
