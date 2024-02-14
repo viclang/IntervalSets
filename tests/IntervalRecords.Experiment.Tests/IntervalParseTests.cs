@@ -12,9 +12,6 @@ public class IntervalParseTests
     [Fact]
     public void Parsed_interval_equals_original_string()
     {
-
-        var test = Endpoint<int>.NegativeInfinity.CompareTo(Endpoint<int>.PositiveInfinity);
-        var test2 = Endpoint<int>.PositiveInfinity.CompareTo(Endpoint<int>.NegativeInfinity);
         var intervalToParse = "[1, 2]";
 
         var parsedInterval = Interval<int>.Parse(intervalToParse);
