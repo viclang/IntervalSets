@@ -9,7 +9,7 @@ public static partial class IntervalExtensions
     /// <param name="second">The second interval to compare.</param>
     public static IntervalRelation GetRelation<T>(this Interval<T> first, Interval<T> second)
         where T : struct, IEquatable<T>, IComparable<T>, ISpanParsable<T>
-        => new ValueTuple<int, int>(first.CompareStart(second), first.CompareEnd(second)) switch
+        => (first.CompareStart(second), first.CompareEnd(second)) switch
         {
             (0, 0) => IntervalRelation.Equal,
             (0, -1) => IntervalRelation.Starts,

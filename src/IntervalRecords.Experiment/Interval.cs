@@ -2,80 +2,21 @@
 using System.Diagnostics.CodeAnalysis;
 
 namespace IntervalRecords;
-public record class Interval<T>
+public record class Interval<T>(T? Start, T? End, bool StartInclusive, bool EndInclusive)
     : IParsable<Interval<T>>, ISpanParsable<Interval<T>>
-    where T : struct, IComparable<T>, IParsable<T>, ISpanParsable<T>
+    where T : struct, IComparable<T>, ISpanParsable<T>
 {
-    /// <summary>
-    /// Represents the start value of the interval.
-    /// </summary>
-    public T? Start { get; init; }
-
-    /// <summary>
-    /// Represents the end value of the interval.
-    /// </summary>
-    public T? End { get; init; }
-
-    public bool StartInclusive { get; init; }
-
-    public bool EndInclusive { get; init; }
-
     public static readonly Interval<T> Empty = new(default(T), default(T), false, false);
 
-    public static readonly Interval<T> Unbounded = new(default, default, false, false);
+    public static readonly Interval<T> Unbounded = new(null, null, false, false);
 
     public virtual bool IsValid => Start is null || End is null || Start.Value.CompareTo(End.Value) < 0;
+    
     public virtual bool IsEmpty => !IsValid || (Start is not null && Start.Equals(End));
+
     public bool IsSingleton => Start is not null && Start.Equals(End) && StartInclusive && EndInclusive;
 
-    public bool IsBounded => State == IntervalState.Bounded;
-
-    public bool IsLeftBounded => State == IntervalState.LeftBounded;
-
-    public bool IsRightBounded => State == IntervalState.RightBounded;
-
-    public Interval(T? start, T? end, bool startInclusive, bool endInclusive)
-    {
-        Start = start;
-        End = end;
-        StartInclusive = startInclusive;
-        EndInclusive = endInclusive;
-    }
-
     public static Interval<T> Singleton(T value) => new Interval<T>(value, value, true, true);
-
-    /// <summary>
-    /// Determines the interval type.
-    /// </summary>
-    /// <typeparam name="T">The type of the interval endpoints.</typeparam>
-    /// <param name="value">The interval to determine the type of.</param>
-    /// <returns>The interval type as an IntervalType enumeration value.</returns>
-    public IntervalType GetIntervalType() => (IntervalType)((StartInclusive ? 1 : 0) | (EndInclusive ? 2 : 0));
-
-
-    /// <summary>
-    /// Determines if the interval is half-bounded.
-    /// </summary>
-    /// <typeparam name="T">The type of the interval endpoints.</typeparam>
-    /// <param name="source">The interval to check.</param>
-    /// <returns>True if the interval is half-bounded.</returns>
-    public bool IsHalfBounded(Interval<T> value)
-        => value.State is IntervalState.LeftBounded or IntervalState.RightBounded;
-
-    /// <summary>
-    /// Determines the bounded state of the interval.
-    /// </summary>
-    /// <typeparam name="T">The type of the interval endpoints.</typeparam>
-    /// <param name="source">The interval to determine the bounded state of.</param>
-    /// <returns>A value indicating whether the interval is bounded, left-bounded, right-bounded, or unbounded.</returns>
-    /// <exception cref="NotSupportedException">Thrown when the start or end state of the interval is not finite or infinity.</exception>
-    public IntervalState State => (Start is null, End is null) switch
-    {
-        (false, false) => IntervalState.Bounded,
-        (true, true) => IntervalState.Unbounded,
-        (true, false) => IntervalState.RightBounded,
-        (false, true) => IntervalState.LeftBounded,
-    };
 
     /// <summary>
     /// Returns a boolean value indicating if the current interval contains the specified value.
@@ -131,7 +72,18 @@ public record class Interval<T>
 
     public int CompareEndToStart(Interval<T> other)
     {
-        return other.CompareStartToEnd(this);
+        if (End is null || other.Start is null)
+        {
+            return 1;
+        }
+        var endStartComparison = End.Value.CompareTo(other.Start.Value);
+
+        // End is less than start if they are equal and at least one is exclusive.
+        if (endStartComparison == 0 && (!StartInclusive || !other.EndInclusive))
+        {
+            return -1;
+        }
+        return endStartComparison;
     }
 
     public int CompareStartToEnd(Interval<T> other)
@@ -165,7 +117,7 @@ public record class Interval<T>
         return Parse(s.ToString(), provider);
     }
 
-    public static Interval<T> Parse(string s, IFormatProvider? provider)
+    public static Interval<T> Parse(string s, IFormatProvider? provider = null)
     {
         var match = IntervalConstants.IntervalRegex.Match(s);
         if (!match.Success)
@@ -184,7 +136,6 @@ public record class Interval<T>
     {
         return TryParse(s.ToString(), provider, out result);
     }
-
 
     public static bool TryParse([NotNullWhen(true)] string? s, IFormatProvider? provider, [MaybeNullWhen(false)] out Interval<T> result)
     {
@@ -218,7 +169,7 @@ public record class Interval<T>
     {
         if (value.Contains("infinity", StringComparison.OrdinalIgnoreCase) || value.Contains('∞'))
         {
-            return default(T?);
+            return null;
         }
         return T.Parse(value, provider);
     }

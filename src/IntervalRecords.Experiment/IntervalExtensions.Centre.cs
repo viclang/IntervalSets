@@ -18,7 +18,7 @@ public static partial class IntervalExtensions
     /// <param name="source">The interval to calculate the centre of</param>
     /// <returns>The centre of the interval</returns>
     public static DateTime? Centre(this Interval<DateTime> source)
-        => Centre(source, (end, start) => start.Add((end - start) / 2));
+        => Centre(source, (end, start) => start + ((end - start) / 2));
 
     /// <summary>
     /// Calculates the centre of the interval
@@ -26,7 +26,7 @@ public static partial class IntervalExtensions
     /// <param name="source">The interval to calculate the centre of</param>
     /// <returns>The centre of the interval</returns>
     public static DateTimeOffset? Centre(this Interval<DateTimeOffset> source)
-        => Centre(source, (end, start) => start.Add((end - start) / 2));
+        => Centre(source, (end, start) => start + ((end - start) / 2));
 
     /// <summary>
     /// Calculates the centre of the interval
@@ -49,7 +49,7 @@ public static partial class IntervalExtensions
         where T : struct, IEquatable<T>, IComparable<T>, ISpanParsable<T>
         where TResult : struct
     {
-        if (!source.IsBounded || source.IsEmpty)
+        if (source.GetIntervalState() is not IntervalState.Bounded || source.IsEmpty)
         {
             return null;
         }
