@@ -2,7 +2,7 @@
 
 namespace IntervalRecords.Experiment.Endpoints;
 public class EndpointValueStateComparer<T> : IComparer<Endpoint<T>>, IEqualityComparer<Endpoint<T>>
-    where T : struct, IComparable<T>
+    where T : struct, IComparable<T>, ISpanParsable<T>
 {
 
     public int Compare(Endpoint<T> x, Endpoint<T> y)

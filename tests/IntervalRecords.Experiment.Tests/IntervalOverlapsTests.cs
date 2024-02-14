@@ -14,7 +14,7 @@ public class IntervalOverlapsTests
     public void GivenTwoOverlappingIntervals_WhenComparing_ReturnsTrue(string left, string right, IntervalRelation _)
     {
         var leftInterval = Interval<int>.Parse(left);
-        var rightInterval = Interval<int>.Parse(left);
+        var rightInterval = Interval<int>.Parse(right);
 
         var actual = leftInterval.Overlaps(rightInterval);
 
