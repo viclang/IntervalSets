@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace IntervalRecords.Experiment.Extensions;
+﻿namespace IntervalRecords.Experiment.Extensions;
 public static partial class IntervalExtensions
 {
     /// <summary>

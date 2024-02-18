@@ -1,7 +1,6 @@
-﻿using IntervalRecords.Extensions;
-using IntervalRecords.Tests.TestData.ClassData;
+﻿using IntervalRecords.Experiment.Tests.TestData;
 
-namespace IntervalRecords.Tests
+namespace IntervalRecords.Experiment.Tests
 {
     public class ComparableTests
     {
@@ -9,8 +8,8 @@ namespace IntervalRecords.Tests
         [ClassData(typeof(Int32IntervalRelationClassData))]
         public void CompareTo_ShouldBeExpected(string left, string right, IntervalRelation relation)
         {
-            var leftInterval = IntervalParser.Parse<int>(left);
-            var rightInterval = IntervalParser.Parse<int>(right);
+            var leftInterval = Interval<int>.Parse(left);
+            var rightInterval = Interval<int>.Parse(right);
             var expected = ExpectedCompareResult(relation);
 
             var actual = leftInterval.CompareTo(rightInterval);
@@ -23,8 +22,8 @@ namespace IntervalRecords.Tests
         [ClassData(typeof(Int32IntervalRelationClassData))]
         public void GreaterThan_ShouldBeExpected(string left, string right, IntervalRelation relation)
         {
-            var leftInterval = IntervalParser.Parse<int>(left);
-            var rightInterval = IntervalParser.Parse<int>(right);
+            var leftInterval = Interval<int>.Parse(left);
+            var rightInterval = Interval<int>.Parse(right);
             var expected = ExpectedCompareResult(relation) > 0;
 
             var actual = leftInterval > rightInterval;
@@ -36,8 +35,8 @@ namespace IntervalRecords.Tests
         [ClassData(typeof(Int32IntervalRelationClassData))]
         public void LessThan_ShouldBeExpected(string left, string right, IntervalRelation relation)
         {
-            var leftInterval = IntervalParser.Parse<int>(left);
-            var rightInterval = IntervalParser.Parse<int>(right);
+            var leftInterval = Interval<int>.Parse(left);
+            var rightInterval =     Interval<int>.Parse(right);
             var expected = ExpectedCompareResult(relation) < 0;
 
             var actual = leftInterval < rightInterval;
@@ -49,8 +48,8 @@ namespace IntervalRecords.Tests
         [ClassData(typeof(Int32IntervalRelationClassData))]
         public void GreaterOrEqualTo_ShouldBeExpected(string left, string right, IntervalRelation relation)
         {
-            var leftInterval = IntervalParser.Parse<int>(left);
-            var rightInterval = IntervalParser.Parse<int>(right);
+            var leftInterval = Interval<int>.Parse(left);
+            var rightInterval = Interval<int>.Parse(right);
             var expected = ExpectedCompareResult(relation) >= 0;
 
             var actual = leftInterval >= rightInterval;
@@ -62,8 +61,8 @@ namespace IntervalRecords.Tests
         [ClassData(typeof(Int32IntervalRelationClassData))]
         public void LessOrEqualTo_ShouldBeExpected(string left, string right, IntervalRelation relation)
         {
-            var leftInterval = IntervalParser.Parse<int>(left);
-            var rightInterval = IntervalParser.Parse<int>(right);
+            var leftInterval = Interval<int>.Parse(left);
+            var rightInterval = Interval<int>.Parse(right);
             var expected = ExpectedCompareResult(relation) <= 0;
 
             var actual = leftInterval <= rightInterval;

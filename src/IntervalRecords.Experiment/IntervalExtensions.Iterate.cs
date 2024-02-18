@@ -1,6 +1,4 @@
-﻿using IntervalRecords.Experiment;
-
-namespace IntervalRecords.Experiment;
+﻿namespace IntervalRecords.Experiment;
 public static partial class IntervalExtensions
 {
     /// <summary>

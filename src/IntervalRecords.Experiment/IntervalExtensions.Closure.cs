@@ -1,6 +1,4 @@
-﻿using IntervalRecords.Experiment.Endpoints;
-using System.Net;
-using System.Numerics;
+﻿using System.Numerics;
 
 namespace IntervalRecords.Experiment.Extensions;
 public static partial class IntervalExtensions
