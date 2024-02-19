@@ -37,8 +37,9 @@ public record class Interval<T>(T? Start, T? End, bool StartInclusive, bool EndI
     /// <returns></returns>
     public bool Contains(T value)
     {
-        return CrossCompare(Start, value, !StartInclusive, EndpointType.Start) <= 0
-            && CrossCompare(value, End, !EndInclusive, EndpointType.Start) <= 0;
+        return (Start is null || Start.Value.CompareTo(value) < 0) && (End is null || value.CompareTo(End.Value) < 0)
+            || Start is not null && Start.Value.Equals(value) && StartInclusive
+            || End is not null && value.Equals(End.Value) && EndInclusive;
     }
 
     /// <summary>
@@ -59,43 +60,19 @@ public record class Interval<T>(T? Start, T? End, bool StartInclusive, bool EndI
     /// <returns>True if the current interval and the other interval are connected, False otherwise.</returns>
     public bool IsConnected(Interval<T> other)
     {
-        return CrossCompare(Start, other.End, !StartInclusive && !other.EndInclusive, EndpointType.Start) <= 0
-            && CrossCompare(other.Start, End, !other.StartInclusive && !EndInclusive, EndpointType.Start) <= 0;
+        return Endpoint<T>.Start(this).ConnectedCompareTo(Endpoint<T>.End(other)) <= 0
+            && Endpoint<T>.Start(other).ConnectedCompareTo(Endpoint<T>.End(this)) <= 0;
     }
 
     public static int Compare(Interval<T> left, Interval<T> right, IntervalComparison comparisonType) => comparisonType switch
     {
-        IntervalComparison.Start => ParallelCompare((left.Start, left.StartInclusive), (right.Start, right.StartInclusive), EndpointType.Start),
-        IntervalComparison.End => ParallelCompare((left.End, left.EndInclusive), (right.End, right.EndInclusive), EndpointType.End),
-        IntervalComparison.StartToEnd => CrossCompare(left.Start, right.End, !left.StartInclusive || !right.EndInclusive, EndpointType.Start),
-        IntervalComparison.EndToStart => CrossCompare(left.End, right.Start, !left.EndInclusive || !right.StartInclusive, EndpointType.End),
         IntervalComparison.Interval => left.CompareTo(right),
+        IntervalComparison.Start => Endpoint<T>.Start(left).CompareTo(Endpoint<T>.Start(right)),
+        IntervalComparison.End => Endpoint<T>.End(left).CompareTo(Endpoint<T>.End(right)),
+        IntervalComparison.StartToEnd => Endpoint<T>.Start(left).CompareTo(Endpoint<T>.End(right)),
+        IntervalComparison.EndToStart => Endpoint<T>.End(left).CompareTo(Endpoint<T>.Start(right)),
         _ => throw new NotImplementedException(),
     };
-
-    private static int ParallelCompare((T?, bool) left, (T?, bool) right, EndpointType endpointType)
-        => (left.Item1.HasValue, right.Item1.HasValue) switch
-        {
-            (true, true) => left.CompareTo(right),
-            (false, true) => (int)endpointType,
-            (true, false) => -(int)endpointType,
-            (false, false) => 0,
-        };
-
-    private static int CrossCompare(T? left, T? right, bool exclusiveCondition, EndpointType leftEndpointType)
-    {
-        if (left is null || right is null)
-        {
-            return (int)leftEndpointType;
-        }
-        var endStartComparison = left.Value.CompareTo(right.Value);
-
-        if (endStartComparison == 0 && exclusiveCondition)
-        {
-            return -(int)leftEndpointType;
-        }
-        return endStartComparison;
-    }
 
     public int CompareTo(Interval<T>? other)
     {

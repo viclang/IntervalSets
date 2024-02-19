@@ -7,9 +7,9 @@ using System.Threading.Tasks;
 namespace IntervalRecords.Experiment;
 public enum IntervalComparison
 {
+    Interval,
     Start,
     End,
     StartToEnd,
-    EndToStart,
-    Interval
+    EndToStart
 }
