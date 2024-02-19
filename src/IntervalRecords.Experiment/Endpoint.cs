@@ -54,19 +54,4 @@ internal struct Endpoint<T> : IComparable<Endpoint<T>>
         }
         return endStartComparison;
     }
-
-    internal static int ContainsCompare(T? left, T? right, bool exclusiveCondition, int endpointType)
-    {
-        if (left is null || right is null)
-        {
-            return endpointType;
-        }
-        var endStartComparison = left.Value.CompareTo(right.Value);
-
-        if (endStartComparison == 0 && exclusiveCondition)
-        {
-            return -endpointType;
-        }
-        return endStartComparison;
-    }
 }
