@@ -1,15 +1,61 @@
-﻿using System.Diagnostics.CodeAnalysis;
+﻿using IntervalRecords.Experiment.Bounds;
+using System.Diagnostics.CodeAnalysis;
 using System.Numerics;
 using System.Text;
 
 namespace IntervalRecords.Experiment;
-public record class Interval<T>(T? Start, T? End, bool StartInclusive, bool EndInclusive)
+public record class Interval<T>
     : IComparable<Interval<T>>,
       IComparisonOperators<Interval<T>, Interval<T>, bool>,
       IParsable<Interval<T>>,
       ISpanParsable<Interval<T>>
     where T : struct, IComparable<T>, ISpanParsable<T>
 {
+    internal LowerBound<T> _start;
+    internal UpperBound<T> _end;
+
+    public T? Start
+    {
+        get => _start.Bound;
+        set
+        {
+            _start = _start with { Bound = value };
+        }
+    }
+
+    public bool StartInclusive
+    {
+        get => _start.Inclusive;
+        set
+        {
+            _start = _start with { Inclusive = value };
+        }
+    }
+
+    public T? End
+    {
+        get => _end.Bound;
+        set
+        {
+            _end = _end with { Bound = value };
+        }
+    }
+
+    public bool EndInclusive
+    {
+        get => _end.Inclusive;
+        set
+        {
+            _end = _end with { Inclusive = value };
+        }
+    }
+
+    public Interval(T? start, T? end, bool startInclusive, bool endInclusive)
+    {
+        _start = new LowerBound<T>(start, startInclusive);
+        _end = new UpperBound<T>(end, endInclusive);
+    }
+
     public static readonly Interval<T> Empty = new(default(T), default(T), false, false);
 
     public static readonly Interval<T> Unbounded = new(null, null, false, false);
@@ -49,8 +95,8 @@ public record class Interval<T>(T? Start, T? End, bool StartInclusive, bool EndI
     /// <returns>True if the current interval and the other interval overlap, False otherwise.</returns>
     public bool Overlaps(Interval<T> other)
     {
-        return Compare(this, other, IntervalComparison.StartToEnd) <= 0
-            && Compare(other, this, IntervalComparison.StartToEnd) <= 0;
+        return _start.CompareTo(other._end) <= 0
+            && other._start.CompareTo(_end) <= 0;
     }
 
     /// <summary>
@@ -60,17 +106,17 @@ public record class Interval<T>(T? Start, T? End, bool StartInclusive, bool EndI
     /// <returns>True if the current interval and the other interval are connected, False otherwise.</returns>
     public bool IsConnected(Interval<T> other)
     {
-        return Endpoint<T>.Start(this).ConnectedCompareTo(Endpoint<T>.End(other)) <= 0
-            && Endpoint<T>.Start(other).ConnectedCompareTo(Endpoint<T>.End(this)) <= 0;
+        return _start.ConnectedCompareTo(other._end) <= 0
+            && other._start.ConnectedCompareTo(_end) <= 0;
     }
 
     public static int Compare(Interval<T> left, Interval<T> right, IntervalComparison comparisonType) => comparisonType switch
     {
         IntervalComparison.Interval => left.CompareTo(right),
-        IntervalComparison.Start => Endpoint<T>.Start(left).CompareTo(Endpoint<T>.Start(right)),
-        IntervalComparison.End => Endpoint<T>.End(left).CompareTo(Endpoint<T>.End(right)),
-        IntervalComparison.StartToEnd => Endpoint<T>.Start(left).CompareTo(Endpoint<T>.End(right)),
-        IntervalComparison.EndToStart => Endpoint<T>.End(left).CompareTo(Endpoint<T>.Start(right)),
+        IntervalComparison.Start => left._start.CompareTo(right._start),
+        IntervalComparison.End => left._end.CompareTo(right._end),
+        IntervalComparison.StartToEnd => left._start.CompareTo(right._end),
+        IntervalComparison.EndToStart => left._end.CompareTo(right._start),
         _ => throw new NotImplementedException(),
     };
 
@@ -89,14 +135,14 @@ public record class Interval<T>(T? Start, T? End, bool StartInclusive, bool EndI
 
     public static bool operator >(Interval<T> left, Interval<T> right)
     {
-        int compareEnd = Compare(left, right, IntervalComparison.End);
-        return compareEnd == 1 || (compareEnd == 0 && Compare(left, right, IntervalComparison.Start) == -1);
+        int compareEnd = left._end.CompareTo(right._end);
+        return compareEnd == 1 || (compareEnd == 0 && left._start.CompareTo(right._start) == 1);
     }
 
     public static bool operator <(Interval<T> left, Interval<T> right)
     {
-        int compareEnd = Compare(left, right, IntervalComparison.End);
-        return compareEnd == -1 || (compareEnd == 0 && Compare(left, right, IntervalComparison.Start) == 1);
+        int compareEnd = left._end.CompareTo(right._end);
+        return compareEnd == -1 || (compareEnd == 0 && left._start.CompareTo(right._start) == -1);
     }
 
     public static bool operator >=(Interval<T> left, Interval<T> right) => left == right || left > right;

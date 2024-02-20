@@ -9,8 +9,7 @@ public static partial class IntervalExtensions
     /// <param name="second">The second interval to compare.</param>
     public static IntervalRelation GetRelation<T>(this Interval<T> first, Interval<T> second)
         where T : struct, IEquatable<T>, IComparable<T>, ISpanParsable<T>
-        => (Interval<T>.Compare(first, second, IntervalComparison.Start),
-        Interval<T>.Compare(first, second, IntervalComparison.End)) switch
+        => (first._start.CompareTo(second._start), first._end.CompareTo(second._end)) switch
         {
             (0, 0) => IntervalRelation.Equal,
             (0, -1) => IntervalRelation.Starts,
@@ -19,8 +18,8 @@ public static partial class IntervalExtensions
             (-1, 0) => IntervalRelation.FinishedBy,
             (-1, 1) => IntervalRelation.Contains,
             (0, 1) => IntervalRelation.StartedBy,
-            (-1, -1) => (IntervalRelation)Interval<T>.Compare(first, second, IntervalComparison.EndToStart) + (int)IntervalRelation.Meets,
-            (1, 1) => (IntervalRelation)Interval<T>.Compare(first, second, IntervalComparison.StartToEnd) + (int)IntervalRelation.MetBy,
+            (-1, -1) => (IntervalRelation)first._end.CompareTo(second._start) + (int)IntervalRelation.Meets,
+            (1, 1) => (IntervalRelation)first._start.CompareTo(second._end) + (int)IntervalRelation.MetBy,
             (_, _) => throw new NotSupportedException()
         };
 }
