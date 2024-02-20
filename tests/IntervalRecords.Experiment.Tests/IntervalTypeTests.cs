@@ -8,17 +8,17 @@ namespace IntervalRecords.Experiment.Tests
         private const int end = 10;
 
         [Theory]
-        [InlineData(true, true, IntervalType.Closed)]
-        [InlineData(true, false, IntervalType.ClosedOpen)]
-        [InlineData(false, true, IntervalType.OpenClosed)]
-        [InlineData(false, false, IntervalType.Open)]
-        public void GetIntervalType_ToTuple_ShouldBeExpected(bool startInclusive, bool endInclusive, IntervalType expected)
+        [InlineData(true, true, BoundaryType.Closed)]
+        [InlineData(true, false, BoundaryType.ClosedOpen)]
+        [InlineData(false, true, BoundaryType.OpenClosed)]
+        [InlineData(false, false, BoundaryType.Open)]
+        public void GetIntervalType_ToTuple_ShouldBeExpected(bool startInclusive, bool endInclusive, BoundaryType expected)
         {
             // Arrange
             var interval = new Interval<int>(start, end, startInclusive, endInclusive);
 
             // Act
-            var actualIntervalType = interval.GetIntervalType();
+            var actualIntervalType = interval.GetBoundaryType();
 
             // Assert
             actualIntervalType.Should().Be(expected);

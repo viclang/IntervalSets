@@ -47,7 +47,7 @@ public static partial class IntervalExtensions
         where T : struct, IEquatable<T>, IComparable<T>, ISpanParsable<T>
         where TResult : struct, IEquatable<TResult>, IComparable<TResult>, ISpanParsable<TResult>
     {
-        if (source.GetIntervalState() is not IntervalState.Bounded)
+        if (source.GetState() is not IntervalState.Bounded)
         {
             return null;
         }

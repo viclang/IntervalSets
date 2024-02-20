@@ -3,7 +3,7 @@
     /// <summary>
     /// Specifies the type of interval, whether it is closed, open-closed, closed-open, or open.
     /// </summary>
-    public enum IntervalType : byte
+    public enum BoundaryType : byte
     {
         Open = 0,
         ClosedOpen = 1,

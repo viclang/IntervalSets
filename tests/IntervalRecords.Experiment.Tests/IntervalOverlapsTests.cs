@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -15,7 +16,6 @@ public class IntervalOverlapsTests
     {
         var leftInterval = Interval<int>.Parse(left);
         var rightInterval = Interval<int>.Parse(right);
-
         var actual = leftInterval.Overlaps(rightInterval);
 
         actual.Should().BeTrue();

@@ -54,7 +54,7 @@ public static partial class IntervalExtensions
         {
             return Interval<T>.Empty;
         }
-        if (source.GetIntervalType() == IntervalType.Closed)
+        if (source.GetBoundaryType() == BoundaryType.Closed)
         {
             return (Interval<T>)source;
         }
