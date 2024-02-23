@@ -5,47 +5,6 @@ using Unbounded;
 namespace IntervalRecords.Extensions;
 public static class IntervalCombiner
 {
-    /// <summary>
-    /// Computes the union of two intervals if they overlap.
-    /// </summary>
-    /// <param name="left">The left interval.</param>
-    /// <param name="right">The right interval.</param>
-    /// <returns>The union of the two intervals if they overlap, otherwise returns null.</returns>
-    public static Interval<T>? Union<T>(this Interval<T> left, Interval<T> right)
-        where T : struct, IEquatable<T>, IComparable<T>, ISpanParsable<T>
-    {
-        if (!left.IsConnected(right))
-        {
-            return null;
-        }
-        return left.Hull(right);
-    }
-
-    /// <summary>
-    /// Computes the smallest interval that contains both input intervals.
-    /// </summary>
-    /// <param name="other">The other interval to compute the hull of.</param>
-    /// <returns>The smallest interval that contains both input intervals.</returns>
-    public static Interval<T> Hull<T>(this Interval<T> left, Interval<T> right)
-        where T : struct, IEquatable<T>, IComparable<T>, ISpanParsable<T>
-    {
-        if (left == right)
-        {
-            return left;
-        }
-        var (start, end, startInclusive, endInclusive) = left;
-        if (right.CompareStart(left) == -1)
-        {
-            start = right.Start;
-            startInclusive = right.StartInclusive;
-        }
-        if (right.CompareEnd(left) == 1)
-        {
-            end = right.End;
-            endInclusive = right.EndInclusive;
-        }
-        return IntervalFactory.Create(start, end, startInclusive, endInclusive);
-    }
 
     /// <summary>
     /// Produces the difference between two intervals.

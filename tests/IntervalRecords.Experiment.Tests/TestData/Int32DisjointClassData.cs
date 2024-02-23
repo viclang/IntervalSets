@@ -16,7 +16,7 @@ public class Int32DisjointClassData : IEnumerable<object[]>
         /// <see cref="OpenClosedInterval{int}"/>
         yield return new object[] { "(2, 4]", "(5, 9]", IntervalRelation.Before };
         yield return new object[] { "(10, 14]", "(5, 9]", IntervalRelation.After };
-        /// <see cref="ClosedInterval{int}"/>
+        /// <see cref="BareInterval{int}"/>
         yield return new object[] { "[2, 4]", "[5, 9]", IntervalRelation.Before };
         yield return new object[] { "[10, 14]", "[5, 9]", IntervalRelation.After };
     }

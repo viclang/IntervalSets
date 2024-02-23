@@ -68,7 +68,7 @@ public class Int32IntervalRelationClassData : IEnumerable<object[]>
         yield return new object[] { "(8, 10]", "(5, 9]", IntervalRelation.OverlappedBy };
         yield return new object[] { "(9, 13]", "(5, 9]", IntervalRelation.After };
         yield return new object[] { "(10, 14]", "(5, 9]", IntervalRelation.After };
-        /// <see cref="ClosedInterval{int}"/>
+        /// <see cref="BareInterval{int}"/>
         yield return new object[] { "[6, Infinity]", "[5, Infinity]", IntervalRelation.Finishes };
         yield return new object[] { "[5, Infinity]", "[5, Infinity]", IntervalRelation.Equal };
         yield return new object[] { "[4, Infinity]", "[5, Infinity]", IntervalRelation.FinishedBy };

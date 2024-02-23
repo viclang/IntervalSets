@@ -1,24 +1,24 @@
 ﻿namespace IntervalRecords.Experiment.Bounds;
-internal record struct LowerBound<T>(T? Bound, bool Inclusive) : IComparable<LowerBound<T>>, IComparable<UpperBound<T>>
+public record struct LowerBound<T>(T? Point, bool Inclusive) : IComparable<LowerBound<T>>, IComparable<UpperBound<T>>
     where T : struct, IComparable<T>, ISpanParsable<T>
 {
-    public readonly int CompareTo(LowerBound<T> other) => (Bound.HasValue, other.Bound.HasValue) switch
+    public readonly int CompareTo(LowerBound<T> other) => (Point.HasValue, other.Point.HasValue) switch
     {
         (false, false) => 0,
         (false, true) => -1,
         (true, false) => 1,
-        (true, true) => Bound!.Value.Equals(other.Bound!.Value)
+        (true, true) => Point!.Value.Equals(other.Point!.Value)
             ? Inclusive.CompareTo(other.Inclusive)
-            : Bound.Value.CompareTo(other.Bound.Value),
+            : Point.Value.CompareTo(other.Point.Value),
     };
 
     public readonly int CompareTo(UpperBound<T> other)
     {
-        if (Bound is null || other.Bound is null)
+        if (Point is null || other.Point is null)
         {
             return -1;
         }
-        var endStartComparison = Bound.Value.CompareTo(other.Bound.Value);
+        var endStartComparison = Point.Value.CompareTo(other.Point.Value);
         if (endStartComparison == 0 && (!Inclusive || !other.Inclusive))
         {
             return 1;
@@ -28,11 +28,11 @@ internal record struct LowerBound<T>(T? Bound, bool Inclusive) : IComparable<Low
 
     public readonly int ConnectedCompareTo(UpperBound<T> other)
     {
-        if (Bound is null || other.Bound is null)
+        if (Point is null || other.Point is null)
         {
             return -1;
         }
-        var endStartComparison = Bound.Value.CompareTo(other.Bound.Value);
+        var endStartComparison = Point.Value.CompareTo(other.Point.Value);
         if (endStartComparison == 0 && !Inclusive && !other.Inclusive)
         {
             return 1;

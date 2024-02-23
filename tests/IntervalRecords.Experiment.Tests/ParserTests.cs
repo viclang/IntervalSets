@@ -86,7 +86,7 @@
 
         [Theory]
         [MemberData(nameof(ValidStringToParseWithExpectedResults))]
-        //[MemberData(nameof(InvalidStringToParseWithNull))]
+        [MemberData(nameof(InvalidStringToParseWithNull))]
         public void TryParse_ShouldBeExpectedResult(string stringToParse, Interval<int>? expectedResult)
         {
             // Act

@@ -9,7 +9,7 @@ namespace IntervalRecords.Experiment.Tests.TestData;
 /// <see cref="OpenInterval{int}"/>,
 /// <see cref="ClosedOpenInterval{int}"/>,
 /// <see cref="OpenClosedInterval{T}"/> and
-/// <see cref="ClosedInterval{T}"/>
+/// <see cref="BareInterval{T}"/>
 /// with the expected <see cref="IntervalRelation"/>.
 /// </summary>
 public class Int32OverlappingClassData : IEnumerable<object[]>
@@ -67,7 +67,7 @@ public class Int32OverlappingClassData : IEnumerable<object[]>
         yield return new object[] { "(-Infinity, 9]", "(-Infinity, 9]", IntervalRelation.Equal };
         yield return new object[] { "(-Infinity, 10]", "(-Infinity, 9]", IntervalRelation.StartedBy };
         yield return new object[] { "(-Infinity, Infinity]", "(-Infinity, Infinity]", IntervalRelation.Equal };
-        /// <see cref="ClosedInterval{int}"/>
+        /// <see cref="BareInterval{int}"/>
         yield return new object[] { "[1, 5]", "[5, 9]", IntervalRelation.Meets };
         yield return new object[] { "[9, 13]", "[5, 9]", IntervalRelation.MetBy };
         yield return new object[] { "[4, 6]", "[5, 9]", IntervalRelation.Overlaps };

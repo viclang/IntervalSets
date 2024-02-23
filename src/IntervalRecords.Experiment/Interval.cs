@@ -5,62 +5,56 @@ using System.Text;
 
 namespace IntervalRecords.Experiment;
 public record class Interval<T>
-    : IComparable<Interval<T>>,
+    : AbstractInterval<LowerBound<T>, UpperBound<T>>,
       IComparisonOperators<Interval<T>, Interval<T>, bool>,
       IParsable<Interval<T>>,
       ISpanParsable<Interval<T>>
     where T : struct, IComparable<T>, ISpanParsable<T>
 {
-    internal LowerBound<T> _start;
-    internal UpperBound<T> _end;
-
     public T? Start
     {
-        get => _start.Bound;
-        set
-        {
-            _start = _start with { Bound = value };
-        }
+        get => LeftEndpoint.Point;
+        init => LeftEndpoint = LeftEndpoint with { Point = value };
     }
 
     public bool StartInclusive
     {
-        get => _start.Inclusive;
-        set
-        {
-            _start = _start with { Inclusive = value };
-        }
+        get => LeftEndpoint.Inclusive;
+        init => LeftEndpoint = LeftEndpoint with { Inclusive = value };
     }
 
     public T? End
     {
-        get => _end.Bound;
-        set
-        {
-            _end = _end with { Bound = value };
-        }
+        get => RightEndpoint.Point;
+        init => RightEndpoint = RightEndpoint with { Point = value };
     }
 
     public bool EndInclusive
     {
-        get => _end.Inclusive;
-        set
-        {
-            _end = _end with { Inclusive = value };
-        }
+        get => RightEndpoint.Inclusive;
+        init => RightEndpoint = RightEndpoint with { Inclusive = value };
     }
 
-    public Interval(T? start, T? end, bool startInclusive, bool endInclusive)
+    public Interval(T? start, T? end, bool startInclusive, bool endInclusive) : base(
+        left: new LowerBound<T>(start, startInclusive),
+        right: new UpperBound<T>(end, endInclusive))
     {
-        _start = new LowerBound<T>(start, startInclusive);
-        _end = new UpperBound<T>(end, endInclusive);
+        if (!IsValid)
+        {
+            throw new ArgumentException($"left value {start} is greater than right value {end}.");
+        }
+        if(IsEmpty)
+        {
+            LeftEndpoint = new(default(T), false);
+            RightEndpoint = new(default(T), false);
+        }
     }
 
     public static readonly Interval<T> Empty = new(default(T), default(T), false, false);
 
     public static readonly Interval<T> Unbounded = new(null, null, false, false);
 
-    public virtual bool IsValid => Start is null || End is null || Start.Value.CompareTo(End.Value) < 0;
+    public virtual bool IsValid => Start is null || End is null || Start.Value.CompareTo(End.Value) <= 0;
 
     public virtual bool IsEmpty => !IsValid || (Start is not null && Start.Equals(End) && !StartInclusive && !EndInclusive);
 
@@ -89,66 +83,26 @@ public record class Interval<T>
     }
 
     /// <summary>
-    /// Returns a boolean value indicating if the current interval overlaps with the other interval.
-    /// </summary>
-    /// <param name="other">The interval to check for overlapping with the current interval.</param>
-    /// <returns>True if the current interval and the other interval overlap, False otherwise.</returns>
-    public bool Overlaps(Interval<T> other)
-    {
-        return _start.CompareTo(other._end) <= 0
-            && other._start.CompareTo(_end) <= 0;
-    }
-
-    /// <summary>
     /// Returns a boolean value indicating if the current interval is connected to the other interval.
     /// </summary>
     /// <param name="other">The interval to check if it is connected to current interval.</param>
     /// <returns>True if the current interval and the other interval are connected, False otherwise.</returns>
     public bool IsConnected(Interval<T> other)
     {
-        return _start.ConnectedCompareTo(other._end) <= 0
-            && other._start.ConnectedCompareTo(_end) <= 0;
+        return LeftEndpoint.ConnectedCompareTo(other.RightEndpoint) <= 0
+            && other.LeftEndpoint.ConnectedCompareTo(RightEndpoint) <= 0;
     }
 
-    public static int Compare(Interval<T> left, Interval<T> right, IntervalComparison comparisonType) => comparisonType switch
-    {
-        IntervalComparison.Interval => left.CompareTo(right),
-        IntervalComparison.Start => left._start.CompareTo(right._start),
-        IntervalComparison.End => left._end.CompareTo(right._end),
-        IntervalComparison.StartToEnd => left._start.CompareTo(right._end),
-        IntervalComparison.EndToStart => left._end.CompareTo(right._start),
-        _ => throw new NotImplementedException(),
-    };
+    public static bool operator >(Interval<T> left, Interval<T> right) => IsGreaterThan(left, right);
 
-    public int CompareTo(Interval<T>? other)
-    {
-        if (other == null || this > other)
-        {
-            return 1;
-        }
-        if (this < other)
-        {
-            return -1;
-        }
-        return 0;
-    }
-
-    public static bool operator >(Interval<T> left, Interval<T> right)
-    {
-        int compareEnd = left._end.CompareTo(right._end);
-        return compareEnd == 1 || (compareEnd == 0 && left._start.CompareTo(right._start) == 1);
-    }
-
-    public static bool operator <(Interval<T> left, Interval<T> right)
-    {
-        int compareEnd = left._end.CompareTo(right._end);
-        return compareEnd == -1 || (compareEnd == 0 && left._start.CompareTo(right._start) == -1);
-    }
+    public static bool operator <(Interval<T> left, Interval<T> right) => IsLessThan(left, right);
 
     public static bool operator >=(Interval<T> left, Interval<T> right) => left == right || left > right;
 
     public static bool operator <=(Interval<T> left, Interval<T> right) => left == right || left < right;
 
+    public void Deconstruct(out T? start, out T? end, out bool startInclusive, out bool endInclusive)
+        => (start, end, startInclusive, endInclusive) = (Start, End, StartInclusive, EndInclusive);
 
     public static Interval<T> Parse(string s, IFormatProvider? provider = null)
     {
