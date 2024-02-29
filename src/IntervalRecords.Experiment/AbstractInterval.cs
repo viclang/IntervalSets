@@ -1,8 +1,8 @@
 ﻿namespace IntervalRecords.Experiment;
 public abstract record class AbstractInterval<TLeft, TRight>
     : IComparable<AbstractInterval<TLeft, TRight>>
-    where TRight : IComparable<TRight>, IComparable<TLeft>
     where TLeft : IComparable<TLeft>, IComparable<TRight>
+    where TRight : IComparable<TRight>, IComparable<TLeft>
 {
     internal TLeft LeftEndpoint { get; init; }
     internal TRight RightEndpoint { get; init; }
@@ -12,7 +12,6 @@ public abstract record class AbstractInterval<TLeft, TRight>
         LeftEndpoint = left;
         RightEndpoint = right;
     }
-
 
     /// <summary>
     /// Returns a boolean value indicating if the current interval overlaps with the other interval.

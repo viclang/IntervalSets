@@ -13,7 +13,7 @@ public static partial class IntervalExtensions
     /// <param name="other">The other interval to compute the hull of.</param>
     /// <returns>The smallest interval that contains both input intervals.</returns>
     public static Interval<T> Hull<T>(this Interval<T> left, Interval<T> right)
-        where T : struct, IEquatable<T>, IComparable<T>, ISpanParsable<T>
+        where T : struct, IComparable<T>, ISpanParsable<T>
     {
         if (left == right)
         {

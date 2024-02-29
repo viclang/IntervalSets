@@ -47,7 +47,7 @@ public static partial class IntervalExtensions
         => Radius(source, (end, start) => (end - start) / 2);
 
     private static TResult? Radius<T, TResult>(Interval<T> source, Func<T, T, TResult> radius)
-        where T : struct, IEquatable<T>, IComparable<T>, ISpanParsable<T>
+        where T : struct, IComparable<T>, ISpanParsable<T>
         where TResult : struct
     {
         if (source.GetState() is not IntervalState.Bounded || source.IsEmpty)

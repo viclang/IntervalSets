@@ -17,7 +17,7 @@ public static partial class IntervalExtensions
     /// <param name="value">The interval to determine if it is half-open.</param>
     /// <returns>True if the interval is half-open.</returns>
     public static bool IsHalfOpen<T>(this Interval<T> value)
-        where T : struct, IEquatable<T>, IComparable<T>, ISpanParsable<T>
+        where T : struct, IComparable<T>, IEquatable<T>, ISpanParsable<T>
         => value.GetBoundaryType() is BoundaryType.ClosedOpen or BoundaryType.OpenClosed;
 
     /// <summary>

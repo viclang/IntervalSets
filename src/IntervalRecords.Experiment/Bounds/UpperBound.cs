@@ -1,28 +1,33 @@
-﻿namespace IntervalRecords.Experiment.Bounds;
-public readonly record struct UpperBound<T>(T? Point, bool Inclusive) : IComparable<UpperBound<T>>, IComparable<LowerBound<T>>
+﻿using IntervalRecords.Experiment.Endpoints;
+
+namespace IntervalRecords.Experiment.Bounds;
+public readonly record struct UpperBound<T>(T Value, BoundType BoundaryType)
+    : IComparable<UpperBound<T>>,
+      IComparable<LowerBound<T>>,
+      IComparable<T>
     where T : struct, IComparable<T>, ISpanParsable<T>
 {
-    public int CompareTo(UpperBound<T> other) => (Point.HasValue, other.Point.HasValue) switch
+    public int CompareTo(UpperBound<T> other)
     {
-        (false, false) => 0,
-        (false, true) => 1,
-        (true, false) => -1,
-        (true, true) => Point!.Value.Equals(other.Point!.Value)
-            ? Inclusive.CompareTo(other.Inclusive)
-            : Point.Value.CompareTo(other.Point.Value),
-    };
+        if (BoundaryType == BoundType.Unbounded || other.BoundaryType == BoundType.Unbounded)
+        {
+            return BoundaryType.CompareTo(other.BoundaryType);
+        }
+        var valueCompared = Value.CompareTo(other.Value);
+        if (valueCompared != 0)
+        {
+            return valueCompared;
+        }
+        return valueCompared;
+    }
 
     public int CompareTo(LowerBound<T> other)
     {
-        if (Point is null || other.Point is null)
-        {
-            return 1;
-        }
-        var endStartComparison = Point.Value.CompareTo(other.Point.Value);
-        if (endStartComparison == 0 && (!Inclusive || !other.Inclusive))
-        {
-            return -1;
-        }
-        return endStartComparison;
+        throw new NotImplementedException();
+    }
+
+    public int CompareTo(T other)
+    {
+        throw new NotImplementedException();
     }
 }

@@ -94,7 +94,7 @@
 
             // Assert
             isValid.Should().Be(expectedResult is not null);
-            result.Should().Be(expectedResult);
+            result.Should().Be(expectedResult!);
         }
 
         [Fact]

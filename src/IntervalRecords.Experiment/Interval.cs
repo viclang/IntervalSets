@@ -1,11 +1,11 @@
-﻿using IntervalRecords.Experiment.Bounds;
+﻿using IntervalRecords.Experiment.Endpoints;
 using System.Diagnostics.CodeAnalysis;
 using System.Numerics;
 using System.Text;
 
 namespace IntervalRecords.Experiment;
 public record class Interval<T>
-    : AbstractInterval<LowerBound<T>, UpperBound<T>>,
+    : AbstractInterval<Endpoint<T>, Endpoint<T>>,
       IComparisonOperators<Interval<T>, Interval<T>, bool>,
       IParsable<Interval<T>>,
       ISpanParsable<Interval<T>>
@@ -13,31 +13,49 @@ public record class Interval<T>
 {
     public T? Start
     {
-        get => LeftEndpoint.Point;
-        init => LeftEndpoint = LeftEndpoint with { Point = value };
+        get => LeftEndpoint.HasValue ? LeftEndpoint.Value : null;
+        init => LeftEndpoint = LeftEndpoint with
+        {
+            Value = value.GetValueOrDefault(),
+            BoundaryType = value.HasValue ? LeftEndpoint.BoundaryType : BoundType.Unbounded
+        };
+    }
+
+    public T? End
+    {
+        get => RightEndpoint.HasValue ? RightEndpoint.Value : null;
+        init => LeftEndpoint = LeftEndpoint with
+        {
+            Value = value.GetValueOrDefault(),
+            BoundaryType = value.HasValue ? RightEndpoint.BoundaryType : BoundType.Unbounded
+        };
     }
 
     public bool StartInclusive
     {
         get => LeftEndpoint.Inclusive;
-        init => LeftEndpoint = LeftEndpoint with { Inclusive = value };
-    }
-
-    public T? End
-    {
-        get => RightEndpoint.Point;
-        init => RightEndpoint = RightEndpoint with { Point = value };
+        init => LeftEndpoint = LeftEndpoint with
+        {
+            BoundaryType = value
+                ? BoundType.Closed
+                : BoundType.Open
+        };
     }
 
     public bool EndInclusive
     {
         get => RightEndpoint.Inclusive;
-        init => RightEndpoint = RightEndpoint with { Inclusive = value };
+        init => RightEndpoint = RightEndpoint with
+        {
+            BoundaryType = value
+                ? BoundType.Closed
+                : BoundType.Open
+        };
     }
 
     public Interval(T? start, T? end, bool startInclusive, bool endInclusive) : base(
-        left: new LowerBound<T>(start, startInclusive),
-        right: new UpperBound<T>(end, endInclusive))
+        left: Endpoint<T>.Start(start, startInclusive),
+        right: Endpoint<T>.End(end, endInclusive))
     {
         if (!IsValid)
         {
@@ -45,8 +63,8 @@ public record class Interval<T>
         }
         if(IsEmpty)
         {
-            LeftEndpoint = new(default(T), false);
-            RightEndpoint = new(default(T), false);
+            LeftEndpoint = Endpoint<T>.Start(default(T), false);
+            RightEndpoint = Endpoint<T>.End(default(T), false);
         }
     }
 
@@ -77,9 +95,7 @@ public record class Interval<T>
     /// <returns></returns>
     public bool Contains(T value)
     {
-        return (Start is null || Start.Value.CompareTo(value) < 0) && (End is null || value.CompareTo(End.Value) < 0)
-            || Start is not null && Start.Value.Equals(value) && StartInclusive
-            || End is not null && value.Equals(End.Value) && EndInclusive;
+        return LeftEndpoint.CompareTo(value) <= 0 && RightEndpoint.CompareTo(value) >= 0;
     }
 
     /// <summary>
@@ -212,7 +228,7 @@ public record class Interval<T>
         return HashCode.Combine(Start, End, StartInclusive, EndInclusive);
     }
 
-    public override string? ToString()
+    public override string ToString()
     {
         return new StringBuilder()
             .Append(StartInclusive ? '[' : '(')

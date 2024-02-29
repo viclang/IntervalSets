@@ -1,57 +1,87 @@
-﻿namespace IntervalRecords.Experiment.Bounds;
-public record struct Endpoint<T>(T? Point, bool Inclusive, int Direction) : IComparable<Endpoint<T>>
-    where T : struct, IComparable<T>, ISpanParsable<T>
+﻿using System.Numerics;
+using System.Text;
+
+namespace IntervalRecords.Experiment.Endpoints;
+public readonly record struct Endpoint<T>(T Value, BoundType BoundaryType, Direction Direction)
+    : IComparable<Endpoint<T>>,
+      IComparable<T>
+    where T : struct, IComparable<T>
 {
-    public readonly int CompareTo(Endpoint<T> other)
-    {
-        if (Direction == other.Direction)
-        {
-            return (Point.HasValue, other.Point.HasValue) switch
-            {
-                (false, false) => 0,
-                (false, true) => Direction,
-                (true, false) => -Direction,
-                (true, true) => Point!.Value.Equals(other.Point!.Value)
-                    ? Inclusive.CompareTo(other.Inclusive)
-                    : Point.Value.CompareTo(other.Point.Value),
-            };
-        }
-        if (Point is null || other.Point is null)
-        {
-            return Direction;
-        }
-        var endStartComparison = Point.Value.CompareTo(other.Point.Value);
-        if (endStartComparison == 0 && (!Inclusive || !other.Inclusive))
-        {
-            return other.Direction;
-        }
-        return endStartComparison;
+    public bool HasValue => BoundaryType != BoundType.Unbounded;
 
+    public bool Inclusive => BoundaryType == BoundType.Closed;
+
+    public static Endpoint<T> Start(T? value, bool inclusive)
+        => new(value.GetValueOrDefault(), GetBoundaryType(value.HasValue, inclusive), Direction.Left);
+
+    public static Endpoint<T> End(T? value, bool inclusive)
+        => new(value.GetValueOrDefault(), GetBoundaryType(value.HasValue, inclusive), Direction.Right);
+
+    public static BoundType GetBoundaryType(bool hasValue, bool inclusive)
+    {
+        if (!hasValue)
+        {
+            return BoundType.Unbounded;
+        }
+        return inclusive ? BoundType.Closed : BoundType.Open;
     }
 
-    public readonly int ConnectedCompareTo(Endpoint<T> other)
+    public int CompareTo(Endpoint<T> other)
+        => CompareTo(other, BoundaryType == BoundType.Open || other.BoundaryType == BoundType.Open);
+
+    public int ConnectedCompareTo(Endpoint<T> other)
+        => CompareTo(other, (BoundaryType & other.BoundaryType) == BoundType.Open);
+
+    private int CompareTo(Endpoint<T> other, bool exclusiveCondition)
     {
-        if (Direction == other.Direction)
+        var directionCompared = Direction.CompareTo(other.Direction);
+        if (BoundaryType == BoundType.Unbounded || other.BoundaryType == BoundType.Unbounded)
         {
-            return (Point.HasValue, other.Point.HasValue) switch
-            {
-                (false, false) => 0,
-                (false, true) => Direction,
-                (true, false) => -Direction,
-                (true, true) => Point!.Value.Equals(other.Point!.Value)
-                    ? Inclusive.CompareTo(other.Inclusive)
-                    : Point.Value.CompareTo(other.Point.Value),
-            };
+            return directionCompared;
         }
-        if (Point is null || other.Point is null)
+        var valueCompared = Value.CompareTo(other.Value);
+        if (valueCompared != 0)
         {
-            return Direction;
+            return valueCompared;
         }
-        var endStartComparison = Point.Value.CompareTo(other.Point.Value);
-        if (endStartComparison == 0 && !Inclusive && !other.Inclusive)
+        if (directionCompared != 0 && exclusiveCondition)
         {
-            return other.Direction;
+            return -directionCompared;
         }
-        return endStartComparison;
+        return valueCompared;
     }
+
+    public int CompareTo(T other)
+    {
+        var directionValue = ToSign((int)Direction);
+        if (BoundaryType == BoundType.Unbounded)
+        {
+            return directionValue;
+        }
+        var valueCompared = Value.CompareTo(other);
+        if (valueCompared == 0 && BoundaryType == BoundType.Open)
+        {
+            return -directionValue;
+        }
+        return valueCompared;
+    }
+
+    /// <summary>
+    /// Converts 0 to -1 and 1 to 1
+    /// </summary>
+    /// <param name="bit"></param>
+    /// <returns></returns>
+    public static int ToSign(int bit) => (bit << 1) - 1;
+
+    public override string? ToString() => (BoundaryType, Direction) switch
+    {
+        (BoundType.Unbounded, Direction.Left) => "(-Infinity",
+        (BoundType.Unbounded, Direction.Right) => "Infinity)",
+        (BoundType.Open, Direction.Left) => $"({Value}",
+        (BoundType.Closed, Direction.Left) => $"[{Value}",
+        (BoundType.Open, Direction.Right) => $"{Value})",
+        (BoundType.Closed, Direction.Right) => $"{Value}]",
+        _ => throw new NotImplementedException(),
+    };
+
 }

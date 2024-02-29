@@ -46,7 +46,7 @@ public static partial class IntervalExtensions
 
 
     private static TResult? Centre<T, TResult>(Interval<T> source, Func<T, T, TResult> centre)
-        where T : struct, IEquatable<T>, IComparable<T>, ISpanParsable<T>
+        where T : struct, IComparable<T>, ISpanParsable<T>
         where TResult : struct
     {
         if (source.GetState() is not IntervalState.Bounded || source.IsEmpty)

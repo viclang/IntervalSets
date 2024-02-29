@@ -14,7 +14,7 @@ public static partial class IntervalExtensions
     /// <param name="right">The right interval.</param>
     /// <returns>The union of the two intervals if they overlap, otherwise returns null.</returns>
     public static Interval<T>? Union<T>(this Interval<T> left, Interval<T> right)
-        where T : struct, IEquatable<T>, IComparable<T>, ISpanParsable<T>
+        where T : struct, IComparable<T>, ISpanParsable<T>
     {
         if (!left.IsConnected(right))
         {

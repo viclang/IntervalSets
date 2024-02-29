@@ -8,7 +8,7 @@ public static partial class IntervalExtensions
     /// <param name="first">The first interval to compare.</param>
     /// <param name="second">The second interval to compare.</param>
     public static IntervalRelation GetRelation<T>(this Interval<T> first, Interval<T> second)
-        where T : struct, IEquatable<T>, IComparable<T>, ISpanParsable<T>
+        where T : struct, IComparable<T>, ISpanParsable<T>
         => (first.LeftEndpoint.CompareTo(second.LeftEndpoint), first.RightEndpoint.CompareTo(second.RightEndpoint)) switch
         {
             (0, 0) => IntervalRelation.Equal,

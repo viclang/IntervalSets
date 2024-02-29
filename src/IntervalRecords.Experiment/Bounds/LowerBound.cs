@@ -1,42 +1,108 @@
-﻿namespace IntervalRecords.Experiment.Bounds;
-public record struct LowerBound<T>(T? Point, bool Inclusive) : IComparable<LowerBound<T>>, IComparable<UpperBound<T>>
+﻿using IntervalRecords.Experiment.Endpoints;
+using System.Numerics;
+
+namespace IntervalRecords.Experiment.Bounds;
+public record struct LowerBound<T>(T Value, BoundType BoundaryType)
+    : IEquatable<UpperBound<T>>,
+      IEquatable<T>,
+      IComparisonOperators<LowerBound<T>, LowerBound<T>, bool>,
+      IComparisonOperators<LowerBound<T>, UpperBound<T>, bool>,
+      IComparisonOperators<LowerBound<T>, T, bool>
     where T : struct, IComparable<T>, ISpanParsable<T>
 {
-    public readonly int CompareTo(LowerBound<T> other) => (Point.HasValue, other.Point.HasValue) switch
-    {
-        (false, false) => 0,
-        (false, true) => -1,
-        (true, false) => 1,
-        (true, true) => Point!.Value.Equals(other.Point!.Value)
-            ? Inclusive.CompareTo(other.Inclusive)
-            : Point.Value.CompareTo(other.Point.Value),
-    };
+    public readonly bool Equals(UpperBound<T> other)
+        => Value.Equals(other) && BoundaryType == BoundType.Closed && other.BoundaryType == BoundType.Closed;
 
-    public readonly int CompareTo(UpperBound<T> other)
+    public readonly bool Equals(T other) => Value.Equals(other) && BoundaryType == BoundType.Closed;
+
+    public static bool operator ==(LowerBound<T> left, T right)
     {
-        if (Point is null || other.Point is null)
-        {
-            return -1;
-        }
-        var endStartComparison = Point.Value.CompareTo(other.Point.Value);
-        if (endStartComparison == 0 && (!Inclusive || !other.Inclusive))
-        {
-            return 1;
-        }
-        return endStartComparison;
+        return left.Equals(right);
     }
 
-    public readonly int ConnectedCompareTo(UpperBound<T> other)
+    public static bool operator ==(LowerBound<T> left, UpperBound<T> right)
     {
-        if (Point is null || other.Point is null)
-        {
-            return -1;
-        }
-        var endStartComparison = Point.Value.CompareTo(other.Point.Value);
-        if (endStartComparison == 0 && !Inclusive && !other.Inclusive)
-        {
-            return 1;
-        }
-        return endStartComparison;
+        return left.Equals(right);
+    }
+
+    public static bool operator !=(LowerBound<T> left, T right)
+    {
+        return !left.Equals(right);
+    }
+
+    public static bool operator !=(LowerBound<T> left, UpperBound<T> right)
+    {
+        return !left.Equals(right);
+    }
+
+    public static bool operator <(LowerBound<T> left, T right)
+        => left.BoundaryType == BoundType.Unbounded
+        || left.Value.CompareTo(right) < 0
+        || left.Value.Equals(right) && left.BoundaryType == BoundType.Open;
+
+    public static bool operator <(LowerBound<T> left, LowerBound<T> right)
+    {
+        return right.BoundaryType != BoundType.Unbounded
+            && (left.BoundaryType == BoundType.Unbounded
+                || left.Value.CompareTo(right.Value) < 0
+                || left.Value.Equals(right.Value) && left.BoundaryType.CompareTo(right.BoundaryType) < 0);
+    }
+
+
+    public static bool operator <(LowerBound<T> left, UpperBound<T> right)
+    {
+        return left.BoundaryType == BoundType.Unbounded || right.BoundaryType == BoundType.Unbounded
+            || left.Value.CompareTo(right.Value) < 0
+            || left.Value.Equals(right.Value) && left.BoundaryType.CompareTo(right.BoundaryType) < 0;
+    }
+
+    public static bool operator >(LowerBound<T> left, LowerBound<T> right)
+    {
+        return left.BoundaryType != BoundType.Unbounded
+            && (right.BoundaryType == BoundType.Unbounded
+            || left.Value.CompareTo(right.Value) > 0
+            || left.Value.Equals(right.Value)
+                && left.BoundaryType.CompareTo(right.BoundaryType) > 0);
+    }
+
+    public static bool operator >(LowerBound<T> left, T right)
+    => left.BoundaryType != BoundType.Unbounded && left.Value.CompareTo(right) > 0;
+
+    public static bool operator >(LowerBound<T> left, UpperBound<T> right)
+    {
+        return right.BoundaryType != BoundType.Unbounded && left.BoundaryType != BoundType.Unbounded
+            && (left.Value.CompareTo(right.Value) > 0
+            || left.Value.Equals(right.Value)
+                && left.BoundaryType.CompareTo(right.BoundaryType) > 0);
+    }
+
+    public static bool operator <=(LowerBound<T> left, LowerBound<T> right)
+    {
+        return left < right || left == right;
+    }
+
+    public static bool operator <=(LowerBound<T> left, T right)
+    {
+        return left < right || left == right;
+    }
+
+    public static bool operator <=(LowerBound<T> left, UpperBound<T> right)
+    {
+        return left < right || left == right;
+    }
+
+    public static bool operator >=(LowerBound<T> left, LowerBound<T> right)
+    {
+        return left > right || left == right;
+    }
+
+    public static bool operator >=(LowerBound<T> left, T right)
+    {
+        return left > right || left == right;
+    }
+
+    public static bool operator >=(LowerBound<T> left, UpperBound<T> right)
+    {
+        return left > right || left == right;
     }
 }
