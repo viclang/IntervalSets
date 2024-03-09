@@ -10,7 +10,6 @@ public class IntervalRelationTests
     {
         var leftInterval = Interval<int>.Parse(left);
         var rightInterval = Interval<int>.Parse(right);
-
         var actual = leftInterval.GetRelation(rightInterval);
 
         actual.Should().Be(expected);

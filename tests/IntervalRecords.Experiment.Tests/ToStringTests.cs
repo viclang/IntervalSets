@@ -4,7 +4,7 @@
     {
 
         [Theory]
-        [InlineData("[-Infinity, Infinity]")]
+        [InlineData("(-Infinity, Infinity)")]
         [InlineData("[1, 2]")]
         [InlineData("[3, 4]")]
         [InlineData("[1, 2)")]

@@ -1,92 +1,124 @@
-﻿using IntervalRecords.Experiment.Endpoints;
+﻿using IntervalRecords.Experiment.Extensions;
 using System.Diagnostics.CodeAnalysis;
 using System.Numerics;
 using System.Text;
+using System.Text.RegularExpressions;
 
 namespace IntervalRecords.Experiment;
+
+public static class Interval
+{
+    internal static readonly Regex Regex = new(@"(?:\[|\()(?:[^[\](),]*,[^,()[\]]*)(?:\)|\])", RegexOptions.Compiled);
+
+    internal const string NotFoundMessage = "Interval not found in string. Please provide an interval string in correct format";
+
+    public static Interval<T> Singleton<T>(T value) where T : struct, IComparable<T>, ISpanParsable<T>
+        => new Interval<T>(value, value, true, true);
+
+    public static Interval<T> Closed<T>(T start, T end) where T : struct, IComparable<T>, ISpanParsable<T>
+        => new Interval<T>(start, end, true, true);
+
+    public static Interval<T> OpenClosed<T>(T? start, T end) where T : struct, IComparable<T>, ISpanParsable<T>
+        => new Interval<T>(start, end, false, true);
+
+    public static Interval<T> ClosedOpen<T>(T start, T? end) where T : struct, IComparable<T>, ISpanParsable<T>
+        => new Interval<T>(start, end, true, false);
+
+    public static Interval<T> Open<T>(T? start, T? end) where T : struct, IComparable<T>, ISpanParsable<T>
+        => new Interval<T>(start, end, false, false);
+
+    public static int Compare<T>(
+        this Interval<T> left,
+        Interval<T> right,
+        IntervalComparison comparisonType = IntervalComparison.Interval) where T : struct, IComparable<T>, ISpanParsable<T>
+        => comparisonType switch
+        {
+            IntervalComparison.Interval => left.CompareTo(right),
+            IntervalComparison.Start => left.CompareStart(right),
+            IntervalComparison.End => left.CompareEnd(right),
+            IntervalComparison.StartToEnd => left.CompareStartToEnd(right),
+            IntervalComparison.EndToStart => left.CompareEndToStart(right),
+            _ => throw new NotSupportedException()
+        };
+}
+
 public record class Interval<T>
-    : AbstractInterval<Endpoint<T>, Endpoint<T>>,
-      IComparisonOperators<Interval<T>, Interval<T>, bool>,
+    : IComparisonOperators<Interval<T>, Interval<T>, bool>,
+      IComparable<Interval<T>>,
       IParsable<Interval<T>>,
       ISpanParsable<Interval<T>>
     where T : struct, IComparable<T>, ISpanParsable<T>
 {
+    private readonly T? _start;
+
+    private readonly T? _end;
+
+    private readonly bool _startInclusive;
+
+    private readonly bool _endInclusive;
+
     public T? Start
     {
-        get => LeftEndpoint.HasValue ? LeftEndpoint.Value : null;
-        init => LeftEndpoint = LeftEndpoint with
-        {
-            Value = value.GetValueOrDefault(),
-            BoundaryType = value.HasValue ? LeftEndpoint.BoundaryType : BoundType.Unbounded
-        };
+        get => _start;
+        init => _start = value;
     }
 
     public T? End
     {
-        get => RightEndpoint.HasValue ? RightEndpoint.Value : null;
-        init => LeftEndpoint = LeftEndpoint with
-        {
-            Value = value.GetValueOrDefault(),
-            BoundaryType = value.HasValue ? RightEndpoint.BoundaryType : BoundType.Unbounded
-        };
+        get => _end;
+        init => _end = value;
     }
 
     public bool StartInclusive
     {
-        get => LeftEndpoint.Inclusive;
-        init => LeftEndpoint = LeftEndpoint with
-        {
-            BoundaryType = value
-                ? BoundType.Closed
-                : BoundType.Open
-        };
+        get => _start.HasValue ? _startInclusive : false;
+        init => _startInclusive = value && _start.HasValue;
     }
 
     public bool EndInclusive
     {
-        get => RightEndpoint.Inclusive;
-        init => RightEndpoint = RightEndpoint with
-        {
-            BoundaryType = value
-                ? BoundType.Closed
-                : BoundType.Open
-        };
+        get => _end.HasValue ? _endInclusive : false;
+        init => _endInclusive = value && _end.HasValue;
     }
 
-    public Interval(T? start, T? end, bool startInclusive, bool endInclusive) : base(
-        left: Endpoint<T>.Start(start, startInclusive),
-        right: Endpoint<T>.End(end, endInclusive))
+    public Interval(T? start, T? end, bool startInclusive, bool endInclusive)
     {
         if (!IsValid)
         {
             throw new ArgumentException($"left value {start} is greater than right value {end}.");
         }
-        if(IsEmpty)
+        if (IsEmpty)
         {
-            LeftEndpoint = Endpoint<T>.Start(default(T), false);
-            RightEndpoint = Endpoint<T>.End(default(T), false);
+            _start = default(T);
+            _end = default(T);
+            _startInclusive = false;
+            _endInclusive = false;
         }
+        _start = start;
+        _end = end;
+        _startInclusive = startInclusive && _start.HasValue;
+        _endInclusive = endInclusive && _end.HasValue;
     }
 
     public static readonly Interval<T> Empty = new(default(T), default(T), false, false);
 
     public static readonly Interval<T> Unbounded = new(null, null, false, false);
 
-    public virtual bool IsValid => Start is null || End is null || Start.Value.CompareTo(End.Value) <= 0;
+    public bool IsValid => Start is null || End is null || Start.Value.CompareTo(End.Value) <= 0;
 
-    public virtual bool IsEmpty => !IsValid || (Start is not null && Start.Equals(End) && !StartInclusive && !EndInclusive);
+    public bool IsEmpty => !IsValid || Start is not null && Start.Equals(End) && !StartInclusive && !EndInclusive;
 
     public bool IsSingleton => Start is not null && Start.Equals(End) && StartInclusive && EndInclusive;
 
-    public static Interval<T> Singleton(T value) => new Interval<T>(value, value, true, true);
-
-    public static Interval<T> Closed(T? start, T? end) => new Interval<T>(start, end, true, true);
-
-    public static Interval<T> OpenClosed(T? start, T? end) => new Interval<T>(start, end, false, true);
-
-    public static Interval<T> ClosedOpen(T? start, T? end) => new Interval<T>(start, end, true, false);
-
-    public static Interval<T> Open(T? start, T? end) => new Interval<T>(start, end, false, false);
+    /// <summary>
+    /// Returns a boolean value indicating if the current interval overlaps with the other interval.
+    /// </summary>
+    /// <param name="other">The interval to check for overlapping with the current interval.</param>
+    /// <returns>True if the current interval and the other interval overlap, False otherwise.</returns>
+    public bool Overlaps(Interval<T> other)
+    {
+        return this.CompareStartToEnd(other) <= 0 && other.CompareStartToEnd(this) <= 0;
+    }
 
     /// <summary>
     /// Returns a boolean value indicating if the current interval contains the specified value.
@@ -95,23 +127,48 @@ public record class Interval<T>
     /// <returns></returns>
     public bool Contains(T value)
     {
-        return LeftEndpoint.CompareTo(value) <= 0 && RightEndpoint.CompareTo(value) >= 0;
+        var startComparison = Start.HasValue ? Start.Value.CompareTo(value) : -1;
+        var endComparison = End.HasValue ? value.CompareTo(End.Value) : -1;
+
+        return startComparison < 0 && endComparison < 0
+            || startComparison == 0 && StartInclusive
+            || endComparison == 0 && EndInclusive;
     }
 
-    /// <summary>
-    /// Returns a boolean value indicating if the current interval is connected to the other interval.
-    /// </summary>
-    /// <param name="other">The interval to check if it is connected to current interval.</param>
-    /// <returns>True if the current interval and the other interval are connected, False otherwise.</returns>
-    public bool IsConnected(Interval<T> other)
+    public bool IsDisjoint(Interval<T> other)
     {
-        return LeftEndpoint.ConnectedCompareTo(other.RightEndpoint) <= 0
-            && other.LeftEndpoint.ConnectedCompareTo(RightEndpoint) <= 0;
+        var startComparison = Start is null || other.End is null ? -1 : Start.Value.CompareTo(other.End.Value);
+        var endComparison = other.Start is null || End is null ? -1 : other.Start.Value.CompareTo(End.Value);
+
+        return startComparison > 0 || endComparison > 0
+            || startComparison == 0 && !StartInclusive && !other.EndInclusive
+            || endComparison == 0 && !EndInclusive && !other.StartInclusive;
     }
 
-    public static bool operator >(Interval<T> left, Interval<T> right) => IsGreaterThan(left, right);
+    public int CompareTo(Interval<T>? other)
+    {
+        if (other == null || this > other)
+        {
+            return 1;
+        }
+        if (this < other)
+        {
+            return -1;
+        }
+        return 0;
+    }
 
-    public static bool operator <(Interval<T> left, Interval<T> right) => IsLessThan(left, right);
+    public static bool operator >(Interval<T> left, Interval<T> right)
+    {
+        int compareEnd = left.CompareEnd(right);
+        return compareEnd == 1 || compareEnd == 0 && left.CompareStart(right) == -1;
+    }
+
+    public static bool operator <(Interval<T> left, Interval<T> right)
+    {
+        int compareEnd = left.CompareEnd(right);
+        return compareEnd == -1 || compareEnd == 0 && left.CompareStart(right) == 1;
+    }
 
     public static bool operator >=(Interval<T> left, Interval<T> right) => left == right || left > right;
 
@@ -129,7 +186,7 @@ public record class Interval<T>
     {
         if (!ValidateAndExtractEndpoints(s, out var startValue, out var endValue))
         {
-            throw new FormatException(IntervalConstants.IntervalNotFoundMessage);
+            throw new FormatException(Interval.NotFoundMessage);
         }
         return new Interval<T>(
             ParseEndpoint(startValue, provider),
@@ -165,7 +222,7 @@ public record class Interval<T>
 
     public static List<Interval<T>> ParseAll(ReadOnlySpan<char> s, IFormatProvider? provider = null)
     {
-        var enumerator = IntervalConstants.IntervalRegex.EnumerateMatches(s);
+        var enumerator = Interval.Regex.EnumerateMatches(s);
         var result = new List<Interval<T>>();
         while (enumerator.MoveNext())
         {

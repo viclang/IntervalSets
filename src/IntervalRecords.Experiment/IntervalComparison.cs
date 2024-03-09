@@ -1,15 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace IntervalRecords.Experiment;
+﻿namespace IntervalRecords.Experiment;
 public enum IntervalComparison
 {
-    Interval,
-    Start,
-    End,
-    StartToEnd,
-    EndToStart
+    Interval = 0,
+    Start = 1,
+    End = 2,
+    StartToEnd = 3,
+    EndToStart = 4
 }

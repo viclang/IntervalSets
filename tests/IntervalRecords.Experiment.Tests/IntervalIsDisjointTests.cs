@@ -6,18 +6,18 @@ using System.Threading.Tasks;
 using IntervalRecords.Experiment.Tests.TestData;
 
 namespace IntervalRecords.Experiment.Tests;
-public class IntervalConnectedTests
+public class IntervalIsDisjointTests
 {
     [Theory]
     [ClassData(typeof(Int32ConnectedClassData))]
-    public void GivenTwoConnectedIntervals_WhenComparing_ReturnsTrue(string left, string right, IntervalRelation _)
+    public void GivenTwoConnectedIntervals_WhenComparing_ReturnsFalse(string left, string right, IntervalRelation _)
     {
         var leftInterval = Interval<int>.Parse(left);
         var rightInterval = Interval<int>.Parse(right);
 
-        var actual = leftInterval.IsConnected(rightInterval);
+        var actual = leftInterval.IsDisjoint(rightInterval);
 
-        actual.Should().BeTrue();
+        actual.Should().BeFalse();
     }
 
     [Theory]
@@ -27,8 +27,10 @@ public class IntervalConnectedTests
         var leftInterval = Interval<int>.Parse(left);
         var rightInterval = Interval<int>.Parse(right);
 
-        var actual = leftInterval.IsConnected(rightInterval);
+        leftInterval.Compare(rightInterval);
 
-        actual.Should().BeFalse();
+        var actual = leftInterval.IsDisjoint(rightInterval);
+
+        actual.Should().BeTrue();
     }
 }

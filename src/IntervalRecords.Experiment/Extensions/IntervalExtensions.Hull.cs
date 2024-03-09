@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using IntervalRecords.Experiment.Extensions;
 
 namespace IntervalRecords.Experiment;
 public static partial class IntervalExtensions
@@ -20,12 +16,12 @@ public static partial class IntervalExtensions
             return left;
         }
         var (start, end, startInclusive, endInclusive) = left;
-        if (right.LeftEndpoint.CompareTo(left.LeftEndpoint) == -1)
+        if (left.CompareStart(right) < 0)
         {
             start = right.Start;
             startInclusive = right.StartInclusive;
         }
-        if (right.RightEndpoint.CompareTo(left.RightEndpoint) == 1)
+        if (left.CompareEnd(right) > 0)
         {
             end = right.End;
             endInclusive = right.EndInclusive;

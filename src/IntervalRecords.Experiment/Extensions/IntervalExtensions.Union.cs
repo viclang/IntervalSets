@@ -16,7 +16,7 @@ public static partial class IntervalExtensions
     public static Interval<T>? Union<T>(this Interval<T> left, Interval<T> right)
         where T : struct, IComparable<T>, ISpanParsable<T>
     {
-        if (!left.IsConnected(right))
+        if (left.IsDisjoint(right))
         {
             return null;
         }
