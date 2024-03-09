@@ -1,4 +1,6 @@
-﻿namespace IntervalRecords.Experiment.Extensions;
+﻿using IntervalRecords.Experiment.Helpers;
+
+namespace IntervalRecords.Experiment.Extensions;
 public static partial class IntervalExtensions
 {
     /// <summary>
