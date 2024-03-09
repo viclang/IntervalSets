@@ -25,20 +25,20 @@ public static partial class IntervalExtensions
         var compareStart = left.CompareStart(right);
         if (compareStart == -1)
         {
-            yield return IntervalFactory.Create(left.Start, right.Start, left.StartInclusive, !right.StartInclusive);
+            yield return new(left.Start, right.Start, left.StartInclusive, !right.StartInclusive);
         }
         else if (compareStart == 1)
         {
-            yield return IntervalFactory.Create(right.Start, left.Start, right.StartInclusive, !left.StartInclusive);
+            yield return new(right.Start, left.Start, right.StartInclusive, !left.StartInclusive);
         }
         var compareEnd = left.CompareEnd(right);
         if (compareEnd == -1)
         {
-            yield return IntervalFactory.Create(left.End, right.End, !left.EndInclusive, right.EndInclusive);
+            yield return new(left.End, right.End, !left.EndInclusive, right.EndInclusive);
         }
         else if (compareEnd == 1)
         {
-            yield return IntervalFactory.Create(right.End, left.End, !right.EndInclusive, left.EndInclusive);
+            yield return new(right.End, left.End, !right.EndInclusive, left.EndInclusive);
         }
     }
 }

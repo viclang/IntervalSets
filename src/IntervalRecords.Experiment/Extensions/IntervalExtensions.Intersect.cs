@@ -31,6 +31,6 @@ public static partial class IntervalExtensions
             end = right.End;
             endInclusive = right.EndInclusive;
         }
-        return IntervalFactory.Create(start, end, startInclusive, endInclusive);
+        return new(start, end, startInclusive, endInclusive);
     }
 }
