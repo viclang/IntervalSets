@@ -1,4 +1,4 @@
-﻿namespace IntervalRecords.Experiment.Extensions;
+﻿namespace IntervalRecords.Experiment.Helpers;
 public static class EndpointComparer
 {
     /// <summary>
