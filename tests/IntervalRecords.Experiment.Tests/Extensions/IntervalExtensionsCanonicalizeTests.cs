@@ -1,12 +1,7 @@
 ﻿using IntervalRecords.Experiment.Extensions;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace IntervalRecords.Experiment.Tests;
-public class IntervalCanonicalizeTests
+namespace IntervalRecords.Experiment.Tests.Extensions;
+public class IntervalExtensionsCanonicalizeTests
 {
     [Theory]
     [InlineData("[1, 2]", BoundaryType.Open, "(0, 3)")]

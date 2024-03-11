@@ -26,7 +26,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\src\IntervalRecords.Linq\IntervalRecords.Linq.csproj" />
     <ProjectReference Include="..\..\src\IntervalRecords.TestData\IntervalRecords.TestData\IntervalRecords.TestData.csproj" />
     <ProjectReference Include="..\..\src\IntervalRecords\IntervalRecords.csproj" />
   </ItemGroup>

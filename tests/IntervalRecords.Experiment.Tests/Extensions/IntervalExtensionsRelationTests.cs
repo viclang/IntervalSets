@@ -1,8 +1,8 @@
 ﻿using IntervalRecords.Experiment.Extensions;
 using IntervalRecords.Experiment.Tests.TestData;
 
-namespace IntervalRecords.Experiment.Tests;
-public class IntervalRelationTests
+namespace IntervalRecords.Experiment.Tests.Extensions;
+public class IntervalExtensionsRelationTests
 {
     [Theory]
     [ClassData(typeof(Int32IntervalRelationClassData))]

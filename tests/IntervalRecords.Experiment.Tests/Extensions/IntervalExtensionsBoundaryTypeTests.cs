@@ -1,8 +1,8 @@
 ﻿using IntervalRecords.Experiment.Extensions;
 
-namespace IntervalRecords.Experiment.Tests
+namespace IntervalRecords.Experiment.Tests.Extensions
 {
-    public class IntervalTypeTests
+    public class IntervalExtensionsBoundaryTypeTests
     {
         private const int start = 6;
         private const int end = 10;
@@ -12,7 +12,7 @@ namespace IntervalRecords.Experiment.Tests
         [InlineData(true, false, BoundaryType.ClosedOpen)]
         [InlineData(false, true, BoundaryType.OpenClosed)]
         [InlineData(false, false, BoundaryType.Open)]
-        public void GetIntervalType_ToTuple_ShouldBeExpected(bool startInclusive, bool endInclusive, BoundaryType expected)
+        public void GetBoundaryType_ToTuple_ShouldBeExpected(bool startInclusive, bool endInclusive, BoundaryType expected)
         {
             // Arrange
             var interval = new Interval<int>(start, end, startInclusive, endInclusive);

@@ -1,22 +1,22 @@
 ﻿using IntervalRecords.Experiment.Extensions;
 
-namespace IntervalRecords.Experiment.Tests;
-public class IntervalCentreTests
+namespace IntervalRecords.Experiment.Tests.Extensions.Calculate;
+public class IntervalExtensionsRadiusTests
 {
     [Theory]
-    [InlineData("[1, 3]", 2)]
-    [InlineData("[1, 3)", 2)]
-    [InlineData("(1, 3]", 2)]
-    [InlineData("(1, 3)", 2)]
-    [InlineData("[1, 5]", 3)]
-    [InlineData("[1, 5)", 3)]
-    [InlineData("(1, 5]", 3)]
-    [InlineData("(1, 5)", 3)]
-    public void Bounded_interval_returns_centre(string intervalString, int expected)
+    [InlineData("[1, 3]", 1)]
+    [InlineData("[1, 3)", 1)]
+    [InlineData("(1, 3]", 1)]
+    [InlineData("(1, 3)", 1)]
+    [InlineData("[1, 5]", 2)]
+    [InlineData("[1, 5)", 2)]
+    [InlineData("(1, 5]", 2)]
+    [InlineData("(1, 5)", 2)]
+    public void Bounded_interval_returns_radius(string intervalString, int expected)
     {
         var interval = Interval<int>.Parse(intervalString);
 
-        var actual = interval.Centre();
+        var actual = interval.Radius();
 
         actual.Should().Be(expected);
     }
@@ -28,7 +28,7 @@ public class IntervalCentreTests
     {
         var interval = Interval<int>.Parse(intervalString);
 
-        var actual = interval.Centre();
+        var actual = interval.Radius();
 
         actual.Should().BeNull();
 
@@ -42,7 +42,7 @@ public class IntervalCentreTests
     {
         var interval = Interval<int>.Parse(intervalString);
 
-        var actual = interval.Centre();
+        var actual = interval.Radius();
 
         actual.Should().BeNull();
     }

@@ -2,16 +2,11 @@
 using System.Diagnostics.CodeAnalysis;
 using System.Numerics;
 using System.Text;
-using System.Text.RegularExpressions;
 
 namespace IntervalRecords.Experiment;
 
 public static class Interval
 {
-    internal static readonly Regex Regex = new(@"(?:\(|\[)(?:[^()[\],]*,[^,()[\]]*)(?:\)|\])", RegexOptions.Compiled);
-
-    internal const string NotFoundMessage = "Interval not found in string. Please provide an interval string in correct format";
-
     public static Interval<T> Singleton<T>(T value) where T : struct, IComparable<T>, ISpanParsable<T>
         => new Interval<T>(value, value, true, true);
 
@@ -179,74 +174,25 @@ public record class Interval<T>
     public void Deconstruct(out T? start, out T? end, out bool startInclusive, out bool endInclusive)
         => (start, end, startInclusive, endInclusive) = (Start, End, StartInclusive, EndInclusive);
 
-    public static Interval<T> Parse(string s, IFormatProvider? provider = null)
-    {
-        return Parse(s.AsSpan(), provider);
-    }
-
-    public static Interval<T> Parse(ReadOnlySpan<char> s, IFormatProvider? provider = null)
-    {
-        if (!IntervalParser.ValidateAndExtractEndpoints(s, out var startValue, out var endValue))
-        {
-            throw new FormatException(Interval.NotFoundMessage);
-        }
-        return new Interval<T>(
-            IntervalParser.ParseEndpoint<T>(startValue, provider),
-            IntervalParser.ParseEndpoint<T>(endValue, provider),
-            s[0] == '[',
-            s[^1] == ']');
-    }
-
-    public static bool TryParse([NotNullWhen(true)] string? s, IFormatProvider? provider, [MaybeNullWhen(false)] out Interval<T> result)
-    {
-        return TryParse(s.AsSpan(), provider, out result);
-    }
-
-    public static bool TryParse(ReadOnlySpan<char> s, IFormatProvider? provider, [MaybeNullWhen(false)] out Interval<T> result)
-    {
-        if (!IntervalParser.ValidateAndExtractEndpoints(s, out var startValue, out var endValue))
-        {
-            result = default;
-            return false;
-        }
-        if (IntervalParser.TryParseEndpoint<T>(startValue, provider, out var start) && IntervalParser.TryParseEndpoint<T>(endValue, provider, out var end))
-        {
-            result = new Interval<T>(start, end, s[0] == '[', s[^1] == ']');
-            return true;
-        }
-        result = default;
-        return false;
-    }
-
-    public static List<Interval<T>> ParseAll(ReadOnlySpan<char> s, IFormatProvider? provider = null)
-    {
-        var enumerator = Interval.Regex.EnumerateMatches(s);
-        var result = new List<Interval<T>>();
-        while (enumerator.MoveNext())
-        {
-            var match = enumerator.Current;
-            var matchedValue = s.Slice(match.Index, match.Length);
-
-            var commaIndex = matchedValue.IndexOf(',');
-            var startString = commaIndex > 1 ? matchedValue[1..commaIndex] : ReadOnlySpan<char>.Empty;
-            var endString = commaIndex < matchedValue.Length - 2 ? matchedValue[(commaIndex + 1)..^1] : ReadOnlySpan<char>.Empty;
-            if (IntervalParser.TryParseEndpoint<T>(startString, provider, out var start)
-            && IntervalParser.TryParseEndpoint<T>(endString, provider, out var end))
-            {
-                result.Add(new Interval<T>(
-                    start,
-                    end,
-                    matchedValue[0] == '[',
-                    matchedValue[^1] == ']'));
-            }
-        }
-        return result;
-    }
-
     public override int GetHashCode()
     {
         return HashCode.Combine(Start, End, StartInclusive, EndInclusive);
     }
+
+    public static Interval<T> Parse(string s, IFormatProvider? provider = null)
+        => Parse(s.AsSpan(), provider);
+
+    public static Interval<T> Parse(ReadOnlySpan<char> s, IFormatProvider? provider = null)
+        => IntervalParse.Parse<T>(s, provider);
+
+    public static bool TryParse([NotNullWhen(true)] string? s, IFormatProvider? provider, [MaybeNullWhen(false)] out Interval<T> result)
+        => TryParse(s.AsSpan(), provider, out result);
+
+    public static bool TryParse(ReadOnlySpan<char> s, IFormatProvider? provider, [MaybeNullWhen(false)] out Interval<T> result)
+        => IntervalParse.TryParse(s, provider, out result);
+
+    public static List<Interval<T>> ParseAll(ReadOnlySpan<char> s, IFormatProvider? provider = null)
+        => IntervalParse.ParseAll<T>(s, provider);
 
     public override string ToString()
     {

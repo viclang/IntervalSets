@@ -1,7 +1,7 @@
 ﻿using IntervalRecords.Experiment.Extensions;
 
-namespace IntervalRecords.Experiment.Tests;
-public class IntervalLengthTests
+namespace IntervalRecords.Experiment.Tests.Extensions.Calculate;
+public class IntervalExtensionsLengthTests
 {
 
     [Theory]
