@@ -13,7 +13,7 @@
         public static IEnumerable<T> Reduce<T>(
             this IOrderedEnumerable<T> source,
             Func<T, T, T?> resultSelector)
-           
+
         {
             using var e = source.GetEnumerator();
 

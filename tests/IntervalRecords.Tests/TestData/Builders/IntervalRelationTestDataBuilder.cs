@@ -1,8 +1,5 @@
 ﻿using IntervalRecords.Extensions;
 using IntervalRecords.Tests.TestData.Builders;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace IntervalRecords.Tests.TestData;
 public sealed class IntervalRelationTestDataBuilder<T, TOffset> : IIntervalTestDataBuilder

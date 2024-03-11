@@ -1,4 +1,5 @@
-﻿using IntervalRecords.Experiment.Helpers;
+﻿using IntervalRecords.Experiment.Extensions.Combine;
+using IntervalRecords.Experiment.Helpers;
 
 namespace IntervalRecords.Experiment.Extensions;
 public static partial class IntervalExtensions
@@ -10,7 +11,7 @@ public static partial class IntervalExtensions
     /// <param name="right">The right interval.</param>
     /// <returns>The intersect of the two intervals if they overlap, otherwise returns null.</returns>
     public static Interval<T>? Intersect<T>(this Interval<T> left, Interval<T> right)
-        where T : struct, IEquatable<T>, IComparable<T>, ISpanParsable<T>
+        where T : struct, IComparable<T>, ISpanParsable<T>
     {
         if (!left.Overlaps(right))
         {
@@ -33,4 +34,10 @@ public static partial class IntervalExtensions
         }
         return new(start, end, startInclusive, endInclusive);
     }
+
+
+    public static IEnumerable<Interval<T>> IntersectAll<T>(
+            this IEnumerable<Interval<T>> source)
+        where T : struct, IComparable<T>, ISpanParsable<T>
+            => source.Pairwise((a, b) => a.Intersect(b)).Where(i => !i.IsEmpty);
 }

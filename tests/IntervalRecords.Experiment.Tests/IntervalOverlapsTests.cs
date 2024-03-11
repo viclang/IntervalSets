@@ -1,10 +1,4 @@
 ﻿using IntervalRecords.Experiment.Tests.TestData;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace IntervalRecords.Experiment.Tests;
 public class IntervalOverlapsTests

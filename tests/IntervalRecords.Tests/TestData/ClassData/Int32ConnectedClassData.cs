@@ -1,9 +1,5 @@
 ﻿using IntervalRecords.Extensions;
-using IntervalRecords.Tests.TestData.Builders;
-using System;
 using System.Collections;
-using System.Collections.Generic;
-using System.Text;
 
 namespace IntervalRecords.Tests.TestData;
 public class Int32ConnectedClassData : IEnumerable<object[]>

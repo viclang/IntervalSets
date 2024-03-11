@@ -1,6 +1,4 @@
 ﻿using Unbounded;
-using IntervalRecords.Extensions;
-using System;
 
 namespace IntervalRecords.Tests.TestData
 {
@@ -96,10 +94,10 @@ namespace IntervalRecords.Tests.TestData
         public static Interval<T> UnBoundedEqual(Interval<T> value)
         {
             return value with
-                {
-                    Start = Unbounded<T>.NegativeInfinity,
-                    End = Unbounded<T>.PositiveInfinity
-                };
+            {
+                Start = Unbounded<T>.NegativeInfinity,
+                End = Unbounded<T>.PositiveInfinity
+            };
         }
 
         public static Interval<T> FinishedBy(Interval<T> value, Unbounded<TOffset> offset)

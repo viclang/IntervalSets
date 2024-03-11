@@ -23,11 +23,11 @@ namespace IntervalRecords.Tests.Extensions
             actual.Should().BeNull();
         }
 
-        [Theory]        
+        [Theory]
         [InlineData("[1, 2]", "[3, 4]", "(2, 3)")] // Ascending
         [InlineData("[1, 2)", "[3, 4)", "[2, 3)")]
         [InlineData("(1, 2]", "(3, 4]", "(2, 3]")]
-        [InlineData("(1, 3)", "(3, 4)", "[3, 3]")]        
+        [InlineData("(1, 3)", "(3, 4)", "[3, 3]")]
         [InlineData("[3, 4]", "[1, 2]", "(2, 3)")] // Descending
         [InlineData("[3, 4)", "[1, 2)", "[2, 3)")]
         [InlineData("(3, 4]", "(1, 2]", "(2, 3]")]

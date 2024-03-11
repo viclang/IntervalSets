@@ -15,12 +15,12 @@ public static partial class IntervalExtensions
         {
             (0, 0) => IntervalRelation.Equal,
             (0, < 0) => IntervalRelation.Starts,
-            (> 0, < 0) => IntervalRelation.ContainedBy,
-            (> 0, 0) => IntervalRelation.Finishes,
-            (< 0, 0) => IntervalRelation.FinishedBy,
-            (< 0, > 0) => IntervalRelation.Contains,
+            ( > 0, < 0) => IntervalRelation.ContainedBy,
+            ( > 0, 0) => IntervalRelation.Finishes,
+            ( < 0, 0) => IntervalRelation.FinishedBy,
+            ( < 0, > 0) => IntervalRelation.Contains,
             (0, > 0) => IntervalRelation.StartedBy,
-            (< 0, < 0) => (IntervalRelation)first.CompareEndToStart(second) + (int)IntervalRelation.Meets,
-            (> 0, > 0) => (IntervalRelation)first.CompareStartToEnd(second) + (int)IntervalRelation.MetBy
+            ( < 0, < 0) => (IntervalRelation)first.CompareEndToStart(second) + (int)IntervalRelation.Meets,
+            ( > 0, > 0) => (IntervalRelation)first.CompareStartToEnd(second) + (int)IntervalRelation.MetBy
         };
 }

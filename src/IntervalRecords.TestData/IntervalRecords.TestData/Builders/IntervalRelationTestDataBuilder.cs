@@ -1,8 +1,5 @@
 ﻿using IntervalRecords.Extensions;
 using IntervalRecords.TestData.Builders;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Numerics;
 
 namespace IntervalRecords.TestData;

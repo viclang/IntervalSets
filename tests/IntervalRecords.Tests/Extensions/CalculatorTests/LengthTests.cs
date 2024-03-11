@@ -1,6 +1,5 @@
 ﻿using IntervalRecords.Extensions;
 using IntervalRecords.Tests.TestHelper;
-using System;
 using Unbounded;
 
 namespace IntervalRecords.Tests.Measure.Length

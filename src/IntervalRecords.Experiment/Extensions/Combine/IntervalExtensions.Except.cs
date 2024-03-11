@@ -1,4 +1,5 @@
-﻿using IntervalRecords.Experiment.Helpers;
+﻿using IntervalRecords.Experiment.Extensions.Combine;
+using IntervalRecords.Experiment.Helpers;
 
 namespace IntervalRecords.Experiment.Extensions;
 public static partial class IntervalExtensions
@@ -10,7 +11,7 @@ public static partial class IntervalExtensions
     /// <param name="right">The right interval.</param>
     /// <returns>The portion of the first interval that does not overlap with the other interval, or null if the intervals do not overlap</returns>
     public static IEnumerable<Interval<T>> Except<T>(this Interval<T> left, Interval<T> right)
-    where T : struct, IEquatable<T>, IComparable<T>, ISpanParsable<T>
+    where T : struct, IComparable<T>, ISpanParsable<T>
     {
         if (left == right)
         {
@@ -41,4 +42,14 @@ public static partial class IntervalExtensions
             yield return new(right.End, left.End, !right.EndInclusive, left.EndInclusive);
         }
     }
+
+    /// <summary>
+    /// Computes the collection of intervals representing the portions of the collection of intervals that do not overlap with each other.
+    /// </summary>
+    /// <typeparam name="T">The type of the interval bounds.</typeparam>
+    /// <param name="source">The collection of intervals.</param>
+    /// <returns>The collection of intervals representing the portions of the collection of intervals that do not overlap with each other.</returns>
+    public static IEnumerable<Interval<T>> ExceptOverlap<T>(this IEnumerable<Interval<T>> source)
+        where T : struct, IComparable<T>, ISpanParsable<T>
+        => source.Pairwise((a, b) => a.Except(b)).SelectMany(x => x).ToList().Where(i => !i.IsEmpty);
 }

@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace IntervalRecords.Tests.TestHelper
+﻿namespace IntervalRecords.Tests.TestHelper
 {
     public static class GenericExtensions
     {

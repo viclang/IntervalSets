@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace IntervalRecords.Experiment.Tests;
+﻿namespace IntervalRecords.Experiment.Tests;
 public class IntervalContainsTests
 {
 
@@ -20,7 +14,7 @@ public class IntervalContainsTests
     {
         var interval = Interval<int>.Parse(intervalString);
 
-        var actual = interval.Contains(value);        
+        var actual = interval.Contains(value);
 
         actual.Should().BeTrue();
     }

@@ -1,5 +1,4 @@
-﻿using IntervalRecords.Extensions;
-using System.Numerics;
+﻿using System.Numerics;
 
 namespace IntervalRecords.Extensions;
 public static partial class IntervalCalculator

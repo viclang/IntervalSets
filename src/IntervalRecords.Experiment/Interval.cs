@@ -184,13 +184,13 @@ public record class Interval<T>
 
     public static Interval<T> Parse(ReadOnlySpan<char> s, IFormatProvider? provider = null)
     {
-        if (!ValidateAndExtractEndpoints(s, out var startValue, out var endValue))
+        if (!IntervalParser.ValidateAndExtractEndpoints(s, out var startValue, out var endValue))
         {
             throw new FormatException(Interval.NotFoundMessage);
         }
         return new Interval<T>(
-            ParseEndpoint(startValue, provider),
-            ParseEndpoint(endValue, provider),
+            IntervalParser.ParseEndpoint<T>(startValue, provider),
+            IntervalParser.ParseEndpoint<T>(endValue, provider),
             s[0] == '[',
             s[^1] == ']');
     }
@@ -202,18 +202,14 @@ public record class Interval<T>
 
     public static bool TryParse(ReadOnlySpan<char> s, IFormatProvider? provider, [MaybeNullWhen(false)] out Interval<T> result)
     {
-        if (!ValidateAndExtractEndpoints(s, out var startValue, out var endValue))
+        if (!IntervalParser.ValidateAndExtractEndpoints(s, out var startValue, out var endValue))
         {
             result = default;
             return false;
         }
-        if (TryParseEndpoint(startValue, provider, out var start) && TryParseEndpoint(endValue, provider, out var end))
+        if (IntervalParser.TryParseEndpoint<T>(startValue, provider, out var start) && IntervalParser.TryParseEndpoint<T>(endValue, provider, out var end))
         {
-            result = new Interval<T>(
-                    start,
-                    end,
-                    s[0] == '[',
-                    s[^1] == ']');
+            result = new Interval<T>(start, end, s[0] == '[', s[^1] == ']');
             return true;
         }
         result = default;
@@ -232,8 +228,8 @@ public record class Interval<T>
             var commaIndex = matchedValue.IndexOf(',');
             var startString = commaIndex > 1 ? matchedValue[1..commaIndex] : ReadOnlySpan<char>.Empty;
             var endString = commaIndex < matchedValue.Length - 2 ? matchedValue[(commaIndex + 1)..^1] : ReadOnlySpan<char>.Empty;
-            if (TryParseEndpoint(startString, provider, out var start)
-            && TryParseEndpoint(endString, provider, out var end))
+            if (IntervalParser.TryParseEndpoint<T>(startString, provider, out var start)
+            && IntervalParser.TryParseEndpoint<T>(endString, provider, out var end))
             {
                 result.Add(new Interval<T>(
                     start,
@@ -243,41 +239,6 @@ public record class Interval<T>
             }
         }
         return result;
-    }
-
-    private static bool ValidateAndExtractEndpoints(ReadOnlySpan<char> s, out ReadOnlySpan<char> startString, out ReadOnlySpan<char> endString)
-    {
-        var commaIndex = s.IndexOf(',');
-        if (commaIndex < 1 || !"[(".Contains(s[0]) || !"])".Contains(s[^1]))
-        {
-            startString = ReadOnlySpan<char>.Empty;
-            endString = ReadOnlySpan<char>.Empty;
-            return false;
-        }
-        startString = commaIndex > 1 ? s[1..commaIndex] : ReadOnlySpan<char>.Empty;
-        endString = commaIndex < s.Length - 2 ? s[(commaIndex + 1)..^1] : ReadOnlySpan<char>.Empty;
-        return true;
-    }
-
-    private static T? ParseEndpoint(ReadOnlySpan<char> value, IFormatProvider? provider)
-    {
-        if (value.IsEmpty || value.Contains("infinity", StringComparison.OrdinalIgnoreCase) || value.Contains('∞'))
-        {
-            return null;
-        }
-        return T.Parse(value, provider);
-    }
-
-    private static bool TryParseEndpoint(ReadOnlySpan<char> value, IFormatProvider? provider, out T? result)
-    {
-        if (value.IsEmpty || value.Contains("infinity", StringComparison.OrdinalIgnoreCase) || value.Contains('∞'))
-        {
-            result = null;
-            return true;
-        }
-        var success = T.TryParse(value, provider, out var endpoint);
-        result = endpoint;
-        return success;
     }
 
     public override int GetHashCode()

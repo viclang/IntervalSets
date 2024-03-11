@@ -1,8 +1,6 @@
 ﻿using FluentAssertions.Execution;
 using IntervalRecords.Extensions;
-using IntervalRecords.Tests.TestData;
 using IntervalRecords.Tests.TestData.ClassData;
-using System.Diagnostics;
 
 namespace IntervalRecords.Tests.Extensions
 {

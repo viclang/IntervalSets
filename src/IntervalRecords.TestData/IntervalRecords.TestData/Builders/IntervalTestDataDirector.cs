@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace IntervalRecords.TestData.Builders;
+﻿namespace IntervalRecords.TestData.Builders;
 public static class IntervalTestDataDirector
 {
     public static void WithOverlapping(IIntervalTestDataBuilder builder, IntervalType intervalType)

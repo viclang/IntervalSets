@@ -1,6 +1,4 @@
-﻿using System;
-using IntervalRecords.Extensions;
-using Unbounded;
+﻿using IntervalRecords.Extensions;
 
 namespace IntervalRecords.Tests.TestData;
 public record IntervalRelationTestData<T>(Interval<T> Left, Interval<T> Right, IntervalRelation Relation)

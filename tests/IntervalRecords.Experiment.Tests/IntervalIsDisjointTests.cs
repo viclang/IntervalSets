@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using IntervalRecords.Experiment.Tests.TestData;
+﻿using IntervalRecords.Experiment.Tests.TestData;
 
 namespace IntervalRecords.Experiment.Tests;
 public class IntervalIsDisjointTests

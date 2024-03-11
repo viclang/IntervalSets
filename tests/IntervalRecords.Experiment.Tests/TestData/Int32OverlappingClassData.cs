@@ -1,6 +1,4 @@
-﻿using IntervalRecords.Experiment;
-using System.Collections;
-using System.Text;
+﻿using System.Collections;
 
 namespace IntervalRecords.Experiment.Tests.TestData;
 

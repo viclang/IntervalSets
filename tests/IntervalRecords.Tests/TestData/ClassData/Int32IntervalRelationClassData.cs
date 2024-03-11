@@ -1,8 +1,5 @@
-﻿using IntervalRecords.Tests.TestData.Builders;
-using System;
+﻿using IntervalRecords.Extensions;
 using System.Collections;
-using System.Collections.Generic;
-using IntervalRecords.Extensions;
 
 namespace IntervalRecords.Tests.TestData.ClassData;
 public class Int32IntervalRelationClassData : IEnumerable<object[]>

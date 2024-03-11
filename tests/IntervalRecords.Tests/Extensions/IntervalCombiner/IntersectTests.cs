@@ -1,7 +1,6 @@
 ﻿using FluentAssertions.Execution;
 using IntervalRecords.Extensions;
 using IntervalRecords.Tests.TestData;
-using System.Linq;
 
 namespace IntervalRecords.Tests.ExtensionsTests.IntervalCombiner
 {

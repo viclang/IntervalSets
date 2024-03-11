@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using Unbounded;
+﻿using Unbounded;
 
 namespace IntervalRecords.Extensions;
 public static class IntervalCombiner
@@ -34,7 +32,7 @@ public static class IntervalCombiner
         {
             yield return IntervalFactory.Create(right.Start, left.Start, right.StartInclusive, !left.StartInclusive);
         }
-        var compareEnd = left.CompareEnd(right);        
+        var compareEnd = left.CompareEnd(right);
         if (compareEnd == -1)
         {
             yield return IntervalFactory.Create(left.End, right.End, !left.EndInclusive, right.EndInclusive);

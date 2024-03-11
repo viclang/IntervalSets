@@ -1,5 +1,4 @@
-﻿using IntervalRecords.Extensions;
-using System.Numerics;
+﻿using System.Numerics;
 using Unbounded;
 
 namespace IntervalRecords.Extensions;

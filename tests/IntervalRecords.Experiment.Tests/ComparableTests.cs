@@ -36,7 +36,7 @@ namespace IntervalRecords.Experiment.Tests
         public void LessThan_ShouldBeExpected(string left, string right, IntervalRelation relation)
         {
             var leftInterval = Interval<int>.Parse(left);
-            var rightInterval =     Interval<int>.Parse(right);
+            var rightInterval = Interval<int>.Parse(right);
             var expected = ExpectedCompareResult(relation) < 0;
 
             var actual = leftInterval < rightInterval;

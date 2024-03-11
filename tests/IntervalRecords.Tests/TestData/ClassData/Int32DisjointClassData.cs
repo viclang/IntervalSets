@@ -1,8 +1,5 @@
 ﻿using IntervalRecords.Extensions;
-using IntervalRecords.Tests.TestData.Builders;
-using System;
 using System.Collections;
-using System.Collections.Generic;
 
 namespace IntervalRecords.Tests.TestData.ClassData;
 public class Int32DisjointClassData : IEnumerable<object[]>

@@ -1,6 +1,5 @@
 ﻿using IntervalRecords.Extensions;
 using IntervalRecords.Tests.TestHelper;
-using System;
 
 namespace IntervalRecords.Tests.CanonicalizeTests
 {
