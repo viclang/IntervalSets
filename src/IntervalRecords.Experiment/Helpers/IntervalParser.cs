@@ -18,7 +18,7 @@ internal static class IntervalParser
     public static T? ParseEndpoint<T>(ReadOnlySpan<char> value, IFormatProvider? provider)
         where T : struct, IComparable<T>, ISpanParsable<T>
     {
-        if (value.IsEmpty || value.Contains("infinity", StringComparison.OrdinalIgnoreCase) || value.Contains('∞'))
+        if (value.IsEmpty || value.Contains('∞') ||value.Contains("infinity", StringComparison.OrdinalIgnoreCase))
         {
             return null;
         }
@@ -28,7 +28,7 @@ internal static class IntervalParser
     public static bool TryParseEndpoint<T>(ReadOnlySpan<char> value, IFormatProvider? provider, out T? result)
         where T : struct, IComparable<T>, ISpanParsable<T>
     {
-        if (value.IsEmpty || value.Contains("infinity", StringComparison.OrdinalIgnoreCase) || value.Contains('∞'))
+        if (value.IsEmpty || value.Contains('∞') || value.Contains("infinity", StringComparison.OrdinalIgnoreCase))
         {
             result = null;
             return true;

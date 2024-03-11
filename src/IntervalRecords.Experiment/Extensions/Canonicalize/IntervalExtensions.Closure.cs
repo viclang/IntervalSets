@@ -56,7 +56,7 @@ public static partial class IntervalExtensions
         }
         if (source.GetBoundaryType() == BoundaryType.Closed)
         {
-            return (Interval<T>)source;
+            return source;
         }
         return new Interval<T>(
             !source.StartInclusive && source.Start.HasValue ? add(source.Start.Value) : source.Start,

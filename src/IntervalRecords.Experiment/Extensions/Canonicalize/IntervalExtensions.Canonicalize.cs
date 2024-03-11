@@ -74,9 +74,14 @@ public static partial class IntervalExtensions
         Func<T, T> add)
         where T : struct, IComparable<T>, ISpanParsable<T>
     {
-        if (source.IsEmpty || source.GetBoundaryType() == BoundaryType.ClosedOpen)
+
+        if (source.IsEmpty)
         {
-            return new Interval<T>(source.Start, source.End, true, false);
+            return Interval<T>.Empty;
+        }
+        if (source.StartInclusive && !source.StartInclusive)
+        {
+            return source;
         }
         return new Interval<T>(
             !source.StartInclusive && source.Start.HasValue ? add(source.Start.Value) : source.Start,
@@ -88,9 +93,13 @@ public static partial class IntervalExtensions
     private static Interval<T> ToOpenClosed<T>(Interval<T> source, Func<T, T> substract)
         where T : struct, IComparable<T>, ISpanParsable<T>
     {
-        if (source.IsEmpty || source.GetBoundaryType() == BoundaryType.OpenClosed)
+        if (source.IsEmpty)
         {
-            return new Interval<T>(source.Start, source.End, false, true);
+            return Interval<T>.Empty;
+        }
+        if (!source.StartInclusive && source.StartInclusive)
+        {
+            return source;
         }
         return new Interval<T>(
             source.StartInclusive && source.Start.HasValue ? substract(source.Start.Value) : source.Start,

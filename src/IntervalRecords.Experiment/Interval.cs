@@ -8,7 +8,7 @@ namespace IntervalRecords.Experiment;
 
 public static class Interval
 {
-    internal static readonly Regex Regex = new(@"(?:\[|\()(?:[^[\](),]*,[^,()[\]]*)(?:\)|\])", RegexOptions.Compiled);
+    internal static readonly Regex Regex = new(@"(?:\(|\[)(?:[^()[\],]*,[^,()[\]]*)(?:\)|\])", RegexOptions.Compiled);
 
     internal const string NotFoundMessage = "Interval not found in string. Please provide an interval string in correct format";
 
@@ -83,9 +83,9 @@ public record class Interval<T>
 
     public Interval(T? start, T? end, bool startInclusive, bool endInclusive)
     {
-        if (!IsValid)
+        if (start.HasValue && end.HasValue && start.Value.CompareTo(end.Value) > 0)
         {
-            throw new ArgumentException($"left value {start} is greater than right value {end}.");
+            throw new ArgumentException($"Start value {start} is greater than End value {end}.");
         }
         if (IsEmpty)
         {
@@ -106,9 +106,11 @@ public record class Interval<T>
 
     public bool IsValid => Start is null || End is null || Start.Value.CompareTo(End.Value) <= 0;
 
-    public bool IsEmpty => !IsValid || Start is not null && Start.Equals(End) && !StartInclusive && !EndInclusive;
+    public bool IsEmpty => !IsValid
+        || Start.HasValue && End.HasValue && Start.Value.CompareTo(End.Value) == 0 && !StartInclusive && !EndInclusive;
 
-    public bool IsSingleton => Start is not null && Start.Equals(End) && StartInclusive && EndInclusive;
+    public bool IsSingleton =>
+        Start.HasValue && End.HasValue && Start.Value.CompareTo(End.Value) == 0 && StartInclusive && EndInclusive;
 
     /// <summary>
     /// Returns a boolean value indicating if the current interval overlaps with the other interval.
