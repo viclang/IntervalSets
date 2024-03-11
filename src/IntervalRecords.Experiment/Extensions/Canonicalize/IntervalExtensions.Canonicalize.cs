@@ -74,7 +74,6 @@ public static partial class IntervalExtensions
         Func<T, T> add)
         where T : struct, IComparable<T>, ISpanParsable<T>
     {
-
         if (source.IsEmpty)
         {
             return Interval<T>.Empty;
