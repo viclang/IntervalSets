@@ -50,7 +50,7 @@ public static partial class IntervalExtensions
         where T : struct, IComparable<T>, ISpanParsable<T>
         where TResult : struct
     {
-        if (source.GetState() is not IntervalState.Bounded || source.IsEmpty)
+        if (source.Start is null || source.End is null || source.IsEmpty)
         {
             return null;
         }

@@ -6,55 +6,55 @@ public static partial class IntervalExtensions
     /// <summary>
     /// Calculates the length of the interval
     /// </summary>
-    /// <param name="source">The interval to calculate the length of</param>
+    /// <param name="value">The interval to calculate the length of</param>
     /// <returns>The length of the interval</returns>
-    public static T? Length<T>(this Interval<T> source)
+    public static T? Length<T>(this Interval<T> value)
         where T : struct, INumber<T>
-        => Length(source, (left, right) => left - right);
+        => Length(value, (left, right) => left - right);
 
     /// <summary>
     /// Calculates the length of the interval
     /// </summary>
-    /// <param name="source">The interval to calculate the length of</param>
+    /// <param name="value">The interval to calculate the length of</param>
     /// <returns>The length of the interval</returns>
-    public static TimeSpan? Length(this Interval<DateTime> source)
-        => Length(source, (left, right) => left - right);
+    public static TimeSpan? Length(this Interval<DateTime> value)
+        => Length(value, (left, right) => left - right);
 
     /// <summary>
     /// Calculates the length of the interval
     /// </summary>
-    /// <param name="source">The interval to calculate the length of</param>
+    /// <param name="value">The interval to calculate the length of</param>
     /// <returns>The length of the interval</returns>
-    public static TimeSpan? Length(this Interval<DateTimeOffset> source)
-        => Length(source, (left, right) => left - right);
+    public static TimeSpan? Length(this Interval<DateTimeOffset> value)
+        => Length(value, (left, right) => left - right);
 
     /// <summary>
     /// Calculates the length of the interval
     /// </summary>
-    /// <param name="source">The interval to calculate the length of</param>
+    /// <param name="value">The interval to calculate the length of</param>
     /// <returns>The length of the interval</returns>
-    public static int? Length(this Interval<DateOnly> source)
-        => Length(source, (left, right) => left.DayNumber - right.DayNumber);
+    public static int? Length(this Interval<DateOnly> value)
+        => Length(value, (left, right) => left.DayNumber - right.DayNumber);
 
     /// <summary>
     /// Calculates the length of the interval
     /// </summary>
-    /// <param name="source">The interval to calculate the length of</param>
+    /// <param name="value">The interval to calculate the length of</param>
     /// <returns>The length of the interval</returns>
-    public static TimeSpan? Length(this Interval<TimeOnly> source) => Length(source, (left, right) => left - right);
+    public static TimeSpan? Length(this Interval<TimeOnly> value) => Length(value, (left, right) => left - right);
 
-    private static TResult? Length<T, TResult>(Interval<T> source, Func<T, T, TResult> length)
+    private static TResult? Length<T, TResult>(Interval<T> value, Func<T, T, TResult> length)
         where T : struct, IComparable<T>, ISpanParsable<T>
         where TResult : struct, IComparable<TResult>, ISpanParsable<TResult>
     {
-        if (source.GetState() is not IntervalState.Bounded)
+        if (value.Start is null || value.End is null)
         {
             return null;
         }
-        if (source.IsEmpty)
+        if (value.IsEmpty)
         {
             return default(TResult);
         }
-        return length(source.End.GetValueOrDefault(), source.Start.GetValueOrDefault());
+        return length(value.End.GetValueOrDefault(), value.Start.GetValueOrDefault());
     }
 }
