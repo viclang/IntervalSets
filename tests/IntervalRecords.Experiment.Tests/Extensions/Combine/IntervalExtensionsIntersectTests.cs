@@ -23,8 +23,6 @@ public class IntervalExtensionsIntersectTests
 
         var actual = left.Intersect(right);
 
-        Debug.WriteLine($"{left}, {right} {left.GetRelation(right)}");
-
         actual!.ToString().Should().Be(expected);
     }
 }
