@@ -16,12 +16,12 @@ public static partial class IntervalExtensions
             return left;
         }
         var (start, end, startInclusive, endInclusive) = left;
-        if (left.CompareStart(right) < 0)
+        if (left.CompareStart(right) > 0)
         {
             start = right.Start;
             startInclusive = right.StartInclusive;
         }
-        if (left.CompareEnd(right) > 0)
+        if (left.CompareEnd(right) < 0)
         {
             end = right.End;
             endInclusive = right.EndInclusive;

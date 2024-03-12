@@ -81,8 +81,5 @@ public class Int32ConnectedClassData : IEnumerable<object[]>
         yield return new object[] { "[9, 13]", "[5, 9]", IntervalRelation.MetBy };
     }
 
-    IEnumerator IEnumerable.GetEnumerator()
-    {
-        return GetEnumerator();
-    }
+    IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 }

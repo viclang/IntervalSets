@@ -17,11 +17,11 @@ public static partial class IntervalExtensions
         {
             return null;
         }
-        if (left.CompareStartToEnd(right) == 1)
+        if (left.CompareStartToEnd(right) > 0)
         {
             return new(right.End, left.Start, !right.EndInclusive, !left.StartInclusive);
         }
-        if (left.CompareEndToStart(right) == -1)
+        if (left.CompareEndToStart(right) < 0)
         {
             return new(left.End, right.Start, !left.EndInclusive, !right.StartInclusive);
         }
