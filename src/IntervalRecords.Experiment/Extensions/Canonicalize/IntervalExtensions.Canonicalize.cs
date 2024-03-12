@@ -8,40 +8,49 @@ public static partial class IntervalExtensions
     /// </summary>
     /// <param name="source">The source interval to be canonicalized.</param>
     /// <param name="intervalType">The desired interval type to transform the source interval into.</param>
-    /// <param name="step">The step value used to increment or decrement the interval bounds.</param>
+    /// <param name="step">The step value used to increment or decrement the interval bounds. Defaults to 1.</param>
     /// <returns>The canonicalized interval in the desired interval type.</returns>
-    public static Interval<T> Canonicalize<T>(this Interval<T> source, BoundaryType intervalType, T step)
+    public static Interval<T> Canonicalize<T>(this Interval<T> source, BoundaryType intervalType, T? step = null)
         where T : struct, INumber<T>
-        => Canonicalize(source, intervalType, n => n + step, b => b - step);
+    {
+        step ??= T.One;
+        return Canonicalize(source, intervalType, n => n + step.Value, b => b - step.Value);
+    }
 
     /// <summary>
     /// Canonicalizes the given interval by transforming it into the given interval type.
     /// </summary>
     /// <param name="source">The source interval to be canonicalized.</param>
     /// <param name="intervalType">The desired interval type to transform the source interval into.</param>
-    /// <param name="step">The step value used to increment or decrement the interval bounds.</param>
+    /// <param name="step">The step value used to increment or decrement the interval bounds. Defaults to 1 second.</param>
     /// <returns>The canonicalized interval in the desired interval type.</returns>
-    public static Interval<DateTime> Canonicalize(this Interval<DateTime> source, BoundaryType intervalType, TimeSpan step)
-        => Canonicalize(source, intervalType, b => b + step, b => b - step);
+    public static Interval<DateTime> Canonicalize(this Interval<DateTime> source, BoundaryType intervalType, TimeSpan? step = null)
+    {
+        step ??= TimeSpan.FromSeconds(1);
+        return Canonicalize(source, intervalType, b => b + step.Value, b => b - step.Value);
+    }
 
     /// <summary>
     /// Canonicalizes the given interval by transforming it into the given interval type.
     /// </summary>
     /// <param name="source">The source interval to be canonicalized.</param>
     /// <param name="intervalType">The desired interval type to transform the source interval into.</param>
-    /// <param name="step">The step value used to increment or decrement the interval bounds.</param>
+    /// <param name="step">The step value used to increment or decrement the interval bounds. Defaults to 1 second.</param>
     /// <returns>The canonicalized interval in the desired interval type.</returns>
-    public static Interval<DateTimeOffset> Canonicalize(this Interval<DateTimeOffset> source, BoundaryType intervalType, TimeSpan step)
-        => Canonicalize(source, intervalType, b => b + step, b => b - step);
+    public static Interval<DateTimeOffset> Canonicalize(this Interval<DateTimeOffset> source, BoundaryType intervalType, TimeSpan? step = null)
+    {
+        step ??= TimeSpan.FromSeconds(1);
+        return Canonicalize(source, intervalType, b => b + step.Value, b => b - step.Value);
+    }
 
     /// <summary>
     /// Canonicalizes the given interval by transforming it into the given interval type.
     /// </summary>
     /// <param name="source">The source interval to be canonicalized.</param>
     /// <param name="intervalType">The desired interval type to transform the source interval into.</param>
-    /// <param name="step">The step value used to increment or decrement the interval bounds.</param>
+    /// <param name="step">The step value used to increment or decrement the interval bounds. Defaults to 1 day.</param>
     /// <returns>The canonicalized interval in the desired interval type.</returns>
-    public static Interval<DateOnly> Canonicalize(this Interval<DateOnly> source, BoundaryType intervalType, int step)
+    public static Interval<DateOnly> Canonicalize(this Interval<DateOnly> source, BoundaryType intervalType, int step = 1)
         => Canonicalize(source, intervalType, b => b.AddDays(step), b => b.AddDays(-step));
 
     /// <summary>
@@ -49,10 +58,13 @@ public static partial class IntervalExtensions
     /// </summary>
     /// <param name="source">The source interval to be canonicalized.</param>
     /// <param name="intervalType">The desired interval type to transform the source interval into.</param>
-    /// <param name="step">The step value used to increment or decrement the interval bounds.</param>
+    /// <param name="step">The step value used to increment or decrement the interval bounds. Defaults to 1 second.</param>
     /// <returns>The canonicalized interval in the desired interval type.</returns>
-    public static Interval<TimeOnly> Canonicalize(this Interval<TimeOnly> source, BoundaryType intervalType, TimeSpan step)
-        => Canonicalize(source, intervalType, b => b.Add(step), b => b.Add(-step));
+    public static Interval<TimeOnly> Canonicalize(this Interval<TimeOnly> source, BoundaryType intervalType, TimeSpan? step = null)
+    {
+        step ??= TimeSpan.FromSeconds(1);
+        return Canonicalize(source, intervalType, b => b.Add(step.Value), b => b.Add(-step.Value));
+    }
 
     private static Interval<T> Canonicalize<T>(
         Interval<T> source,
