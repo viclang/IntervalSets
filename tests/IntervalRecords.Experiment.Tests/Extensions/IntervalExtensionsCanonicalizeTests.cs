@@ -46,9 +46,9 @@ public class IntervalExtensionsCanonicalizeTests
     public void Closure_and_canonicalize_closed_are_equal(string intervalString)
     {
         var interval = Interval<int>.Parse(intervalString);
-        var expected = interval.Canonicalize(BoundaryType.Closed, 1);
+        var expected = interval.Canonicalize(BoundaryType.Closed);
 
-        var actual = interval.Closure(1);
+        var actual = interval.Closure();
 
         actual.Should().Be(expected);
     }
@@ -60,9 +60,9 @@ public class IntervalExtensionsCanonicalizeTests
     public void Interior_and_canonicalize_open_are_equal(string intervalString)
     {
         var interval = Interval<int>.Parse(intervalString);
-        var expected = interval.Canonicalize(BoundaryType.Open, 1);
+        var expected = interval.Canonicalize(BoundaryType.Open);
 
-        var actual = interval.Interior(1);
+        var actual = interval.Interior();
 
         actual.Should().Be(expected);
 

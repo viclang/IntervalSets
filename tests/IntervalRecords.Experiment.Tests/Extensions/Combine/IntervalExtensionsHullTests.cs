@@ -1,7 +1,6 @@
 ﻿namespace IntervalRecords.Experiment.Tests.Extensions.Combine;
 public class IntervalExtensionsHullTests
 {
-
     [Theory]
     [InlineData("[1, 3]", "[4, 5]", "[1, 5]")] /// <see cref="IntervalRelation.Before"/>
     [InlineData("(1, 3)", "(4, 5)", "(1, 5)")]
