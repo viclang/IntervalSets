@@ -17,7 +17,6 @@ public class IntervalExtensionsIntersectTests
     [InlineData("[3, 5]", "[1, 3]", "[3, 3]")] /// <see cref="IntervalRelation.MetBy"/>
     public void Overlapping_intervals_return_intersect(string leftInterval, string rightInterval, string expected)
     {
-        var w = DateTime.UtcNow;
         var left = Interval<int>.Parse(leftInterval);
         var right = Interval<int>.Parse(rightInterval);
 
