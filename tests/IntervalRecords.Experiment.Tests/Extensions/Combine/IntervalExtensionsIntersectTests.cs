@@ -10,6 +10,7 @@ public class IntervalExtensionsIntersectTests
     [InlineData("(1, 3)", "(1, 5)", "(1, 3]")] /// <see cref="IntervalRelation.Starts"/>
     [InlineData("(2, 3)", "(1, 5)", "[2, 3]")] /// <see cref="IntervalRelation.ContainedBy"/>
     [InlineData("(2, 5)", "(1, 5)", "[2, 5)")] /// <see cref="IntervalRelation.Finishes"/>
+    [InlineData("(2, 5)", "(2, 5)", "(2, 5)")] /// <see cref="IntervalRelation.Equal"/>
     [InlineData("(1, 5)", "(2, 5)", "[2, 5)")] /// <see cref="IntervalRelation.FinishedBy"/>
     [InlineData("(1, 5)", "(2, 3)", "[2, 3]")] /// <see cref="IntervalRelation.Contains"/>
     [InlineData("(1, 5)", "(1, 3)", "(1, 3]")] /// <see cref="IntervalRelation.StartedBy"/>
