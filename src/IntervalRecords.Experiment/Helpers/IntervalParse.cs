@@ -1,4 +1,5 @@
-﻿using System.Diagnostics.CodeAnalysis;
+﻿using IntervalRecords.Experiment.Endpoints;
+using System.Diagnostics.CodeAnalysis;
 using System.Text.RegularExpressions;
 
 namespace IntervalRecords.Experiment.Helpers;
@@ -9,22 +10,26 @@ internal static class IntervalParse
 
     internal const string NotFoundMessage = "Interval not found in string. Please provide an interval string in correct format";
 
-    public static Interval<T> Parse<T>(ReadOnlySpan<char> s, IFormatProvider? provider = null)
+    public static Interval<T, L, R> Parse<T, L, R>(ReadOnlySpan<char> s, IFormatProvider? provider = null)
         where T : struct, IComparable<T>, ISpanParsable<T>
+        where L : IBound, new()
+        where R : IBound, new()
     {
         if (!ValidateAndExtractEndpoints(s, out var startValue, out var endValue))
         {
             throw new FormatException(NotFoundMessage);
         }
-        return new Interval<T>(
+        return new Interval<T, L, R>(
             ParseEndpoint<T>(startValue, provider),
             ParseEndpoint<T>(endValue, provider),
             s[0] == '[',
             s[^1] == ']');
     }
 
-    public static bool TryParse<T>(ReadOnlySpan<char> s, IFormatProvider? provider, [MaybeNullWhen(false)] out Interval<T> result)
+    public static bool TryParse<T, L, R>(ReadOnlySpan<char> s, IFormatProvider? provider, [MaybeNullWhen(false)] out Interval<T L, R> result)
         where T : struct, IComparable<T>, ISpanParsable<T>
+        where L : IBound, new()
+        where R : IBound, new()
     {
         if (!ValidateAndExtractEndpoints(s, out var startValue, out var endValue))
         {

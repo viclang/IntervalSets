@@ -1,4 +1,5 @@
-﻿using System.Numerics;
+﻿using IntervalRecords.Experiment.Endpoints;
+using System.Numerics;
 
 namespace IntervalRecords.Experiment.Extensions;
 public static partial class IntervalExtensions
@@ -8,8 +9,10 @@ public static partial class IntervalExtensions
     /// </summary>
     /// <param name="source">The interval to calculate the radius of</param>
     /// <returns>The radius of the interval</returns>
-    public static T? Radius<T>(this Interval<T> source)
+    public static T? Radius<T, L, R>(this Interval<T, L, R> source)
         where T : struct, INumber<T>
+        where L : IBound, new()
+        where R : IBound, new()
         => Radius(source, (end, start) => (end - start) / (T.One + T.One));
 
     /// <summary>
@@ -17,7 +20,9 @@ public static partial class IntervalExtensions
     /// </summary>
     /// <param name="source">The interval to calculate the radius of</param>
     /// <returns>The radius of the interval</returns>
-    public static TimeSpan? Radius(this Interval<DateTime> source, Func<DateTime, TimeSpan, DateTime> func)
+    public static TimeSpan? Radius<L, R>(this Interval<DateTime, L, R> source, Func<DateTime, TimeSpan, DateTime> func)
+        where L : IBound, new()
+        where R : IBound, new()
     {
         return Radius(source, (end, start) => (end - start) / 2);
     }
@@ -27,33 +32,47 @@ public static partial class IntervalExtensions
     /// </summary>
     /// <param name="source">The interval to calculate the radius of</param>
     /// <returns>The radius of the interval</returns>
-    public static TimeSpan? Radius(this Interval<DateTimeOffset> source)
-        => Radius(source, (end, start) => (end - start) / 2);
+    public static TimeSpan? Radius<L, R>(this Interval<DateTimeOffset, L, R> source)
+        where L : IBound, new()
+        where R : IBound, new()
+    {
+        return Radius(source, (end, start) => (end - start) / 2);
+    }
 
     /// <summary>
     /// Calculates the radius of the interval
     /// </summary>
     /// <param name="source">The interval to calculate the radius of</param>
     /// <returns>The radius of the interval</returns>
-    public static int? Radius(this Interval<DateOnly> source)
-        => Radius(source, (end, start) => (end.DayNumber - start.DayNumber) / 2);
+    public static int? Radius<L, R>(this Interval<DateOnly, L, R> source)
+        where L : IBound, new()
+        where R : IBound, new()
+    {
+        return Radius(source, (end, start) => (end.DayNumber - start.DayNumber) / 2);
+    }
 
     /// <summary>
     /// Calculates the radius of the interval
     /// </summary>
     /// <param name="source">The interval to calculate the radius of</param>
     /// <returns>The radius of the interval</returns>
-    public static TimeSpan? Radius(this Interval<TimeOnly> source)
-        => Radius(source, (end, start) => (end - start) / 2);
+    public static TimeSpan? Radius<L, R>(this Interval<TimeOnly, L, R> source)
+        where L : IBound, new()
+        where R : IBound, new()
+    {
+        return Radius(source, (end, start) => (end - start) / 2);
+    }
 
-    private static TResult? Radius<T, TResult>(Interval<T> source, Func<T, T, TResult> radius)
+    private static TResult? Radius<T, L, R, TResult>(Interval<T, L, R> value, Func<T, T, TResult> radius)
         where T : struct, IComparable<T>, ISpanParsable<T>
+        where L : IBound, new()
+        where R : IBound, new()
         where TResult : struct
     {
-        if (source.Start is null || source.End is null || source.IsEmpty)
+        if (value.Start is null || value.End is null || value.IsEmpty)
         {
             return null;
         }
-        return radius(source.End.GetValueOrDefault(), source.Start.GetValueOrDefault());
+        return radius(value.End.GetValueOrDefault(), value.Start.GetValueOrDefault());
     }
 }

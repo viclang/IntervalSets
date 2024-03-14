@@ -176,7 +176,7 @@ public record class Interval<T, L, R> : IInterval<T>,
         => Parse(s.AsSpan(), provider);
 
     public static Interval<T, L, R> Parse(ReadOnlySpan<char> s, IFormatProvider? provider = null)
-        => IntervalParse.Parse<T>(s, provider);
+        => IntervalParse.Parse<T, L, R>(s, provider);
 
     public static bool TryParse([NotNullWhen(true)] string? s, IFormatProvider? provider, [MaybeNullWhen(false)] out Interval<T, L, R> result)
         => TryParse(s.AsSpan(), provider, out result);
