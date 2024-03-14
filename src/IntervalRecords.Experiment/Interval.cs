@@ -1,4 +1,5 @@
-﻿using IntervalRecords.Experiment.Helpers;
+﻿using IntervalRecords.Experiment.Endpoints;
+using IntervalRecords.Experiment.Helpers;
 using System.Diagnostics.CodeAnalysis;
 using System.Numerics;
 using System.Text;
@@ -37,20 +38,18 @@ public static class Interval
         };
 }
 
-public record class Interval<T>
-    : IComparisonOperators<Interval<T>, Interval<T>, bool>,
-      IComparable<Interval<T>>,
-      IParsable<Interval<T>>,
-      ISpanParsable<Interval<T>>
+public record class Interval<T, TLeft, TRight>
+    : IInterval<T>,
+      IComparisonOperators<Interval<T, TLeft, TRight>, IInterval<T>, bool>,
+      IComparable<IInterval<T>>,
+      IParsable<IInterval<T>>,
+      ISpanParsable<IInterval<T>>
     where T : struct, IComparable<T>, ISpanParsable<T>
 {
+
     private readonly T? _start;
 
     private readonly T? _end;
-
-    private readonly bool _startInclusive;
-
-    private readonly bool _endInclusive;
 
     public T? Start
     {
@@ -112,8 +111,9 @@ public record class Interval<T>
     /// </summary>
     /// <param name="other">The interval to check for overlapping with the current interval.</param>
     /// <returns>True if the current interval and the other interval overlap, False otherwise.</returns>
-    public bool Overlaps(Interval<T> other)
+    public bool Overlaps(IInterval<T> other)
     {
+
         return this.CompareStartToEnd(other) <= 0 && other.CompareStartToEnd(this) <= 0;
     }
 
@@ -144,7 +144,7 @@ public record class Interval<T>
 
     public int CompareTo(Interval<T>? other)
     {
-        if (other == null || this > other)
+        if (other is null || this > other)
         {
             return 1;
         }

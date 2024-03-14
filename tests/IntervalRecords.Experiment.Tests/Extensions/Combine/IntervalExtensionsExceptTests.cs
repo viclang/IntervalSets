@@ -76,4 +76,22 @@ public class IntervalExtensionsExceptTests
             actual.Should().BeEquivalentTo(expected);
         }
     }
+
+    [Theory]
+    // Complex case with multiple overlapping and non-overlapping intervals
+    [InlineData("(1, 3], (2, 4], (5, 7], (6, 8], (9, 10]", "(1, 2], (4, 5], (7, 8], (9, 10]")]
+    // Mixed case with overlapping, non-overlapping, and adjacent intervals
+    [InlineData("(1, 2], (2, 3], (4, 6], (5, 7], (8, 9]", "(1, 2], (2, 3], (4, 5], (7, 8], (8, 9]")]
+    // Overlapping and adjacent intervals
+    [InlineData("(1, 5], (2, 6], (6, 7], (8, 10]", "(1, 2], (6, 7], (8, 10]")]
+    public void List_of_overlapping_intervals_returns_except(string intervalString, string expected)
+    {
+        var intervals = Interval<int>.ParseAll(intervalString);
+        
+        var actual = intervals.ExceptOverlap();
+
+        string.Join(", ", actual)
+            .Should()
+            .BeEquivalentTo(expected);
+    }
 }
