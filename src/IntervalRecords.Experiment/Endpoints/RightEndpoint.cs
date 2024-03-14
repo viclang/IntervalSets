@@ -4,7 +4,7 @@ public readonly record struct RightEndpoint<T, TBound>(T Value) : IRightEndpoint
     where T : struct, IComparable<T>, ISpanParsable<T>
     where TBound : IBound
 {
-    public Bound Bound => TBound.Value;
+    public Bound Bound => TBound.Bound;
 
     public readonly bool IsClosed => Bound == Bound.Closed;
 
@@ -47,4 +47,20 @@ public readonly record struct RightEndpoint<T, TBound>(T Value) : IRightEndpoint
                 }
         };
     }
+
+    public int CompareTo(T other)
+    {
+        if (IsUnbounded)
+        {
+            return 1;
+        }
+        var comparison = Value.CompareTo(other);
+        if (comparison == 0 && !IsClosed)
+        {
+            return -1;
+        }
+        return comparison;
+    }
+
+    public static implicit operator RightEndpoint<T, TBound>(T value) => new(value);
 }

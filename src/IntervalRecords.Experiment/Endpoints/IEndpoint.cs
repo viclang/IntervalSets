@@ -11,7 +11,8 @@ public interface IRightEndpoint<T> : IEndpoint<T>
 
 public interface IEndpoint<T>
     : IComparable<ILeftEndpoint<T>>,
-      IComparable<IRightEndpoint<T>>
+      IComparable<IRightEndpoint<T>>,
+      IComparable<T>
     where T : struct, IComparable<T>, ISpanParsable<T>
 {
     T Value { get; init; }

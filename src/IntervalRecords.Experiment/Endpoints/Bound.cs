@@ -1,24 +1,24 @@
 ﻿namespace IntervalRecords.Experiment.Endpoints;
 public interface IBound
 {
-    static abstract Bound Value { get; }
+    static abstract Bound Bound { get; }
 }
 
 public interface IBounded : IBound { }
 
 public struct Closed : IBounded
 {
-    public static Bound Value => Bound.Closed;
+    public static Bound Bound => Bound.Closed;
 }
 
 public struct Open : IBounded
 {
-    public static Bound Value => Bound.Open;
+    public static Bound Bound => Bound.Open;
 }
 
 public struct Unbounded : IBound
 {
-    public static Bound Value => Bound.Unbounded;
+    public static Bound Bound => Bound.Unbounded;
 }
 
 public enum Bound
