@@ -1,9 +1,9 @@
 ﻿namespace IntervalRecords.Experiment.Endpoints;
-public readonly record struct LeftEndpoint<T, TBound>(T Value) : ILeftEndpoint<T>
+public readonly record struct LeftEndpoint<T, B>(T Value) : ILeftEndpoint<T>
     where T : struct, IComparable<T>, ISpanParsable<T>
-    where TBound : IBound, new()
+    where B : IBound, new()
 {
-    public readonly Bound Bound => TBound.Bound;
+    public readonly Bound Bound => B.Bound;
 
     public readonly bool IsClosed => Bound == Bound.Closed;
 
@@ -66,5 +66,5 @@ public readonly record struct LeftEndpoint<T, TBound>(T Value) : ILeftEndpoint<T
         return comparison;
     }
 
-    public static implicit operator LeftEndpoint<T, TBound>(T value) => new(value);
+    public static implicit operator LeftEndpoint<T, B>(T value) => new(value);
 }
