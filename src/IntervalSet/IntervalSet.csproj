@@ -1,0 +1,23 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+	  <TargetFramework>net8.0</TargetFramework>
+	  <ImplicitUsings>enable</ImplicitUsings>
+	  <Nullable>enable</Nullable>
+	  <version>0.0.1</version>
+	  <id>IntervalSet</id>
+	  <authors>Victor Langemaire</authors>
+	  <PackageProjectUrl>https://github.com/viclang/IntervalSet</PackageProjectUrl>
+	  <PackageLicenseExpression>MIT</PackageLicenseExpression>
+	  <Copyright>Victor Langemaire</Copyright>
+	  <RepositoryUrl>https://github.com/viclang/IntervalSet</RepositoryUrl>
+	  <requireLicenseAcceptance>true</requireLicenseAcceptance>
+	  <description>An Interval type with methods to work with Intervals.</description>
+	  <RepositoryType>git</RepositoryType>
+	  <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+	  <PublishRepositoryUrl>true</PublishRepositoryUrl>
+	  <IncludeSymbols>true</IncludeSymbols>
+	  <PackageTags>IntervalSet;Interval;Intervals;Overlap;Range</PackageTags>
+  </PropertyGroup>
+
+</Project>

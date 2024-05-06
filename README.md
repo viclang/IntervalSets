@@ -1,13 +1,13 @@
-# IntervalRecords
-An **IntervalRecord** is an immutable record class named **Interval** which represents an Interval of values of a given type. The [record class](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/builtin-types/record) type was introduced in C# 9 and the main reason that this type is used is because the [with expressions](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/builtin-types/record#with-expressions-in-derived-records) will make it easy to use immutable objects.
+# IntervalSet
+An Interval is an immutable record class named **Interval** which represents an Interval of values of a given type. The [record class](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/builtin-types/record) type was introduced in C# 9 and the main reason that this type is used is because the [with expressions](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/builtin-types/record#with-expressions-in-derived-records) will make it easy to use immutable objects.
 
-**IntervalRecords** will help you to create, canonicalize, compare, combine, measure, iterate and parse all the different types of intervals. It implements the interval comparison based on the interval overlapping relation that was described by the [IEEE Interval Standard Working Group](https://grouper.ieee.org/groups/1788/PositionPapers/overlapping.pdf).
+**IntervalSet** will help you to create, canonicalize, compare, combine, measure, iterate and parse all the different types of intervals. It implements the interval comparison based on the interval overlapping relation that was described by the [IEEE Interval Standard Working Group](https://grouper.ieee.org/groups/1788/PositionPapers/overlapping.pdf).
 
 ### Download & Install
-**Nuget Package [IntervalRecords](https://www.nuget.org/packages/IntervalRecords/)**
+**Nuget Package [IntervalSet](https://www.nuget.org/packages/IntervalSet/)**
 
 ```powershell
-Install-Package IntervalRecords
+Install-Package IntervalSet
 ```
 Minimum Requirements: .NET 6.0
 
