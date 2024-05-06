@@ -1,7 +1,7 @@
-﻿using Intervals.Bounds;
-using Intervals.Types;
+﻿using IntervalSet.Bounds;
+using IntervalSet.Types;
 
-namespace Intervals.Operations;
+namespace IntervalSet.Operations;
 public static class BoundedContainsExtensions
 {
     public static bool Contains<T>(this IBoundedInterval<T> interval, T other)

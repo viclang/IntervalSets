@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Intervals.Bounds;
+namespace IntervalSet.Bounds;
 public static class BoundPairExtensions
 {
     private const int ExtractBound = 1;

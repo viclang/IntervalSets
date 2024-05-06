@@ -1,7 +1,7 @@
-﻿using Intervals.Bounds;
+﻿using IntervalSet.Bounds;
 using System.Diagnostics.CodeAnalysis;
 
-namespace Intervals.Types;
+namespace IntervalSet.Types;
 
 public sealed record Interval<T> : IBoundedInterval<T>, ISpanParsable<Interval<T>>
     where T : notnull, IComparable<T>, ISpanParsable<T>

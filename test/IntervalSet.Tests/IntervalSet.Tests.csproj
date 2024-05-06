@@ -18,7 +18,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\src\Intervals\Intervals.csproj" />
+    <ProjectReference Include="..\..\src\IntervalSet\IntervalSet.csproj" />
   </ItemGroup>
 
   <ItemGroup>

@@ -1,6 +1,6 @@
-﻿using Intervals.Bounds;
+﻿using IntervalSet.Bounds;
 
-namespace Intervals.Types;
+namespace IntervalSet.Types;
 public record UnboundedInterval<T>() : TypedComplementInterval<T, Open, Open>(default!, default!)
     where T : notnull, IComparable<T>, ISpanParsable<T>
 {

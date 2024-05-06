@@ -1,7 +1,7 @@
-﻿using Intervals.Bounds;
-using Intervals.Types;
+﻿using IntervalSet.Bounds;
+using IntervalSet.Types;
 
-namespace Intervals.Core;
+namespace IntervalSet.Core;
 public static class BoundedOverlapsExtensions
 {
     /// <summary>

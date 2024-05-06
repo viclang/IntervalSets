@@ -1,4 +1,4 @@
-﻿namespace Intervals.Bounds;
+﻿namespace IntervalSet.Bounds;
 
 public struct Closed : IBound
 {

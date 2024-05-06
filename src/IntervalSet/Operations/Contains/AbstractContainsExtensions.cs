@@ -1,6 +1,6 @@
-﻿using Intervals.Types;
+﻿using IntervalSet.Types;
 
-namespace Intervals.Operations;
+namespace IntervalSet.Operations;
 public static class AbstractContainsExtensions
 {
     public static bool Contains<T>(this IAbstractInterval<T> interval, T other)

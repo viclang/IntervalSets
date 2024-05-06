@@ -1,6 +1,6 @@
-﻿using Intervals.Bounds;
+﻿using IntervalSet.Bounds;
 
-namespace Intervals.Types;
+namespace IntervalSet.Types;
 public record LeftBoundedInterval<T>(T Start, Bound StartBound) : ILeftBoundedInterval<T>
     where T : notnull, IComparable<T>, ISpanParsable<T>
 {

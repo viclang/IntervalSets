@@ -1,7 +1,7 @@
-﻿using Intervals.Bounds;
-using Intervals.Types;
+﻿using IntervalSet.Bounds;
+using IntervalSet.Types;
 
-namespace Intervals.Operations;
+namespace IntervalSet.Operations;
 public static class ComplementContainsExtensions
 {
     public static bool Contains<T>(this IComplementInterval<T> interval, T other)

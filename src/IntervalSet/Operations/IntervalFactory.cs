@@ -1,4 +1,4 @@
-﻿namespace Intervals.Operations;
+﻿namespace IntervalSet.Operations;
 public class IntervalFactory
 {
 }

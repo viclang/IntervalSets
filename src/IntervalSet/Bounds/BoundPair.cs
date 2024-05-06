@@ -1,4 +1,4 @@
-﻿namespace Intervals.Bounds;
+﻿namespace IntervalSet.Bounds;
 
 [Flags]
 public enum BoundPair : byte

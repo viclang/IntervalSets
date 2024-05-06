@@ -1,6 +1,6 @@
-﻿using Intervals.Bounds;
+﻿using IntervalSet.Bounds;
 
-namespace Intervals.Types;
+namespace IntervalSet.Types;
 public abstract record TypedRightBoundedInterval<T, R>(T End) : IRightBoundedInterval<T>
     where T : notnull, IComparable<T>, ISpanParsable<T>
     where R : struct, IBound

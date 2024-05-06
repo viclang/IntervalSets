@@ -1,4 +1,4 @@
-﻿namespace Intervals.Operations;
+﻿namespace IntervalSet.Operations;
 
 /// <summary>
 /// Specifies the overlapping relation between two intervals.

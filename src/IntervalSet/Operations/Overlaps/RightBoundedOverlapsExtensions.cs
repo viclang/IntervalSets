@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Intervals.Operations.Overlaps;
+namespace IntervalSet.Operations.Overlaps;
 internal class RightBoundedOverlapsExtensions
 {
 }

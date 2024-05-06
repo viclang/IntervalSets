@@ -1,6 +1,6 @@
-﻿using Intervals.Bounds;
+﻿using IntervalSet.Bounds;
 
-namespace Intervals.Types;
+namespace IntervalSet.Types;
 public sealed record ClosedInterval<T>(T Start, T End) : TypedBoundedInterval<T, Closed, Closed>(Start, End)
     where T : notnull, IComparable<T>, ISpanParsable<T>
 {

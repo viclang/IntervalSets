@@ -1,8 +1,8 @@
-﻿using Intervals.Bounds;
+﻿using IntervalSet.Bounds;
 using System.Diagnostics.CodeAnalysis;
 using System.Text.RegularExpressions;
 
-namespace Intervals.Types;
+namespace IntervalSet.Types;
 public static class IntervalParse
 {
 

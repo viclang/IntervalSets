@@ -1,12 +1,12 @@
-﻿using Intervals.Bounds;
-using Intervals.Types;
+﻿using IntervalSet.Bounds;
+using IntervalSet.Types;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Intervals.Operations.Overlaps;
+namespace IntervalSet.Operations.Overlaps;
 public static class ComplementOverlapsExtensions
 {
     /// <summary>

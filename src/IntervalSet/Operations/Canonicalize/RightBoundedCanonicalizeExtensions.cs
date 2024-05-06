@@ -1,8 +1,8 @@
-﻿using Intervals.Bounds;
-using Intervals.Types;
+﻿using IntervalSet.Bounds;
+using IntervalSet.Types;
 using System.Numerics;
 
-namespace Intervals.Operations;
+namespace IntervalSet.Operations;
 public static class RightBoundedCanonicalizeExtensions
 {
     /// <summary>

@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Intervals.Tests.Operations.Canonicalize;
+namespace IntervalSet.Tests.Operations.Canonicalize;
 public class BoundedCanonicalizeExtensionsTests
 {
 }
