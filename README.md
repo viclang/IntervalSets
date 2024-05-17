@@ -9,7 +9,7 @@ An Interval is an immutable record class named **Interval** which represents an 
 ```powershell
 Install-Package IntervalSet
 ```
-Minimum Requirements: .NET 6.0
+Minimum Requirements: .NET 8.0
 
 ### Supported types
 The following interval types are supported by type specific extension methods:
