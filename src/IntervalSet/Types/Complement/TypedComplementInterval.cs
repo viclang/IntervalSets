@@ -1,6 +1,4 @@
-﻿using IntervalSet.Bounds;
-
-namespace IntervalSet.Types;
+﻿namespace IntervalSet.Types;
 
 public abstract record TypedComplementInterval<T, L, R>(T Start, T End) : IComplementInterval<T>
     where T : notnull, IComparable<T>, ISpanParsable<T>

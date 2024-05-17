@@ -1,4 +1,4 @@
-﻿using IntervalSet.Bounds;
+﻿using IntervalSet.Types.Bounded;
 using System.Diagnostics.CodeAnalysis;
 
 namespace IntervalSet.Types;
@@ -6,37 +6,37 @@ namespace IntervalSet.Types;
 public sealed record Interval<T> : IBoundedInterval<T>, ISpanParsable<Interval<T>>
     where T : notnull, IComparable<T>, ISpanParsable<T>
 {
-    private readonly BoundPair _boundPair;
-
     public T Start { get; init; }
 
     public T End { get; init; }
 
+    public IntervalType IntervalType { get; private init; }
+
     public Bound StartBound
     {
-        get => _boundPair.StartBound();
-        init => _boundPair = BoundPairFactory.Create(value, EndBound);
+        get => IntervalType.StartBound();
+        init => IntervalType = IntervalTypeFactory.Create(value, EndBound);
     }
 
     public Bound EndBound
     {
-        get => _boundPair.EndBound();
-        init => _boundPair = BoundPairFactory.Create(StartBound, value);
+        get => IntervalType.EndBound();
+        init => IntervalType = IntervalTypeFactory.Create(StartBound, value);
     }
 
     public bool IsEmpty => End.CompareTo(Start) is int comparison
         && comparison < 0 || comparison == 0 && StartBound.IsOpen() && EndBound.IsOpen();
 
     public Interval(T start, T end, Bound startBound, Bound endBound)
-        : this(start, end, BoundPairFactory.Create(startBound, endBound))
+        : this(start, end, IntervalTypeFactory.Create(startBound, endBound))
     {
     }
 
-    public Interval(T start, T end, BoundPair boundPair)
+    public Interval(T start, T end, IntervalType intervalType)
     {
         Start = start;
         End = end;
-        _boundPair = boundPair;
+        IntervalType = intervalType;
     }
 
     public bool Contains(T other)
@@ -57,39 +57,64 @@ public sealed record Interval<T> : IBoundedInterval<T>, ISpanParsable<Interval<T
         return false;
     }
 
-    public override string ToString()
-        => $"{(StartBound.IsClosed() ? '[' : '(')}{Start}, {End}{(EndBound.IsClosed() ? ']' : ')')}";
+    public static Interval<T> Parse(string s, IFormatProvider? provider)
+    {
+        return BoundedIntervalParse.Parse<T>(s, provider);
+    }
 
     public static Interval<T> Parse(ReadOnlySpan<char> s, IFormatProvider? provider)
     {
-        return IntervalParse.Parse(s, provider);
-    }
-
-    public static bool TryParse(ReadOnlySpan<char> s, IFormatProvider? provider, [MaybeNullWhen(false)] out Interval<T> result)
-    {
-        throw new NotImplementedException();
-    }
-
-    public static Interval<T> Parse(string s, IFormatProvider? provider)
-    {
-        throw new NotImplementedException();
+        return BoundedIntervalParse.Parse<T>(s, provider);
     }
 
     public static bool TryParse([NotNullWhen(true)] string? s, IFormatProvider? provider, [MaybeNullWhen(false)] out Interval<T> result)
     {
-        throw new NotImplementedException();
+        return BoundedIntervalParse.TryParse<T>(s, provider, out result);
     }
+
+    public static bool TryParse(ReadOnlySpan<char> s, IFormatProvider? provider, [MaybeNullWhen(false)] out Interval<T> result)
+    {
+        return BoundedIntervalParse.TryParse<T>(s, provider, out result);
+    }
+
+    public override string ToString()
+        => $"{(StartBound.IsClosed() ? '[' : '(')}{Start}, {End}{(EndBound.IsClosed() ? ']' : ')')}";
 }
 
-public sealed record Interval<T, L, R>(T Start, T End) : TypedBoundedInterval<T, L, R>(Start, End)
+public sealed record Interval<T, L, R>(T Start, T End) : TypedBoundedInterval<T, L, R>(Start, End), ISpanParsable<Interval<T, L, R>>
     where T : notnull, IComparable<T>, ISpanParsable<T>
     where L : struct, IBound
     where R : struct, IBound
 {
-
     public static implicit operator Interval<T>(Interval<T, L, R> interval)
-        => new(interval.Start, interval.End, L.Bound, R.Bound);
+        => new(interval.Start, interval.End, interval.StartBound, interval.EndBound);
 
     public override string ToString()
         => $"{(StartBound.IsClosed() ? '[' : '(')}{Start}, {End}{(EndBound.IsClosed() ? ']' : ')')}";
+
+    public static Interval<T, L, R> Parse(string s, IFormatProvider? provider)
+    {
+        return BoundedIntervalParse.Parse<T, L, R>(s, provider);
+    }
+
+    public static Interval<T, L, R> Parse(ReadOnlySpan<char> s, IFormatProvider? provider)
+    {
+        return BoundedIntervalParse.Parse<T, L, R>(s, provider);
+    }
+
+    public static bool TryParse(
+        ReadOnlySpan<char> s,
+        IFormatProvider? provider,
+        [MaybeNullWhen(false)] out Interval<T, L, R> result)
+    {
+        return BoundedIntervalParse.TryParse(s, provider, out result);
+    }
+
+    public static bool TryParse(
+        [NotNullWhen(true)] string? s,
+        IFormatProvider? provider,
+        [MaybeNullWhen(false)] out Interval<T, L, R> result)
+    {
+        return BoundedIntervalParse.TryParse(s, provider, out result);
+    }
 }

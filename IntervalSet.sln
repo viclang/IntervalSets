@@ -11,6 +11,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IntervalSet", "src\Interval
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IntervalSet.Tests", "test\IntervalSet.Tests\IntervalSet.Tests.csproj", "{CF54A3D6-4EC6-4D32-A104-E621A202243C}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IntervalSet.Benchmark", "tools\IntervalSet.Benchmark\IntervalSet.Benchmark.csproj", "{295135AB-3C62-4BAD-B5C8-CA4509D78D33}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tools", "tools", "{8841A515-6A13-44BC-AE91-C3DA85F62E85}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -25,6 +29,10 @@ Global
 		{CF54A3D6-4EC6-4D32-A104-E621A202243C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{CF54A3D6-4EC6-4D32-A104-E621A202243C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{CF54A3D6-4EC6-4D32-A104-E621A202243C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{295135AB-3C62-4BAD-B5C8-CA4509D78D33}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{295135AB-3C62-4BAD-B5C8-CA4509D78D33}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{295135AB-3C62-4BAD-B5C8-CA4509D78D33}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{295135AB-3C62-4BAD-B5C8-CA4509D78D33}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -32,6 +40,7 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 		{2F6C1501-70D2-4748-825E-889FF2483AB2} = {8CC30E55-36E7-412E-9E3D-EEA6E7D566B3}
 		{CF54A3D6-4EC6-4D32-A104-E621A202243C} = {3C316575-03B0-42CF-96BB-48631E2D61FD}
+		{295135AB-3C62-4BAD-B5C8-CA4509D78D33} = {8841A515-6A13-44BC-AE91-C3DA85F62E85}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {A7161AC0-26BC-4C39-9CA6-B1AB56018580}

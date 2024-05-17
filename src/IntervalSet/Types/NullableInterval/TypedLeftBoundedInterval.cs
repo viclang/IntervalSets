@@ -1,6 +1,4 @@
-﻿using IntervalSet.Bounds;
-
-namespace IntervalSet.Types;
+﻿namespace IntervalSet.Types;
 
 public abstract record TypedLeftBoundedInterval<T, L>(T Start) : ILeftBoundedInterval<T>
     where T : notnull, IComparable<T>, ISpanParsable<T>
@@ -9,6 +7,8 @@ public abstract record TypedLeftBoundedInterval<T, L>(T Start) : ILeftBoundedInt
     public Bound StartBound => L.Bound;
 
     public virtual bool IsEmpty => false;
+
+    public Bound EndBound => Bound.Open;
 
     public bool Equals(IAbstractInterval<T>? other)
     {

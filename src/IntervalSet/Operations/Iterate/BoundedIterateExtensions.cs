@@ -1,5 +1,4 @@
-﻿using IntervalSet.Bounds;
-using IntervalSet.Types;
+﻿using IntervalSet.Types;
 
 namespace IntervalSet.Operations;
 public static class BoundedIterateExtensions

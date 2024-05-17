@@ -1,4 +1,4 @@
-﻿namespace IntervalSet.Bounds;
+﻿namespace IntervalSet.Types;
 
 public static class BoundExtensions
 {

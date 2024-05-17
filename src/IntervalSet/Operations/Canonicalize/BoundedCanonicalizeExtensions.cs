@@ -1,5 +1,4 @@
-﻿using IntervalSet.Bounds;
-using IntervalSet.Types;
+﻿using IntervalSet.Types;
 using System.Numerics;
 
 namespace IntervalSet.Operations;

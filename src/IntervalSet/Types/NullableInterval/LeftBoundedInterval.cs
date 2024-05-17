@@ -1,10 +1,32 @@
-﻿using IntervalSet.Bounds;
+﻿using System.Diagnostics.CodeAnalysis;
 
 namespace IntervalSet.Types;
-public record LeftBoundedInterval<T>(T Start, Bound StartBound) : ILeftBoundedInterval<T>
+public record LeftBoundedInterval<T>(T Start, Bound StartBound) : ILeftBoundedInterval<T>, ISpanParsable<LeftBoundedInterval<T>>
     where T : notnull, IComparable<T>, ISpanParsable<T>
 {
     public bool IsEmpty => false;
+
+    public Bound EndBound => Bound.Open;
+
+    public static LeftBoundedInterval<T> Parse(ReadOnlySpan<char> s, IFormatProvider? provider)
+    {
+        return IntervalRegex.ParseLeftBounded<T>(s, provider);
+    }
+
+    public static LeftBoundedInterval<T> Parse(string s, IFormatProvider? provider)
+    {
+        return IntervalRegex.ParseLeftBounded<T>(s, provider);
+    }
+
+    public static bool TryParse(ReadOnlySpan<char> s, IFormatProvider? provider, [MaybeNullWhen(false)] out LeftBoundedInterval<T> result)
+    {
+        throw new NotImplementedException();
+    }
+
+    public static bool TryParse([NotNullWhen(true)] string? s, IFormatProvider? provider, [MaybeNullWhen(false)] out LeftBoundedInterval<T> result)
+    {
+        throw new NotImplementedException();
+    }
 
     public bool Equals(IAbstractInterval<T>? other)
     {

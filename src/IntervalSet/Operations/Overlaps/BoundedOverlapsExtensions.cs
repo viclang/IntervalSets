@@ -1,7 +1,6 @@
-﻿using IntervalSet.Bounds;
-using IntervalSet.Types;
+﻿using IntervalSet.Types;
 
-namespace IntervalSet.Core;
+namespace IntervalSet.Operations;
 public static class BoundedOverlapsExtensions
 {
     /// <summary>
@@ -11,6 +10,11 @@ public static class BoundedOverlapsExtensions
     public static bool Overlaps<T>(this IBoundedInterval<T> left, IBoundedInterval<T> right)
         where T : notnull, IComparable<T>, ISpanParsable<T>
     {
+        if(left.IsEmpty || right.IsEmpty)
+        {
+            return false;
+        }
+
         var startComparison = left.Start.CompareTo(right.End);
         var endComparison = right.Start.CompareTo(left.End);
 
@@ -67,7 +71,7 @@ public static class BoundedOverlapsExtensions
     /// <returns>True if the left interval and the right interval overlap.</returns>
     public static bool Overlaps<T>(this TypedBoundedInterval<T, Closed, Open> left, TypedBoundedInterval<T, Closed, Closed> right)
         where T : notnull, IComparable<T>, ISpanParsable<T>
-        => left.OneSideInclusiveOverlaps(right);
+        => left.LeftInclusiveOverlaps(right);
 
     /// <summary>
     /// Returns a boolean value indicating if the left interval overlaps with the right interval.
@@ -75,7 +79,7 @@ public static class BoundedOverlapsExtensions
     /// <returns>True if the left interval and the right interval overlap.</returns>
     public static bool Overlaps<T>(this TypedBoundedInterval<T, Closed, Closed> left, TypedBoundedInterval<T, Open, Closed> right)
         where T : notnull, IComparable<T>, ISpanParsable<T>
-        => left.OneSideInclusiveOverlaps(right);
+        => left.LeftInclusiveOverlaps(right);
 
     /// <summary>
     /// Returns a boolean value indicating if the left interval overlaps with the right interval.
@@ -83,9 +87,9 @@ public static class BoundedOverlapsExtensions
     /// <returns>True if the left interval and the right interval overlap.</returns>
     public static bool Overlaps<T>(this TypedBoundedInterval<T, Closed, Open> left, TypedBoundedInterval<T, Open, Closed> right)
         where T : notnull, IComparable<T>, ISpanParsable<T>
-        => left.OneSideInclusiveOverlaps(right);
+        => left.LeftInclusiveOverlaps(right);
 
-    private static bool OneSideInclusiveOverlaps<T>(this IBoundedInterval<T> left, IBoundedInterval<T> right)
+    private static bool LeftInclusiveOverlaps<T>(this IBoundedInterval<T> left, IBoundedInterval<T> right)
         where T : notnull, IComparable<T>, ISpanParsable<T>
     {
         return left.Start.CompareTo(right.End) <= 0

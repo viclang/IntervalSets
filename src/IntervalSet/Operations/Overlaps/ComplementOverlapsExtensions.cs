@@ -1,12 +1,6 @@
-﻿using IntervalSet.Bounds;
-using IntervalSet.Types;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using IntervalSet.Types;
 
-namespace IntervalSet.Operations.Overlaps;
+namespace IntervalSet.Operations;
 public static class ComplementOverlapsExtensions
 {
     /// <summary>
@@ -16,6 +10,11 @@ public static class ComplementOverlapsExtensions
     public static bool Overlaps<T>(this IComplementInterval<T> left, IComplementInterval<T> right)
         where T : notnull, IComparable<T>, ISpanParsable<T>
     {
+        if (left.IsEmpty || right.IsEmpty)
+        {
+            return false;
+        }
+
         var startComparison = left.Start.CompareTo(right.End);
         var endComparison = right.Start.CompareTo(left.End);
 

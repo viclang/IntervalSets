@@ -1,10 +1,6 @@
-﻿using IntervalSet.Bounds;
-
-namespace IntervalSet.Types;
+﻿namespace IntervalSet.Types;
 public interface ILeftBoundedInterval<T> : IAbstractInterval<T>
     where T : notnull, IComparable<T>, ISpanParsable<T>
 {
     T Start { get; }
-
-    Bound StartBound { get; }
 }

@@ -1,4 +1,5 @@
 ﻿using IntervalSet.Types;
+using IntervalSet.Types.Unbounded;
 
 namespace IntervalSet.Operations;
 public static class AbstractContainsExtensions
