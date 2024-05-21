@@ -9,7 +9,7 @@ public static class BoundedIRelationExtensions
     /// <typeparam name="T">The type of the interval endpoints.</typeparam>
     /// <param name="left">The first interval to compare.</param>
     /// <param name="right">The second interval to compare.</param>
-    public static IntervalRelation GetRelation<T>(this IBoundedInterval<T> left, IBoundedInterval<T> right)
+    public static IntervalRelation GetRelation<T>(this Interval<T> left, Interval<T> right)
         where T : struct, IComparable<T>, ISpanParsable<T>
         => (left.CompareStart(right), left.CompareEnd(right)) switch
         {
@@ -28,7 +28,7 @@ public static class BoundedIRelationExtensions
     /// Compares the start of two intervals.
     /// </summary>
     /// <returns>A value indicating the relative order of the start of the two intervals.</returns>
-    private static int CompareStart<T>(this IBoundedInterval<T> left, IBoundedInterval<T> right)
+    private static int CompareStart<T>(this Interval<T> left, Interval<T> right)
         where T : struct, IComparable<T>, ISpanParsable<T>
         => left.Start.CompareTo(right.Start) switch
         {
@@ -41,7 +41,7 @@ public static class BoundedIRelationExtensions
     /// Compares the end of two intervals.
     /// </summary>
     /// <returns>A value indicating the relative order of the end of the two intervals.</returns>
-    private static int CompareEnd<T>(this IBoundedInterval<T> left, IBoundedInterval<T> right)
+    private static int CompareEnd<T>(this Interval<T> left, Interval<T> right)
         where T : struct, IComparable<T>, ISpanParsable<T>
         => left.End.CompareTo(right.End) switch
         {
@@ -54,7 +54,7 @@ public static class BoundedIRelationExtensions
     /// Compares the start of the first interval with the end of the second interval.
     /// </summary>
     /// <returns>A value indicating the relative order of the end of the two intervals.</returns>
-    private static int CompareStartToEnd<T>(this IBoundedInterval<T> left, IBoundedInterval<T> right)
+    private static int CompareStartToEnd<T>(this Interval<T> left, Interval<T> right)
         where T : struct, IComparable<T>, ISpanParsable<T>
     {
         int comparison = left.Start.CompareTo(right.End);
@@ -69,7 +69,7 @@ public static class BoundedIRelationExtensions
     /// Compares the end of the first interval with the start of the second interval.
     /// </summary>
     /// <returns>A value indicating the relative order of the end of the two intervals.</returns>
-    private static int CompareEndToStart<T>(this IBoundedInterval<T> left, IBoundedInterval<T> right)
+    private static int CompareEndToStart<T>(this Interval<T> left, Interval<T> right)
         where T : struct, IComparable<T>, ISpanParsable<T>
     {
         int comparison = left.End.CompareTo(right.Start);

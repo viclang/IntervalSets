@@ -1,9 +1,9 @@
 ﻿namespace IntervalSet.Types;
-public interface IAbstractInterval<T> : IEquatable<IAbstractInterval<T>>
+public interface IAbstractInterval<T>
 {
-    public Bound StartBound { get; }
+    Bound StartBound { get; }
 
-    public Bound EndBound { get; }
+    Bound EndBound { get; }
 
-    public bool IsEmpty { get; }
+    bool IsEmpty { get; }
 }

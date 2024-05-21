@@ -10,7 +10,7 @@ public static class BoundedCanonicalizeExtensions
     /// <param name="value">The interval to be canonicalized.</param>
     /// <param name="step">The step value used to increment or decrement the interval bounds. Defaults to 1.</param>
     /// <returns>The canonicalized interval in the desired interval type.</returns>
-    public static Interval<T, L, R> Canonicalize<T, L, R>(this IBoundedInterval<T> value, T? step = null)
+    public static Interval<T, L, R> Canonicalize<T, L, R>(this Interval<T> value, T? step = null)
         where T : struct, INumber<T>
         where L : struct, IBound
         where R : struct, IBound
@@ -25,7 +25,7 @@ public static class BoundedCanonicalizeExtensions
     /// <param name="value">The interval to be canonicalized.</param>
     /// <param name="step">The step value used to increment or decrement the interval bounds. Defaults to 1 second.</param>
     /// <returns>The canonicalized interval in the desired interval type.</returns>
-    public static Interval<DateTime, L, R> Canonicalize<L, R>(this IBoundedInterval<DateTime> value, TimeSpan? step = null)
+    public static Interval<DateTime, L, R> Canonicalize<L, R>(this Interval<DateTime> value, TimeSpan? step = null)
         where L : struct, IBound
         where R : struct, IBound
     {
@@ -39,7 +39,7 @@ public static class BoundedCanonicalizeExtensions
     /// <param name="value">The interval to be canonicalized.</param>
     /// <param name="step">The step value used to increment or decrement the interval bounds. Defaults to 1 second.</param>
     /// <returns>The canonicalized interval in the desired interval type.</returns>
-    public static Interval<DateTimeOffset, L, R> Canonicalize<L, R>(this IBoundedInterval<DateTimeOffset> value, TimeSpan? step = null)
+    public static Interval<DateTimeOffset, L, R> Canonicalize<L, R>(this Interval<DateTimeOffset> value, TimeSpan? step = null)
         where L : struct, IBound
         where R : struct, IBound
     {
@@ -53,7 +53,7 @@ public static class BoundedCanonicalizeExtensions
     /// <param name="value">The interval to be canonicalized.</param>
     /// <param name="step">The step value used to increment or decrement the interval bounds. Defaults to 1 day.</param>
     /// <returns>The canonicalized interval in the desired interval type.</returns>
-    public static Interval<DateOnly, L, R> Canonicalize<L, R>(this IBoundedInterval<DateOnly> value, int step = 1)
+    public static Interval<DateOnly, L, R> Canonicalize<L, R>(this Interval<DateOnly> value, int step = 1)
         where L : struct, IBound
         where R : struct, IBound
     {
@@ -67,7 +67,7 @@ public static class BoundedCanonicalizeExtensions
     /// <param name="value">The interval to be canonicalized.</param>
     /// <param name="step">The step value used to increment or decrement the interval bounds. Defaults to 1 second.</param>
     /// <returns>The canonicalized interval in the desired interval type.</returns>
-    public static Interval<TimeOnly, L, R> Canonicalize<L, R>(this IBoundedInterval<TimeOnly> value, TimeSpan? step = null)
+    public static Interval<TimeOnly, L, R> Canonicalize<L, R>(this Interval<TimeOnly> value, TimeSpan? step = null)
         where L : struct, IBound
         where R : struct, IBound
     {
@@ -76,7 +76,7 @@ public static class BoundedCanonicalizeExtensions
     }
 
     private static Interval<T, L, R> Canonicalize<T, L, R>(
-        IBoundedInterval<T> source,
+        Interval<T> source,
         Func<T, T> add,
         Func<T, T> substract)
         where T : notnull, IComparable<T>, ISpanParsable<T>
@@ -94,7 +94,7 @@ public static class BoundedCanonicalizeExtensions
     }
 
     private static Interval<T, L, R> ToClosed<T, L, R>(
-        IBoundedInterval<T> value,
+        Interval<T> value,
         Func<T, T> add,
         Func<T, T> substract)
         where T : notnull, IComparable<T>, ISpanParsable<T>
@@ -107,7 +107,7 @@ public static class BoundedCanonicalizeExtensions
     }
 
     private static Interval<T, L, R> ToClosedOpen<T, L, R>(
-       IBoundedInterval<T> value,
+       Interval<T> value,
        Func<T, T> add)
        where T : notnull, IComparable<T>, ISpanParsable<T>
        where L : struct, IBound
@@ -118,7 +118,7 @@ public static class BoundedCanonicalizeExtensions
             value.EndBound.IsOpen() ? value.End : add(value.End));
     }
 
-    private static Interval<T, L, R> ToOpenClosed<T, L, R>(IBoundedInterval<T> value, Func<T, T> substract)
+    private static Interval<T, L, R> ToOpenClosed<T, L, R>(Interval<T> value, Func<T, T> substract)
         where T : notnull, IComparable<T>, ISpanParsable<T>
         where L : struct, IBound
         where R : struct, IBound
@@ -128,7 +128,7 @@ public static class BoundedCanonicalizeExtensions
             value.EndBound.IsClosed() ? value.End : substract(value.End));
     }
 
-    private static Interval<T, L, R> ToOpen<T, L, R>(IBoundedInterval<T> value, Func<T, T> add, Func<T, T> substract)
+    private static Interval<T, L, R> ToOpen<T, L, R>(Interval<T> value, Func<T, T> add, Func<T, T> substract)
         where T : notnull, IComparable<T>, ISpanParsable<T>
         where L : struct, IBound
         where R : struct, IBound

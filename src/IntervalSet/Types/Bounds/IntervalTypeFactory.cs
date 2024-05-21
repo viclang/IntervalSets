@@ -13,5 +13,5 @@ public static class IntervalTypeFactory
         return (IntervalType)(EncodeStartBound(start) | (byte)end);
     }
 
-    private static int EncodeStartBound(Bound start) => (byte)start << 1;
+    private static int EncodeStartBound(Bound start) => (byte)start << 2;
 }

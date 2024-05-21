@@ -1,52 +1,18 @@
-﻿using System.Text.RegularExpressions;
+﻿using System.Diagnostics.CodeAnalysis;
+using System.Text.RegularExpressions;
 
 namespace IntervalSet.Types;
-internal static partial class IntervalRegex
+public static partial class IntervalParse
 {
-    [GeneratedRegex(@"^(\(|\[)\s*([^(),[\]\s]+)\s*,\s*([^(),[\]\s]+)\s*(\)|\])$", RegexOptions.ExplicitCapture)]
-    internal static partial Regex BoundedIntervalRegex();
+    private const string NotFoundMessage = "Interval not found in string. Please provide an interval string in correct format.";
 
-    [GeneratedRegex(@"^(\)|\])\s*([^(),[\]\s]+)\s*,\s*([^(),[\]\s]+)\s*(\(|\[)$", RegexOptions.ExplicitCapture)]
-    internal static partial Regex ComplementIntervalRegex();
-
-    [GeneratedRegex(@"^(\(|\[)([^(),[\]]*),([^(),[\]]*)(\)|\])$", RegexOptions.ExplicitCapture)]
-    internal static partial Regex NullableIntervalRegex();
-
-    internal const string NotFoundMessage = "Interval not found in string. Please provide an interval string in correct format.";
-
-    internal static (string start, string end) MatchBoundedInterval(string s)
+    [GeneratedRegex(@"^(\(|\[)\s*([^(),[\]]*),([^(),[\]]*)\s*(\)|\])$", RegexOptions.ExplicitCapture)]
+    private static partial Regex IntervalRegex();
+    
+    internal static Interval<T> Parse<T>(string s, IFormatProvider? provider)
+        where T : notnull, IComparable<T>, ISpanParsable<T>
     {
-        return MatchInterval(s, BoundedIntervalRegex());
-    }
-
-    internal static (string start, string end) MatchComplementInterval(string s)
-    {
-        return MatchInterval(s, ComplementIntervalRegex());
-    }
-
-    private static int MatchInterval(string s, Regex regex)
-    {
-        if (!regex.IsMatch(s))
-        {
-            throw new FormatException(NotFoundMessage);
-        }
-        int commaIndex = s.IndexOf(',');
-        return commaIndex;
-    }
-
-    internal static (ReadOnlySpan<char> start, ReadOnlySpan<char> end) MatchBoundedInterval(ReadOnlySpan<char> s)
-    {
-        return MatchInterval(s, BoundedIntervalRegex());
-    }
-
-    internal static (ReadOnlySpan<char> start, ReadOnlySpan<char> end) MatchComplementInterval(ReadOnlySpan<char> s)
-    {
-        return MatchInterval(s, ComplementIntervalRegex());
-    }
-
-    private static int MatchInterval(ReadOnlySpan<char> s, Regex regex)
-    {
-        if (!regex.IsMatch(s))
+        if (!IntervalRegex().IsMatch(s))
         {
             throw new FormatException(NotFoundMessage);
         }
@@ -54,164 +20,311 @@ internal static partial class IntervalRegex
         var startValue = s[1..commaIndex];
         var endValue = s[(commaIndex + 1)..^1];
 
-        return commaIndex;
+        T start;
+        T end;
+        Bound startBound;
+        Bound endBound;
+        if (IsUnbounded(startValue))
+        {
+            startBound = Bound.Unbounded;
+            start = default!;
+        }
+        else
+        {
+            startBound = s[0] == '[' ? Bound.Closed : Bound.Open;
+            start = T.Parse(startValue, provider);
+        }
+
+        if (IsUnbounded(endValue))
+        {
+            endBound = Bound.Unbounded;
+            end = default!;
+        }
+        else
+        {
+            endBound = s[0] == ']' ? Bound.Closed : Bound.Open;
+            end = T.Parse(endValue, provider);
+        }
+        return new Interval<T>(start, end, startBound, endBound);
     }
 
-    internal static Interval<T> ParseBounded<T>(string s, Func<string, T> parse)
-    where T : notnull, IComparable<T>, ISpanParsable<T>
+    internal static Interval<T> Parse<T>(ReadOnlySpan<char> s, IFormatProvider? provider)
+        where T : notnull, IComparable<T>, ISpanParsable<T>
     {
-        if (!BoundedIntervalRegex().IsMatch(s))
+        if (!IntervalRegex().IsMatch(s))
         {
             throw new FormatException(NotFoundMessage);
         }
         int commaIndex = s.IndexOf(',');
         var startValue = s[1..commaIndex];
         var endValue = s[(commaIndex + 1)..^1];
-        var intervalType = ParseBounds(s[0], s[^1]);
-        return new Interval<T>(parse(startValue), parse(endValue), intervalType);
-    }
 
-    internal static ComplementInterval<T> ParseComplement<T>(string s, Func<string, T> parse)
-        where T : notnull, IComparable<T>, ISpanParsable<T>
-    {
-        var (start, end) = MatchInterval(s, ComplementIntervalRegex());
-        var intervalType = ParseComplementBounds(s[0], s[^1]);
-        return new ComplementInterval<T>(parse(start), parse(end), intervalType);
-    }
-
-    internal static UnboundedInterval<T> ParseUnbounded<T>(string s)
-        where T : notnull, IComparable<T>, ISpanParsable<T>
-    {
-        var (start, end) = MatchInterval(s, NullableIntervalRegex());
-        if (!IsUnbounded(start) && !IsUnbounded(end))
+        T start;
+        T end;
+        Bound startBound;
+        Bound endBound;
+        if (IsUnbounded(startValue))
         {
-            throw new FormatException(NotFoundMessage);
+            startBound = Bound.Unbounded;
+            start = default!;
         }
-        return new UnboundedInterval<T>();
+        else
+        {
+            startBound = s[0] == '[' ? Bound.Closed : Bound.Open;
+            start = T.Parse(startValue, provider);
+        }
+
+        if (IsUnbounded(endValue))
+        {
+            endBound = Bound.Unbounded;
+            end = default!;
+        }
+        else
+        {
+            endBound = s[0] == ']' ? Bound.Closed : Bound.Open;
+            end = T.Parse(endValue, provider);
+        }
+        return new Interval<T>(start, end, startBound, endBound);
     }
 
-    internal static LeftBoundedInterval<T> ParseLeftBounded<T>(string s, Func<string, T> parse)
+    internal static bool TryParse<T>(
+        [NotNullWhen(true)] string? s,
+        IFormatProvider? provider,
+        [MaybeNullWhen(false)] out Interval<T> result)
         where T : notnull, IComparable<T>, ISpanParsable<T>
     {
-        var (start, end) = MatchInterval(s, NullableIntervalRegex());
-        if (IsUnbounded(start) || !IsUnbounded(end))
-        {
-            throw new FormatException(NotFoundMessage);
-        }
-        return new LeftBoundedInterval<T>(parse(start), s[0] == '[' ? Bound.Closed : Bound.Open);
-    }
-
-    public static RightBoundedInterval<T> ParseRightBounded<T>(string s, Func<string, T> parse)
-        where T : notnull, IComparable<T>, ISpanParsable<T>
-    {
-        var (start, end) = MatchInterval(s, NullableIntervalRegex());
-        if (!IsUnbounded(start) || IsUnbounded(end))
-        {
-            throw new FormatException(NotFoundMessage);
-        }
-        return new RightBoundedInterval<T>(parse(end), s[^1] == ']' ? Bound.Closed : Bound.Open);
-    }
-
-    internal static bool TryParseBounded<T>(string s, IFormatProvider? provider, out Interval<T> result)
-    where T : notnull, IComparable<T>, ISpanParsable<T>
-    {
-        result = default!;
-        if (!BoundedIntervalRegex().IsMatch(s))
+        result = null;
+        if (s is null || !IntervalRegex().IsMatch(s))
         {
             return false;
         }
+        int commaIndex = s.IndexOf(',');
+        var startValue = s[1..commaIndex];
+        var endValue = s[(commaIndex + 1)..^1];
 
-        var (start, end) = MatchInterval(s, BoundedIntervalRegex());
-        var intervalType = ParseBounds(s[0], s[^1]);
-
-        if (T.TryParse(start, provider, out var startParsed) && T.TryParse(end, provider, out var endParsed))
+        T start;
+        T end;
+        Bound startBound;
+        Bound endBound;
+        if (IsUnbounded(startValue))
         {
-            result = new Interval<T>(startParsed, endParsed, intervalType);
-            return true;
+            startBound = Bound.Unbounded;
+            start = default!;
         }
-        return false;
-    }
-
-    internal static bool TryParseComplement<T>(string s, IFormatProvider? provider, out ComplementInterval<T> result)
-        where T : notnull, IComparable<T>, ISpanParsable<T>
-    {
-        result = default!;
-        if (!ComplementIntervalRegex().IsMatch(s))
+        else
         {
-            return false;
-        }
-
-        var (start, end) = MatchInterval(s, ComplementIntervalRegex());
-        var intervalType = ParseComplementBounds(s[0], s[^1]);
-
-        if (T.TryParse(start, provider, out var startParsed) && T.TryParse(end, provider, out var endParsed))
-        {
-            result = new ComplementInterval<T>(startParsed, endParsed, intervalType);
-            return true;
-        }
-        return false;
-    }
-
-    internal static bool TryParseUnbounded<T>(string s, out UnboundedInterval<T> result)
-        where T : notnull, IComparable<T>, ISpanParsable<T>
-    {
-        result = default!;
-        if (!NullableIntervalRegex().IsMatch(s))
-        {
-            return false;
+            startBound = s[0] == '[' ? Bound.Closed : Bound.Open;
+            if (!T.TryParse(startValue, provider, out start!))
+            {
+                return false;
+            }
         }
 
-        var (start, end) = MatchInterval(s, NullableIntervalRegex());
-        if (!IsUnbounded(start) && !IsUnbounded(end))
+        if (IsUnbounded(endValue))
         {
-            return false;
+            endBound = Bound.Unbounded;
+            end = default!;
         }
-
-        result = new UnboundedInterval<T>();
+        else
+        {
+            endBound = s[0] == ']' ? Bound.Closed : Bound.Open;
+            if(!T.TryParse(endValue, provider, out end!))
+            {
+                return false;
+            }
+        }
+        result = new Interval<T>(start, end, startBound, endBound);
         return true;
     }
 
-    internal static bool TryParseLeftBounded<T>(string s, IFormatProvider? provider, out LeftBoundedInterval<T> result)
+    internal static bool TryParse<T>(ReadOnlySpan<char> s, IFormatProvider? provider, [MaybeNullWhen(false)] out Interval<T> result)
         where T : notnull, IComparable<T>, ISpanParsable<T>
     {
-        result = default!;
-        if (!NullableIntervalRegex().IsMatch(s))
+        result = null;
+        if (!IntervalRegex().IsMatch(s))
+        {
+            return false;
+        }
+        int commaIndex = s.IndexOf(',');
+        var startValue = s[1..commaIndex];
+        var endValue = s[(commaIndex + 1)..^1];
+
+        T start;
+        T end;
+        Bound startBound;
+        Bound endBound;
+        if (IsUnbounded(startValue))
+        {
+            startBound = Bound.Unbounded;
+            start = default!;
+        }
+        else
+        {
+            startBound = s[0] == '[' ? Bound.Closed : Bound.Open;
+            if (!T.TryParse(startValue, provider, out start!))
+            {
+                return false;
+            }
+        }
+
+        if (IsUnbounded(endValue))
+        {
+            endBound = Bound.Unbounded;
+            end = default!;
+        }
+        else
+        {
+            endBound = s[0] == ']' ? Bound.Closed : Bound.Open;
+            if (!T.TryParse(endValue, provider, out end!))
+            {
+                return false;
+            }
+        }
+        result = new Interval<T>(start, end, startBound, endBound);
+        return true;
+    }
+
+    internal static (T start, T end) Parse<T, L, R>(ReadOnlySpan<char> s, IFormatProvider? provider)
+        where T : notnull, IComparable<T>, ISpanParsable<T>
+        where L : struct, IBound
+        where R : struct, IBound
+    {
+        if (!IntervalRegex().IsMatch(s)
+            || (!L.Bound.IsClosed() && s[0] == '[')
+            || (!R.Bound.IsClosed() && s[^1] == ']'))
+        {
+            throw new FormatException(NotFoundMessage);
+        }
+
+        int commaIndex = s.IndexOf(',');
+        var startValue = s[1..commaIndex];
+        var endValue = s[(commaIndex + 1)..^1];
+
+        if(L.Bound.IsUnbounded() && !IsUnbounded(startValue)
+            || R.Bound.IsUnbounded() && !IsUnbounded(endValue))
+        {
+            throw new FormatException(NotFoundMessage);
+        }
+
+        return (T.Parse(startValue, provider), T.Parse(endValue, provider));
+    }
+
+    internal static (T start, T end) Parse<T, L, R>(string s, IFormatProvider? provider)
+        where T : notnull, IComparable<T>, ISpanParsable<T>
+        where L : struct, IBound
+        where R : struct, IBound
+    {
+
+        if (!IntervalRegex().IsMatch(s)
+            || (!L.Bound.IsClosed() && s[0] == '[')
+            || (!R.Bound.IsClosed() && s[^1] == ']'))
+        {
+            throw new FormatException(NotFoundMessage);
+        }
+
+        int commaIndex = s.IndexOf(',');
+        var startValue = s[1..commaIndex];
+        var endValue = s[(commaIndex + 1)..^1];
+
+        if (L.Bound.IsUnbounded() && !IsUnbounded(startValue)
+            || R.Bound.IsUnbounded() && !IsUnbounded(endValue))
+        {
+            throw new FormatException(NotFoundMessage);
+        }
+
+        return (T.Parse(startValue, provider), T.Parse(endValue, provider));
+    }
+
+    internal static bool TryParse<T, L, R>(
+        ReadOnlySpan<char> s,
+        IFormatProvider? provider,
+        [MaybeNullWhen(false)] out (T start, T end) result)
+        where T : notnull, IComparable<T>, ISpanParsable<T>
+        where L : struct, IBound
+        where R : struct, IBound
+    {
+        result = (default!, default!);
+        if (!IntervalRegex().IsMatch(s))
         {
             return false;
         }
 
-        var (start, end) = MatchInterval(s, NullableIntervalRegex());
-        if (IsUnbounded(start) || !IsUnbounded(end))
+        int commaIndex = s.IndexOf(',');
+        var startValue = s[1..commaIndex];
+        var endValue = s[(commaIndex + 1)..^1];
+
+        var validBounds = (L.Bound, R.Bound) switch
+        {
+            (Bound.Open or Bound.Unbounded, Bound.Open or Bound.Unbounded) => s[0] == '(' && s[^1] == ')',
+            (Bound.Open or Bound.Unbounded, Bound.Closed) => s[0] == '(' && s[^1] == ']',
+            (Bound.Closed, Bound.Open or Bound.Unbounded) => s[0] == '[' && s[^1] == ')',
+            (Bound.Closed, Bound.Closed) => s[0] == '[' && s[^1] == ']',
+            _ => false
+        };
+
+        var validValues = (L.Bound, R.Bound) switch
+        {
+            (Bound.Unbounded, Bound.Unbounded) => IsUnbounded(startValue) && IsUnbounded(endValue),
+            (Bound.Unbounded, _) => IsUnbounded(startValue),
+            (_, Bound.Unbounded) => IsUnbounded(endValue),
+            _ => !IsUnbounded(startValue) && !IsUnbounded(endValue)
+        };
+
+        if (!validBounds || !validValues)
         {
             return false;
         }
 
-        if (T.TryParse(start, provider, out var startParsed))
+        if (T.TryParse(startValue, provider, out var start) && T.TryParse(endValue, provider, out var end))
         {
-            result = new LeftBoundedInterval<T>(startParsed, s[0] == '[' ? Bound.Closed : Bound.Open);
+            result = (start, end);
             return true;
         }
         return false;
     }
 
-    internal static bool TryParseRightBounded<T>(string s, IFormatProvider? provider, out RightBoundedInterval<T> result)
+    internal static bool TryParse<T, L, R>(
+        [NotNullWhen(true)] string? s,
+        IFormatProvider? provider,
+        [MaybeNullWhen(false)] out (T start, T end) result)
         where T : notnull, IComparable<T>, ISpanParsable<T>
+        where L : struct, IBound
+        where R : struct, IBound
     {
-        result = default!;
-        if (!NullableIntervalRegex().IsMatch(s))
+        result = (default!, default!);
+        if (!IntervalRegex().IsMatch(s))
         {
             return false;
         }
 
-        var (start, end) = MatchInterval(s, NullableIntervalRegex());
-        if (!IsUnbounded(start) || IsUnbounded(end))
+        int commaIndex = s.IndexOf(',');
+        var startValue = s[1..commaIndex];
+        var endValue = s[(commaIndex + 1)..^1];
+
+        var validBounds = (L.Bound, R.Bound) switch
+        {
+            (Bound.Open or Bound.Unbounded, Bound.Open or Bound.Unbounded) => s[0] == '(' && s[^1] == ')',
+            (Bound.Open or Bound.Unbounded, Bound.Closed) => s[0] == '(' && s[^1] == ']',
+            (Bound.Closed, Bound.Open or Bound.Unbounded) => s[0] == '[' && s[^1] == ')',
+            (Bound.Closed, Bound.Closed) => s[0] == '[' && s[^1] == ']',
+            _ => false
+        };
+
+        var validValues = (L.Bound, R.Bound) switch
+        {
+            (Bound.Unbounded, Bound.Unbounded) => IsUnbounded(startValue) && IsUnbounded(endValue),
+            (Bound.Unbounded, _) => IsUnbounded(startValue),
+            (_, Bound.Unbounded) => IsUnbounded(endValue),
+            _ => !IsUnbounded(startValue) && !IsUnbounded(endValue)
+        };
+
+        if (!validBounds || !validValues)
         {
             return false;
         }
-
-        if (T.TryParse(end, provider, out var endParsed))
+        if (T.TryParse(startValue, provider, out var start) && T.TryParse(endValue, provider, out var end))
         {
-            result = new RightBoundedInterval<T>(endParsed, s[^1] == ']' ? Bound.Closed : Bound.Open);
+            result = (start, end);
             return true;
         }
         return false;
@@ -224,27 +337,10 @@ internal static partial class IntervalRegex
             || value.Contains("infinity", StringComparison.OrdinalIgnoreCase);
     }
 
-    internal static IntervalType ParseBounds(this (char left, char right) bounds)
+    private static bool IsUnbounded(ReadOnlySpan<char> value)
     {
-        return bounds switch
-        {
-            ('(', ')') => IntervalType.Open,
-            ('(', ']') => IntervalType.OpenClosed,
-            ('[', ')') => IntervalType.ClosedOpen,
-            ('[', ']') => IntervalType.Closed,
-            _ => throw new FormatException(NotFoundMessage)
-        };
-    }
-
-    internal static IntervalType ParseComplementBounds(this (char left, char right) bounds)
-    {
-        return bounds switch
-        {
-            (')', '(') => IntervalType.Open,
-            (')', '[') => IntervalType.OpenClosed,
-            (']', '(') => IntervalType.ClosedOpen,
-            (']', '[') => IntervalType.Closed,
-            _ => throw new FormatException(NotFoundMessage)
-        };
+        return value.IsWhiteSpace()
+            || value.Contains('∞')
+            || value.Contains("infinity", StringComparison.OrdinalIgnoreCase);
     }
 }

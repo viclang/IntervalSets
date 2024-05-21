@@ -1,31 +1,23 @@
-﻿using IntervalSet.Types.Bounded;
-using System.Diagnostics.CodeAnalysis;
+﻿using System.Diagnostics.CodeAnalysis;
 
 namespace IntervalSet.Types;
-public sealed record OpenInterval<T>(T Start, T End) : TypedBoundedInterval<T, Open, Open>(Start, End), ISpanParsable<OpenInterval<T>>
+public sealed class OpenInterval<T>(T Start, T End) : Interval<T, Open, Open>(Start, End)
     where T : notnull, IComparable<T>, ISpanParsable<T>
 {
-    public static implicit operator OpenInterval<T>(Interval<T, Open, Open> closedInterval)
-        => new(closedInterval.Start, closedInterval.End);
-
-    public static implicit operator Interval<T, Open, Open>(OpenInterval<T> closedInterval)
-        => new(closedInterval.Start, closedInterval.End);
-
-    public static implicit operator Interval<T>(OpenInterval<T> closedInterval)
-        => new(closedInterval.Start, closedInterval.End, IntervalType.Open);
-
     public override bool IsEmpty => End.CompareTo(Start) <= 0;
 
     public override string ToString() => $"({Start}, {End})";
 
-    public static OpenInterval<T> Parse(string s, IFormatProvider? provider)
+    public static new OpenInterval<T> Parse(string s, IFormatProvider? provider = null)
     {
-        return ComplementIntervalParse.Parse<T, Open, Open>(s, provider);
+        var (start, end) = IntervalParse.Parse<T, Open, Open>(s, provider);
+        return new(start, end);
     }
 
-    public static OpenInterval<T> Parse(ReadOnlySpan<char> s, IFormatProvider? provider)
+    public static new OpenInterval<T> Parse(ReadOnlySpan<char> s, IFormatProvider? provider = null)
     {
-        return ComplementIntervalParse.Parse<T, Open, Open>(s, provider);
+        var (start, end) = IntervalParse.Parse<T, Open, Open>(s, provider);
+        return new(start, end);
     }
 
     public static bool TryParse(
@@ -34,9 +26,9 @@ public sealed record OpenInterval<T>(T Start, T End) : TypedBoundedInterval<T, O
         [MaybeNullWhen(false)] out OpenInterval<T> result)
     {
         result = null;
-        if(ComplementIntervalParse.TryParse<T, Open, Open>(s, provider, out var typedResult))
+        if (IntervalParse.TryParse<T, Open, Open>(s, provider, out var tupleResult))
         {
-            result = typedResult;
+            result = new(tupleResult.start, tupleResult.end);
             return true;
         }
         return false;
@@ -48,9 +40,9 @@ public sealed record OpenInterval<T>(T Start, T End) : TypedBoundedInterval<T, O
         [MaybeNullWhen(false)] out OpenInterval<T> result)
     {
         result = null;
-        if (ComplementIntervalParse.TryParse<T, Open, Open>(s, provider, out var typedResult))
+        if (IntervalParse.TryParse<T, Open, Open>(s, provider, out var tupleResult))
         {
-            result = typedResult;
+            result = new(tupleResult.start, tupleResult.end);
             return true;
         }
         return false;

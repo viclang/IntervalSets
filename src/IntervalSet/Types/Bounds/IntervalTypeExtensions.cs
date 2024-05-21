@@ -1,13 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace IntervalSet.Types;
+﻿namespace IntervalSet.Types;
 public static class IntervalTypeExtensions
 {
-    private const int ExtractBound = 1;
+    private const int ExtractBound = 3;
 
     public static Bound StartBound(this IntervalType intervalType)
         => (Bound)(DecodeStartBound(intervalType) & ExtractBound);
@@ -15,5 +9,5 @@ public static class IntervalTypeExtensions
     public static Bound EndBound(this IntervalType intervalType)
         => (Bound)((byte)intervalType & ExtractBound);
 
-    private static int DecodeStartBound(IntervalType intervalType) => (byte)intervalType >> 1;
+    private static int DecodeStartBound(IntervalType intervalType) => (byte)intervalType >> 2;
 }
