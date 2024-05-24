@@ -4,8 +4,6 @@ namespace IntervalSet.Types;
 public sealed class ClosedInterval<T>(T Start, T End) : Interval<T, Closed, Closed>(Start, End)
     where T : notnull, IComparable<T>, ISpanParsable<T>
 {
-    public override bool IsEmpty => End.CompareTo(Start) < 0;
-
     public override string ToString() => $"[{Start}, {End}]";
 
     public static new ClosedInterval<T> Parse(string s, IFormatProvider? provider = null)

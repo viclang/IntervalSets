@@ -1,9 +1,9 @@
 ﻿using IntervalSet.Types;
 
 namespace IntervalSet.Operations;
-public static class BoundedContainsExtensions
+public static class IntervalContainsExtensions
 {
-    public static bool Contains<T>(this Interval<T> interval, T other)
+    public static bool Contains<T>(this IInterval<T> interval, T other)
         where T : notnull, IComparable<T>, ISpanParsable<T>
     {
         var startComparison = interval.Start.CompareTo(other);

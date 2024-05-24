@@ -12,12 +12,16 @@ public interface IBound
     static abstract Bound Bound { get; }
 }
 
-public struct Open : IBound
+public interface IBounded : IBound
+{
+}
+
+public struct Open : IBounded
 {
     public static Bound Bound => Bound.Open;
 }
 
-public struct Closed : IBound
+public struct Closed : IBounded
 {
     public static Bound Bound => Bound.Closed;
 }

@@ -8,7 +8,7 @@ public static partial class IntervalParse
 
     [GeneratedRegex(@"^(\(|\[)\s*([^(),[\]]*),([^(),[\]]*)\s*(\)|\])$", RegexOptions.ExplicitCapture)]
     private static partial Regex IntervalRegex();
-    
+
     internal static Interval<T> Parse<T>(string s, IFormatProvider? provider)
         where T : notnull, IComparable<T>, ISpanParsable<T>
     {
@@ -42,7 +42,7 @@ public static partial class IntervalParse
         }
         else
         {
-            endBound = s[0] == ']' ? Bound.Closed : Bound.Open;
+            endBound = s[^1] == ']' ? Bound.Closed : Bound.Open;
             end = T.Parse(endValue, provider);
         }
         return new Interval<T>(start, end, startBound, endBound);
@@ -81,7 +81,7 @@ public static partial class IntervalParse
         }
         else
         {
-            endBound = s[0] == ']' ? Bound.Closed : Bound.Open;
+            endBound = s[^1] == ']' ? Bound.Closed : Bound.Open;
             end = T.Parse(endValue, provider);
         }
         return new Interval<T>(start, end, startBound, endBound);
@@ -127,13 +127,13 @@ public static partial class IntervalParse
         }
         else
         {
-            endBound = s[0] == ']' ? Bound.Closed : Bound.Open;
-            if(!T.TryParse(endValue, provider, out end!))
+            endBound = s[^1] == ']' ? Bound.Closed : Bound.Open;
+            if (!T.TryParse(endValue, provider, out end!))
             {
                 return false;
             }
         }
-        result = new Interval<T>(start, end, startBound, endBound);
+        result = new(start, end, startBound, endBound);
         return true;
     }
 
@@ -174,7 +174,7 @@ public static partial class IntervalParse
         }
         else
         {
-            endBound = s[0] == ']' ? Bound.Closed : Bound.Open;
+            endBound = s[^1] == ']' ? Bound.Closed : Bound.Open;
             if (!T.TryParse(endValue, provider, out end!))
             {
                 return false;
@@ -189,35 +189,7 @@ public static partial class IntervalParse
         where L : struct, IBound
         where R : struct, IBound
     {
-        if (!IntervalRegex().IsMatch(s)
-            || (!L.Bound.IsClosed() && s[0] == '[')
-            || (!R.Bound.IsClosed() && s[^1] == ']'))
-        {
-            throw new FormatException(NotFoundMessage);
-        }
-
-        int commaIndex = s.IndexOf(',');
-        var startValue = s[1..commaIndex];
-        var endValue = s[(commaIndex + 1)..^1];
-
-        if(L.Bound.IsUnbounded() && !IsUnbounded(startValue)
-            || R.Bound.IsUnbounded() && !IsUnbounded(endValue))
-        {
-            throw new FormatException(NotFoundMessage);
-        }
-
-        return (T.Parse(startValue, provider), T.Parse(endValue, provider));
-    }
-
-    internal static (T start, T end) Parse<T, L, R>(string s, IFormatProvider? provider)
-        where T : notnull, IComparable<T>, ISpanParsable<T>
-        where L : struct, IBound
-        where R : struct, IBound
-    {
-
-        if (!IntervalRegex().IsMatch(s)
-            || (!L.Bound.IsClosed() && s[0] == '[')
-            || (!R.Bound.IsClosed() && s[^1] == ']'))
+        if (!IntervalRegex().IsMatch(s))
         {
             throw new FormatException(NotFoundMessage);
         }
@@ -232,6 +204,28 @@ public static partial class IntervalParse
             throw new FormatException(NotFoundMessage);
         }
 
+        return (T.Parse(startValue, provider), T.Parse(endValue, provider));
+    }
+
+    internal static (T start, T end) Parse<T, L, R>(string s, IFormatProvider? provider)
+        where T : notnull, IComparable<T>, ISpanParsable<T>
+        where L : struct, IBound
+        where R : struct, IBound
+    {
+
+        if (!IntervalRegex().IsMatch(s))
+        {
+            throw new FormatException(NotFoundMessage);
+        }
+
+        int commaIndex = s.IndexOf(',');
+        var startValue = s[1..commaIndex];
+        var endValue = s[(commaIndex + 1)..^1];
+
+        if (!ValidateBounds<L, R>(s) || !ValidateValues<L, R>(startValue, endValue))
+        {
+            throw new FormatException(NotFoundMessage);
+        }
         return (T.Parse(startValue, provider), T.Parse(endValue, provider));
     }
 
@@ -253,34 +247,29 @@ public static partial class IntervalParse
         var startValue = s[1..commaIndex];
         var endValue = s[(commaIndex + 1)..^1];
 
-        var validBounds = (L.Bound, R.Bound) switch
-        {
-            (Bound.Open or Bound.Unbounded, Bound.Open or Bound.Unbounded) => s[0] == '(' && s[^1] == ')',
-            (Bound.Open or Bound.Unbounded, Bound.Closed) => s[0] == '(' && s[^1] == ']',
-            (Bound.Closed, Bound.Open or Bound.Unbounded) => s[0] == '[' && s[^1] == ')',
-            (Bound.Closed, Bound.Closed) => s[0] == '[' && s[^1] == ']',
-            _ => false
-        };
-
-        var validValues = (L.Bound, R.Bound) switch
-        {
-            (Bound.Unbounded, Bound.Unbounded) => IsUnbounded(startValue) && IsUnbounded(endValue),
-            (Bound.Unbounded, _) => IsUnbounded(startValue),
-            (_, Bound.Unbounded) => IsUnbounded(endValue),
-            _ => !IsUnbounded(startValue) && !IsUnbounded(endValue)
-        };
-
-        if (!validBounds || !validValues)
+        if (!ValidateBounds<L, R>(s) || !ValidateValues<L, R>(startValue, endValue))
         {
             return false;
         }
-
         if (T.TryParse(startValue, provider, out var start) && T.TryParse(endValue, provider, out var end))
         {
             result = (start, end);
             return true;
         }
         return false;
+    }
+
+    private static bool ValidateValues<L, R>(ReadOnlySpan<char> startValue, ReadOnlySpan<char> endValue)
+        where L : struct, IBound
+        where R : struct, IBound
+    {
+        return (L.Bound, R.Bound) switch
+        {
+            (Bound.Unbounded, Bound.Unbounded) => IsUnbounded(startValue) && IsUnbounded(endValue),
+            (Bound.Unbounded, _) => IsUnbounded(startValue),
+            (_, Bound.Unbounded) => IsUnbounded(endValue),
+            _ => !IsUnbounded(startValue) && !IsUnbounded(endValue)
+        };
     }
 
     internal static bool TryParse<T, L, R>(
@@ -292,33 +281,15 @@ public static partial class IntervalParse
         where R : struct, IBound
     {
         result = (default!, default!);
-        if (!IntervalRegex().IsMatch(s))
+        if (s is null || !IntervalRegex().IsMatch(s))
         {
             return false;
         }
-
         int commaIndex = s.IndexOf(',');
         var startValue = s[1..commaIndex];
         var endValue = s[(commaIndex + 1)..^1];
 
-        var validBounds = (L.Bound, R.Bound) switch
-        {
-            (Bound.Open or Bound.Unbounded, Bound.Open or Bound.Unbounded) => s[0] == '(' && s[^1] == ')',
-            (Bound.Open or Bound.Unbounded, Bound.Closed) => s[0] == '(' && s[^1] == ']',
-            (Bound.Closed, Bound.Open or Bound.Unbounded) => s[0] == '[' && s[^1] == ')',
-            (Bound.Closed, Bound.Closed) => s[0] == '[' && s[^1] == ']',
-            _ => false
-        };
-
-        var validValues = (L.Bound, R.Bound) switch
-        {
-            (Bound.Unbounded, Bound.Unbounded) => IsUnbounded(startValue) && IsUnbounded(endValue),
-            (Bound.Unbounded, _) => IsUnbounded(startValue),
-            (_, Bound.Unbounded) => IsUnbounded(endValue),
-            _ => !IsUnbounded(startValue) && !IsUnbounded(endValue)
-        };
-
-        if (!validBounds || !validValues)
+        if (!ValidateBounds<L, R>(s) || !ValidateValues<L, R>(startValue, endValue))
         {
             return false;
         }
@@ -329,6 +300,32 @@ public static partial class IntervalParse
         }
         return false;
     }
+
+    private static bool ValidateBounds<L, R>(string s)
+        where L : struct, IBound
+        where R : struct, IBound
+        => (L.Bound, R.Bound) switch
+        {
+            (Bound.Open or Bound.Unbounded, Bound.Open or Bound.Unbounded) => s[0] == '(' && s[^1] == ')',
+            (Bound.Open or Bound.Unbounded, Bound.Closed) => s[0] == '(' && s[^1] == ']',
+            (Bound.Closed, Bound.Open or Bound.Unbounded) => s[0] == '[' && s[^1] == ')',
+            (Bound.Closed, Bound.Closed) => s[0] == '[' && s[^1] == ']',
+            _ => false
+        };
+
+    private static bool ValidateBounds<L, R>(ReadOnlySpan<char> s)
+        where L : struct, IBound
+        where R : struct, IBound
+        => (L.Bound, R.Bound) switch
+        {
+            (Bound.Open or Bound.Unbounded, Bound.Open or Bound.Unbounded) => s[0] == '(' && s[^1] == ')',
+            (Bound.Open or Bound.Unbounded, Bound.Closed) => s[0] == '(' && s[^1] == ']',
+            (Bound.Closed, Bound.Open or Bound.Unbounded) => s[0] == '[' && s[^1] == ')',
+            (Bound.Closed, Bound.Closed) => s[0] == '[' && s[^1] == ']',
+            _ => false
+        };
+
+
 
     private static bool IsUnbounded(string value)
     {
