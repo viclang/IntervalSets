@@ -11,7 +11,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IntervalSet", "src\Interval
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IntervalSet.Tests", "test\IntervalSet.Tests\IntervalSet.Tests.csproj", "{CF54A3D6-4EC6-4D32-A104-E621A202243C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IntervalSet.Benchmark", "tools\IntervalSet.Benchmark\IntervalSet.Benchmark.csproj", "{295135AB-3C62-4BAD-B5C8-CA4509D78D33}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IntervalSet.Benchmark", "tools\IntervalSet.Benchmark\IntervalSet.Benchmark.csproj", "{295135AB-3C62-4BAD-B5C8-CA4509D78D33}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tools", "tools", "{8841A515-6A13-44BC-AE91-C3DA85F62E85}"
 EndProject

@@ -1,7 +1,7 @@
 ﻿using IntervalSet.Types;
 
 namespace IntervalSet.Operations;
-public static class BoundedIterateExtensions
+public static class IntervalIterateExtensions
 {
     /// <summary>
     /// Generates a sequence of values within the interval by incrementing the starting value using the given step function.
