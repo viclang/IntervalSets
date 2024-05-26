@@ -18,7 +18,7 @@ public class Interval<T> : IInterval<T>
 
     public virtual bool IsEmpty => End.CompareTo(Start) is int comparison
         && !StartBound.IsUnbounded() && !EndBound.IsUnbounded()
-        && (comparison < 0 || comparison == 0 && IntervalType == IntervalType.Open);
+        && (comparison < 0 || comparison == 0 && (StartBound.IsOpen() || EndBound.IsOpen()));
 
     public Interval(T start, T end, Bound startBound, Bound endBound)
         : this(start, end, IntervalTypeFactory.Create(startBound, endBound))

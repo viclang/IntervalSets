@@ -19,7 +19,7 @@ public class Interval<T, L, R> : IInterval<T>
 
     public bool IsEmpty => End.CompareTo(Start) is int comparison
         && !StartBound.IsUnbounded() && !EndBound.IsUnbounded()
-        && (comparison < 0 || comparison == 0 && L.Bound.IsOpen() && R.Bound.IsOpen());
+        && (comparison < 0 || comparison == 0 && (L.Bound.IsOpen() || R.Bound.IsOpen()));
 
     public Interval(T start, T end)
     {
