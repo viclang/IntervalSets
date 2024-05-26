@@ -25,34 +25,6 @@ public class IntervalContainsExtensionsTests
 
         actual.Should().Be(expectedResult);
     }
-
-    [Theory]
-    [InlineData(1, 3, 1, false)]
-    [InlineData(1, 3, 3, false)]
-    [InlineData(1, 3, 2, true)]
-    public void OpenInterval_contains(int start, int end, int value, bool expectedResult)
-    {
-        var interval = new Interval<int, Open, Open>(start, end);
-
-        var actual = interval.Contains(value);
-
-        actual.Should().Be(expectedResult);
-    }
-
-
-    [Theory]
-    [InlineData(1, 3, 1, true)]
-    [InlineData(1, 3, 3, true)]
-    [InlineData(1, 3, 0, false)]
-    [InlineData(1, 3, 4, false)]
-    public void ClosedInterval_contains(int start, int end, int value, bool expectedResult)
-    {
-        var interval = new Interval<int, Closed, Closed>(start, end);
-
-        var actual = interval.Contains(value);
-
-        actual.Should().Be(expectedResult);
-    }
 }
 
 public abstract class IntervalContainsExtensionsTests<L, R>
@@ -67,7 +39,7 @@ public abstract class IntervalContainsExtensionsTests<L, R>
     [InlineData(1, 3, 2)]
     [InlineData(1, 3, int.MinValue)]
     [InlineData(1, 3, int.MaxValue)]
-    public void StronglyTypedInterval_contains_is_equivalent_to_Interval(int start, int end, int value)
+    public void TypedInterval_contains_is_equivalent_to_Interval(int start, int end, int value)
     {
         var interval = new Interval<int, L, R>(start, end);
         var expectedResult = new Interval<int>(start, end, L.Bound, R.Bound).Contains(value);
