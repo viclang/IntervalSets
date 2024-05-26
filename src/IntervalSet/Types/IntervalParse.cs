@@ -329,7 +329,7 @@ public static partial class IntervalParse
 
     private static bool IsUnbounded(string value)
     {
-        return string.IsNullOrEmpty(value)
+        return string.IsNullOrWhiteSpace(value)
             || value.Contains('∞')
             || value.Contains("infinity", StringComparison.OrdinalIgnoreCase);
     }

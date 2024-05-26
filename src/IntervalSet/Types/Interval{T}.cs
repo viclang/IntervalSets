@@ -37,13 +37,6 @@ public class Interval<T> : IInterval<T>
         End = end;
     }
 
-    public bool Contains(T other)
-    {
-        return Start.CompareTo(other) < 0 && other.CompareTo(End) < 0
-            || Start.Equals(other) && StartBound.IsClosed()
-            || End.Equals(other) && EndBound.IsClosed();
-    }
-
     public override bool Equals(object? obj) => Equals(obj as IInterval<T>);
 
     public bool Equals(IInterval<T>? other)

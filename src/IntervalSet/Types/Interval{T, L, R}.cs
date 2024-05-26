@@ -26,13 +26,6 @@ public class Interval<T, L, R> : IInterval<T>
         End = R.Bound.IsUnbounded() ? default! : end;
     }
 
-    public bool Contains(T other)
-    {
-        return Start.CompareTo(other) < 0 && other.CompareTo(End) < 0
-            || Start.Equals(other) && StartBound.IsClosed()
-            || End.Equals(other) && EndBound.IsClosed();
-    }
-
     public override bool Equals(object? obj) => Equals(obj as IInterval<T>);
 
     public bool Equals(IInterval<T>? other)

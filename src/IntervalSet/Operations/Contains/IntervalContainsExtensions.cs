@@ -6,8 +6,8 @@ public static class IntervalContainsExtensions
     public static bool Contains<T>(this IInterval<T> interval, T other)
         where T : notnull, IComparable<T>, ISpanParsable<T>
     {
-        var startComparison = interval.Start.CompareTo(other);
-        var endComparison = other.CompareTo(interval.End);
+        var startComparison = interval.StartBound.IsUnbounded() ? -1 : interval.Start.CompareTo(other);
+        var endComparison = interval.EndBound.IsUnbounded() ? -1 : other.CompareTo(interval.End);
 
         return startComparison < 0 && endComparison < 0
             || startComparison == 0 && interval.StartBound.IsClosed()
@@ -40,5 +40,35 @@ public static class IntervalContainsExtensions
     {
         return interval.Start.CompareTo(other) <= 0
             && other.CompareTo(interval.End) <= 0;
+    }
+
+    public static bool Contains<T>(this Interval<T, Open, Unbounded> interval, T other)
+        where T : IComparable<T>, ISpanParsable<T>
+    {
+        return interval.Start.CompareTo(other) < 0;
+    }
+
+    public static bool Contains<T>(this Interval<T, Closed, Unbounded> interval, T other)
+        where T : IComparable<T>, ISpanParsable<T>
+    {
+        return interval.Start.CompareTo(other) <= 0;
+    }
+
+    public static bool Contains<T>(this Interval<T, Unbounded, Open> interval, T other)
+        where T : IComparable<T>, ISpanParsable<T>
+    {
+        return other.CompareTo(interval.End) < 0;
+    }
+
+    public static bool Contains<T>(this Interval<T, Unbounded, Closed> interval, T other)
+        where T : IComparable<T>, ISpanParsable<T>
+    {
+        return other.CompareTo(interval.End) <= 0;
+    }
+
+    public static bool Contains<T>(this Interval<T, Unbounded, Unbounded> interval, T other)
+        where T : IComparable<T>, ISpanParsable<T>
+    {
+        return true;
     }
 }
