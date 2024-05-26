@@ -44,7 +44,19 @@ public abstract class IntervalContainsExtensionsTests<L, R>
         var interval = new Interval<int, L, R>(start, end);
         var expectedResult = new Interval<int>(start, end, L.Bound, R.Bound).Contains(value);
 
-        var actual = interval.Contains(value);
+        var actual = interval switch
+        {
+            Interval<int, Open, Open> openInterval => openInterval.Contains(value),
+            Interval<int, Open, Closed> openClosedInterval => openClosedInterval.Contains(value),
+            Interval<int, Closed, Open> ClosedOpenInterval => ClosedOpenInterval.Contains(value),
+            Interval<int, Closed, Closed> closedInterval => closedInterval.Contains(value),
+            Interval<int, Open, Unbounded> openUnboundedInterval => openUnboundedInterval.Contains(value),
+            Interval<int, Closed, Unbounded> closedUnboundedInterval => closedUnboundedInterval.Contains(value),
+            Interval<int, Unbounded, Open> unboundedOpenInterval => unboundedOpenInterval.Contains(value),
+            Interval<int, Unbounded, Closed> unboundedClosedInterval => unboundedClosedInterval.Contains(value),
+            Interval<int, Unbounded, Unbounded> unboundedInterval => unboundedInterval.Contains(value),
+            _ => throw new NotImplementedException()
+        };
 
         actual.Should().Be(expectedResult);
     }
