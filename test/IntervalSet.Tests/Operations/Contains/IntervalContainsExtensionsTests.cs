@@ -1,7 +1,6 @@
 ﻿using FluentAssertions;
-using IntervalSet.Types;
 using IntervalSet.Operations;
-using Newtonsoft.Json.Linq;
+using IntervalSet.Types;
 
 namespace IntervalSet.Tests.Operations.Contains;
 public class IntervalContainsExtensionsTests

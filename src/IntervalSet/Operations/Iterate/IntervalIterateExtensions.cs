@@ -10,7 +10,7 @@ public static class IntervalIterateExtensions
     /// <param name="value">The interval to generate values from.</param>
     /// <param name="addStep">The step function to increment the starting value with.</param>
     /// <returns>The sequence of values generated within the interval.</returns>
-    public static IEnumerable<T> Iterate<T>(this IInterval<T> value, Func<T, T> addStep)
+    public static IEnumerable<T> Iterate<T>(this Interval<T> value, Func<T, T> addStep)
         where T : struct, IEquatable<T>, IComparable<T>, ISpanParsable<T>
     {
         if (value.IsEmpty || value.StartBound.IsUnbounded() || value.EndBound.IsUnbounded())
@@ -29,7 +29,7 @@ public static class IntervalIterateExtensions
     /// <param name="start">The starting value of the sequence.</param>
     /// <param name="addStep">The step function to increment the starting value with.</param>
     /// <returns>The sequence of values generated within the interval.</returns>
-    public static IEnumerable<T> Iterate<T>(this IInterval<T> value, T start, Func<T, T> addStep)
+    public static IEnumerable<T> Iterate<T>(this Interval<T> value, T start, Func<T, T> addStep)
         where T : struct, IEquatable<T>, IComparable<T>, ISpanParsable<T>
     {
         if (value.Contains(start) && !value.IsEmpty)
