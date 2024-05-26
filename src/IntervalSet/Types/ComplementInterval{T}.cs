@@ -17,7 +17,8 @@ public class ComplementInterval<T> : IComplementInterval<T>
     public static ComplementInterval<T> Empty => new(default!, default!, IntervalType.Open);
 
     public bool IsEmpty => End.CompareTo(Start) is int comparison
-        && comparison < 0 || comparison == 0 && StartBound.IsOpen() && EndBound.IsOpen();
+        && StartBound.IsUnbounded() && EndBound.IsUnbounded()
+        || comparison < 0 || comparison == 0 && StartBound.IsOpen() && EndBound.IsOpen();
 
     public ComplementInterval(T start, T end, Bound startBound, Bound endBound)
         : this(start, end, IntervalTypeFactory.Create(startBound, endBound))
