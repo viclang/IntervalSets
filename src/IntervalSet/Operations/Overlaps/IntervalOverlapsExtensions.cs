@@ -15,8 +15,13 @@ public static class IntervalOverlapsExtensions
             return false;
         }
 
-        var startComparison = left.Start.CompareTo(right.End);
-        var endComparison = right.Start.CompareTo(left.End);
+        var startComparison = (left.StartBound.IsUnbounded() || right.EndBound.IsUnbounded())
+            ? -1
+            : left.Start.CompareTo(right.End);
+
+        var endComparison = (right.StartBound.IsUnbounded() || left.EndBound.IsUnbounded())
+            ? -1
+            : right.Start.CompareTo(left.End);
 
         return startComparison < 0 && endComparison < 0
             || startComparison == 0 && left.StartBound.IsClosed() && right.EndBound.IsClosed()
