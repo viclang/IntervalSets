@@ -20,6 +20,8 @@ public class Interval<T> : IInterval<T>
         && !StartBound.IsUnbounded() && !EndBound.IsUnbounded()
         && (comparison < 0 || comparison == 0 && (StartBound.IsOpen() || EndBound.IsOpen()));
 
+    public static Interval<T> Unbounded => new(default!, default!, IntervalType.Unbounded);
+
     public Interval(T start, T end, Bound startBound, Bound endBound)
         : this(start, end, IntervalTypeFactory.Create(startBound, endBound))
     {
