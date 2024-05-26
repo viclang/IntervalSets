@@ -1,7 +1,7 @@
 ﻿using IntervalSet.Types;
 
 namespace IntervalSet.Operations;
-public static class BoundedOverlapsExtensions
+public static class IntervalOverlapsExtensions
 {
     /// <summary>
     /// Returns a boolean value indicating if the left interval overlaps with the right interval.
