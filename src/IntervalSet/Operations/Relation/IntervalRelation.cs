@@ -34,25 +34,25 @@ public enum IntervalRelation : byte
     /// </summary>
     Starts = 6,
     /// <summary>
-    /// Indicates that the first interval is contained within the second interval.
+    /// Indicates that the second interval is contained within the first interval.
     /// </summary>
-    ContainedBy = 7,
-    /// <summary>
-    /// Indicates that the first interval finishes the second interval.
-    /// </summary>
-    Finishes = 8,
-    /// <summary>
-    /// Indicates that the two intervals are equal.
-    /// </summary>
-    Equal = 9,
+    Contains = 7,
     /// <summary>
     /// Indicates that the second interval finishes the first interval.
     /// </summary>
-    FinishedBy = 10,
+    FinishedBy = 8,
     /// <summary>
-    /// Indicates that the second interval is contained within the first interval.
+    /// Indicates that the two intervals are equal.
     /// </summary>
-    Contains = 11,
+    Equals = 9,
+    /// <summary>
+    /// Indicates that the first interval finishes the second interval.
+    /// </summary>
+    Finishes = 10,
+    /// <summary>
+    /// Indicates that the first interval is contained within the second interval.
+    /// </summary>
+    ContainedBy = 11,
     /// <summary>
     /// Indicates that the second interval starts and overlaps with the first interval.
     /// </summary>

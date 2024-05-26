@@ -18,7 +18,7 @@ public static class BoundedRelationExtensions
 
         return (left.CompareStart(right), left.CompareEnd(right)) switch
         {
-            (0, 0) => IntervalRelation.Equal,
+            (0, 0) => IntervalRelation.Equals,
             (0, < 0) => IntervalRelation.Starts,
             ( > 0, < 0) => IntervalRelation.ContainedBy,
             ( > 0, 0) => IntervalRelation.Finishes,

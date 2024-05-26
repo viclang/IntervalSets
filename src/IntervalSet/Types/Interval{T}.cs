@@ -3,7 +3,7 @@ using System.Text;
 
 namespace IntervalSet.Types;
 
-public class Interval<T> : IInterval<T>
+public class Interval<T> : IInterval<T>, IComparable<Interval<T>>
     where T : notnull, IComparable<T>, ISpanParsable<T>
 {
     public T Start { get; }
@@ -19,6 +19,9 @@ public class Interval<T> : IInterval<T>
     public virtual bool IsEmpty => End.CompareTo(Start) is int comparison
         && !StartBound.IsUnbounded() && !EndBound.IsUnbounded()
         && (comparison < 0 || comparison == 0 && (StartBound.IsOpen() || EndBound.IsOpen()));
+
+    public bool IsSingleton => StartBound.IsClosed() && EndBound.IsClosed()
+        && EqualityComparer<T>.Default.Equals(Start, End);
 
     public static Interval<T> Unbounded => new(default!, default!, IntervalType.Unbounded);
 
@@ -38,6 +41,29 @@ public class Interval<T> : IInterval<T>
     {
         Start = start;
         End = end;
+    }
+
+    public int CompareTo(Interval<T>? other)
+    {
+        if(other is null) return 1;
+        int result;
+        if(!StartBound.IsUnbounded() && !other.StartBound.IsUnbounded())
+        {
+            if (StartBound.IsUnbounded()) return -1;
+
+            if (other.StartBound.IsUnbounded()) return 1;
+
+            result = Start.CompareTo(other.Start);
+            if (result != 0) return result;
+
+            result = StartBound.CompareTo(other.StartBound);
+            if (result != 0) return result;
+        }
+        
+        result = End.CompareTo(other.End);
+        if (result != 0) return result;
+        
+        return EndBound.CompareTo(other.EndBound);
     }
 
     public override bool Equals(object? obj) => Equals(obj as IInterval<T>);
