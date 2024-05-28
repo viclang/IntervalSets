@@ -43,6 +43,16 @@ public class Interval<T> : IInterval<T>, IComparable<Interval<T>>
         End = end;
     }
 
+    public bool IsDisjoint(Interval<T> other)
+    {
+        var startComparison = StartBound.IsUnbounded() || other.EndBound.IsUnbounded() ? -1 : Start.CompareTo(other.End);
+        var endComparison = other.StartBound.IsUnbounded() || EndBound.IsUnbounded() ? -1 : other.Start.CompareTo(End);
+
+        return startComparison > 0 || endComparison > 0
+            || startComparison == 0 && !StartBound.IsClosed() && !other.EndBound.IsClosed()
+            || endComparison == 0 && !EndBound.IsClosed() && !other.StartBound.IsClosed();
+    }
+
     public int CompareTo(Interval<T>? other)
     {
         if(other is null) return 1;
@@ -94,12 +104,18 @@ public class Interval<T> : IInterval<T>, IComparable<Interval<T>>
         return IntervalParse.Parse<T>(s, provider);
     }
 
-    public static bool TryParse([NotNullWhen(true)] string? s, IFormatProvider? provider, [MaybeNullWhen(false)] out Interval<T> result)
+    public static bool TryParse(
+        [NotNullWhen(true)] string? s,
+        IFormatProvider? provider,
+        [MaybeNullWhen(false)] out Interval<T> result)
     {
         return IntervalParse.TryParse(s, provider, out result);
     }
 
-    public static bool TryParse(ReadOnlySpan<char> s, IFormatProvider? provider, [MaybeNullWhen(false)] out Interval<T> result)
+    public static bool TryParse(
+        ReadOnlySpan<char> s,
+        IFormatProvider? provider,
+        [MaybeNullWhen(false)] out Interval<T> result)
     {
         return IntervalParse.TryParse(s, provider, out result);
     }

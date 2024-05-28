@@ -46,11 +46,9 @@ namespace IntervalSet.Tests.Types
         [InlineData("<,>")]
         public void Parse_ShouldThrowArgumentException(string stringToParse)
         {
-            // Act
-            var act = () => Interval<int>.Parse(stringToParse);
+            var actual = () => Interval<int>.Parse(stringToParse);
 
-            // Assert
-            act.Should()
+            actual.Should()
                 .Throw<FormatException>()
                 .WithMessage("Interval not found in string. Please provide an interval string in correct format.");
         }
@@ -61,11 +59,9 @@ namespace IntervalSet.Tests.Types
         [InlineData("[03-08-2022, 03-08-2022]")]
         public void Parse_ShouldThrowFormatException(string stringToParse)
         {
-            // Act
-            var act = () => Interval<int>.Parse(stringToParse);
+            var actual = () => Interval<int>.Parse(stringToParse);
 
-            // Assert
-            act.Should()
+            actual.Should()
                 .Throw<FormatException>();
         }
 
@@ -73,10 +69,8 @@ namespace IntervalSet.Tests.Types
         [MemberData(nameof(ValidStringToParseWithExpectedResults))]
         public void Parse_ShouldBeExpectedResult(string stringToParse, Interval<int> expectedResult)
         {
-            // Act
             var result = Interval<int>.Parse(stringToParse);
 
-            // Assert
             result.Should().Be(expectedResult);
         }
 
@@ -86,10 +80,8 @@ namespace IntervalSet.Tests.Types
         [MemberData(nameof(InvalidStringToParseWithNull))]
         public void TryParse_ShouldBeExpectedResult(string stringToParse, Interval<int>? expectedResult)
         {
-            // Act
             var isValid = Interval<int>.TryParse(stringToParse, null, out var result);
 
-            // Assert
             isValid.Should().Be(expectedResult is not null);
             result.Should().Be(expectedResult!);
         }

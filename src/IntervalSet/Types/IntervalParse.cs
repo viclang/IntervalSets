@@ -6,47 +6,8 @@ public static partial class IntervalParse
 {
     private const string NotFoundMessage = "Interval not found in string. Please provide an interval string in correct format.";
 
-    [GeneratedRegex(@"^(\(|\[)\s*([^(),[\]]*),([^(),[\]]*)\s*(\)|\])$", RegexOptions.ExplicitCapture)]
+    [GeneratedRegex(@"^[\(\[][^\[\]\(\),]*,[^\[\]\(\),]*[\)\]]$")]
     private static partial Regex IntervalRegex();
-
-    internal static Interval<T> Parse<T>(string s, IFormatProvider? provider)
-        where T : notnull, IComparable<T>, ISpanParsable<T>
-    {
-        if (!IntervalRegex().IsMatch(s))
-        {
-            throw new FormatException(NotFoundMessage);
-        }
-        int commaIndex = s.IndexOf(',');
-        var startValue = s[1..commaIndex];
-        var endValue = s[(commaIndex + 1)..^1];
-
-        T start;
-        T end;
-        Bound startBound;
-        Bound endBound;
-        if (IsUnbounded(startValue))
-        {
-            startBound = Bound.Unbounded;
-            start = default!;
-        }
-        else
-        {
-            startBound = s[0] == '[' ? Bound.Closed : Bound.Open;
-            start = T.Parse(startValue, provider);
-        }
-
-        if (IsUnbounded(endValue))
-        {
-            endBound = Bound.Unbounded;
-            end = default!;
-        }
-        else
-        {
-            endBound = s[^1] == ']' ? Bound.Closed : Bound.Open;
-            end = T.Parse(endValue, provider);
-        }
-        return new Interval<T>(start, end, startBound, endBound);
-    }
 
     internal static Interval<T> Parse<T>(ReadOnlySpan<char> s, IFormatProvider? provider)
         where T : notnull, IComparable<T>, ISpanParsable<T>
@@ -55,33 +16,31 @@ public static partial class IntervalParse
         {
             throw new FormatException(NotFoundMessage);
         }
+
         int commaIndex = s.IndexOf(',');
         var startValue = s[1..commaIndex];
         var endValue = s[(commaIndex + 1)..^1];
 
-        T start;
-        T end;
-        Bound startBound;
-        Bound endBound;
+        T start = default!;
+        T end = default!;
+        Bound startBound = s[0] == '[' ? Bound.Closed : Bound.Open;
+        Bound endBound = s[^1] == ']' ? Bound.Closed : Bound.Open;
+
         if (IsUnbounded(startValue))
         {
             startBound = Bound.Unbounded;
-            start = default!;
         }
         else
         {
-            startBound = s[0] == '[' ? Bound.Closed : Bound.Open;
             start = T.Parse(startValue, provider);
         }
 
         if (IsUnbounded(endValue))
         {
             endBound = Bound.Unbounded;
-            end = default!;
         }
         else
         {
-            endBound = s[^1] == ']' ? Bound.Closed : Bound.Open;
             end = T.Parse(endValue, provider);
         }
         return new Interval<T>(start, end, startBound, endBound);
@@ -102,18 +61,16 @@ public static partial class IntervalParse
         var startValue = s[1..commaIndex];
         var endValue = s[(commaIndex + 1)..^1];
 
-        T start;
-        T end;
-        Bound startBound;
-        Bound endBound;
+        T start = default!;
+        T end = default!;
+        Bound startBound = s[0] == '[' ? Bound.Closed : Bound.Open;
+        Bound endBound = s[^1] == ']' ? Bound.Closed : Bound.Open;
         if (IsUnbounded(startValue))
         {
             startBound = Bound.Unbounded;
-            start = default!;
         }
         else
         {
-            startBound = s[0] == '[' ? Bound.Closed : Bound.Open;
             if (!T.TryParse(startValue, provider, out start!))
             {
                 return false;
@@ -123,11 +80,9 @@ public static partial class IntervalParse
         if (IsUnbounded(endValue))
         {
             endBound = Bound.Unbounded;
-            end = default!;
         }
         else
         {
-            endBound = s[^1] == ']' ? Bound.Closed : Bound.Open;
             if (!T.TryParse(endValue, provider, out end!))
             {
                 return false;
@@ -149,18 +104,16 @@ public static partial class IntervalParse
         var startValue = s[1..commaIndex];
         var endValue = s[(commaIndex + 1)..^1];
 
-        T start;
-        T end;
-        Bound startBound;
-        Bound endBound;
+        T start = default!;
+        T end = default!;
+        Bound startBound = s[0] == '[' ? Bound.Closed : Bound.Open;
+        Bound endBound = s[^1] == ']' ? Bound.Closed : Bound.Open;
         if (IsUnbounded(startValue))
         {
             startBound = Bound.Unbounded;
-            start = default!;
         }
         else
         {
-            startBound = s[0] == '[' ? Bound.Closed : Bound.Open;
             if (!T.TryParse(startValue, provider, out start!))
             {
                 return false;
@@ -170,17 +123,15 @@ public static partial class IntervalParse
         if (IsUnbounded(endValue))
         {
             endBound = Bound.Unbounded;
-            end = default!;
         }
         else
         {
-            endBound = s[^1] == ']' ? Bound.Closed : Bound.Open;
             if (!T.TryParse(endValue, provider, out end!))
             {
                 return false;
             }
         }
-        result = new Interval<T>(start, end, startBound, endBound);
+        result = new(start, end, startBound, endBound);
         return true;
     }
 
