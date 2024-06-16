@@ -3,7 +3,7 @@ using IntervalSets.Operations;
 using IntervalSets.Tests.TestData;
 using IntervalSets.Types;
 
-namespace IntervalSets.Tests.Operations.Overlaps;
+namespace IntervalSets.Tests.Operations;
 public class IntervalOverlapsTests
 {
 

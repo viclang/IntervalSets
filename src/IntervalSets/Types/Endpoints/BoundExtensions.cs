@@ -7,4 +7,6 @@ public static class BoundExtensions
 
     public static bool IsUnbounded(this Bound bound) => bound is Bound.Unbounded;
 
+    public static bool IsBounded(this Bound bound) => bound is not Bound.Unbounded;
+
 }

@@ -3,7 +3,7 @@ using System.Text;
 
 namespace IntervalSets.Types;
 
-public class Interval<T> : IInterval<T>, IComparable<Interval<T>>
+public class Interval<T> : IAbstractInterval<T>, IComparable<Interval<T>>
     where T : notnull, IComparable<T>, ISpanParsable<T>
 {
     public T Start { get; }
@@ -16,14 +16,31 @@ public class Interval<T> : IInterval<T>, IComparable<Interval<T>>
 
     public virtual Bound EndBound => IntervalType.EndBound();
 
-    public virtual bool IsEmpty => End.CompareTo(Start) is int comparison
+    public virtual bool IsEmpty => Start.CompareTo(End) == 0
         && !StartBound.IsUnbounded() && !EndBound.IsUnbounded()
-        && (comparison < 0 || comparison == 0 && (StartBound.IsOpen() || EndBound.IsOpen()));
+        && (StartBound.IsOpen() || EndBound.IsOpen());
 
-    public bool IsSingleton => StartBound.IsClosed() && EndBound.IsClosed()
+    public virtual bool IsSingleton => StartBound.IsClosed() && EndBound.IsClosed()
         && EqualityComparer<T>.Default.Equals(Start, End);
 
     public static Interval<T> Unbounded => new(default!, default!, IntervalType.Unbounded);
+
+    public static Interval<T> Empty => new EmptyInterval<T>(IntervalType.Open);
+
+    public static Interval<T> CreateOrEmpty(T start, T end, Bound startBound, Bound endBound)
+    {
+        return new Interval<T>(start, end, IntervalTypeFactory.Create(startBound, endBound));
+    }
+
+    public static Interval<T> CreateOrEmpty(T start, T end, IntervalType intervalType)
+    {
+        if (intervalType.IsBounded() && start.CompareTo(end) > 0)
+        {
+            return new EmptyInterval<T>(intervalType);
+        }
+
+        return new Interval<T>(start, end, intervalType);
+    }
 
     public Interval(T start, T end, Bound startBound, Bound endBound)
         : this(start, end, IntervalTypeFactory.Create(startBound, endBound))
@@ -32,6 +49,11 @@ public class Interval<T> : IInterval<T>, IComparable<Interval<T>>
 
     public Interval(T start, T end, IntervalType intervalType)
     {
+        if (intervalType.IsBounded() && end.CompareTo(start) < 0)
+        {
+            throw new ArgumentOutOfRangeException(nameof(end), "The end value must be greater than or equal to the start value.");
+        }
+
         Start = StartBound.IsUnbounded() ? default! : start;
         End = EndBound.IsUnbounded() ? default! : end;
         IntervalType = intervalType;
@@ -45,6 +67,10 @@ public class Interval<T> : IInterval<T>, IComparable<Interval<T>>
 
     public bool IsDisjoint(Interval<T> other)
     {
+        if (IsEmpty || other.IsEmpty)
+        {
+            return true;
+        }
         var startComparison = StartBound.IsUnbounded() || other.EndBound.IsUnbounded() ? -1 : Start.CompareTo(other.End);
         var endComparison = other.StartBound.IsUnbounded() || EndBound.IsUnbounded() ? -1 : other.Start.CompareTo(End);
 
@@ -55,38 +81,57 @@ public class Interval<T> : IInterval<T>, IComparable<Interval<T>>
 
     public int CompareTo(Interval<T>? other)
     {
-        if(other is null) return 1;
-        int result;
-        if(!StartBound.IsUnbounded() && !other.StartBound.IsUnbounded())
-        {
-            if (StartBound.IsUnbounded()) return -1;
+        if (other is null) return 1;
 
-            if (other.StartBound.IsUnbounded()) return 1;
+        if (IsEmpty && other.IsEmpty) return 0;
+        if (IsEmpty) return -1;
+        if (other.IsEmpty)  return 1;
 
-            result = Start.CompareTo(other.Start);
-            if (result != 0) return result;
-
-            result = StartBound.CompareTo(other.StartBound);
-            if (result != 0) return result;
-        }
-        
-        result = End.CompareTo(other.End);
+        int result = CompareBoundaries(StartBound, other.StartBound, Start, other.Start);
         if (result != 0) return result;
-        
-        return EndBound.CompareTo(other.EndBound);
+
+        return CompareBoundaries(EndBound, other.EndBound, End, other.End);
     }
 
-    public override bool Equals(object? obj) => Equals(obj as IInterval<T>);
-
-    public bool Equals(IInterval<T>? other)
+    private int CompareBoundaries(Bound thisBound, Bound otherBound, T thisValue, T otherValue)
     {
-        return other is not null
-            && EqualityComparer<T>.Default.Equals(Start, other.Start)
-            && EqualityComparer<T>.Default.Equals(End, other.End)
-            && other.EndBound == other.EndBound;
+        return (thisBound.IsUnbounded(), otherBound.IsUnbounded()) switch
+        {
+            (true, true) => 0,
+            (true, false) => -1,
+            (false, true) => 1,
+            _ => CompareValues(thisValue, thisBound, otherValue, otherBound)
+        };
     }
 
-    public override int GetHashCode() => HashCode.Combine(Start, End, StartBound, EndBound);
+    private int CompareValues(T thisValue, Bound thisBound, T otherValue, Bound otherBound)
+    {
+        int result = thisValue.CompareTo(otherValue);
+        return result != 0 ? result : thisBound.CompareTo(otherBound);
+    }
+
+    public override bool Equals(object? obj) => Equals(obj as Interval<T>);
+
+    public bool Equals(Interval<T>? other)
+    {
+        if (other is null) return false;
+        if (IsEmpty && other.IsEmpty) return true;
+        if (IsEmpty || other.IsEmpty) return false;
+
+        return EqualityComparer<T>.Default.Equals(Start, other.Start)
+            && EqualityComparer<T>.Default.Equals(End, other.End)
+            && StartBound == other.StartBound
+            && EndBound == other.EndBound;
+    }
+
+    public override int GetHashCode()
+    {
+        if (IsEmpty)
+        {
+            return 0;
+        }
+        return HashCode.Combine(Start, End, StartBound, EndBound);
+    }
 
     public static bool operator ==(Interval<T> left, Interval<T> right)
         => left.Equals(right);

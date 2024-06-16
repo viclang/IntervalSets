@@ -2,7 +2,7 @@
 using IntervalSets.Operations;
 using IntervalSets.Types;
 
-namespace IntervalSets.Tests.Operations.Contains;
+namespace IntervalSets.Tests.Operations;
 public class IntervalContainsExtensionsTests
 {
     [Theory]

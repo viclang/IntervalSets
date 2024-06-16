@@ -88,6 +88,11 @@ public static partial class IntervalParse
                 return false;
             }
         }
+
+        if (endBound.IsBounded() && end.CompareTo(start) < 0)
+        {
+            return false;
+        }
         result = new(start, end, startBound, endBound);
         return true;
     }

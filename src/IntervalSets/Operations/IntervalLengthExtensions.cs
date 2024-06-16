@@ -4,14 +4,13 @@ using System.Numerics;
 namespace IntervalSets.Operations;
 public static partial class IntervalLengthExtensions
 {
-
     /// <summary>
     /// Calculates the length of the interval
     /// </summary>
     /// <param name="value">The interval to calculate the length of</param>
     /// <param name="step">The step value used to increment or decrement the interval bounds. Defaults to 1.</param>
     /// <returns>The length of the interval</returns>
-    public static T Length<T>(this IInterval<T> value, T? step = null)
+    public static T Length<T>(this Interval<T> value, T? step = null)
         where T : struct, INumber<T>
     {
         step ??= T.One;
@@ -33,7 +32,7 @@ public static partial class IntervalLengthExtensions
     /// <param name="value">The interval to calculate the length of</param>
     /// <param name="step">The step value used to increment or decrement the interval bounds. Defaults to 1 second.</param>
     /// <returns>The length of the interval</returns>
-    public static TimeSpan Length(this IInterval<DateTime> value, TimeSpan? step = null)
+    public static TimeSpan Length(this Interval<DateTime> value, TimeSpan? step = null)
     {
         step ??= TimeSpan.FromSeconds(1);
         return value.Canonicalize<Closed, Closed>(step).Length();
@@ -53,7 +52,7 @@ public static partial class IntervalLengthExtensions
     /// <param name="value">The interval to calculate the length of</param>
     /// <param name="step">The step value used to increment or decrement the interval bounds. Defaults to 1 second.</param>
     /// <returns>The length of the interval</returns>
-    public static TimeSpan Length(this IInterval<DateTimeOffset> value, TimeSpan? step = null)
+    public static TimeSpan Length(this Interval<DateTimeOffset> value, TimeSpan? step = null)
     {
         step ??= TimeSpan.FromSeconds(1);
         return value.Canonicalize<Closed, Closed>(step).Length();
@@ -74,7 +73,7 @@ public static partial class IntervalLengthExtensions
     /// <param name="value">The interval to calculate the length of</param>
     /// <param name="step">The step value used to increment or decrement the interval bounds. Defaults to 1 day.</param>
     /// <returns>The length of the interval</returns>
-    public static int Length(this IInterval<DateOnly> value, int step = 1)
+    public static int Length(this Interval<DateOnly> value, int step = 1)
     {
         return value.Canonicalize<Closed, Closed>(step).Length();
     }
@@ -94,7 +93,7 @@ public static partial class IntervalLengthExtensions
     /// <param name="value">The interval to calculate the length of</param>
     /// <param name="step">The step value used to increment or decrement the interval bounds. Defaults to 1 second.</param>
     /// <returns>The length of the interval</returns>
-    public static TimeSpan Length(this IInterval<TimeOnly> value, TimeSpan? step = null)
+    public static TimeSpan Length(this Interval<TimeOnly> value, TimeSpan? step = null)
     {
         step ??= TimeSpan.FromSeconds(1);
         return value.Canonicalize<Closed, Closed>(step).Length();

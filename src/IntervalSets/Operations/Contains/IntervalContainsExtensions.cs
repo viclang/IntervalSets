@@ -3,7 +3,7 @@
 namespace IntervalSets.Operations;
 public static class IntervalContainsExtensions
 {
-    public static bool Contains<T>(this IInterval<T> interval, T value)
+    public static bool Contains<T>(this Interval<T> interval, T value)
         where T : notnull, IComparable<T>, ISpanParsable<T>
     {
         var startComparison = interval.StartBound.IsUnbounded() ? -1 : interval.Start.CompareTo(value);

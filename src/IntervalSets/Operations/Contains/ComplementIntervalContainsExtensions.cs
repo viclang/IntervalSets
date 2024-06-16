@@ -3,7 +3,7 @@
 namespace IntervalSets.Operations;
 public static class ComplementContainsExtensions
 {
-    public static bool Contains<T>(this IComplementInterval<T> interval, T other)
+    public static bool Contains<T>(this ComplementInterval<T> interval, T other)
         where T : notnull, IComparable<T>, ISpanParsable<T>
     {
         var startComparison = interval.Start.CompareTo(other);

@@ -1,19 +1,21 @@
 ﻿using BenchmarkDotNet.Attributes;
+using IntervalSets.Operations;
 using IntervalSets.Types;
-using System.Text.RegularExpressions;
 
 namespace IntervalSets.Benchmark;
 
 [MemoryDiagnoser]
 public partial class Benchmarks
 {
-    private const string interval = "[1111111, 9999999)";
+    private static Interval<int> intervalA = new(1, 5, IntervalType.OpenClosed);
+    private static Interval<int> intervalB= new(5, 7, IntervalType.ClosedOpen);
 
-    //[Benchmark]
-    //public Interval<int> ParseBoundInvert() => IntervalParse.ParseBoundInvert<int>(
-    //    interval);
+    private static Interval<int, Open, Closed> typedIntervalA = new(1, 5);
+    private static Interval<int, Closed, Open> typedIntervalB = new(5, 7);
 
-    //[Benchmark]
-    //public Interval<int> ParseBound() => IntervalParse.Pa<int>(
-    //    interval);
+    [Benchmark]
+    public bool Overlaps() => intervalA.Overlaps(intervalB);
+
+    [Benchmark]
+    public bool TypedOverlaps() => typedIntervalA.Overlaps(typedIntervalB);
 }

@@ -1,10 +1,8 @@
 ﻿using FluentAssertions;
-using FluentAssertions.Execution;
 using IntervalSets.Operations;
-using IntervalSets.Tests.Types;
 using IntervalSets.Types;
 
-namespace IntervalSets.Tests.Operations.Canonicalize;
+namespace IntervalSets.Tests.Operations;
 public class BoundedCanonicalizeExtensionsTests
 {
     [Theory]
@@ -87,7 +85,7 @@ public class BoundedCanonicalizeExtensionsTests
             .Should()
             .Be(expectedInterval);
     }
-    
+
     [Theory]
     [InlineData("(-Infinity, 1)", "(-Infinity, 0]")]
     [InlineData("(-Infinity, 2)", "(-Infinity, 1]")]

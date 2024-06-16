@@ -3,6 +3,10 @@ public static class IntervalTypeExtensions
 {
     private const int ExtractBound = 3;
 
+    public static bool IsBounded(this IntervalType intervalType)
+        => intervalType is not IntervalType.Unbounded;
+
+
     public static Bound StartBound(this IntervalType intervalType)
         => (Bound)(DecodeStartBound(intervalType) & ExtractBound);
 

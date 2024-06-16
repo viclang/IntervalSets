@@ -1,18 +1,18 @@
 ﻿using System.Text;
 
 namespace IntervalSets.Types;
-public class ComplementInterval<T> : IComplementInterval<T>
+public class ComplementInterval<T> : IAbstractInterval<T>
     where T : notnull, IComparable<T>, ISpanParsable<T>
 {
     public T Start { get; init; }
 
     public T End { get; init; }
 
-    public IntervalType IntervalType { get; }
+    public virtual IntervalType IntervalType { get; }
 
-    public Bound StartBound => IntervalType.StartBound();
+    public virtual Bound StartBound => IntervalType.StartBound();
 
-    public Bound EndBound => IntervalType.EndBound();
+    public virtual Bound EndBound => IntervalType.EndBound();
 
     public static ComplementInterval<T> Empty => new(default!, default!, IntervalType.Open);
 
@@ -30,6 +30,12 @@ public class ComplementInterval<T> : IComplementInterval<T>
         Start = start;
         End = end;
         IntervalType = intervalType;
+    }
+
+    internal ComplementInterval(T start, T end)
+    {
+        Start = start;
+        End = end;
     }
 
     public override string ToString()

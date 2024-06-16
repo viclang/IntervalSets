@@ -7,7 +7,7 @@ public static class ComplementOverlapsExtensions
     /// Returns a boolean value indicating if the left interval overlaps with the right interval.
     /// </summary>
     /// <returns>True if the left interval and the right interval overlap.</returns>
-    public static bool Overlaps<T>(this IComplementInterval<T> left, IComplementInterval<T> right)
+    public static bool Overlaps<T>(this ComplementInterval<T> left, ComplementInterval<T> right)
         where T : notnull, IComparable<T>, ISpanParsable<T>
     {
         if (left.IsEmpty || right.IsEmpty)

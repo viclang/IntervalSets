@@ -1,32 +1,17 @@
 ﻿namespace IntervalSets.Types;
-public class ComplementInterval<T, L, R> : IInterval<T>
+public class ComplementInterval<T, L, R> : ComplementInterval<T>
     where T : notnull, IComparable<T>, ISpanParsable<T>
     where L : struct, IBound
     where R : struct, IBound
 {
-    public T Start { get; }
 
-    public T End { get; }
+    public override Bound StartBound => L.Bound;
 
-    public Bound StartBound => L.Bound;
+    public override Bound EndBound => R.Bound;
 
-    public Bound EndBound => R.Bound;
+    public override IntervalType IntervalType => IntervalTypeFactory.Create(L.Bound, R.Bound);
 
-    public IntervalType IntervalType => IntervalTypeFactory.Create(L.Bound, R.Bound);
-
-    public bool IsEmpty => End.CompareTo(Start) is int comparison
-        && StartBound.IsUnbounded() && EndBound.IsUnbounded()
-        || comparison < 0 || comparison == 0 && L.Bound.IsOpen() && L.Bound.IsOpen();
-
-    public ComplementInterval(T start, T end)
+    public ComplementInterval(T start, T end) : base(start, end)
     {
-        Start = start;
-        End = end;
     }
-
-    public static implicit operator ComplementInterval<T>(ComplementInterval<T, L, R> complementInterval)
-        => new(complementInterval.Start, complementInterval.End, L.Bound, R.Bound);
-
-    public override string ToString()
-        => $"{(L.Bound.IsClosed() ? ']' : ')')}{Start}, {End}{(R.Bound.IsClosed() ? '[' : '(')}";
 }
