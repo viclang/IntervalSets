@@ -4,7 +4,7 @@ public static class IntervalTypeExtensions
     private const int ExtractBound = 3;
 
     public static bool IsBounded(this IntervalType intervalType)
-        => intervalType is not IntervalType.Unbounded;
+        => intervalType.StartBound().IsBounded() && intervalType.EndBound().IsBounded();
 
 
     public static Bound StartBound(this IntervalType intervalType)

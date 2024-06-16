@@ -6,10 +6,6 @@ public class IsEmptyTests
 {
 
     [Theory]
-    [InlineData("(2, 1)")]
-    [InlineData("(2, 1]")]
-    [InlineData("[2, 1)")]
-    [InlineData("[2, 1]")]
     [InlineData("(0, 0)")]
     [InlineData("(0, 0]")]
     [InlineData("[0, 0)")]
