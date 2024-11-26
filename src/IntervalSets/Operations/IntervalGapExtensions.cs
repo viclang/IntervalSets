@@ -28,6 +28,106 @@ public static class IntervalGapExtensions
         return Interval<T>.Empty;
     }
 
+    /// <summary>
+    /// Returns the gap between two intervals, or empty if the two intervals overlap.
+    /// </summary>
+    /// <param name="left">The left interval.</param>
+    /// <param name="right">The right interval.</param>
+    /// <returns>The gap between the two intervals, if any, or null if the two intervals overlap.</returns>
+    public static Interval<T, Closed, Closed> Gap<T>(this Interval<T, Open, Open> left, Interval<T, Open, Open> right)
+        where T : notnull, IComparable<T>, ISpanParsable<T>
+    {
+        if (!left.IsDisjoint(right))
+        {
+            return Interval<T, Closed, Closed>.Empty;
+        }
+
+        if (left.CompareStartToEnd(right) > 0)
+        {
+            return new(right.End, left.Start);
+        }
+        if (left.CompareEndToStart(right) < 0)
+        {
+            return new(left.End, right.Start);
+        }
+        return Interval<T, Closed, Closed>.Empty;
+    }
+
+    /// <summary>
+    /// Returns the gap between two intervals, or empty if the two intervals overlap.
+    /// </summary>
+    /// <param name="left">The left interval.</param>
+    /// <param name="right">The right interval.</param>
+    /// <returns>The gap between the two intervals, if any, or null if the two intervals overlap.</returns>
+    public static Interval<T, Open, Open> Gap<T>(this Interval<T, Closed, Closed> left, Interval<T, Closed, Closed> right)
+        where T : notnull, IComparable<T>, ISpanParsable<T>
+    {
+        if (!left.IsDisjoint(right))
+        {
+            return Interval<T, Open, Open>.Empty;
+        }
+
+        if (left.CompareStartToEnd(right) > 0)
+        {
+            return new(right.End, left.Start);
+        }
+        if (left.CompareEndToStart(right) < 0)
+        {
+            return new(left.End, right.Start);
+        }
+        return Interval<T, Open, Open>.Empty;
+    }
+
+    /// <summary>
+    /// Returns the gap between two intervals, or empty if the two intervals overlap.
+    /// </summary>
+    /// <param name="left">The left interval.</param>
+    /// <param name="right">The right interval.</param>
+    /// <returns>The gap between the two intervals, if any, or null if the two intervals overlap.</returns>
+    public static Interval<T, Closed, Open> Gap<T>(this Interval<T, Closed, Open> left, Interval<T, Closed, Open> right)
+        where T : notnull, IComparable<T>, ISpanParsable<T>
+    {
+        if (!left.IsDisjoint(right))
+        {
+            return Interval<T, Closed, Open>.Empty;
+        }
+
+        if (left.CompareStartToEnd(right) > 0)
+        {
+            return new(right.End, left.Start);
+        }
+        if (left.CompareEndToStart(right) < 0)
+        {
+            return new(left.End, right.Start);
+        }
+        return Interval<T, Closed, Open>.Empty;
+    }
+
+    /// <summary>
+    /// Returns the gap between two intervals, or empty if the two intervals overlap.
+    /// </summary>
+    /// <param name="left">The left interval.</param>
+    /// <param name="right">The right interval.</param>
+    /// <returns>The gap between the two intervals, if any, or null if the two intervals overlap.</returns>
+    public static Interval<T, Open, Closed> Gap<T>(this Interval<T, Open, Closed> left, Interval<T, Open, Closed> right)
+        where T : notnull, IComparable<T>, ISpanParsable<T>
+    {
+        if (!left.IsDisjoint(right))
+        {
+            return Interval<T, Open, Closed>.Empty;
+        }
+
+        if (left.CompareStartToEnd(right) > 0)
+        {
+            return new(right.End, left.Start);
+        }
+        if (left.CompareEndToStart(right) < 0)
+        {
+            return new(left.End, right.Start);
+        }
+        return Interval<T, Open, Closed>.Empty;
+    }
+
     private static Bound Invert(this Bound bound)
     {
         return bound switch

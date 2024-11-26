@@ -4,7 +4,6 @@ using IntervalSets.Types;
 namespace IntervalSets.Tests.Types;
 public class IsEmptyTests
 {
-
     [Theory]
     [InlineData("(0, 0)")]
     [InlineData("(0, 0]")]
