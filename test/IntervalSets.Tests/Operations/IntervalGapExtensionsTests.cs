@@ -63,9 +63,21 @@ public abstract class IntervalGapExtensionsTests<L, R>
         var leftInterval = new Interval<int, L, R>(leftStart, leftEnd);
         var rightInterval = new Interval<int, L, R>(rightStart, rightEnd);
 
-        var expectedResult = ((dynamileftInterval).Gap((dynamic)rightInterval);
+        var expectedResult = leftInterval.Gap(rightInterval);
 
-        var actual = IntervalGapExtensions.Gap(leftInterval, rightInterval);
+        var actual = leftInterval switch
+        {
+            Interval<int, Open, Open> openLeftInterval => openLeftInterval.Gap((Interval<int, Open, Open>)(object)rightInterval),
+            Interval<int, Open, Closed> openClosedLeftInterval => openClosedLeftInterval.Gap((Interval<int, Open, Closed>)(object)rightInterval),
+            Interval<int, Closed, Open> closedOpenLeftInterval => closedOpenLeftInterval.Gap((Interval<int, Closed, Open>)(object)rightInterval),
+            Interval<int, Closed, Closed> closedLeftInterval => closedLeftInterval.Gap((Interval<int, Closed, Closed>)(object)rightInterval),
+            Interval<int, Open, Unbounded> openUnboundedLeftInterval => openUnboundedLeftInterval.Gap((Interval<int, Open, Unbounded>)(object)rightInterval),
+            Interval<int, Closed, Unbounded> closedUnboundedLeftInterval => closedUnboundedLeftInterval.Gap((Interval<int, Closed, Unbounded>)(object)rightInterval),
+            Interval<int, Unbounded, Open> unboundedOpenLeftInterval => unboundedOpenLeftInterval.Gap((Interval<int, Unbounded, Open>)(object)rightInterval),
+            Interval<int, Unbounded, Closed> unboundedClosedLeftInterval => unboundedClosedLeftInterval.Gap((Interval<int, Unbounded, Closed>)(object)rightInterval),
+            Interval<int, Unbounded, Unbounded> unboundedLeftInterval => unboundedLeftInterval.Gap((Interval<int, Unbounded, Unbounded>)(object)rightInterval),
+            _ => throw new NotSupportedException()
+        };
 
         actual.Should()
             .NotBeNull()

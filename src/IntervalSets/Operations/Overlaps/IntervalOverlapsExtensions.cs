@@ -126,7 +126,7 @@ public static class IntervalOverlapsExtensions
     public static bool Overlaps<T, R>(this Interval<T, Unbounded, Open> left, Interval<T> right)
         where T : notnull, IComparable<T>, ISpanParsable<T>
         where R : struct, IBound
-        => left.EndBound.IsUnbounded() || right.Start.CompareTo(left.End) < 0;
+        => right.StartBound.IsUnbounded() || right.Start.CompareTo(left.End) < 0;
 
     /// <summary>
     /// Returns a boolean value indicating if the left interval overlaps with the right interval.
